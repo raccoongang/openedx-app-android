@@ -7,6 +7,9 @@ import kotlinx.coroutines.launch
 import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.oex.foundation.PurchaseError
+import org.openedx.core.oex.foundation.PurchaseException
+import org.openedx.core.oex.foundation.PurchaseProviderInterface
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseDashboardUpdate
 import org.openedx.core.system.notifier.DiscoveryNotifier
@@ -31,6 +34,7 @@ class CourseDetailsViewModel(
     private val resourceManager: ResourceManager,
     private val notifier: DiscoveryNotifier,
     private val analytics: DiscoveryAnalytics,
+    private val purchaseProvider: PurchaseProviderInterface,
     private val calendarSyncScheduler: CalendarSyncScheduler,
 ) : BaseViewModel() {
     val apiHostUrl get() = config.getApiHostURL()
@@ -45,6 +49,12 @@ class CourseDetailsViewModel(
         get() = _uiMessage
 
     private var course: Course? = null
+
+    private val _priceTier = MutableLiveData<String?>()
+    val priceTier: LiveData<String?> get() = _priceTier
+
+    private val _localizedPriceTier = MutableLiveData<String?>()
+    val localizedPriceTier: LiveData<String?> get() = _localizedPriceTier
 
     val hasInternetConnection: Boolean
         get() = networkConnection.isOnline()
@@ -62,6 +72,15 @@ class CourseDetailsViewModel(
                 } else {
                     interactor.getCourseDetailsFromCache(courseId)
                 }
+
+                if (hasInternetConnection) {
+                    // Сначала получим локализованные цены для курса (обновит кэш соответствий)
+                    val prices = purchaseProvider.getLocalizedCoursesTiers(listOf(courseId))
+                    _localizedPriceTier.value = prices[courseId]
+                    // Затем вытащим сам tier из провайдера, если он доступен
+                    _priceTier.value = purchaseProvider.getCoursePriceTier(courseId)
+                }
+
                 course?.let {
                     _uiState.value = CourseDetailsUIState.CourseData(
                         course = it,
@@ -126,6 +145,53 @@ class CourseDetailsViewModel(
             append("</body>")
         }
         return buff.toString()
+    }
+
+    suspend fun purchaseCourse(): Boolean {
+        val tier = priceTier.value
+        if (tier == null) {
+            _uiMessage.postValue(
+                UIMessage.SnackBarMessage(
+                    resourceManager.getString(R.string.core_error_purchase_product_not_found)
+                )
+            )
+            return false
+        }
+
+        return try {
+            val ok = purchaseProvider.purchaseCourse(
+                courseID = this.courseId,
+                userEmail = corePreferences.user?.email,
+                priceTier = tier
+            )
+            if (!ok) {
+                _uiMessage.postValue(
+                    UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_purchase_failed))
+                )
+            }
+            ok
+        } catch (e: PurchaseException) {
+            when (e.error) {
+                PurchaseError.PURCHASE_FAILED -> _uiMessage.postValue(
+                    UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_purchase_failed))
+                )
+                PurchaseError.NETWORK_ERROR -> _uiMessage.postValue(
+                    UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_no_connection))
+                )
+                PurchaseError.PRODUCT_NOT_FOUND -> _uiMessage.postValue(
+                    UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_purchase_product_not_found))
+                )
+                PurchaseError.USER_CANCELLED -> _uiMessage.postValue(
+                    UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_purchase_user_canceled))
+                )
+            }
+            false
+        } catch (e: Exception) {
+            _uiMessage.postValue(
+                UIMessage.SnackBarMessage(resourceManager.getString(R.string.core_error_unknown_error))
+            )
+            false
+        }
     }
 
     private fun getColorFromULong(color: ULong): String {

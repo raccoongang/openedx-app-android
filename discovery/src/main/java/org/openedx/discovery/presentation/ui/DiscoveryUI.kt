@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import org.openedx.core.domain.model.Media
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
@@ -47,6 +48,7 @@ import org.openedx.discovery.R
 import org.openedx.discovery.domain.model.Course
 import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.WindowSize
+import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.core.R as сoreR
@@ -89,6 +91,7 @@ fun ImageHeader(
 fun DiscoveryCourseItem(
     apiHostUrl: String,
     course: Course,
+    courseLocalizedPrice: String? = null,
     windowSize: WindowSize,
     onClick: (String) -> Unit,
 ) {
@@ -153,6 +156,26 @@ fun DiscoveryCourseItem(
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
+
+                Spacer(Modifier.weight(1f, fill = false))
+                if (courseLocalizedPrice != null) {
+                    Row(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.weight(1f))
+                        Surface(
+                            shape = MaterialTheme.appShapes.cardShape,
+                            color = MaterialTheme.appColors.primary,
+                            modifier = Modifier.testTag("txt_course_price")
+                        ) {
+                            Text(
+                                text = courseLocalizedPrice,
+                                style = MaterialTheme.appTypography.bodyMedium,
+                                color = MaterialTheme.appColors.surface,
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -221,3 +244,42 @@ private fun WarningLabelPreview() {
         )
     }
 }
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private  fun DiscoveryCourseItemPreview() {
+    OpenEdXTheme {
+        DiscoveryCourseItem(
+            apiHostUrl = "localhost:8000",
+            course = mockCourse,
+            courseLocalizedPrice = "$199.00",
+            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
+            onClick = { }
+        )
+    }
+}
+
+private val mockCourse = Course(
+    id = "id",
+    blocksUrl = "blocksUrl",
+    courseId = "courseId",
+    effort = "effort",
+    enrollmentStart = null,
+    enrollmentEnd = null,
+    hidden = false,
+    invitationOnly = false,
+    media = Media(),
+    mobileAvailable = true,
+    name = "Test course",
+    number = "number",
+    org = "EdX",
+    pacing = "pacing",
+    shortDescription = "shortDescription",
+    start = "start",
+    end = "end",
+    startDisplay = "startDisplay",
+    startType = "startType",
+    overview = "",
+    isEnrolled = false
+)

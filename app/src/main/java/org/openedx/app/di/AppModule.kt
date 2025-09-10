@@ -225,9 +225,11 @@ val appModule = module {
     single { CalendarSyncScheduler(get()) }
 
     single { AnalyticsManager() }
+    single<org.openedx.core.oex.foundation.PurchaseProviderInterface> { org.openedx.app.InAppPurchasesManager() }
     single {
         PluginManager(
-            analyticsManager = get()
+            analyticsManager = get(),
+            purchasesManager = get()
         )
     }
 }

@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -64,6 +65,7 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.foundation.extension.tagId
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
@@ -190,6 +192,13 @@ internal fun SettingsScreen(
                                         uiState = uiState,
                                         onAction = onAction,
                                     )
+
+                                    if (uiState.configuration.inAppPurchasesEnabled) {
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                        RestorePurchasesSection(
+                                            onClick = { onAction(SettingsScreenAction.RestorePurchasesClick) }
+                                        )
+                                    }
 
                                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -328,6 +337,42 @@ private fun SupportInfoSection(
                     onAction(SettingsScreenAction.AppVersionClick)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun RestorePurchasesSection(
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.appShapes.cardShape,
+        elevation = 0.dp,
+        backgroundColor = MaterialTheme.appColors.cardViewBackground
+    ) {
+        Row(
+            Modifier
+                .testTag("btn_restore_purchases")
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(
+                    vertical = 24.dp,
+                    horizontal = 20.dp
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier
+                    .testTag("txt_restore_purchases")
+                    .weight(1f),
+                text = stringResource(id = profileR.string.profile_restore_purchases),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.appTypography.titleMedium,
+                color = MaterialTheme.appColors.textPrimary
+            )
         }
     }
 }
@@ -633,6 +678,7 @@ private val mockConfiguration = Configuration(
     faqUrl = "https://example.com/faq",
     supportEmail = "test@example.com",
     versionName = mockAppData.versionName,
+    inAppPurchasesEnabled = true,
 )
 
 private val mockUiState = SettingsUIState.Data(

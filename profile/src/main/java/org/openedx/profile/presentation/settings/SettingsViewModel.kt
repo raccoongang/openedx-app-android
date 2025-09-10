@@ -18,6 +18,8 @@ import org.openedx.core.CalendarRouter
 import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.module.DownloadWorkerController
+import org.openedx.core.oex.foundation.PurchaseProviderInterface
+import org.openedx.core.oex.foundation.RestorePurchasesResult
 import org.openedx.core.presentation.global.AppData
 import org.openedx.core.system.AppCookieManager
 import org.openedx.core.system.notifier.app.AppNotifier
@@ -48,6 +50,7 @@ class SettingsViewModel(
     private val calendarRouter: CalendarRouter,
     private val appNotifier: AppNotifier,
     private val profileNotifier: ProfileNotifier,
+    private val purchaseProvider: PurchaseProviderInterface,
 ) : BaseViewModel() {
 
     private val _uiState: MutableStateFlow<SettingsUIState> = MutableStateFlow(SettingsUIState.Data(configuration))
@@ -69,6 +72,7 @@ class SettingsViewModel(
             faqUrl = config.getFaqUrl(),
             supportEmail = config.getFeedbackEmailAddress(),
             versionName = appData.versionName,
+            inAppPurchasesEnabled = config.isInAppPurchasesEnabled(),
         )
 
     init {
@@ -192,6 +196,31 @@ class SettingsViewModel(
             fragmentManager,
             isLogistrationEnabled
         )
+    }
+
+    private val _restoreMessage = MutableSharedFlow<String>()
+    val restoreMessage: SharedFlow<String> get() = _restoreMessage.asSharedFlow()
+
+    fun restorePurchases() {
+        if (!config.isInAppPurchasesEnabled()) return
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    purchaseProvider.restorePurchases()
+                }
+                val message = when (result) {
+                    RestorePurchasesResult.RESTORED -> resourceManager.getString(org.openedx.profile.R.string.profile_purchases_restored)
+                    RestorePurchasesResult.NOTHING_TO_RESTORE -> resourceManager.getString(org.openedx.profile.R.string.profile_nothing_to_restore)
+                }
+                _restoreMessage.emit(message)
+            } catch (e: Exception) {
+                _uiMessage.emit(
+                    UIMessage.SnackBarMessage(
+                        resourceManager.getString(R.string.core_error_unknown_error)
+                    )
+                )
+            }
+        }
     }
 
     private fun logProfileEvent(

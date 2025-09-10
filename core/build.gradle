@@ -119,6 +119,7 @@ dependencies {
 
     //  OpenEdx libs
     api("com.github.openedx:openedx-app-foundation-android:$openedx_foundation_version")
+    implementation("com.revenuecat.purchases:purchases:9.1.0")
 
     // Preview
     debugApi "androidx.compose.ui:ui-tooling:$compose_ui_tooling"

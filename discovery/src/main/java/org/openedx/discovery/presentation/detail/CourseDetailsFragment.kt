@@ -76,6 +76,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -128,6 +130,9 @@ class CourseDetailsFragment : Fragment() {
                 val uiState by viewModel.uiState.observeAsState()
                 val uiMessage by viewModel.uiMessage.observeAsState()
 
+                val localizedPriceTier by viewModel.localizedPriceTier.observeAsState()
+                val priceTier by viewModel.priceTier.observeAsState()
+
                 val colorBackgroundValue = MaterialTheme.appColors.background.value
                 val colorTextValue = MaterialTheme.appColors.textPrimary.value
 
@@ -143,6 +148,7 @@ class CourseDetailsFragment : Fragment() {
                     hasInternetConnection = viewModel.hasInternetConnection,
                     isUserLoggedIn = viewModel.isUserLoggedIn,
                     isRegistrationEnabled = viewModel.isRegistrationEnabled,
+                    localizedPriceTier = localizedPriceTier,
                     onReloadClick = {
                         viewModel.getCourseDetail()
                     },
@@ -172,10 +178,22 @@ class CourseDetailsFragment : Fragment() {
                                 }
 
                                 else -> {
-                                    viewModel.enrollInACourse(
-                                        currentState.course.courseId,
-                                        currentState.course.name
-                                    )
+                                    if (viewModel.priceTier.value != null) {
+                                        viewLifecycleOwner.lifecycleScope.launch {
+                                            val ok = viewModel.purchaseCourse()
+                                            if (ok) {
+                                                viewModel.enrollInACourse(
+                                                    currentState.course.courseId,
+                                                    currentState.course.name
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        viewModel.enrollInACourse(
+                                            currentState.course.courseId,
+                                            currentState.course.name
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -214,6 +232,7 @@ internal fun CourseDetailsScreen(
     hasInternetConnection: Boolean,
     isUserLoggedIn: Boolean,
     isRegistrationEnabled: Boolean,
+    localizedPriceTier: String?,
     onReloadClick: () -> Unit,
     onBackClick: () -> Unit,
     onButtonClick: () -> Unit,
@@ -319,6 +338,7 @@ internal fun CourseDetailsScreen(
                                         hasInternetConnection = hasInternetConnection,
                                         isInternetConnectionShown = isInternetConnectionShown,
                                         course = uiState.course,
+                                        localizedPriceTier = localizedPriceTier,
                                         onButtonClick = {
                                             onButtonClick()
                                         }
@@ -330,6 +350,7 @@ internal fun CourseDetailsScreen(
                                         hasInternetConnection = hasInternetConnection,
                                         isInternetConnectionShown = isInternetConnectionShown,
                                         course = uiState.course,
+                                        localizedPriceTier = localizedPriceTier,
                                         onButtonClick = {
                                             onButtonClick()
                                         }
@@ -401,6 +422,7 @@ private fun CourseDetailNativeContent(
     course: Course,
     hasInternetConnection: Boolean,
     isInternetConnectionShown: MutableState<Boolean>,
+    localizedPriceTier: String?,
     onButtonClick: () -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
@@ -422,10 +444,13 @@ private fun CourseDetailNativeContent(
         )
     }
 
-    val buttonText = if (course.isEnrolled) {
-        stringResource(id = R.string.discovery_view_course)
-    } else {
-        stringResource(id = R.string.discovery_enroll_now)
+    val buttonText = when {
+        course.isEnrolled -> stringResource(id = R.string.discovery_view_course)
+        localizedPriceTier != null -> stringResource(
+            id = R.string.discovery_purchase_course,
+            localizedPriceTier
+        )
+        else -> stringResource(id = R.string.discovery_enroll_now)
     }
 
     Column {
@@ -508,6 +533,7 @@ private fun CourseDetailNativeContentLandscape(
     course: Course,
     hasInternetConnection: Boolean,
     isInternetConnectionShown: MutableState<Boolean>,
+    localizedPriceTier: String?,
     onButtonClick: () -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
@@ -520,10 +546,13 @@ private fun CourseDetailNativeContentLandscape(
         )
     }
 
-    val buttonText = if (course.isEnrolled) {
-        stringResource(id = R.string.discovery_view_course)
-    } else {
-        stringResource(id = R.string.discovery_enroll_now)
+    val buttonText = when {
+        course.isEnrolled -> stringResource(id = R.string.discovery_view_course)
+        localizedPriceTier != null -> stringResource(
+            id = R.string.discovery_purchase_course,
+            localizedPriceTier
+        )
+        else -> stringResource(id = R.string.discovery_enroll_now)
     }
 
     Row(
@@ -702,6 +731,7 @@ private fun CourseDetailNativeContentPreview() {
             onButtonClick = {},
             onRegisterClick = {},
             onSignInClick = {},
+            localizedPriceTier = "$13",
         )
     }
 }
@@ -725,6 +755,7 @@ private fun CourseDetailNativeContentTabletPreview() {
             onButtonClick = {},
             onRegisterClick = {},
             onSignInClick = {},
+            localizedPriceTier = "$13",
         )
     }
 }

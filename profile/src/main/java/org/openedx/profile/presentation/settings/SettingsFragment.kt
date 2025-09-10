@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
@@ -28,6 +29,8 @@ class SettingsFragment : Fragment() {
                 val windowSize = rememberWindowSize()
                 val uiState by viewModel.uiState.collectAsState()
                 val logoutSuccess by viewModel.successLogout.collectAsState(false)
+
+                val restoreMessage by viewModel.restoreMessage.collectAsState(initial = "")
 
                 SettingsScreen(
                     windowSize = windowSize,
@@ -92,6 +95,10 @@ class SettingsFragment : Fragment() {
                                     requireActivity().supportFragmentManager
                                 )
                             }
+
+                            SettingsScreenAction.RestorePurchasesClick -> {
+                                viewModel.restorePurchases()
+                            }
                         }
                     }
                 )
@@ -99,6 +106,17 @@ class SettingsFragment : Fragment() {
                 LaunchedEffect(logoutSuccess) {
                     if (logoutSuccess) {
                         viewModel.restartApp(requireActivity().supportFragmentManager)
+                    }
+                }
+
+                LaunchedEffect(restoreMessage) {
+                    if (restoreMessage.isNotEmpty()) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setMessage(restoreMessage)
+                            .setPositiveButton(org.openedx.core.R.string.core_ok) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
                     }
                 }
             }
@@ -118,4 +136,5 @@ internal interface SettingsScreenAction {
     object VideoSettingsClick : SettingsScreenAction
     object ManageAccountClick : SettingsScreenAction
     object CalendarSettingsClick : SettingsScreenAction
+    object RestorePurchasesClick : SettingsScreenAction
 }

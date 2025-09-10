@@ -74,4 +74,9 @@
     <string name="profile_no_courses_with_current_filter">No courses match the current filter.</string>
     <string name="profile_show_full_dates">Show full dates like “%1$s”</string>
 
+    <!-- In-app purchases restore -->
+    <string name="profile_restore_purchases">Restore Purchases</string>
+    <string name="profile_purchases_restored">Your purchases have been restored.</string>
+    <string name="profile_nothing_to_restore">No purchases to restore.</string>
+
 </resources>

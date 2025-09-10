@@ -99,6 +99,7 @@ class NativeDiscoveryFragment : Fragment() {
                 val uiMessage by viewModel.uiMessage.observeAsState()
                 val canLoadMore by viewModel.canLoadMore.observeAsState(false)
                 val refreshing by viewModel.isUpdating.observeAsState(false)
+                val coursesTiers by viewModel.coursesTiers.observeAsState(emptyMap())
                 val querySearch = arguments?.getString(ARG_SEARCH_QUERY, "") ?: ""
 
                 DiscoveryScreen(
@@ -112,6 +113,7 @@ class NativeDiscoveryFragment : Fragment() {
                     canShowBackButton = viewModel.canShowBackButton,
                     isUserLoggedIn = viewModel.isUserLoggedIn,
                     isRegistrationEnabled = viewModel.isRegistrationEnabled,
+                    coursesPrices = coursesTiers,
                     onSearchClick = {
                         viewModel.discoverySearchBarClickedEvent()
                         router.navigateToCourseSearch(
@@ -188,6 +190,7 @@ internal fun DiscoveryScreen(
     canShowBackButton: Boolean,
     isUserLoggedIn: Boolean,
     isRegistrationEnabled: Boolean,
+    coursesPrices: Map<String, String>,
     onSearchClick: () -> Unit,
     onSwipeRefresh: () -> Unit,
     onReloadClick: () -> Unit,
@@ -372,6 +375,7 @@ internal fun DiscoveryScreen(
                                         DiscoveryCourseItem(
                                             apiHostUrl = apiHostUrl,
                                             course = course,
+                                            courseLocalizedPrice = coursesPrices[course.courseId],
                                             windowSize = windowSize,
                                             onClick = {
                                                 onItemClick(course)
@@ -483,7 +487,8 @@ private fun DiscoveryScreenPreview() {
             onRegisterClick = {},
             onBackClick = {},
             onSettingsClick = {},
-            canShowBackButton = false
+            canShowBackButton = false,
+            coursesPrices = mapOf("courseId" to "$12"),
         )
     }
 }
@@ -520,6 +525,7 @@ private fun DiscoveryScreenTabletPreview() {
             hasInternetConnection = true,
             isUserLoggedIn = true,
             isRegistrationEnabled = true,
+            coursesPrices = mapOf("courseId" to "$12"),
             onSignInClick = {},
             onRegisterClick = {},
             onBackClick = {},

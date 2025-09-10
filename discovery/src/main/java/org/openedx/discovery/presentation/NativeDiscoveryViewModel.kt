@@ -3,10 +3,14 @@ package org.openedx.discovery.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.oex.foundation.PurchaseProviderInterface
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.discovery.domain.interactor.DiscoveryInteractor
 import org.openedx.discovery.domain.model.Course
@@ -23,6 +27,7 @@ class NativeDiscoveryViewModel(
     private val resourceManager: ResourceManager,
     private val analytics: DiscoveryAnalytics,
     private val corePreferences: CorePreferences,
+    private val purchaseProvider: PurchaseProviderInterface,
 ) : BaseViewModel() {
 
     val apiHostUrl get() = config.getApiHostURL()
@@ -48,6 +53,9 @@ class NativeDiscoveryViewModel(
 
     val hasInternetConnection: Boolean
         get() = networkConnection.isOnline()
+
+    private val _coursesTiers = MutableLiveData<Map<String, String>>(emptyMap())
+    val coursesTiers: LiveData<Map<String, String>> get() = _coursesTiers
 
     private var page = 1
     private val coursesList = mutableListOf<Course>()
@@ -78,6 +86,7 @@ class NativeDiscoveryViewModel(
                         page = -1
                     }
                     coursesList.addAll(response.results)
+                    loadLocalizedPricesFor(response.results.map { it.courseId })
                 } else {
                     val cachedList = interactor.getCoursesListFromCache()
                     _canLoadMore.value = false
@@ -128,6 +137,7 @@ class NativeDiscoveryViewModel(
                 coursesList.clear()
                 coursesList.addAll(response.results)
                 _uiState.value = DiscoveryUIState.Courses(ArrayList(coursesList))
+                loadLocalizedPricesFor(response.results.map { it.courseId })
             } catch (e: Exception) {
                 if (e.isInternetError()) {
                     _uiMessage.value =
@@ -146,6 +156,19 @@ class NativeDiscoveryViewModel(
     fun fetchMore() {
         if (!isLoading && page != -1) {
             loadCoursesInternal()
+        }
+    }
+
+    private suspend fun loadLocalizedPricesFor(courseIds: List<String>) {
+        if (!networkConnection.isOnline()) return
+        val current = _coursesTiers.value ?: emptyMap()
+        val toFetch = courseIds.filterNot { it in current.keys }.distinct()
+        if (toFetch.isEmpty()) return
+
+        // Попросим провайдера получить цены пачкой и обновить свой кэш tier'ов
+        val prices = purchaseProvider.getLocalizedCoursesTiers(toFetch)
+        if (prices.isNotEmpty()) {
+            _coursesTiers.postValue(current + prices)
         }
     }
 

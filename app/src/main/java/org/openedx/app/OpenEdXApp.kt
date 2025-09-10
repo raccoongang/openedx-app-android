@@ -14,12 +14,16 @@ import org.openedx.app.di.appModule
 import org.openedx.app.di.networkingModule
 import org.openedx.app.di.screenModule
 import org.openedx.core.config.Config
+import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.oex.foundation.PurchaseProviderRevenueCat
+import org.openedx.core.oex.foundation.RevenueCatConfiguration
 import org.openedx.firebase.OEXFirebaseAnalytics
 
 class OpenEdXApp : Application() {
 
     private val config by inject<Config>()
     private val pluginManager by inject<PluginManager>()
+    private val corePreferences by inject<CorePreferences>()
 
     override fun onCreate() {
         super.onCreate()
@@ -65,6 +69,18 @@ class OpenEdXApp : Application() {
     }
 
     private fun initPlugins() {
+        // In-app purchases plugin (RevenueCat)
+        if (config.isInAppPurchasesEnabled()) {
+            val revenueCat = PurchaseProviderRevenueCat()
+            val rcUserId = corePreferences.user?.username
+            val configuration = RevenueCatConfiguration(
+                application = this@OpenEdXApp,
+                apiKey = "goog_ppnXKLYmeQGTVKRzLGYPJxGAetl",
+                userID = rcUserId
+            )
+            revenueCat.configure(configuration)
+            pluginManager.addPlugin(revenueCat)
+        }
         if (config.getFirebaseConfig().enabled) {
             pluginManager.addPlugin(OEXFirebaseAnalytics(context = this))
         }

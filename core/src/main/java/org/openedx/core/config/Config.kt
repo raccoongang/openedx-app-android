@@ -96,6 +96,14 @@ class Config(context: Context) {
         return getExperimentalFeaturesConfig().appLevelDownloadsConfig
     }
 
+    fun getInAppPurchasesConfig(): InAppPurchasesConfig {
+        return getExperimentalFeaturesConfig().inAppPurchasesConfig
+    }
+
+    fun isInAppPurchasesEnabled(): Boolean {
+        return getInAppPurchasesConfig().isEnabled
+    }
+
     fun getBranchConfig(): BranchConfig {
         return getObjectOrNewInstance(BRANCH, BranchConfig::class.java)
     }

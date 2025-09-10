@@ -13,4 +13,5 @@ data class Configuration(
     val faqUrl: String,
     val supportEmail: String,
     val versionName: String,
+    val inAppPurchasesEnabled: Boolean,
 )

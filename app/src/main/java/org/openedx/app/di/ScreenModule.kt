@@ -51,6 +51,7 @@ import org.openedx.discovery.presentation.search.CourseSearchViewModel
 import org.openedx.discussion.data.repository.DiscussionRepository
 import org.openedx.discussion.domain.interactor.DiscussionInteractor
 import org.openedx.discussion.domain.model.DiscussionComment
+import org.openedx.discussion.domain.model.Thread
 import org.openedx.discussion.presentation.comments.DiscussionCommentsViewModel
 import org.openedx.discussion.presentation.responses.DiscussionResponsesViewModel
 import org.openedx.discussion.presentation.search.DiscussionSearchThreadViewModel
@@ -172,7 +173,7 @@ val screenModule = module {
 
     factory { DiscoveryRepository(get(), get(), get()) }
     factory { DiscoveryInteractor(get()) }
-    viewModel { NativeDiscoveryViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { NativeDiscoveryViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (querySearch: String) ->
         WebViewDiscoveryViewModel(
             querySearch,
@@ -223,6 +224,7 @@ val screenModule = module {
             get(),
             get(),
             get(),
+            purchaseProvider = get(),
         )
     }
     viewModel { ManageAccountViewModel(get(), get(), get(), get(), get()) }
@@ -263,6 +265,7 @@ val screenModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     viewModel { (courseId: String, courseTitle: String, resumeBlockId: String) ->
@@ -428,7 +431,7 @@ val screenModule = module {
             threadType
         )
     }
-    viewModel { (thread: org.openedx.discussion.domain.model.Thread) ->
+    viewModel { (thread: Thread) ->
         DiscussionCommentsViewModel(
             get(),
             get(),

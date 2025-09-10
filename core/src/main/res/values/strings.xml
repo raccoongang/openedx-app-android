@@ -216,4 +216,8 @@
     <string name="core_explore_other_parts_when_reconnect_or_download">Explore other parts of this course or download this when you reconnect.</string>
     <string name="core_authorization">Authorization</string>
     <string name="core_authorization_request">Please enter the system to continue with course enrollment.</string>
+
+    <string name="core_error_purchase_failed">Purchase failed</string>
+    <string name="core_error_purchase_product_not_found">Product not found</string>
+    <string name="core_error_purchase_user_canceled">Purchase was canceled</string>
 </resources>
