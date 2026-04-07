@@ -1,5 +1,7 @@
 package org.openedx.core.data.model.room
 
+import kotlinx.serialization.Serializable
+
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
 import androidx.room.ColumnInfo
@@ -68,6 +70,7 @@ data class CourseProgressEntity(
     }
 }
 
+@Serializable
 data class CertificateDataDb(
     @ColumnInfo("certStatus")
     val certStatus: String,
@@ -86,6 +89,7 @@ data class CertificateDataDb(
     )
 }
 
+@Serializable
 data class CompletionSummaryDb(
     @ColumnInfo("completeCount")
     val completeCount: Int,
@@ -101,6 +105,7 @@ data class CompletionSummaryDb(
     )
 }
 
+@Serializable
 data class CourseGradeDb(
     @ColumnInfo("letterGrade")
     val letterGrade: String,
@@ -116,6 +121,7 @@ data class CourseGradeDb(
     )
 }
 
+@Serializable
 data class GradingPolicyDb(
     @ColumnInfo("assignmentPolicies")
     val assignmentPolicies: List<AssignmentPolicyDb>,
@@ -132,6 +138,7 @@ data class GradingPolicyDb(
         }
     )
 
+    @Serializable
     data class AssignmentPolicyDb(
         @ColumnInfo("numDroppable")
         val numDroppable: Int,
@@ -154,6 +161,7 @@ data class GradingPolicyDb(
     }
 }
 
+@Serializable
 data class SectionScoreDb(
     @ColumnInfo("displayName")
     val displayName: String,
@@ -165,6 +173,7 @@ data class SectionScoreDb(
         subsections = subsections.map { it.mapToDomain() }
     )
 
+    @Serializable
     data class SubsectionDb(
         @ColumnInfo("assignmentType")
         val assignmentType: String,
@@ -209,6 +218,7 @@ data class SectionScoreDb(
             url = url
         )
 
+        @Serializable
         data class ProblemScoreDb(
             @ColumnInfo("earned")
             val earned: Double,
@@ -223,6 +233,7 @@ data class SectionScoreDb(
     }
 }
 
+@Serializable
 data class VerificationDataDb(
     @ColumnInfo("link")
     val link: String,

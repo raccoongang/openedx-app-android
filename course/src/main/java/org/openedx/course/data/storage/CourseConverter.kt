@@ -1,8 +1,8 @@
 package org.openedx.course.data.storage
 
 import androidx.room.TypeConverter
-import com.google.common.reflect.TypeToken
-import com.google.gson.Gson
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.openedx.core.data.model.room.BlockDb
 import org.openedx.core.data.model.room.GradingPolicyDb
 import org.openedx.core.data.model.room.SectionScoreDb
@@ -11,76 +11,47 @@ import java.util.Date
 
 class CourseConverter {
 
-    @TypeConverter
-    fun fromDate(value: Date?): Long? {
-        return value?.time
-    }
+    private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
-    fun toDate(value: Long?): Date? {
-        return value?.let { Date(it) }
-    }
+    fun fromDate(value: Date?): Long? = value?.time
 
     @TypeConverter
-    fun fromListOfString(value: List<String>): String {
-        val json = Gson().toJson(value)
-        return json.toString()
-    }
+    fun toDate(value: Long?): Date? = value?.let { Date(it) }
 
     @TypeConverter
-    fun toListOfString(value: String): List<String> {
-        val type = object : TypeToken<List<String>>() {}.type
-        return Gson().fromJson(value, type)
-    }
+    fun fromListOfString(value: List<String>): String = json.encodeToString(value)
 
     @TypeConverter
-    fun fromListOfBlockDbEntity(value: List<BlockDb>): String {
-        val json = Gson().toJson(value)
-        return json.toString()
-    }
+    fun toListOfString(value: String): List<String> = json.decodeFromString(value)
 
     @TypeConverter
-    fun toListOfBlockDbEntity(value: String): List<BlockDb> {
-        val type = object : TypeToken<List<BlockDb>>() {}.type
-        return Gson().fromJson(value, type)
-    }
+    fun fromListOfBlockDbEntity(value: List<BlockDb>): String = json.encodeToString(value)
 
     @TypeConverter
-    fun fromListOfCourseDateBlockDb(value: List<CourseDateBlockDb>): String {
-        val json = Gson().toJson(value)
-        return json.toString()
-    }
+    fun toListOfBlockDbEntity(value: String): List<BlockDb> = json.decodeFromString(value)
 
     @TypeConverter
-    fun toListOfCourseDateBlockDb(value: String): List<CourseDateBlockDb> {
-        val type = object : TypeToken<List<CourseDateBlockDb>>() {}.type
-        return Gson().fromJson(value, type)
-    }
+    fun fromListOfCourseDateBlockDb(value: List<CourseDateBlockDb>): String = json.encodeToString(value)
 
     @TypeConverter
-    fun fromSectionScoreDbList(value: List<SectionScoreDb>?): String =
-        Gson().toJson(value)
+    fun toListOfCourseDateBlockDb(value: String): List<CourseDateBlockDb> = json.decodeFromString(value)
 
     @TypeConverter
-    fun toSectionScoreDbList(value: String): List<SectionScoreDb> =
-        Gson().fromJson(value, object : TypeToken<List<SectionScoreDb>>() {}.type)
+    fun fromSectionScoreDbList(value: List<SectionScoreDb>?): String = json.encodeToString(value)
 
     @TypeConverter
-    fun fromAssignmentPolicyDbList(value: List<GradingPolicyDb.AssignmentPolicyDb>?): String =
-        Gson().toJson(value)
+    fun toSectionScoreDbList(value: String): List<SectionScoreDb> = json.decodeFromString(value)
 
     @TypeConverter
-    fun toAssignmentPolicyDbList(value: String): List<GradingPolicyDb.AssignmentPolicyDb> =
-        Gson().fromJson(
-            value,
-            object : TypeToken<List<GradingPolicyDb.AssignmentPolicyDb>>() {}.type
-        )
+    fun fromAssignmentPolicyDbList(value: List<GradingPolicyDb.AssignmentPolicyDb>?): String = json.encodeToString(value)
 
     @TypeConverter
-    fun fromGradeRangeMap(value: Map<String, Float>?): String =
-        Gson().toJson(value)
+    fun toAssignmentPolicyDbList(value: String): List<GradingPolicyDb.AssignmentPolicyDb> = json.decodeFromString(value)
 
     @TypeConverter
-    fun toGradeRangeMap(value: String): Map<String, Float> =
-        Gson().fromJson(value, object : TypeToken<Map<String, Float>>() {}.type)
+    fun fromGradeRangeMap(value: Map<String, Float>?): String = json.encodeToString(value)
+
+    @TypeConverter
+    fun toGradeRangeMap(value: String): Map<String, Float> = json.decodeFromString(value)
 }

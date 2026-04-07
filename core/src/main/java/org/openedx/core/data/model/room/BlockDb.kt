@@ -1,5 +1,7 @@
 package org.openedx.core.data.model.room
 
+import kotlinx.serialization.Serializable
+
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import org.openedx.core.BlockType
@@ -16,6 +18,7 @@ import org.openedx.core.domain.model.EncodedVideos as DomainEncodedVideos
 import org.openedx.core.domain.model.StudentViewData as DomainStudentViewData
 import org.openedx.core.domain.model.VideoInfo as DomainVideoInfo
 
+@Serializable
 data class BlockDb(
     @ColumnInfo("id")
     val id: String,
@@ -116,6 +119,7 @@ data class BlockDb(
     }
 }
 
+@Serializable
 data class StudentViewDataDb(
     @ColumnInfo("onlyOnWeb")
     val onlyOnWeb: Boolean,
@@ -152,6 +156,7 @@ data class StudentViewDataDb(
     }
 }
 
+@Serializable
 data class EncodedVideosDb(
     @ColumnInfo("youtube")
     val youtube: VideoInfoDb?,
@@ -191,6 +196,7 @@ data class EncodedVideosDb(
     }
 }
 
+@Serializable
 data class VideoInfoDb(
     @ColumnInfo("url")
     val url: String,
@@ -212,6 +218,7 @@ data class VideoInfoDb(
     }
 }
 
+@Serializable
 data class BlockCountsDb(
     @ColumnInfo("video")
     val video: Int
@@ -225,6 +232,7 @@ data class BlockCountsDb(
     }
 }
 
+@Serializable
 data class AssignmentProgressDb(
     @ColumnInfo("assignment_type")
     val assignmentType: String?,
@@ -242,6 +250,7 @@ data class AssignmentProgressDb(
     )
 }
 
+@Serializable
 data class OfflineDownloadDb(
     @ColumnInfo("file_url")
     var fileUrl: String?,

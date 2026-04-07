@@ -1,5 +1,8 @@
 package org.openedx.core.data.model.room.discovery
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
+
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -60,6 +63,7 @@ data class EnrolledCourseEntity(
     }
 }
 
+@Serializable
 data class EnrolledCourseDataDb(
     @ColumnInfo("id")
     val id: String,
@@ -128,6 +132,7 @@ data class EnrolledCourseDataDb(
     }
 }
 
+@Serializable
 data class CoursewareAccessDb(
     @ColumnInfo("hasAccess")
     val hasAccess: Boolean,
@@ -155,6 +160,7 @@ data class CoursewareAccessDb(
     }
 }
 
+@Serializable
 data class CertificateDb(
     @ColumnInfo("certificateURL")
     val certificateURL: String?,
@@ -162,6 +168,7 @@ data class CertificateDb(
     fun mapToDomain() = Certificate(certificateURL)
 }
 
+@Serializable
 data class CourseSharingUtmParametersDb(
     @ColumnInfo("facebook")
     val facebook: String,
@@ -174,6 +181,7 @@ data class CourseSharingUtmParametersDb(
     )
 }
 
+@Serializable
 data class ProgressDb(
     @ColumnInfo("assignments_completed")
     val assignmentsCompleted: Int,
@@ -187,6 +195,7 @@ data class ProgressDb(
     fun mapToDomain() = Progress(assignmentsCompleted, totalAssignmentsCount)
 }
 
+@Serializable
 data class CourseStatusDb(
     @ColumnInfo("lastVisitedModuleId")
     val lastVisitedModuleId: String,
@@ -205,6 +214,7 @@ data class CourseStatusDb(
     )
 }
 
+@Serializable
 data class CourseAssignmentsDb(
     @ColumnInfo("futureAssignments")
     val futureAssignments: List<CourseDateBlockDb>?,
@@ -217,6 +227,7 @@ data class CourseAssignmentsDb(
     )
 }
 
+@Serializable
 data class CourseDateBlockDb(
     @ColumnInfo("title")
     val title: String = "",
@@ -231,7 +242,7 @@ data class CourseDateBlockDb(
     @ColumnInfo("complete")
     val complete: Boolean = false,
     @Embedded
-    val date: Date,
+    @Contextual val date: Date,
     @ColumnInfo("dateType")
     val dateType: DateType = DateType.NONE,
     @ColumnInfo("assignmentType")
@@ -250,6 +261,7 @@ data class CourseDateBlockDb(
     )
 }
 
+@Serializable
 data class EnrollmentDetailsDB(
     @ColumnInfo("created")
     var created: String?,
@@ -268,6 +280,7 @@ data class EnrollmentDetailsDB(
     )
 }
 
+@Serializable
 data class CourseAccessDetailsDb(
     @ColumnInfo("hasUnmetPrerequisites")
     val hasUnmetPrerequisites: Boolean,

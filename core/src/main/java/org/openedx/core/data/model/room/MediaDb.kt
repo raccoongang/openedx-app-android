@@ -1,5 +1,7 @@
 package org.openedx.core.data.model.room
 
+import kotlinx.serialization.Serializable
+
 import androidx.room.ColumnInfo
 import org.openedx.core.domain.model.BannerImage
 import org.openedx.core.domain.model.CourseImage
@@ -7,6 +9,7 @@ import org.openedx.core.domain.model.CourseVideo
 import org.openedx.core.domain.model.Image
 import org.openedx.core.domain.model.Media
 
+@Serializable
 data class MediaDb(
     @ColumnInfo("bannerImage")
     val bannerImage: BannerImageDb? = null,
@@ -39,6 +42,7 @@ data class MediaDb(
     }
 }
 
+@Serializable
 data class ImageDb(
     @ColumnInfo("large")
     val large: String,
@@ -63,6 +67,7 @@ data class ImageDb(
     }
 }
 
+@Serializable
 data class CourseVideoDb(
     @ColumnInfo("uri")
     val uri: String
@@ -75,6 +80,7 @@ data class CourseVideoDb(
     }
 }
 
+@Serializable
 data class CourseImageDb(
     @ColumnInfo("uri")
     val uri: String,
@@ -92,6 +98,7 @@ data class CourseImageDb(
     }
 }
 
+@Serializable
 data class BannerImageDb(
     @ColumnInfo("uri")
     val uri: String,
