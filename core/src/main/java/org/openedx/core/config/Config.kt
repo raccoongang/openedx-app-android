@@ -1,23 +1,31 @@
 package org.openedx.core.config
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.openedx.core.domain.model.AgreementUrls
-import java.io.InputStreamReader
 
 @Suppress("TooManyFunctions")
 class Config(context: Context) {
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+    }
+
     private var configProperties: JsonObject = try {
         val inputStream = context.assets.open("config/config.json")
-        val config = JsonParser.parseReader(InputStreamReader(inputStream))
-        config.asJsonObject
+        val configString = inputStream.bufferedReader().use { it.readText() }
+        json.parseToJsonElement(configString).jsonObject
     } catch (e: Exception) {
         e.printStackTrace()
-        JsonObject()
+        JsonObject(emptyMap())
     }
 
     fun getAppId(): String {
@@ -54,42 +62,42 @@ class Config(context: Context) {
 
     fun getAgreement(locale: String): AgreementUrls {
         val agreement =
-            getObjectOrNewInstance(AGREEMENT_URLS, AgreementUrlsConfig::class.java).mapToDomain()
+            getObjectOrNewInstance<AgreementUrlsConfig>(AGREEMENT_URLS).mapToDomain()
         return agreement.getAgreementForLocale(locale)
     }
 
     fun getFirebaseConfig(): FirebaseConfig {
-        return getObjectOrNewInstance(FIREBASE, FirebaseConfig::class.java)
+        return getObjectOrNewInstance(FIREBASE)
     }
 
     fun getBrazeConfig(): BrazeConfig {
-        return getObjectOrNewInstance(BRAZE, BrazeConfig::class.java)
+        return getObjectOrNewInstance(BRAZE)
     }
 
     fun getFacebookConfig(): FacebookConfig {
-        return getObjectOrNewInstance(FACEBOOK, FacebookConfig::class.java)
+        return getObjectOrNewInstance(FACEBOOK)
     }
 
     fun getGoogleConfig(): GoogleConfig {
-        return getObjectOrNewInstance(GOOGLE, GoogleConfig::class.java)
+        return getObjectOrNewInstance(GOOGLE)
     }
 
     fun getMicrosoftConfig(): MicrosoftConfig {
-        return getObjectOrNewInstance(MICROSOFT, MicrosoftConfig::class.java)
+        return getObjectOrNewInstance(MICROSOFT)
     }
 
     fun isSocialAuthEnabled() = getBoolean(SOCIAL_AUTH_ENABLED, false)
 
     fun getDiscoveryConfig(): DiscoveryConfig {
-        return getObjectOrNewInstance(DISCOVERY, DiscoveryConfig::class.java)
+        return getObjectOrNewInstance(DISCOVERY)
     }
 
     fun getProgramConfig(): ProgramConfig {
-        return getObjectOrNewInstance(PROGRAM, ProgramConfig::class.java)
+        return getObjectOrNewInstance(PROGRAM)
     }
 
     fun getDashboardConfig(): DashboardConfig {
-        return getObjectOrNewInstance(DASHBOARD, DashboardConfig::class.java)
+        return getObjectOrNewInstance(DASHBOARD)
     }
 
     fun getDownloadsConfig(): AppLevelDownloadsConfig {
@@ -101,7 +109,7 @@ class Config(context: Context) {
     }
 
     fun getBranchConfig(): BranchConfig {
-        return getObjectOrNewInstance(BRANCH, BranchConfig::class.java)
+        return getObjectOrNewInstance(BRANCH)
     }
 
     fun isWhatsNewEnabled(): Boolean {
@@ -113,7 +121,7 @@ class Config(context: Context) {
     }
 
     fun getCourseUIConfig(): UIConfig {
-        return getObjectOrNewInstance(UI_COMPONENTS, UIConfig::class.java)
+        return getObjectOrNewInstance(UI_COMPONENTS)
     }
 
     fun isRegistrationEnabled(): Boolean {
@@ -129,44 +137,41 @@ class Config(context: Context) {
     }
 
     private fun getExperimentalFeaturesConfig(): ExperimentalFeaturesConfig {
-        return getObjectOrNewInstance(EXPERIMENTAL_FEATURES, ExperimentalFeaturesConfig::class.java)
+        return getObjectOrNewInstance(EXPERIMENTAL_FEATURES)
     }
 
     private fun getString(key: String, defaultValue: String = ""): String {
-        val element = getObject(key)
-        return if (element != null) {
-            element.asString
-        } else {
-            defaultValue
-        }
+        val element = configProperties[key]
+        return (element as? JsonPrimitive)?.content ?: defaultValue
     }
 
     private fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        val element = getObject(key)
-        return element?.asBoolean ?: defaultValue
+        val element = configProperties[key]
+        return (element as? JsonPrimitive)?.booleanOrNull ?: defaultValue
     }
 
-    private fun <T> getObjectOrNewInstance(key: String, cls: Class<T>): T {
-        val element = getObject(key)
+    private inline fun <reified T> getObjectOrNewInstance(key: String): T {
+        val element = configProperties[key]
         return if (element != null) {
-            val gson = Gson()
-            gson.fromJson(element, cls)
+            try {
+                json.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), element)
+            } catch (e: Exception) {
+                try {
+                    T::class.java.getDeclaredConstructor().newInstance()
+                } catch (ex: Exception) {
+                    throw ConfigParsingException(ex)
+                }
+            }
         } else {
             try {
-                cls.getDeclaredConstructor().newInstance()
-            } catch (e: InstantiationException) {
-                throw ConfigParsingException(e)
-            } catch (e: IllegalAccessException) {
+                T::class.java.getDeclaredConstructor().newInstance()
+            } catch (e: Exception) {
                 throw ConfigParsingException(e)
             }
         }
     }
 
     class ConfigParsingException(cause: Throwable) : Exception(cause)
-
-    private fun getObject(key: String): JsonElement? {
-        return configProperties.get(key)
-    }
 
     companion object {
         private const val APPLICATION_ID = "APPLICATION_ID"
