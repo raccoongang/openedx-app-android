@@ -1,12 +1,9 @@
 package org.openedx.core.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import org.openedx.core.data.model.room.CourseEnrollmentDetailsEntity
 import org.openedx.core.extension.isNotNull
 import java.util.Date
 
-@Parcelize
 data class CourseEnrollmentDetails(
     val id: String,
     val courseUpdates: String,
@@ -16,7 +13,7 @@ data class CourseEnrollmentDetails(
     val certificate: Certificate?,
     val enrollmentDetails: EnrollmentDetails,
     val courseInfoOverview: CourseInfoOverview,
-) : Parcelable {
+) {
 
     val hasAccess: Boolean
         get() = courseAccessDetails.coursewareAccess?.hasAccess ?: false

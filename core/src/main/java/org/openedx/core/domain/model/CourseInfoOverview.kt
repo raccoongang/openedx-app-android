@@ -1,11 +1,8 @@
 package org.openedx.core.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import org.openedx.core.data.model.room.CourseInfoOverviewDb
 import java.util.Date
 
-@Parcelize
 data class CourseInfoOverview(
     val name: String,
     val number: String,
@@ -18,7 +15,7 @@ data class CourseInfoOverview(
     var media: Media?,
     val courseSharingUtmParameters: CourseSharingUtmParameters,
     val courseAbout: String,
-) : Parcelable {
+) {
     val isStarted: Boolean
         get() = start?.before(Date()) ?: false
 

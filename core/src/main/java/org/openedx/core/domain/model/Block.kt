@@ -1,9 +1,7 @@
 package org.openedx.core.domain.model
 
 import android.content.Context
-import android.os.Parcelable
 import android.webkit.URLUtil
-import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import org.openedx.core.AppDataConstants
 import org.openedx.core.BlockType
@@ -14,7 +12,6 @@ import org.openedx.core.utils.VideoPreview
 import org.openedx.core.utils.VideoUtil
 import java.util.Date
 
-@Parcelize
 data class Block(
     val id: String,
     val blockId: String,
@@ -35,7 +32,7 @@ data class Block(
     val assignmentProgress: AssignmentProgress?,
     val due: Date?,
     val offlineDownload: OfflineDownload?
-) : Parcelable {
+) {
     val isDownloadable: Boolean
         get() {
             return (studentViewData != null && studentViewData.encodedVideos?.hasDownloadableVideo == true) || isxBlock
@@ -125,16 +122,14 @@ data class Block(
     val isSurveyBlock get() = type == BlockType.SURVEY
 }
 
-@Parcelize
 data class StudentViewData(
     val onlyOnWeb: Boolean,
     val duration: @RawValue Any,
     val transcripts: HashMap<String, String>?,
     val encodedVideos: EncodedVideos?,
     val topicId: String,
-) : Parcelable
+)
 
-@Parcelize
 data class EncodedVideos(
     val youtube: VideoInfo?,
     var hls: VideoInfo?,
@@ -142,7 +137,7 @@ data class EncodedVideos(
     var desktopMp4: VideoInfo?,
     var mobileHigh: VideoInfo?,
     var mobileLow: VideoInfo?,
-) : Parcelable {
+) {
     val hasDownloadableVideo: Boolean
         get() = isPreferredVideoInfo(hls) ||
                 isPreferredVideoInfo(fallback) ||
@@ -211,20 +206,17 @@ data class EncodedVideos(
     }
 }
 
-@Parcelize
 data class VideoInfo(
     val url: String,
     val fileSize: Long,
-) : Parcelable
+)
 
-@Parcelize
 data class BlockCounts(
     val video: Int,
-) : Parcelable
+)
 
-@Parcelize
 data class OfflineDownload(
     var fileUrl: String,
     var lastModified: String?,
     var fileSize: Long,
-) : Parcelable
+)
