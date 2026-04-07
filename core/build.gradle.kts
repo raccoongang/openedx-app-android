@@ -67,6 +67,7 @@ android {
             res.srcDirs("src/$themeDirectory/res")
         }
         getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
             assets.srcDirs("src/main/assets", "assets")
         }
     }
