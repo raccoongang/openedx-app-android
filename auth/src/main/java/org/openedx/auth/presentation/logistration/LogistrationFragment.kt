@@ -212,7 +212,7 @@ fun LogistrationScreen(
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Night", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LogistrationPreview() {
+fun LogistrationPreview() {
     OpenEdXTheme {
         LogistrationScreen(
             onSearchClick = {},
@@ -228,7 +228,7 @@ private fun LogistrationPreview() {
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Night", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LogistrationRegistrationDisabledPreview() {
+fun LogistrationRegistrationDisabledPreview() {
     OpenEdXTheme {
         LogistrationScreen(
             onSearchClick = {},

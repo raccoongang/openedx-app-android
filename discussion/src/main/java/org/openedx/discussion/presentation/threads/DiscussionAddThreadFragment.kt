@@ -162,7 +162,7 @@ class DiscussionAddThreadFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscussionAddThreadScreen(
+fun DiscussionAddThreadScreen(
     windowSize: WindowSize,
     topicData: Pair<String, String>,
     topics: List<Pair<String, String>>,
@@ -424,7 +424,7 @@ private fun DiscussionAddThreadScreen(
 }
 
 @Composable
-private fun Tabs(
+fun Tabs(
     tabs: List<String>,
     currentPage: Int,
     onItemClick: (Boolean) -> Unit,
@@ -482,7 +482,7 @@ private fun Tabs(
 }
 
 @Composable
-private fun SelectableField(
+fun SelectableField(
     text: String,
     onClick: () -> Unit,
 ) {
@@ -526,7 +526,7 @@ private fun SelectableField(
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscussionAddThreadScreenPreview() {
+fun DiscussionAddThreadScreenPreview() {
     OpenEdXTheme {
         DiscussionAddThreadScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -543,7 +543,7 @@ private fun DiscussionAddThreadScreenPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
 @Preview(uiMode = UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
 @Composable
-private fun DiscussionAddThreadScreenTabletPreview() {
+fun DiscussionAddThreadScreenTabletPreview() {
     OpenEdXTheme {
         DiscussionAddThreadScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

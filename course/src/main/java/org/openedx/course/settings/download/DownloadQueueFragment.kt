@@ -108,7 +108,7 @@ class DownloadQueueFragment : Fragment() {
 }
 
 @Composable
-private fun DownloadQueueScreen(
+fun DownloadQueueScreen(
     windowSize: WindowSize,
     uiState: DownloadQueueUIState,
     onBackClick: () -> Unit,
@@ -218,7 +218,7 @@ private fun DownloadQueueScreen(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DownloadQueueScreenPreview() {
+fun DownloadQueueScreenPreview() {
     OpenEdXTheme {
         DownloadQueueScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),

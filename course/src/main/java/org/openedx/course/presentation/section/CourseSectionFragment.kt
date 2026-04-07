@@ -169,7 +169,7 @@ class CourseSectionFragment : Fragment() {
 }
 
 @Composable
-private fun CourseSectionScreen(
+fun CourseSectionScreen(
     windowSize: WindowSize,
     uiState: CourseSectionUIState,
     uiMessage: UIMessage?,
@@ -280,7 +280,7 @@ private fun CourseSectionScreen(
 }
 
 @Composable
-private fun CourseSubsectionItem(
+fun CourseSubsectionItem(
     block: Block,
     onClick: (Block) -> Unit,
 ) {
@@ -343,7 +343,7 @@ private fun CourseSubsectionItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun CourseSectionScreenPreview() {
+fun CourseSectionScreenPreview() {
     OpenEdXTheme {
         CourseSectionScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -367,7 +367,7 @@ private fun CourseSectionScreenPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
 @Composable
-private fun CourseSectionScreenTabletPreview() {
+fun CourseSectionScreenTabletPreview() {
     OpenEdXTheme {
         CourseSectionScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,6 +48,19 @@ import org.openedx.profile.presentation.settings.SettingsUIState
 import org.openedx.profile.presentation.video.VideoSettingsViewModel
 import org.openedx.whatsnew.presentation.whatsnew.WhatsNewScreen
 import org.openedx.whatsnew.presentation.whatsnew.WhatsNewViewModel
+
+@Composable
+private fun PlaceholderDestination(name: String) {
+    androidx.compose.foundation.layout.Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = androidx.compose.ui.Alignment.Center,
+    ) {
+        androidx.compose.material3.Text(
+            text = name,
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+        )
+    }
+}
 
 @Composable
 fun AppNavHost(
@@ -226,34 +240,81 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.CalendarSettings> {}
-            composable<AppNavRoutes.CoursesToSync> {}
-            composable<AppNavRoutes.VideoQuality> {}
-            composable<AppNavRoutes.EditProfile> {}
+            composable<AppNavRoutes.CalendarSettings> {
+                PlaceholderDestination("Calendar Settings")
+            }
+            composable<AppNavRoutes.CoursesToSync> {
+                PlaceholderDestination("Courses to Sync")
+            }
+            composable<AppNavRoutes.VideoQuality> {
+                PlaceholderDestination("Video Quality")
+            }
+
+            composable<AppNavRoutes.EditProfile> {
+                // EditProfile has 1294-line Fragment with complex image picker, form fields, etc.
+                // Wiring requires significant refactoring — keeping as placeholder
+                PlaceholderDestination("Edit Profile")
+            }
 
             // =================== DISCOVERY ===================
-            composable<AppNavRoutes.CourseDetails> {}
-            composable<AppNavRoutes.CourseSearch> {}
-            composable<AppNavRoutes.CourseInfo> {}
-            composable<AppNavRoutes.AllEnrolledCourses> {}
-            composable<AppNavRoutes.Program> {}
+            composable<AppNavRoutes.CourseDetails> {
+                PlaceholderDestination("Course Details")
+            }
+            composable<AppNavRoutes.CourseSearch> {
+                PlaceholderDestination("Course Search")
+            }
+            composable<AppNavRoutes.CourseInfo> {
+                PlaceholderDestination("Course Info")
+            }
+            composable<AppNavRoutes.AllEnrolledCourses> {
+                org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
+            }
+            composable<AppNavRoutes.Program> {
+                PlaceholderDestination("Programs")
+            }
 
             // =================== COURSE ===================
-            composable<AppNavRoutes.CourseContainer> {}
-            composable<AppNavRoutes.CourseSection> {}
-            composable<AppNavRoutes.CourseUnitContainer> {}
-            composable<AppNavRoutes.HandoutsWebView> {}
-            composable<AppNavRoutes.VideoFullScreen> {}
-            composable<AppNavRoutes.YoutubeVideoFullScreen> {}
-            composable<AppNavRoutes.DownloadQueue> {}
-            composable<AppNavRoutes.NoAccessCourseContainer> {}
+            composable<AppNavRoutes.CourseContainer> {
+                PlaceholderDestination("Course Container")
+            }
+            composable<AppNavRoutes.CourseSection> {
+                PlaceholderDestination("Course Section")
+            }
+            composable<AppNavRoutes.CourseUnitContainer> {
+                PlaceholderDestination("Course Unit")
+            }
+            composable<AppNavRoutes.HandoutsWebView> {
+                PlaceholderDestination("Handouts")
+            }
+            composable<AppNavRoutes.VideoFullScreen> {
+                PlaceholderDestination("Video Full Screen")
+            }
+            composable<AppNavRoutes.YoutubeVideoFullScreen> {
+                PlaceholderDestination("YouTube Video")
+            }
+            composable<AppNavRoutes.DownloadQueue> {
+                PlaceholderDestination("Download Queue")
+            }
+            composable<AppNavRoutes.NoAccessCourseContainer> {
+                PlaceholderDestination("No Access")
+            }
 
             // =================== DISCUSSION ===================
-            composable<AppNavRoutes.DiscussionThreads> {}
-            composable<AppNavRoutes.DiscussionComments> {}
-            composable<AppNavRoutes.DiscussionResponses> {}
-            composable<AppNavRoutes.DiscussionAddThread> {}
-            composable<AppNavRoutes.DiscussionSearchThread> {}
+            composable<AppNavRoutes.DiscussionThreads> {
+                PlaceholderDestination("Discussion Threads")
+            }
+            composable<AppNavRoutes.DiscussionComments> {
+                PlaceholderDestination("Discussion Comments")
+            }
+            composable<AppNavRoutes.DiscussionResponses> {
+                PlaceholderDestination("Discussion Responses")
+            }
+            composable<AppNavRoutes.DiscussionAddThread> {
+                PlaceholderDestination("Add Thread")
+            }
+            composable<AppNavRoutes.DiscussionSearchThread> {
+                PlaceholderDestination("Search Threads")
+            }
         }
     }
 }

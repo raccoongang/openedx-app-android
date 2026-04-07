@@ -154,7 +154,7 @@ class DiscussionSearchThreadFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscussionSearchThreadScreen(
+fun DiscussionSearchThreadScreen(
     windowSize: WindowSize,
     uiState: DiscussionSearchThreadUIState,
     uiMessage: UIMessage?,

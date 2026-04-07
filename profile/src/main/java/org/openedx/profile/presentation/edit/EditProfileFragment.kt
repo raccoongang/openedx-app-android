@@ -291,7 +291,7 @@ class EditProfileFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun EditProfileScreen(
+fun EditProfileScreen(
     windowSize: WindowSize,
     uiState: EditProfileUIState,
     uiMessage: UIMessage?,
@@ -699,7 +699,7 @@ private fun EditProfileScreen(
 }
 
 @Composable
-private fun LimitedProfileDialog(
+fun LimitedProfileDialog(
     modifier: Modifier,
     onCloseClick: () -> Unit
 ) {
@@ -748,7 +748,7 @@ private fun LimitedProfileDialog(
 }
 
 @Composable
-private fun ChangeImageDialog(
+fun ChangeImageDialog(
     onSelectFromGalleryClick: () -> Unit,
     onRemoveImageClick: () -> Unit,
     onCancelClick: () -> Unit,
@@ -835,7 +835,7 @@ private fun ChangeImageDialog(
 }
 
 @Composable
-private fun ProfileFields(
+fun ProfileFields(
     disabled: Boolean,
     mapFields: MutableMap<String, Any?>,
     onFieldClick: (String, String) -> Unit,
@@ -893,7 +893,7 @@ private fun ProfileFields(
 }
 
 @Composable
-private fun SelectableField(
+fun SelectableField(
     name: String,
     initialValue: String?,
     disabled: Boolean = false,
@@ -961,7 +961,7 @@ private fun SelectableField(
 }
 
 @Composable
-private fun InputEditField(
+fun InputEditField(
     modifier: Modifier,
     name: String,
     initialValue: String,
@@ -1022,7 +1022,7 @@ private fun InputEditField(
 }
 
 @Composable
-private fun LeaveProfile(
+fun LeaveProfile(
     onDismissRequest: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
@@ -1107,7 +1107,7 @@ private fun LeaveProfile(
 }
 
 @Composable
-private fun LeaveProfileLandscape(
+fun LeaveProfileLandscape(
     onDismissRequest: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
@@ -1250,7 +1250,7 @@ fun LimitedProfilePreview() {
 @Preview(name = "NEXUS_5_Light", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_5_Dark", device = Devices.NEXUS_5, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun EditProfileScreenPreview() {
+fun EditProfileScreenPreview() {
     OpenEdXTheme {
         EditProfileScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -1273,7 +1273,7 @@ private fun EditProfileScreenPreview() {
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Dark", device = Devices.NEXUS_9, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun EditProfileScreenTabletPreview() {
+fun EditProfileScreenTabletPreview() {
     OpenEdXTheme {
         EditProfileScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

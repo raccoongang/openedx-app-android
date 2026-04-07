@@ -109,7 +109,7 @@ class AuthorizationDialogFragment : DialogFragment() {
 }
 
 @Composable
-private fun AuthorizationDialogView(
+fun AuthorizationDialogView(
     onRegisterButtonClick: () -> Unit,
     onSignInButtonClick: () -> Unit,
     onCancelButtonClick: () -> Unit
@@ -131,7 +131,7 @@ private fun AuthorizationDialogView(
 }
 
 @Composable
-private fun AuthorizationDialogPortraitView(
+fun AuthorizationDialogPortraitView(
     onRegisterButtonClick: () -> Unit,
     onSignInButtonClick: () -> Unit,
     onCancelButtonClick: () -> Unit
@@ -205,7 +205,7 @@ private fun AuthorizationDialogPortraitView(
 }
 
 @Composable
-private fun AuthorizationDialogLandscapeView(
+fun AuthorizationDialogLandscapeView(
     onRegisterButtonClick: () -> Unit,
     onSignInButtonClick: () -> Unit,
     onCancelButtonClick: () -> Unit
@@ -295,7 +295,7 @@ private fun AuthorizationDialogLandscapeView(
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun AuthorizationDialogPortraitViewPreview() {
+fun AuthorizationDialogPortraitViewPreview() {
     OpenEdXTheme {
         AuthorizationDialogPortraitView(
             onSignInButtonClick = {},
@@ -308,7 +308,7 @@ private fun AuthorizationDialogPortraitViewPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun AuthorizationDialogLandscapeViewPreview() {
+fun AuthorizationDialogLandscapeViewPreview() {
     OpenEdXTheme {
         AuthorizationDialogLandscapeView(
             onSignInButtonClick = {},

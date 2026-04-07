@@ -83,7 +83,7 @@ class CalendarAccessDialogFragment : DialogFragment() {
 }
 
 @Composable
-private fun CalendarAccessDialog(
+fun CalendarAccessDialog(
     modifier: Modifier = Modifier,
     onCancelClick: () -> Unit,
     onGrantCalendarAccessClick: () -> Unit
@@ -155,7 +155,7 @@ private fun CalendarAccessDialog(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun CalendarAccessDialogPreview() {
+fun CalendarAccessDialogPreview() {
     OpenEdXTheme {
         CalendarAccessDialog(
             onCancelClick = { },

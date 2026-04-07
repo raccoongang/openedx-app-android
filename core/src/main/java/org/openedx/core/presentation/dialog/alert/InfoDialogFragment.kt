@@ -75,7 +75,7 @@ class InfoDialogFragment : DialogFragment() {
 }
 
 @Composable
-private fun InfoDialog(
+fun InfoDialog(
     title: String,
     message: String,
     onClick: () -> Unit,
@@ -118,7 +118,7 @@ private fun InfoDialog(
 
 @Preview
 @Composable
-private fun SimpleDialogPreview() {
+fun SimpleDialogPreview() {
     InfoDialog(
         title = "Important Notice",
         message = "This is an important announcement.",

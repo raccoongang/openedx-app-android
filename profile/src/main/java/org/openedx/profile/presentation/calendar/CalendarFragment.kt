@@ -79,7 +79,7 @@ class CalendarFragment : Fragment() {
 }
 
 @Composable
-private fun CalendarView(
+fun CalendarView(
     windowSize: WindowSize,
     uiState: CalendarUIState,
     setUpCalendarSync: () -> Unit,

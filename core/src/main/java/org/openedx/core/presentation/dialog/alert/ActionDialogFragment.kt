@@ -131,7 +131,7 @@ class ActionDialogFragment : DialogFragment() {
 }
 
 @Composable
-private fun ActionDialog(
+fun ActionDialog(
     title: String,
     message: String,
     onPositiveClick: () -> Unit,
@@ -182,7 +182,7 @@ private fun ActionDialog(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun ActionDialogPreview() {
+fun ActionDialogPreview() {
     ActionDialog(
         title = "Leaving the app",
         message = "You are now leaving the app and opening a browser.",

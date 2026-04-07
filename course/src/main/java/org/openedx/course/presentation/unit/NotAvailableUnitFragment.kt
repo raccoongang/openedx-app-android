@@ -126,7 +126,7 @@ class NotAvailableUnitFragment : Fragment() {
 }
 
 @Composable
-private fun NotAvailableUnitScreen(
+fun NotAvailableUnitScreen(
     windowSize: WindowSize,
     title: String,
     description: String,

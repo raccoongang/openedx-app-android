@@ -111,7 +111,7 @@ class CoursesToSyncFragment : Fragment() {
 }
 
 @Composable
-private fun CoursesToSyncView(
+fun CoursesToSyncView(
     windowSize: WindowSize,
     onBackClick: () -> Unit,
     uiState: CoursesToSyncUIState,
@@ -211,7 +211,7 @@ private fun CoursesToSyncView(
 }
 
 @Composable
-private fun SyncCourseTabRow(
+fun SyncCourseTabRow(
     uiState: CoursesToSyncUIState,
     onCourseSyncCheckChange: (Boolean, String) -> Unit
 ) {
@@ -258,7 +258,7 @@ private fun SyncCourseTabRow(
 }
 
 @Composable
-private fun CourseCheckboxList(
+fun CourseCheckboxList(
     selectedTab: SyncCourseTab,
     uiState: CoursesToSyncUIState,
     onCourseSyncCheckChange: (Boolean, String) -> Unit
@@ -347,7 +347,7 @@ private fun CourseCheckboxList(
 }
 
 @Composable
-private fun EmptyListState(
+fun EmptyListState(
     modifier: Modifier = Modifier,
     selectedTab: SyncCourseTab,
 ) {
@@ -388,7 +388,7 @@ private fun EmptyListState(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HideInactiveCoursesView(
+fun HideInactiveCoursesView(
     isHideInactiveCourses: Boolean,
     onHideInactiveCoursesSwitchClick: (Boolean) -> Unit
 ) {
@@ -422,7 +422,7 @@ private fun HideInactiveCoursesView(
 
 @Preview
 @Composable
-private fun CoursesToSyncViewPreview() {
+fun CoursesToSyncViewPreview() {
     OpenEdXTheme {
         CoursesToSyncView(
             windowSize = rememberWindowSize(),

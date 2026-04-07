@@ -239,7 +239,7 @@ class CourseInfoFragment : Fragment() {
 }
 
 @Composable
-private fun CourseInfoScreen(
+fun CourseInfoScreen(
     windowSize: WindowSize,
     uiState: CourseInfoUIState,
     webViewUIState: WebViewUIState,
@@ -356,7 +356,7 @@ private fun CourseInfoScreen(
 
 @Composable
 @SuppressLint("SetJavaScriptEnabled")
-private fun CourseInfoWebView(
+fun CourseInfoWebView(
     contentUrl: String,
     uriScheme: String,
     userAgent: String,

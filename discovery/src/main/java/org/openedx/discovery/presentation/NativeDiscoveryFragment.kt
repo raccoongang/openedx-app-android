@@ -434,7 +434,7 @@ fun DiscoveryScreen(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun CourseItemPreview() {
+fun CourseItemPreview() {
     OpenEdXTheme {
         DiscoveryCourseItem(
             apiHostUrl = "",
@@ -448,7 +448,7 @@ private fun CourseItemPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscoveryScreenPreview() {
+fun DiscoveryScreenPreview() {
     OpenEdXTheme {
         DiscoveryScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -479,7 +479,7 @@ private fun DiscoveryScreenPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
 @Composable
-private fun DiscoveryScreenTabletPreview() {
+fun DiscoveryScreenTabletPreview() {
     OpenEdXTheme {
         DiscoveryScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

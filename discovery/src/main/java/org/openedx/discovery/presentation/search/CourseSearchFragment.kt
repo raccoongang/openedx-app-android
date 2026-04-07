@@ -166,7 +166,7 @@ class CourseSearchFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-private fun CourseSearchScreen(
+fun CourseSearchScreen(
     windowSize: WindowSize,
     state: CourseSearchUIState,
     uiMessage: UIMessage?,

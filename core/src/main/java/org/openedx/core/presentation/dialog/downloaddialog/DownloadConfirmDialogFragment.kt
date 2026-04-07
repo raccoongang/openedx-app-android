@@ -136,7 +136,7 @@ class DownloadConfirmDialogFragment : DialogFragment(), DownloadDialog {
 }
 
 @Composable
-private fun DownloadConfirmDialogView(
+fun DownloadConfirmDialogView(
     modifier: Modifier = Modifier,
     uiState: DownloadDialogUIState,
     downloadDialogResource: DownloadDialogResource,
@@ -238,7 +238,7 @@ private fun DownloadConfirmDialogView(
 
 @Preview
 @Composable
-private fun DownloadConfirmDialogViewPreview() {
+fun DownloadConfirmDialogViewPreview() {
     OpenEdXTheme {
         DownloadConfirmDialogView(
             downloadDialogResource = DownloadDialogResource(

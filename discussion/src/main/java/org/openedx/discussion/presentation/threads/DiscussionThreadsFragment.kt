@@ -209,7 +209,7 @@ class DiscussionThreadsFragment : Fragment() {
 @Suppress("MaximumLineLength", "MaxLineLength")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscussionThreadsScreen(
+fun DiscussionThreadsScreen(
     windowSize: WindowSize,
     title: String,
     uiState: DiscussionThreadsUIState,
@@ -647,7 +647,7 @@ private fun DiscussionThreadsScreen(
 @Preview(name = "NEXUS_5_Light", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_5_Dark", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscussionThreadsScreenPreview() {
+fun DiscussionThreadsScreenPreview() {
     OpenEdXTheme {
         DiscussionThreadsScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -677,7 +677,7 @@ private fun DiscussionThreadsScreenPreview() {
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Dark", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscussionThreadsScreenTabletPreview() {
+fun DiscussionThreadsScreenTabletPreview() {
     OpenEdXTheme {
         DiscussionThreadsScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

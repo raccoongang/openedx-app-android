@@ -440,7 +440,7 @@ fun CourseDashboard(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun DashboardPager(
+fun DashboardPager(
     windowSize: WindowSize,
     viewModel: CourseContainerViewModel,
     pagerState: PagerState,
@@ -582,7 +582,7 @@ private fun DashboardPager(
 }
 
 @Composable
-private fun CourseAccessErrorView(
+fun CourseAccessErrorView(
     viewModel: CourseContainerViewModel,
     accessError: CourseAccessError?,
     fragmentManager: FragmentManager,
@@ -667,7 +667,7 @@ private fun CourseAccessErrorView(
 }
 
 @Composable
-private fun SetupCourseAccessErrorButtons(
+fun SetupCourseAccessErrorButtons(
     viewModel: CourseContainerViewModel,
     accessError: CourseAccessError?,
     fragmentManager: FragmentManager,
@@ -695,21 +695,21 @@ private fun SetupCourseAccessErrorButtons(
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-private fun scrollToDates(scope: CoroutineScope, pagerState: PagerState) {
+fun scrollToDates(scope: CoroutineScope, pagerState: PagerState) {
     scope.launch {
         pagerState.scrollToPage(CourseContainerTab.entries.indexOf(CourseContainerTab.DATES))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-private fun scrollToProgress(scope: CoroutineScope, pagerState: PagerState) {
+fun scrollToProgress(scope: CoroutineScope, pagerState: PagerState) {
     scope.launch {
         pagerState.scrollToPage(CourseContainerTab.entries.indexOf(CourseContainerTab.PROGRESS))
     }
 }
 
 @Composable
-private fun HomeNavigationRow(homePagerState: PagerState) {
+fun HomeNavigationRow(homePagerState: PagerState) {
     val homeCoroutineScope = rememberCoroutineScope()
     Row(
         modifier = Modifier
@@ -772,7 +772,7 @@ private fun HomeNavigationRow(homePagerState: PagerState) {
 }
 
 @Composable
-private fun AssignmentsBottomBar(
+fun AssignmentsBottomBar(
     scope: CoroutineScope,
     pagerState: PagerState
 ) {

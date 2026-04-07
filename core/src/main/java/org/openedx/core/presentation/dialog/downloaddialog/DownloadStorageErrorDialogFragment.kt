@@ -107,7 +107,7 @@ class DownloadStorageErrorDialogFragment : DialogFragment(), DownloadDialog {
 }
 
 @Composable
-private fun DownloadStorageErrorDialogView(
+fun DownloadStorageErrorDialogView(
     modifier: Modifier = Modifier,
     uiState: DownloadDialogUIState,
     downloadDialogResource: DownloadDialogResource,
@@ -177,7 +177,7 @@ private fun DownloadStorageErrorDialogView(
 }
 
 @Composable
-private fun StorageBar(
+fun StorageBar(
     freeSpace: Long,
     totalSpace: Long,
     requiredSpace: Long
@@ -268,7 +268,7 @@ private fun StorageBar(
 
 @Preview
 @Composable
-private fun DownloadStorageErrorDialogViewPreview() {
+fun DownloadStorageErrorDialogViewPreview() {
     OpenEdXTheme {
         DownloadStorageErrorDialogView(
             downloadDialogResource = DownloadDialogResource(

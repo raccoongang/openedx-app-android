@@ -122,7 +122,7 @@ class VideoQualityFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun VideoQualityScreen(
+fun VideoQualityScreen(
     windowSize: WindowSize,
     title: String,
     selectedVideoQuality: VideoQuality,
@@ -202,7 +202,7 @@ private fun VideoQualityScreen(
 }
 
 @Composable
-private fun QualityOption(
+fun QualityOption(
     title: String,
     description: String,
     selected: Boolean,
@@ -254,7 +254,7 @@ private fun QualityOption(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun VideoQualityScreenPreview() {
+fun VideoQualityScreenPreview() {
     OpenEdXTheme {
         VideoQualityScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),

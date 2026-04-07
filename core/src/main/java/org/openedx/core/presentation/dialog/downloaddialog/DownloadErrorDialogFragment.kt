@@ -114,7 +114,7 @@ class DownloadErrorDialogFragment : DialogFragment(), DownloadDialog {
 }
 
 @Composable
-private fun DownloadErrorDialogView(
+fun DownloadErrorDialogView(
     modifier: Modifier = Modifier,
     uiState: DownloadDialogUIState,
     downloadDialogResource: DownloadDialogResource,
@@ -193,7 +193,7 @@ private fun DownloadErrorDialogView(
 
 @Preview
 @Composable
-private fun DownloadErrorDialogViewPreview() {
+fun DownloadErrorDialogViewPreview() {
     OpenEdXTheme {
         DownloadErrorDialogView(
             downloadDialogResource = DownloadDialogResource(

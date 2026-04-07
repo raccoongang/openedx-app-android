@@ -113,7 +113,7 @@ class LearnFragment : Fragment(R.layout.fragment_learn) {
 }
 
 @Composable
-private fun Header(
+fun Header(
     fragmentManager: FragmentManager,
     selectedLearnType: LearnType,
     onUpdateLearnType: (LearnType) -> Unit
@@ -156,7 +156,7 @@ private fun Header(
 }
 
 @Composable
-private fun LearnDropdownMenu(
+fun LearnDropdownMenu(
     modifier: Modifier = Modifier,
     selectedLearnType: LearnType,
     onUpdateLearnType: (LearnType) -> Unit
@@ -234,7 +234,7 @@ private fun LearnDropdownMenu(
 
 @Preview
 @Composable
-private fun HeaderPreview() {
+fun HeaderPreview() {
     OpenEdXTheme {
         MainScreenToolbar(
             label = stringResource(id = R.string.dashboard_learn),
@@ -245,7 +245,7 @@ private fun HeaderPreview() {
 
 @Preview
 @Composable
-private fun LearnDropdownMenuPreview() {
+fun LearnDropdownMenuPreview() {
     OpenEdXTheme {
         LearnDropdownMenu(
             selectedLearnType = LearnType.COURSES,

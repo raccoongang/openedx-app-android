@@ -154,7 +154,7 @@ class NewCalendarDialogFragment : DialogFragment() {
 }
 
 @Composable
-private fun NewCalendarDialog(
+fun NewCalendarDialog(
     modifier: Modifier = Modifier,
     newCalendarDialogType: NewCalendarDialogType,
     googleCalendars: List<UserCalendar>,
@@ -273,7 +273,7 @@ private fun NewCalendarDialog(
 }
 
 @Composable
-private fun LocalCalendarSection(
+fun LocalCalendarSection(
     onCalendarTitleChange: (String) -> Unit,
     onCalendarColorChange: (CalendarColor) -> Unit,
 ) {
@@ -291,7 +291,7 @@ private fun LocalCalendarSection(
 }
 
 @Composable
-private fun CalendarDropdown(
+fun CalendarDropdown(
     calendars: List<UserCalendar>,
     showLocalCalendarOption: Boolean,
     selectedCalendar: SelectedCalendar?,
@@ -394,7 +394,7 @@ private fun CalendarDropdown(
 }
 
 @Composable
-private fun CalendarTitleTextField(
+fun CalendarTitleTextField(
     modifier: Modifier = Modifier,
     onValueChanged: (String) -> Unit
 ) {
@@ -449,7 +449,7 @@ private fun CalendarTitleTextField(
 }
 
 @Composable
-private fun ColorDropdown(
+fun ColorDropdown(
     modifier: Modifier = Modifier,
     onValueChanged: (CalendarColor) -> Unit
 ) {
@@ -565,7 +565,7 @@ private fun ColorDropdown(
 }
 
 @Composable
-private fun ColorCircle(
+fun ColorCircle(
     modifier: Modifier = Modifier,
     color: ComposeColor
 ) {
@@ -578,7 +578,7 @@ private fun ColorCircle(
 }
 
 @Composable
-private fun CalendarOptionItem(
+fun CalendarOptionItem(
     text: String,
     contentColor: ComposeColor,
     leadingColor: ComposeColor? = null,
@@ -604,7 +604,7 @@ private fun CalendarOptionItem(
     )
 }
 
-private sealed class SelectedCalendar {
+sealed class SelectedCalendar {
     object Local : SelectedCalendar()
     data class Google(val calendar: UserCalendar) : SelectedCalendar()
 }
@@ -612,7 +612,7 @@ private sealed class SelectedCalendar {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NewCalendarDialogPreview() {
+fun NewCalendarDialogPreview() {
     OpenEdXTheme {
         NewCalendarDialog(
             newCalendarDialogType = NewCalendarDialogType.CREATE_NEW,

@@ -399,7 +399,7 @@ fun CourseDetailsScreen(
 }
 
 @Composable
-private fun CourseDetailNativeContent(
+fun CourseDetailNativeContent(
     windowSize: WindowSize,
     apiHostUrl: String,
     course: Course,
@@ -506,7 +506,7 @@ private fun CourseDetailNativeContent(
 }
 
 @Composable
-private fun CourseDetailNativeContentLandscape(
+fun CourseDetailNativeContentLandscape(
     windowSize: WindowSize,
     apiHostUrl: String,
     course: Course,
@@ -609,7 +609,7 @@ private fun CourseDetailNativeContentLandscape(
 }
 
 @Composable
-private fun EnrollOverLabel() {
+fun EnrollOverLabel() {
     WarningLabel(
         painter = rememberVectorPainter(Icons.Outlined.Report),
         text = stringResource(id = R.string.discovery_you_cant_enroll)
@@ -617,7 +617,7 @@ private fun EnrollOverLabel() {
 }
 
 @Composable
-private fun NoInternetLabel() {
+fun NoInternetLabel() {
     WarningLabel(
         painter = painterResource(id = CoreR.drawable.core_ic_offline),
         text = stringResource(id = R.string.discovery_no_internet_label)
@@ -626,7 +626,7 @@ private fun NoInternetLabel() {
 
 @Composable
 @SuppressLint("SetJavaScriptEnabled")
-private fun CourseDescription(
+fun CourseDescription(
     modifier: Modifier,
     apiHostUrl: String,
     body: String,
@@ -690,7 +690,7 @@ private fun CourseDescription(
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun CourseDetailNativeContentPreview() {
+fun CourseDetailNativeContentPreview() {
     OpenEdXTheme {
         CourseDetailsScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -713,7 +713,7 @@ private fun CourseDetailNativeContentPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
 @Preview(uiMode = UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
 @Composable
-private fun CourseDetailNativeContentTabletPreview() {
+fun CourseDetailNativeContentTabletPreview() {
     OpenEdXTheme {
         CourseDetailsScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

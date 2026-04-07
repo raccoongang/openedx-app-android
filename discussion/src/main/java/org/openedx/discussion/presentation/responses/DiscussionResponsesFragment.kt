@@ -200,7 +200,7 @@ class DiscussionResponsesFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscussionResponsesScreen(
+fun DiscussionResponsesScreen(
     windowSize: WindowSize,
     uiState: DiscussionResponsesUIState,
     uiMessage: UIMessage?,
@@ -532,7 +532,7 @@ private fun DiscussionResponsesScreen(
 @Preview(name = "NEXUS_5_Light", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_5_Dark", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscussionResponsesScreenPreview() {
+fun DiscussionResponsesScreenPreview() {
     OpenEdXTheme {
         DiscussionResponsesScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -560,7 +560,7 @@ private fun DiscussionResponsesScreenPreview() {
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Dark", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DiscussionResponsesScreenTabletPreview() {
+fun DiscussionResponsesScreenTabletPreview() {
     OpenEdXTheme {
         DiscussionResponsesScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

@@ -88,7 +88,7 @@ class NoAccessCourseContainerFragment : Fragment() {
 }
 
 @Composable
-private fun NoAccessCourseContainerScreen(
+fun NoAccessCourseContainerScreen(
     windowSize: WindowSize,
     title: String,
     onBackClick: () -> Unit

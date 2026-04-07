@@ -346,7 +346,7 @@ private fun DiscoveryWebView(
 }
 
 @Composable
-private fun HandleWebViewBackNavigation(
+fun HandleWebViewBackNavigation(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     webView: WebView?
 ) {
@@ -391,7 +391,7 @@ private fun HandleWebViewBackNavigation(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun WebViewDiscoveryScreenPreview() {
+fun WebViewDiscoveryScreenPreview() {
     OpenEdXTheme {
         WebViewDiscoveryScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),

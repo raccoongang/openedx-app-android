@@ -177,7 +177,7 @@ fun WhatsNewScreen(
 }
 
 @Composable
-private fun WhatsNewTopBar(
+fun WhatsNewTopBar(
     windowSize: WindowSize,
     pagerState: PagerState,
     onCloseClick: (Int) -> Unit,
@@ -231,7 +231,7 @@ private fun WhatsNewTopBar(
 }
 
 @Composable
-private fun WhatsNewScreenPortrait(
+fun WhatsNewScreenPortrait(
     modifier: Modifier = Modifier,
     whatsNewItem: WhatsNewItem,
     pagerState: PagerState,
@@ -339,7 +339,7 @@ private fun WhatsNewScreenPortrait(
 }
 
 @Composable
-private fun WhatsNewScreenLandscape(
+fun WhatsNewScreenLandscape(
     modifier: Modifier = Modifier,
     whatsNewItem: WhatsNewItem,
     pagerState: PagerState,
@@ -466,7 +466,7 @@ val whatsNewItemPreview = WhatsNewItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun WhatsNewPortraitPreview() {
+fun WhatsNewPortraitPreview() {
     OpenEdXTheme {
         WhatsNewScreenPortrait(
             whatsNewItem = whatsNewItemPreview,
@@ -491,7 +491,7 @@ private fun WhatsNewPortraitPreview() {
     heightDp = 360
 )
 @Composable
-private fun WhatsNewLandscapePreview() {
+fun WhatsNewLandscapePreview() {
     OpenEdXTheme {
         WhatsNewScreenLandscape(
             whatsNewItem = whatsNewItemPreview,

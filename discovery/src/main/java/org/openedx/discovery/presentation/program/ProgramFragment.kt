@@ -238,7 +238,7 @@ class ProgramFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun ProgramInfoScreen(
+fun ProgramInfoScreen(
     windowSize: WindowSize,
     uiState: ProgramUIState?,
     contentUrl: String,

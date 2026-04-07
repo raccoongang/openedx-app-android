@@ -344,7 +344,7 @@ fun DashboardListView(
 }
 
 @Composable
-private fun CourseItem(
+fun CourseItem(
     apiHostUrl: String,
     enrolledCourse: EnrolledCourse,
     windowSize: WindowSize,
@@ -458,7 +458,7 @@ private fun CourseItem(
 }
 
 @Composable
-private fun EmptyState() {
+fun EmptyState() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -501,7 +501,7 @@ private fun EmptyState() {
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun CourseItemPreview() {
+fun CourseItemPreview() {
     OpenEdXTheme {
         CourseItem(
             "http://localhost:8000",
@@ -515,7 +515,7 @@ private fun CourseItemPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun DashboardListViewPreview() {
+fun DashboardListViewPreview() {
     OpenEdXTheme {
         DashboardListView(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -538,7 +538,7 @@ private fun DashboardListViewPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
 @Preview(uiMode = UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
 @Composable
-private fun DashboardListViewTabletPreview() {
+fun DashboardListViewTabletPreview() {
     OpenEdXTheme {
         DashboardListView(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),
@@ -561,7 +561,7 @@ private fun DashboardListViewTabletPreview() {
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun EmptyStatePreview() {
+fun EmptyStatePreview() {
     OpenEdXTheme {
         DashboardListView(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
