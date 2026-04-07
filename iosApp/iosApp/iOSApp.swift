@@ -5,16 +5,16 @@ import shared
 struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ComposeView()
+                .ignoresSafeArea(.all)
         }
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Text(OpenEdXShared.shared.greeting())
-                .padding()
-        }
+struct ComposeView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        MainViewControllerKt.MainViewController()
     }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
