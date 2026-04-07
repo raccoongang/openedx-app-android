@@ -190,7 +190,7 @@ internal fun DashboardListView(
                 testTagsAsResourceId = true
             },
         containerColor = MaterialTheme.appColors.background,
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
 
         val contentPaddings by remember(key1 = windowSize) {

@@ -215,7 +215,7 @@ private fun WebViewDiscoveryScreen(
                 testTagsAsResourceId = true
             },
         containerColor = MaterialTheme.appColors.background,
-        contentWindowInsets = WindowInsets(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (isPreLogin) {
                 Box(

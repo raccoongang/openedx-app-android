@@ -143,7 +143,7 @@ fun WhatsNewScreen(
                     }
                     .navigationBarsPadding()
                     .fillMaxSize(),
-                contentWindowInsets = WindowInsets(),
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 topBar = {
                     WhatsNewTopBar(
                         windowSize = windowSize,

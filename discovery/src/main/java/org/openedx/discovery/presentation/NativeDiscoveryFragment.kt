@@ -237,7 +237,7 @@ internal fun DiscoveryScreen(
                 }
             }
         },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val searchTabWidth by remember(key1 = windowSize) {
             mutableStateOf(

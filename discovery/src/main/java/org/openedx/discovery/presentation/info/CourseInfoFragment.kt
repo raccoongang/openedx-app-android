@@ -263,7 +263,7 @@ private fun CourseInfoScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if ((uiState as CourseInfoUIState.CourseInfo).isPreLogin) {
                 Box(

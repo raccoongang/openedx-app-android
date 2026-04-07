@@ -126,7 +126,7 @@ private fun LogistrationScreen(
             }
             .fillMaxSize(),
         containerColor = MaterialTheme.appColors.background,
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         Surface(
             modifier = Modifier

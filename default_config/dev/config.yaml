@@ -1,10 +1,10 @@
-API_HOST_URL: 'http://localhost:8000'
+API_HOST_URL: 'https://axim-mobile-dev.raccoongang.net'
 APPLICATION_ID: 'org.openedx.app'
 ENVIRONMENT_DISPLAY_NAME: 'Localhost'
 URI_SCHEME: ''
 FEEDBACK_EMAIL_ADDRESS: 'support@example.com'
 FAQ_URL: ''
-OAUTH_CLIENT_ID: 'OAUTH_CLIENT_ID'
+OAUTH_CLIENT_ID: 'CJM1E6HmlG78STD3KBIhG4MuKfZRRmfPOe9pg8gj'
 
 # Keep empty to hide setting
 AGREEMENT_URLS:

@@ -80,7 +80,7 @@ fun CalendarSettingsView(
             .semantics {
                 testTagsAsResourceId = true
             },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
 
         val contentWidth by remember(key1 = windowSize) {

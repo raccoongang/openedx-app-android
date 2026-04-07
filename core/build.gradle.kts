@@ -119,7 +119,7 @@ dependencies {
     api(libs.zip4j)
 
     // OpenEdx libs
-    api(libs.openedx.foundation)
+    api(project(":foundation"))
 
     // Preview
     debugApi(libs.compose.ui.tooling)

@@ -111,7 +111,7 @@ private fun DiscussionTopicsUI(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val screenWidth by remember(key1 = windowSize) {
             mutableStateOf(

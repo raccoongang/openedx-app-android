@@ -185,7 +185,7 @@ private fun CourseDatesUI(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.appColors.background,
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val modifierScreenWidth by remember(key1 = windowSize) {
             mutableStateOf(

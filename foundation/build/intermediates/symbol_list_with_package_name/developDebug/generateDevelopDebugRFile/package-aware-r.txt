@@ -1,0 +1,3 @@
+org.openedx.foundation
+string foundation_error_no_connection
+string foundation_error_unknown_error

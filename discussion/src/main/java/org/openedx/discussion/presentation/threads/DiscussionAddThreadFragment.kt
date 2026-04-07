@@ -201,7 +201,7 @@ private fun DiscussionAddThreadScreen(
             .navigationBarsPadding(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
         val screenWidth by remember(key1 = windowSize) {
             mutableStateOf(

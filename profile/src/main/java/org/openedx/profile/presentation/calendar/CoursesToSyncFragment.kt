@@ -125,7 +125,7 @@ private fun CoursesToSyncView(
         modifier = Modifier
             .fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
 
         val contentWidth by remember(key1 = windowSize) {

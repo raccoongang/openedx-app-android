@@ -168,7 +168,7 @@ internal fun SignUpView(
             .navigationBarsPadding(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val topBarPadding by remember {
             mutableStateOf(

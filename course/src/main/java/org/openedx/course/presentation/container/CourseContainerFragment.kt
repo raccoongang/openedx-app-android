@@ -291,7 +291,7 @@ fun CourseDashboard(
                 .fillMaxSize()
                 .navigationBarsPadding(),
             containerColor = MaterialTheme.appColors.background,
-            contentWindowInsets = WindowInsets(),
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
                 val currentPage = CourseContainerTab.entries[pagerState.currentPage]
                 Box {

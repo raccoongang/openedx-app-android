@@ -214,7 +214,7 @@ private fun CourseSearchScreen(
             .semantics { testTagsAsResourceId = true },
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (!isUserLoggedIn) {
                 Box(

@@ -62,7 +62,7 @@ fun WebContentScreen(
                 testTagsAsResourceId = true
             },
         containerColor = MaterialTheme.appColors.background,
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val screenWidth by remember(key1 = windowSize) {
             mutableStateOf(

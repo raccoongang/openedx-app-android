@@ -19,3 +19,7 @@ local.properties
 .venv/
 i18n/
 **/values-*/strings.xml
+CLAUDE.md
+ISSUE_VALIDATION_INSTRUCTIONS.md
+bug_validation_report.html
+.claude

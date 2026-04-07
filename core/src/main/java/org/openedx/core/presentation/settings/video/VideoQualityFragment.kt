@@ -136,7 +136,7 @@ private fun VideoQualityScreen(
             .semantics {
                 testTagsAsResourceId = true
             },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
 
         val topBarWidth by remember(key1 = windowSize) {

@@ -102,7 +102,7 @@ internal fun LoginScreen(
             .navigationBarsPadding(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
         val contentPaddings by remember {
             mutableStateOf(
