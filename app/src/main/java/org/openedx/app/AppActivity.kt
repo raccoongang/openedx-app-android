@@ -8,12 +8,18 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.WindowMetricsCalculator
 import com.braze.support.toStringMap
@@ -22,7 +28,6 @@ import io.branch.referral.Branch.BranchUniversalReferralInitListener
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.openedx.app.databinding.ActivityAppBinding
 import org.openedx.app.deeplink.DeepLink
 import org.openedx.auth.presentation.logistration.LogistrationFragment
 import org.openedx.auth.presentation.signin.SignInFragment
@@ -31,6 +36,7 @@ import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
 import org.openedx.core.presentation.global.InsetHolder
 import org.openedx.core.presentation.global.WindowSizeHolder
+import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.utils.Logger
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.foundation.extension.requestApplyInsetsWhenAttached
@@ -52,7 +58,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     override val windowSize: WindowSize
         get() = _windowSize
 
-    private lateinit var binding: ActivityAppBinding
     private val viewModel by viewModel<AppViewModel>()
     private val whatsNewManager by inject<WhatsNewManager>()
     private val corePreferencesManager by inject<CorePreferences>()
@@ -67,6 +72,9 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     private var _insetCutout = 0
 
     private var _windowSize = WindowSize(WindowType.Compact, WindowType.Compact)
+
+    private var fragmentContainer: FragmentContainerView? = null
+
     private val authCode: String?
         get() {
             val data = intent?.data
@@ -104,10 +112,15 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        binding = ActivityAppBinding.inflate(layoutInflater)
         lifecycle.addObserver(viewModel)
         viewModel.logAppLaunchEvent()
-        setContentView(binding.root)
+
+        // Use Compose setContent with embedded FragmentContainerView
+        setContent {
+            OpenEdXTheme {
+                AppContent()
+            }
+        }
 
         setupWindowInsets(savedInstanceState)
         setupWindowSettings()
@@ -118,15 +131,21 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         calendarSyncScheduler.scheduleDailySync()
     }
 
+    @Composable
+    private fun AppContent() {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                FragmentContainerView(context).apply {
+                    id = R.id.container
+                    fragmentContainer = this
+                }
+            },
+        )
+    }
+
     private fun setupWindowInsets(savedInstanceState: Bundle?) {
-        val container = binding.rootLayout
-        container.addView(object : View(this) {
-            override fun onConfigurationChanged(newConfig: Configuration?) {
-                super.onConfigurationChanged(newConfig)
-                computeWindowSizeClasses()
-            }
-        })
-        computeWindowSizeClasses()
+        val rootView = window.decorView.rootView
 
         savedInstanceState?.let {
             _insetTop = it.getInt(TOP_INSET, 0)
@@ -134,7 +153,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
             _insetCutout = it.getInt(CUTOUT_INSET, 0)
         }
 
-        binding.root.setOnApplyWindowInsetsListener { _, insets ->
+        rootView.setOnApplyWindowInsetsListener { _, insets ->
             val insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets)
                 .getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -151,19 +170,25 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
             insets
         }
-        binding.root.requestApplyInsetsWhenAttached()
+        rootView.requestApplyInsetsWhenAttached()
+
+        rootView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            computeWindowSizeClasses()
+        }
+        computeWindowSizeClasses()
     }
 
     private fun setupWindowSettings() {
         window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             WindowCompat.setDecorFitsSystemWindows(this, false)
-            val insetsController = WindowInsetsControllerCompat(this, binding.root)
+            val insetsController = WindowInsetsControllerCompat(this, decorView)
             insetsController.isAppearanceLightStatusBars = !isUsingNightModeResources()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 insetsController.systemBarsBehavior =
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             } else {
+                @Suppress("DEPRECATION")
                 window.statusBarColor = Color.TRANSPARENT
             }
         }
