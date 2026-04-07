@@ -1,12 +1,13 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class DiscoveryConfig(
-    @SerializedName("TYPE")
+    @SerialName("TYPE")
     private val viewType: String = Config.ViewType.NATIVE.name,
 
-    @SerializedName("WEBVIEW")
+    @SerialName("WEBVIEW")
     val webViewConfig: DiscoveryWebViewConfig = DiscoveryWebViewConfig(),
 ) {
 
@@ -16,12 +17,12 @@ data class DiscoveryConfig(
 }
 
 data class DiscoveryWebViewConfig(
-    @SerializedName("BASE_URL")
+    @SerialName("BASE_URL")
     val baseUrl: String = "",
 
-    @SerializedName("COURSE_DETAIL_TEMPLATE")
+    @SerialName("COURSE_DETAIL_TEMPLATE")
     val courseUrlTemplate: String = "",
 
-    @SerializedName("PROGRAM_DETAIL_TEMPLATE")
+    @SerialName("PROGRAM_DETAIL_TEMPLATE")
     val programUrlTemplate: String = "",
 )

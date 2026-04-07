@@ -1,9 +1,10 @@
 package org.openedx.auth.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class ValidationFields(
-    @SerializedName("validation_decisions")
+    @SerialName("validation_decisions")
     val validationResult: Map<String, String>
 ) {
     fun hasValidationError() = validationResult.values.any { it != "" }

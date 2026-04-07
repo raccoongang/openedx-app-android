@@ -1,51 +1,52 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.MediaDb
 import org.openedx.core.data.model.room.discovery.EnrolledCourseDataDb
 import org.openedx.core.domain.model.EnrolledCourseData
 import org.openedx.core.utils.TimeUtils
 
 data class EnrolledCourseData(
-    @SerializedName("id")
+    @SerialName("id")
     var id: String?,
-    @SerializedName("name")
+    @SerialName("name")
     var name: String?,
-    @SerializedName("number")
+    @SerialName("number")
     var number: String?,
-    @SerializedName("org")
+    @SerialName("org")
     var org: String?,
-    @SerializedName("start")
+    @SerialName("start")
     var start: String?,
-    @SerializedName("start_display")
+    @SerialName("start_display")
     var startDisplay: String?,
-    @SerializedName("start_type")
+    @SerialName("start_type")
     var startType: String?,
-    @SerializedName("end")
+    @SerialName("end")
     var end: String?,
-    @SerializedName("dynamic_upgrade_deadline")
+    @SerialName("dynamic_upgrade_deadline")
     var dynamicUpgradeDeadline: String?,
-    @SerializedName("subscription_id")
+    @SerialName("subscription_id")
     var subscriptionId: String?,
-    @SerializedName("courseware_access")
+    @SerialName("courseware_access")
     var coursewareAccess: CoursewareAccess?,
-    @SerializedName("media")
+    @SerialName("media")
     var media: Media?,
-    @SerializedName("course_image")
+    @SerialName("course_image")
     var courseImage: String?,
-    @SerializedName("course_about")
+    @SerialName("course_about")
     var courseAbout: String?,
-    @SerializedName("course_sharing_utm_parameters")
+    @SerialName("course_sharing_utm_parameters")
     var courseSharingUtmParameters: CourseSharingUtmParameters?,
-    @SerializedName("course_updates")
+    @SerialName("course_updates")
     var courseUpdates: String?,
-    @SerializedName("course_handouts")
+    @SerialName("course_handouts")
     var courseHandouts: String?,
-    @SerializedName("discussion_url")
+    @SerialName("discussion_url")
     var discussionUrl: String?,
-    @SerializedName("video_outline")
+    @SerialName("video_outline")
     var videoOutline: String?,
-    @SerializedName("is_self_paced")
+    @SerialName("is_self_paced")
     var isSelfPaced: Boolean?
 ) {
 

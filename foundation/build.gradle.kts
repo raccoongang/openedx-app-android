@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -93,6 +94,17 @@ dependencies {
     api("androidx.compose.material:material-icons-extended")
     api("androidx.compose.material:material")
     api("androidx.compose.runtime:runtime-livedata")
+
+    // Ktor (KMP networking)
+    api(libs.ktor.client.core)
+    api(libs.ktor.client.okhttp)
+    api(libs.ktor.client.content.negotiation)
+    api(libs.ktor.client.logging)
+    api(libs.ktor.client.auth)
+    api(libs.ktor.serialization.kotlinx.json)
+
+    // kotlinx.serialization
+    api(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
 }

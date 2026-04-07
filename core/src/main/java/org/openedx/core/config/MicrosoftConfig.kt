@@ -1,13 +1,14 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class MicrosoftConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     private val enabled: Boolean = false,
-    @SerializedName("CLIENT_ID")
+    @SerialName("CLIENT_ID")
     val clientId: String = "",
-    @SerializedName("PACKAGE_SIGNATURE")
+    @SerialName("PACKAGE_SIGNATURE")
     val packageSignature: String = "",
 ) {
     fun isEnabled() = enabled && clientId.isNotBlank() && packageSignature.isNotBlank()

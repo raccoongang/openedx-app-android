@@ -1,15 +1,16 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class EnrollBody(
-    @SerializedName("course_details")
+    @SerialName("course_details")
     val courseDetails: CourseDetails
 ) {
     data class CourseDetails(
-        @SerializedName("course_id")
+        @SerialName("course_id")
         val courseId: String,
-        @SerializedName("email_opt_in")
+        @SerialName("email_opt_in")
         val emailOptIn: String?,
     )
 }

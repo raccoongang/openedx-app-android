@@ -1,31 +1,32 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.CourseInfoOverview as DomainCourseInfoOverview
 
 data class CourseInfoOverview(
-    @SerializedName("name")
+    @SerialName("name")
     val name: String,
-    @SerializedName("number")
+    @SerialName("number")
     val number: String,
-    @SerializedName("org")
+    @SerialName("org")
     val org: String,
-    @SerializedName("start")
+    @SerialName("start")
     val start: String?,
-    @SerializedName("start_display")
+    @SerialName("start_display")
     val startDisplay: String,
-    @SerializedName("start_type")
+    @SerialName("start_type")
     val startType: String,
-    @SerializedName("end")
+    @SerialName("end")
     val end: String?,
-    @SerializedName("is_self_paced")
+    @SerialName("is_self_paced")
     val isSelfPaced: Boolean,
-    @SerializedName("media")
+    @SerialName("media")
     var media: Media?,
-    @SerializedName("course_sharing_utm_parameters")
+    @SerialName("course_sharing_utm_parameters")
     val courseSharingUtmParameters: CourseSharingUtmParameters,
-    @SerializedName("course_about")
+    @SerialName("course_about")
     val courseAbout: String,
 ) {
     fun mapToDomain() = DomainCourseInfoOverview(

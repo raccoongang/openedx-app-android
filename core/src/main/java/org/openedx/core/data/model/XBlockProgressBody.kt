@@ -1,8 +1,9 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class XBlockProgressBody(
-    @SerializedName("body")
+    @SerialName("body")
     val body: String
 )

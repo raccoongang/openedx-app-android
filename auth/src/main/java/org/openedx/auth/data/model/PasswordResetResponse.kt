@@ -1,8 +1,9 @@
 package org.openedx.auth.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class PasswordResetResponse(
-    @SerializedName("success")
+    @SerialName("success")
     val success: Boolean
 )

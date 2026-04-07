@@ -1,24 +1,25 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseEnrollmentDetails as DomainCourseEnrollmentDetails
 
 data class CourseEnrollmentDetails(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("course_updates")
+    @SerialName("course_updates")
     val courseUpdates: String?,
-    @SerializedName("course_handouts")
+    @SerialName("course_handouts")
     val courseHandouts: String?,
-    @SerializedName("discussion_url")
+    @SerialName("discussion_url")
     val discussionUrl: String?,
-    @SerializedName("course_access_details")
+    @SerialName("course_access_details")
     val courseAccessDetails: CourseAccessDetails,
-    @SerializedName("certificate")
+    @SerialName("certificate")
     val certificate: Certificate?,
-    @SerializedName("enrollment_details")
+    @SerialName("enrollment_details")
     val enrollmentDetails: EnrollmentDetails,
-    @SerializedName("course_info_overview")
+    @SerialName("course_info_overview")
     val courseInfoOverview: CourseInfoOverview,
 ) {
     fun mapToDomain(): DomainCourseEnrollmentDetails {

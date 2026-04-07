@@ -1,20 +1,21 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.EnrollmentDetailsDB
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.EnrollmentDetails as DomainEnrollmentDetails
 
 data class EnrollmentDetails(
-    @SerializedName("created")
+    @SerialName("created")
     var created: String?,
-    @SerializedName("date")
+    @SerialName("date")
     val date: String?,
-    @SerializedName("mode")
+    @SerialName("mode")
     val mode: String?,
-    @SerializedName("is_active")
+    @SerialName("is_active")
     val isActive: Boolean = false,
-    @SerializedName("upgrade_deadline")
+    @SerialName("upgrade_deadline")
     val upgradeDeadline: String?,
 ) {
     fun mapToDomain() = DomainEnrollmentDetails(

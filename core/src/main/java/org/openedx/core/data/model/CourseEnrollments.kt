@@ -5,18 +5,19 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.lang.reflect.Type
 import org.openedx.core.domain.model.CourseEnrollments as DomainCourseEnrollments
 
 data class CourseEnrollments(
-    @SerializedName("enrollments")
+    @SerialName("enrollments")
     val enrollments: DashboardCourseList,
 
-    @SerializedName("config")
+    @SerialName("config")
     val configs: AppConfig,
 
-    @SerializedName("primary")
+    @SerialName("primary")
     val primary: EnrolledCourse?,
 ) {
     fun mapToDomain() = DomainCourseEnrollments(

@@ -1,11 +1,12 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class GoogleConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     private val enabled: Boolean = false,
-    @SerializedName("CLIENT_ID")
+    @SerialName("CLIENT_ID")
     val clientId: String = "",
 ) {
     fun isEnabled() = enabled && clientId.isNotBlank()

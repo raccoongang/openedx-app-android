@@ -1,51 +1,52 @@
 package org.openedx.profile.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.ProfileImage
 import org.openedx.profile.domain.model.Account
 import java.util.Date
 import org.openedx.profile.domain.model.Account as DomainAccount
 
 data class Account(
-    @SerializedName("username")
+    @SerialName("username")
     val username: String?,
-    @SerializedName("bio")
+    @SerialName("bio")
     val bio: String?,
-    @SerializedName("requires_parental_consent")
+    @SerialName("requires_parental_consent")
     val requiresParentalConsent: Boolean?,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String?,
-    @SerializedName("country")
+    @SerialName("country")
     val country: String?,
-    @SerializedName("is_active")
+    @SerialName("is_active")
     val isActive: Boolean?,
-    @SerializedName("profile_image")
+    @SerialName("profile_image")
     val profileImage: ProfileImage?,
-    @SerializedName("year_of_birth")
+    @SerialName("year_of_birth")
     val yearOfBirth: Int?,
-    @SerializedName("level_of_education")
+    @SerialName("level_of_education")
     val levelOfEducation: String?,
-    @SerializedName("goals")
+    @SerialName("goals")
     val goals: String?,
-    @SerializedName("language_proficiencies")
+    @SerialName("language_proficiencies")
     val languageProficiencies: List<LanguageProficiency>?,
-    @SerializedName("gender")
+    @SerialName("gender")
     val gender: String?,
-    @SerializedName("mailing_address")
+    @SerialName("mailing_address")
     val mailingAddress: String?,
-    @SerializedName("email")
+    @SerialName("email")
     val email: String?,
-    @SerializedName("date_joined")
+    @SerialName("date_joined")
     val dateJoined: Date?,
-    @SerializedName("account_privacy")
+    @SerialName("account_privacy")
     val accountPrivacy: Privacy?
 ) {
 
     enum class Privacy {
-        @SerializedName("private")
+        @SerialName("private")
         PRIVATE,
 
-        @SerializedName("all_users")
+        @SerialName("all_users")
         ALL_USERS
     }
 

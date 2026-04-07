@@ -1,52 +1,53 @@
 package org.openedx.discovery.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.Media
 import org.openedx.core.utils.TimeUtils
 import org.openedx.discovery.domain.model.Course
 
 data class CourseDetails(
-    @SerializedName("blocks_url")
+    @SerialName("blocks_url")
     val blocksUrl: String?,
-    @SerializedName("course_id")
+    @SerialName("course_id")
     val courseId: String?,
-    @SerializedName("effort")
+    @SerialName("effort")
     val effort: String?,
-    @SerializedName("end")
+    @SerialName("end")
     val end: String?,
-    @SerializedName("enrollment_end")
+    @SerialName("enrollment_end")
     val enrollmentEnd: String?,
-    @SerializedName("enrollment_start")
+    @SerialName("enrollment_start")
     val enrollmentStart: String?,
-    @SerializedName("hidden")
+    @SerialName("hidden")
     val hidden: Boolean?,
-    @SerializedName("id")
+    @SerialName("id")
     val id: String?,
-    @SerializedName("invitation_only")
+    @SerialName("invitation_only")
     val invitationOnly: Boolean?,
-    @SerializedName("media")
+    @SerialName("media")
     val media: Media?,
-    @SerializedName("mobile_available")
+    @SerialName("mobile_available")
     val mobileAvailable: Boolean?,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String?,
-    @SerializedName("number")
+    @SerialName("number")
     val number: String?,
-    @SerializedName("org")
+    @SerialName("org")
     val organization: String?,
-    @SerializedName("pacing")
+    @SerialName("pacing")
     val pacing: String?,
-    @SerializedName("short_description")
+    @SerialName("short_description")
     val shortDescription: String?,
-    @SerializedName("start")
+    @SerialName("start")
     val start: String?,
-    @SerializedName("start_display")
+    @SerialName("start_display")
     val startDisplay: String?,
-    @SerializedName("start_type")
+    @SerialName("start_type")
     val startType: String?,
-    @SerializedName("overview")
+    @SerialName("overview")
     val overview: String?,
-    @SerializedName("is_enrolled")
+    @SerialName("is_enrolled")
     val isEnrolled: Boolean?,
 ) {
 

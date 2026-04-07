@@ -1,6 +1,7 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.BlockDb
 import org.openedx.core.data.model.room.CourseStructureEntity
 import org.openedx.core.data.model.room.MediaDb
@@ -9,39 +10,39 @@ import org.openedx.core.domain.model.CourseStructure
 import org.openedx.core.utils.TimeUtils
 
 data class CourseStructureModel(
-    @SerializedName("root")
+    @SerialName("root")
     val root: String,
-    @SerializedName("blocks")
+    @SerialName("blocks")
     val blockData: Map<String, Block>,
-    @SerializedName("id")
+    @SerialName("id")
     var id: String?,
-    @SerializedName("name")
+    @SerialName("name")
     var name: String?,
-    @SerializedName("number")
+    @SerialName("number")
     var number: String?,
-    @SerializedName("org")
+    @SerialName("org")
     var org: String?,
-    @SerializedName("start")
+    @SerialName("start")
     var start: String?,
-    @SerializedName("start_display")
+    @SerialName("start_display")
     var startDisplay: String?,
-    @SerializedName("start_type")
+    @SerialName("start_type")
     var startType: String?,
-    @SerializedName("end")
+    @SerialName("end")
     var end: String?,
-    @SerializedName("courseware_access")
+    @SerialName("courseware_access")
     var coursewareAccess: CoursewareAccess?,
-    @SerializedName("media")
+    @SerialName("media")
     var media: Media?,
-    @SerializedName("course_access_details")
+    @SerialName("course_access_details")
     val courseAccessDetails: CourseAccessDetails,
-    @SerializedName("certificate")
+    @SerialName("certificate")
     val certificate: Certificate?,
-    @SerializedName("enrollment_details")
+    @SerialName("enrollment_details")
     val enrollmentDetails: EnrollmentDetails,
-    @SerializedName("is_self_paced")
+    @SerialName("is_self_paced")
     var isSelfPaced: Boolean?,
-    @SerializedName("course_progress")
+    @SerialName("course_progress")
     val progress: Progress?,
 ) {
     fun mapToDomain(): CourseStructure {

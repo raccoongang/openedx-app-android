@@ -1,14 +1,15 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.EnrollmentStatus
 
 data class EnrollmentStatus(
-    @SerializedName("course_id")
+    @SerialName("course_id")
     val courseId: String?,
-    @SerializedName("course_name")
+    @SerialName("course_name")
     val courseName: String?,
-    @SerializedName("recently_active")
+    @SerialName("recently_active")
     val recentlyActive: Boolean?
 ) {
     fun mapToDomain() = EnrollmentStatus(

@@ -1,11 +1,12 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class BrazeConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     val isEnabled: Boolean = false,
 
-    @SerializedName("PUSH_NOTIFICATIONS_ENABLED")
+    @SerialName("PUSH_NOTIFICATIONS_ENABLED")
     val isPushNotificationsEnabled: Boolean = false
 )

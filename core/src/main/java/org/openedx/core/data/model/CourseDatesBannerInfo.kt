@@ -1,12 +1,13 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesBannerInfo
 
 data class CourseDatesBannerInfo(
-    @SerializedName("dates_banner_info")
+    @SerialName("dates_banner_info")
     val datesBannerInfo: DatesBannerInfo?,
-    @SerializedName("has_ended")
+    @SerialName("has_ended")
     val hasEnded: Boolean?,
 ) {
     fun mapToDomain(): CourseDatesBannerInfo {

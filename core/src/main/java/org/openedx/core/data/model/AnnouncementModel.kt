@@ -1,11 +1,12 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class AnnouncementModel(
-    @SerializedName("date")
+    @SerialName("date")
     val date: String,
-    @SerializedName("content")
+    @SerialName("content")
     val content: String
 ) {
     fun mapToDomain() = org.openedx.core.domain.model.AnnouncementModel(

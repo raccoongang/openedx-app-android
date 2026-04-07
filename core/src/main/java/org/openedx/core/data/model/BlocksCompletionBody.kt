@@ -1,12 +1,13 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class BlocksCompletionBody(
-    @SerializedName("username")
+    @SerialName("username")
     val username: String,
-    @SerializedName("course_key")
+    @SerialName("course_key")
     val courseId: String,
-    @SerializedName("blocks")
+    @SerialName("blocks")
     val blocks: Map<String, String>
 )

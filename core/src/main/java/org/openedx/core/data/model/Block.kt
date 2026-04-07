@@ -1,6 +1,7 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.BlockType
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.Block as DomainBlock
@@ -10,39 +11,39 @@ import org.openedx.core.domain.model.StudentViewData as DomainStudentViewData
 import org.openedx.core.domain.model.VideoInfo as DomainVideoInfo
 
 data class Block(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String?,
-    @SerializedName("block_id")
+    @SerialName("block_id")
     val blockId: String?,
-    @SerializedName("lms_web_url")
+    @SerialName("lms_web_url")
     val lmsWebUrl: String?,
-    @SerializedName("legacy_web_url")
+    @SerialName("legacy_web_url")
     val legacyWebUrl: String?,
-    @SerializedName("student_view_url")
+    @SerialName("student_view_url")
     val studentViewUrl: String?,
-    @SerializedName("type")
+    @SerialName("type")
     val type: String?,
-    @SerializedName("display_name")
+    @SerialName("display_name")
     val displayName: String?,
-    @SerializedName("graded")
+    @SerialName("graded")
     val graded: Boolean?,
-    @SerializedName("descendants")
+    @SerialName("descendants")
     val descendants: List<String>?,
-    @SerializedName("student_view_data")
+    @SerialName("student_view_data")
     val studentViewData: StudentViewData?,
-    @SerializedName("student_view_multi_device")
+    @SerialName("student_view_multi_device")
     val studentViewMultiDevice: Boolean?,
-    @SerializedName("block_counts")
+    @SerialName("block_counts")
     val blockCounts: BlockCounts?,
-    @SerializedName("completion")
+    @SerialName("completion")
     val completion: Double?,
-    @SerializedName("contains_gated_content")
+    @SerialName("contains_gated_content")
     val containsGatedContent: Boolean?,
-    @SerializedName("assignment_progress")
+    @SerialName("assignment_progress")
     val assignmentProgress: AssignmentProgress?,
-    @SerializedName("due")
+    @SerialName("due")
     val due: String?,
-    @SerializedName("offline_download")
+    @SerialName("offline_download")
     val offlineDownload: OfflineDownload?,
 ) {
     fun mapToDomain(blockData: Map<String, Block>): DomainBlock {
@@ -83,17 +84,17 @@ data class Block(
 }
 
 data class StudentViewData(
-    @SerializedName("only_on_web")
+    @SerialName("only_on_web")
     var onlyOnWeb: Boolean?,
-    @SerializedName("duration")
+    @SerialName("duration")
     var duration: Any?,
-    @SerializedName("transcripts")
+    @SerialName("transcripts")
     var transcripts: HashMap<String, String>?,
-    @SerializedName("encoded_videos")
+    @SerialName("encoded_videos")
     var encodedVideos: EncodedVideos?,
-    @SerializedName("all_sources")
+    @SerialName("all_sources")
     var allSources: List<Any?>?,
-    @SerializedName("topic_id")
+    @SerialName("topic_id")
     val topicId: String?
 ) {
     fun mapToDomain() = DomainStudentViewData(
@@ -106,17 +107,17 @@ data class StudentViewData(
 }
 
 data class EncodedVideos(
-    @SerializedName("youtube")
+    @SerialName("youtube")
     var videoInfo: VideoInfo?,
-    @SerializedName("hls")
+    @SerialName("hls")
     var hls: VideoInfo?,
-    @SerializedName("fallback")
+    @SerialName("fallback")
     var fallback: VideoInfo?,
-    @SerializedName("desktop_mp4")
+    @SerialName("desktop_mp4")
     var desktopMp4: VideoInfo?,
-    @SerializedName("mobile_high")
+    @SerialName("mobile_high")
     var mobileHigh: VideoInfo?,
-    @SerializedName("mobile_low")
+    @SerialName("mobile_low")
     var mobileLow: VideoInfo?
 ) {
     fun mapToDomain() = DomainEncodedVideos(
@@ -130,9 +131,9 @@ data class EncodedVideos(
 }
 
 data class VideoInfo(
-    @SerializedName("url")
+    @SerialName("url")
     var url: String?,
-    @SerializedName("file_size")
+    @SerialName("file_size")
     var fileSize: Long?
 ) {
     fun mapToDomain() = DomainVideoInfo(
@@ -144,7 +145,7 @@ data class VideoInfo(
 }
 
 data class BlockCounts(
-    @SerializedName("video")
+    @SerialName("video")
     var video: Int?
 ) {
     fun mapToDomain() = DomainBlockCounts(

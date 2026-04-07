@@ -1,31 +1,32 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.R
 
 enum class DateType(val drawableResId: Int? = null) {
-    @SerializedName("todays-date")
+    @SerialName("todays-date")
     TODAY_DATE(R.drawable.core_ic_calendar),
 
-    @SerializedName("course-start-date")
+    @SerialName("course-start-date")
     COURSE_START_DATE(R.drawable.core_ic_start_end),
 
-    @SerializedName("course-end-date")
+    @SerialName("course-end-date")
     COURSE_END_DATE(R.drawable.core_ic_start_end),
 
-    @SerializedName("course-expired-date")
+    @SerialName("course-expired-date")
     COURSE_EXPIRED_DATE(R.drawable.core_ic_course_expire),
 
-    @SerializedName("assignment-due-date")
+    @SerialName("assignment-due-date")
     ASSIGNMENT_DUE_DATE(R.drawable.core_ic_assignment),
 
-    @SerializedName("certificate-available-date")
+    @SerialName("certificate-available-date")
     CERTIFICATE_AVAILABLE_DATE(R.drawable.core_ic_certificate),
 
-    @SerializedName("verified-upgrade-deadline")
+    @SerialName("verified-upgrade-deadline")
     VERIFIED_UPGRADE_DEADLINE(R.drawable.core_ic_calendar),
 
-    @SerializedName("verification-deadline-date")
+    @SerialName("verification-deadline-date")
     VERIFICATION_DEADLINE_DATE(R.drawable.core_ic_calendar),
 
     NONE,

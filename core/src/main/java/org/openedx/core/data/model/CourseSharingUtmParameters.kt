@@ -1,13 +1,14 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CourseSharingUtmParametersDb
 import org.openedx.core.domain.model.CourseSharingUtmParameters
 
 data class CourseSharingUtmParameters(
-    @SerializedName("facebook")
+    @SerialName("facebook")
     val facebook: String?,
-    @SerializedName("twitter")
+    @SerialName("twitter")
     val twitter: String?
 ) {
     fun mapToDomain(): CourseSharingUtmParameters {

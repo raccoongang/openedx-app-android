@@ -1,18 +1,19 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.ResetCourseDates
 
 data class ResetCourseDates(
-    @SerializedName("message")
+    @SerialName("message")
     val message: String = "",
-    @SerializedName("body")
+    @SerialName("body")
     val body: String = "",
-    @SerializedName("header")
+    @SerialName("header")
     val header: String = "",
-    @SerializedName("link")
+    @SerialName("link")
     val link: String = "",
-    @SerializedName("link_text")
+    @SerialName("link_text")
     val linkText: String = "",
 ) {
     fun mapToDomain(): ResetCourseDates {

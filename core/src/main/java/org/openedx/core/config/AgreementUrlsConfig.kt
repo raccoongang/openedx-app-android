@@ -1,22 +1,23 @@
 package org.openedx.core.config
 
 import android.net.Uri
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.Agreement
 import org.openedx.core.domain.model.AgreementUrls
 
 internal data class AgreementUrlsConfig(
-    @SerializedName("PRIVACY_POLICY_URL")
+    @SerialName("PRIVACY_POLICY_URL")
     private val privacyPolicyUrl: String = "",
-    @SerializedName("COOKIE_POLICY_URL")
+    @SerialName("COOKIE_POLICY_URL")
     private val cookiePolicyUrl: String = "",
-    @SerializedName("DATA_SELL_CONSENT_URL")
+    @SerialName("DATA_SELL_CONSENT_URL")
     private val dataSellConsentUrl: String = "",
-    @SerializedName("TOS_URL")
+    @SerialName("TOS_URL")
     private val tosUrl: String = "",
-    @SerializedName("EULA_URL")
+    @SerialName("EULA_URL")
     private val eulaUrl: String = "",
-    @SerializedName("SUPPORTED_LANGUAGES")
+    @SerialName("SUPPORTED_LANGUAGES")
     private val supportedLanguages: List<String> = emptyList(),
 ) {
     fun mapToDomain(): Agreement {

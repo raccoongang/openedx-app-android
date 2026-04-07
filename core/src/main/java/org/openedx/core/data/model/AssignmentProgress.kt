@@ -1,19 +1,20 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.AssignmentProgressDb
 import org.openedx.core.domain.model.AssignmentProgress
 
 private const val DEFAULT_LABEL_LENGTH = 5
 
 data class AssignmentProgress(
-    @SerializedName("assignment_type")
+    @SerialName("assignment_type")
     val assignmentType: String?,
-    @SerializedName("num_points_earned")
+    @SerialName("num_points_earned")
     val numPointsEarned: Float?,
-    @SerializedName("num_points_possible")
+    @SerialName("num_points_possible")
     val numPointsPossible: Float?,
-    @SerializedName("short_label")
+    @SerialName("short_label")
     val shortLabel: String?
 ) {
     fun mapToDomain(displayName: String) = AssignmentProgress(

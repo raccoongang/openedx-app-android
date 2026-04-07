@@ -1,11 +1,12 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class ProgramConfig(
-    @SerializedName("TYPE")
+    @SerialName("TYPE")
     private val viewType: String = Config.ViewType.NATIVE.name,
-    @SerializedName("WEBVIEW")
+    @SerialName("WEBVIEW")
     val webViewConfig: ProgramWebViewConfig = ProgramWebViewConfig(),
 ) {
     fun isViewTypeWebView(): Boolean {
@@ -14,8 +15,8 @@ data class ProgramConfig(
 }
 
 data class ProgramWebViewConfig(
-    @SerializedName("BASE_URL")
+    @SerialName("BASE_URL")
     val programUrl: String = "",
-    @SerializedName("PROGRAM_DETAIL_TEMPLATE")
+    @SerialName("PROGRAM_DETAIL_TEMPLATE")
     val programDetailUrlTemplate: String = "",
 )

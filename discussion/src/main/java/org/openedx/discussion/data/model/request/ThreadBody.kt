@@ -1,18 +1,19 @@
 package org.openedx.discussion.data.model.request
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class ThreadBody(
-    @SerializedName("type")
+    @SerialName("type")
     val type: String,
-    @SerializedName("topic_id")
+    @SerialName("topic_id")
     val topicId: String,
-    @SerializedName("course_id")
+    @SerialName("course_id")
     val courseId: String,
-    @SerializedName("title")
+    @SerialName("title")
     val title: String,
-    @SerializedName("raw_body")
+    @SerialName("raw_body")
     val rawBody: String,
-    @SerializedName("following")
+    @SerialName("following")
     val following: Boolean = true
 )

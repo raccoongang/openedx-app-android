@@ -1,10 +1,11 @@
 package org.openedx.profile.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.LanguageProficiency
 
 data class LanguageProficiency(
-    @SerializedName("code")
+    @SerialName("code")
     val code: String?
 ) {
     fun mapToDomain(): LanguageProficiency {

@@ -1,16 +1,17 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.Media
 
 data class Media(
-    @SerializedName("banner_image")
+    @SerialName("banner_image")
     val bannerImage: BannerImage?,
-    @SerializedName("course_image")
+    @SerialName("course_image")
     val courseImage: CourseImage?,
-    @SerializedName("course_video")
+    @SerialName("course_video")
     val courseVideo: CourseVideo?,
-    @SerializedName("image")
+    @SerialName("image")
     val image: Image?,
 ) {
 
@@ -25,11 +26,11 @@ data class Media(
 }
 
 data class Image(
-    @SerializedName("large")
+    @SerialName("large")
     val large: String?,
-    @SerializedName("raw")
+    @SerialName("raw")
     val raw: String?,
-    @SerializedName("small")
+    @SerialName("small")
     val small: String?,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.Image {
@@ -42,7 +43,7 @@ data class Image(
 }
 
 data class CourseVideo(
-    @SerializedName("uri")
+    @SerialName("uri")
     val uri: String?,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.CourseVideo {
@@ -53,9 +54,9 @@ data class CourseVideo(
 }
 
 data class CourseImage(
-    @SerializedName("uri")
+    @SerialName("uri")
     val uri: String?,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String?
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.CourseImage {
@@ -67,9 +68,9 @@ data class CourseImage(
 }
 
 data class BannerImage(
-    @SerializedName("uri")
+    @SerialName("uri")
     val uri: String?,
-    @SerializedName("uri_absolute")
+    @SerialName("uri_absolute")
     val uriAbsolute: String?,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.BannerImage {

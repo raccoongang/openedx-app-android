@@ -1,20 +1,21 @@
 package org.openedx.auth.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.auth.domain.model.AuthResponse
 
 data class AuthResponse(
-    @SerializedName("access_token")
+    @SerialName("access_token")
     var accessToken: String?,
-    @SerializedName("token_type")
+    @SerialName("token_type")
     var tokenType: String?,
-    @SerializedName("expires_in")
+    @SerialName("expires_in")
     var expiresIn: Long?,
-    @SerializedName("scope")
+    @SerialName("scope")
     var scope: String?,
-    @SerializedName("error")
+    @SerialName("error")
     var error: String?,
-    @SerializedName("refresh_token")
+    @SerialName("refresh_token")
     var refreshToken: String?,
 ) {
     fun mapToDomain(): AuthResponse {

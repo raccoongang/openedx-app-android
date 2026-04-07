@@ -1,85 +1,86 @@
 package org.openedx.discussion.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.Pagination
 import org.openedx.core.data.model.ProfileImage
 import org.openedx.discussion.domain.model.DiscussionType
 import org.openedx.discussion.domain.model.ThreadsData
 
 data class ThreadsResponse(
-    @SerializedName("results")
+    @SerialName("results")
     val results: List<Thread>,
-    @SerializedName("text_search_rewrite")
+    @SerialName("text_search_rewrite")
     val textSearchRewrite: String?,
-    @SerializedName("pagination")
+    @SerialName("pagination")
     val pagination: Pagination
 ) {
     data class Thread(
-        @SerializedName("id")
+        @SerialName("id")
         val id: String,
-        @SerializedName("author")
+        @SerialName("author")
         val author: String?,
-        @SerializedName("author_label")
+        @SerialName("author_label")
         val authorLabel: String?,
-        @SerializedName("created_at")
+        @SerialName("created_at")
         val createdAt: String,
-        @SerializedName("updated_at")
+        @SerialName("updated_at")
         val updatedAt: String,
-        @SerializedName("raw_body")
+        @SerialName("raw_body")
         val rawBody: String,
-        @SerializedName("rendered_body")
+        @SerialName("rendered_body")
         val renderedBody: String,
-        @SerializedName("abuse_flagged")
+        @SerialName("abuse_flagged")
         val abuseFlagged: Boolean,
-        @SerializedName("voted")
+        @SerialName("voted")
         val voted: Boolean,
-        @SerializedName("vote_count")
+        @SerialName("vote_count")
         val voteCount: Int,
-        @SerializedName("editable_fields")
+        @SerialName("editable_fields")
         val editableFields: List<String>,
-        @SerializedName("can_delete")
+        @SerialName("can_delete")
         val canDelete: Boolean,
-        @SerializedName("anonymous")
+        @SerialName("anonymous")
         val anonymous: Boolean,
-        @SerializedName("anonymous_to_peers")
+        @SerialName("anonymous_to_peers")
         val anonymousToPeers: Boolean,
-        @SerializedName("course_id")
+        @SerialName("course_id")
         val courseId: String,
-        @SerializedName("topic_id")
+        @SerialName("topic_id")
         val topicId: String,
-        @SerializedName("group_id")
+        @SerialName("group_id")
         val groupId: String?,
-        @SerializedName("group_name")
+        @SerialName("group_name")
         val groupName: String?,
-        @SerializedName("type")
+        @SerialName("type")
         val type: String,
-        @SerializedName("preview_body")
+        @SerialName("preview_body")
         val previewBody: String,
-        @SerializedName("abuse_flagged_count")
+        @SerialName("abuse_flagged_count")
         val abuseFlaggedCount: Any?,
-        @SerializedName("title")
+        @SerialName("title")
         val title: String,
-        @SerializedName("pinned")
+        @SerialName("pinned")
         val pinned: Boolean,
-        @SerializedName("closed")
+        @SerialName("closed")
         val closed: Boolean,
-        @SerializedName("following")
+        @SerialName("following")
         val following: Boolean,
-        @SerializedName("comment_count")
+        @SerialName("comment_count")
         val commentCount: Int,
-        @SerializedName("unread_comment_count")
+        @SerialName("unread_comment_count")
         val unreadCommentCount: Int,
-        @SerializedName("read")
+        @SerialName("read")
         val read: Boolean,
-        @SerializedName("has_endorsed")
+        @SerialName("has_endorsed")
         val hasEndorsed: Boolean,
-        @SerializedName("response_count")
+        @SerialName("response_count")
         val responseCount: Int,
-        @SerializedName("users")
+        @SerialName("users")
         val users: Map<String, DiscussionProfile>?
     ) {
         data class DiscussionProfile(
-            @SerializedName("profile")
+            @SerialName("profile")
             val profile: ProfileResponse
         ) {
             fun mapToDomain(): org.openedx.discussion.domain.model.DiscussionProfile {
@@ -90,7 +91,7 @@ data class ThreadsResponse(
         }
 
         data class ProfileResponse(
-            @SerializedName("image")
+            @SerialName("image")
             val image: ProfileImage
         )
 

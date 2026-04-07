@@ -1,6 +1,7 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.EnrolledCourseEntity
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.EnrolledCourse
@@ -8,23 +9,23 @@ import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.Progress as ProgressDomain
 
 data class EnrolledCourse(
-    @SerializedName("audit_access_expires")
+    @SerialName("audit_access_expires")
     val auditAccessExpires: String?,
-    @SerializedName("created")
+    @SerialName("created")
     val created: String?,
-    @SerializedName("mode")
+    @SerialName("mode")
     val mode: String?,
-    @SerializedName("is_active")
+    @SerialName("is_active")
     val isActive: Boolean?,
-    @SerializedName("course")
+    @SerialName("course")
     val course: EnrolledCourseData?,
-    @SerializedName("certificate")
+    @SerialName("certificate")
     val certificate: Certificate?,
-    @SerializedName("course_progress")
+    @SerialName("course_progress")
     val progress: Progress?,
-    @SerializedName("course_status")
+    @SerialName("course_status")
     val courseStatus: CourseStatus?,
-    @SerializedName("course_assignments")
+    @SerialName("course_assignments")
     val courseAssignments: CourseAssignments?
 ) {
     fun mapToDomain(): EnrolledCourse {

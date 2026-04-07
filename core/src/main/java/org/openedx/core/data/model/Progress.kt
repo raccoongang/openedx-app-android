@@ -1,13 +1,14 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.Progress
 
 data class Progress(
-    @SerializedName("assignments_completed")
+    @SerialName("assignments_completed")
     val assignmentsCompleted: Int?,
-    @SerializedName("total_assignments_count")
+    @SerialName("total_assignments_count")
     val totalAssignmentsCount: Int?,
 ) {
     fun mapToDomain() = Progress(

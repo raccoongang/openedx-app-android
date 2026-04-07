@@ -1,8 +1,9 @@
 package org.openedx.discussion.data.model.request
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class VoteBody(
-    @SerializedName("voted")
+    @SerialName("voted")
     val voted: Boolean
 )

@@ -1,18 +1,19 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.ProfileImage
 
 data class ProfileImage(
-    @SerializedName("image_url_full")
+    @SerialName("image_url_full")
     val imageUrlFull: String?,
-    @SerializedName("image_url_large")
+    @SerialName("image_url_large")
     val imageUrlLarge: String?,
-    @SerializedName("image_url_medium")
+    @SerialName("image_url_medium")
     val imageUrlMedium: String?,
-    @SerializedName("image_url_small")
+    @SerialName("image_url_small")
     val imageUrlSmall: String?,
-    @SerializedName("has_image")
+    @SerialName("has_image")
     val hasImage: Boolean?,
 ) {
 

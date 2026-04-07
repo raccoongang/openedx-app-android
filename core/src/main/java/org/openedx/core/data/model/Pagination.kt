@@ -1,16 +1,17 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.Pagination as domainPagination
 
 data class Pagination(
-    @SerializedName("count")
+    @SerialName("count")
     val count: Int?,
-    @SerializedName("next")
+    @SerialName("next")
     val next: String?,
-    @SerializedName("num_pages")
+    @SerialName("num_pages")
     val numPages: Int?,
-    @SerializedName("previous")
+    @SerialName("previous")
     val previous: String?,
 ) {
     fun mapToDomain() = domainPagination(

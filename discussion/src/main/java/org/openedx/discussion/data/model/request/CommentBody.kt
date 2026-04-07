@@ -1,12 +1,13 @@
 package org.openedx.discussion.data.model.request
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class CommentBody(
-    @SerializedName("thread_id")
+    @SerialName("thread_id")
     val threadId: String,
-    @SerializedName("raw_body")
+    @SerialName("raw_body")
     val rawBody: String,
-    @SerializedName("parent_id")
+    @SerialName("parent_id")
     val parentId: String?
 )

@@ -1,32 +1,33 @@
 package org.openedx.auth.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.RegistrationField
 import org.openedx.core.domain.model.RegistrationFieldType
 
 data class RegistrationFields(
-    @SerializedName("fields")
+    @SerialName("fields")
     val fields: List<Field>?,
 ) {
 
     data class Field(
-        @SerializedName("name")
+        @SerialName("name")
         val name: String?,
-        @SerializedName("label")
+        @SerialName("label")
         val label: String?,
-        @SerializedName("type")
+        @SerialName("type")
         val type: String?,
-        @SerializedName("placeholder")
+        @SerialName("placeholder")
         val placeholder: String?,
-        @SerializedName("instructions")
+        @SerialName("instructions")
         val instructions: String?,
-        @SerializedName("exposed")
+        @SerialName("exposed")
         val exposed: Boolean?,
-        @SerializedName("required")
+        @SerialName("required")
         val required: Boolean?,
-        @SerializedName("restrictions")
+        @SerialName("restrictions")
         val restrictions: Restrictions?,
-        @SerializedName("options")
+        @SerialName("options")
         val options: List<Option>?
     ) {
         fun mapToDomain(): RegistrationField {
@@ -45,9 +46,9 @@ data class RegistrationFields(
     }
 
     data class Restrictions(
-        @SerializedName("max_length")
+        @SerialName("max_length")
         val maxLength: Int?,
-        @SerializedName("min_length")
+        @SerialName("min_length")
         val minLength: Int?
     ) {
         fun mapToDomain(): RegistrationField.Restrictions {
@@ -59,11 +60,11 @@ data class RegistrationFields(
     }
 
     data class Option(
-        @SerializedName("value")
+        @SerialName("value")
         val value: String?,
-        @SerializedName("name")
+        @SerialName("name")
         val name: String?,
-        @SerializedName("default")
+        @SerialName("default")
         val default: String?
     ) {
         fun mapToDomain(): RegistrationField.Option {

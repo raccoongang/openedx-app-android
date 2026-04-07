@@ -1,11 +1,12 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CertificateDb
 import org.openedx.core.domain.model.Certificate
 
 data class Certificate(
-    @SerializedName("url")
+    @SerialName("url")
     val certificateURL: String?
 ) {
     fun mapToDomain(): Certificate {

@@ -1,15 +1,16 @@
 package org.openedx.discussion.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.Pagination
 import org.openedx.core.data.model.ProfileImage
 import org.openedx.discussion.domain.model.CommentsData
 import org.openedx.discussion.domain.model.DiscussionComment
 
 data class CommentsResponse(
-    @SerializedName("results")
+    @SerialName("results")
     val results: List<CommentResult>,
-    @SerializedName("pagination")
+    @SerialName("pagination")
     val pagination: Pagination
 ) {
     fun mapToDomain(): CommentsData {
@@ -21,51 +22,51 @@ data class CommentsResponse(
 }
 
 data class CommentResult(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("author")
+    @SerialName("author")
     val author: String,
-    @SerializedName("author_label")
+    @SerialName("author_label")
     val authorLabel: String?,
-    @SerializedName("created_at")
+    @SerialName("created_at")
     val createdAt: String,
-    @SerializedName("updated_at")
+    @SerialName("updated_at")
     val updatedAt: String,
-    @SerializedName("raw_body")
+    @SerialName("raw_body")
     val rawBody: String,
-    @SerializedName("rendered_body")
+    @SerialName("rendered_body")
     val renderedBody: String,
-    @SerializedName("abuse_flagged")
+    @SerialName("abuse_flagged")
     val abuseFlagged: Boolean,
-    @SerializedName("voted")
+    @SerialName("voted")
     val voted: Boolean,
-    @SerializedName("vote_count")
+    @SerialName("vote_count")
     val voteCount: Int,
-    @SerializedName("editable_fields")
+    @SerialName("editable_fields")
     val editableFields: List<String>,
-    @SerializedName("can_delete")
+    @SerialName("can_delete")
     val canDelete: Boolean,
-    @SerializedName("thread_id")
+    @SerialName("thread_id")
     val threadId: String,
-    @SerializedName("parent_id")
+    @SerialName("parent_id")
     val parentId: String?,
-    @SerializedName("endorsed")
+    @SerialName("endorsed")
     val endorsed: Boolean,
-    @SerializedName("endorsed_by")
+    @SerialName("endorsed_by")
     val endorsedBy: String?,
-    @SerializedName("endorsed_by_label")
+    @SerialName("endorsed_by_label")
     val endorsedByLabel: String?,
-    @SerializedName("endorsed_at")
+    @SerialName("endorsed_at")
     val endorsedAt: String?,
-    @SerializedName("child_count")
+    @SerialName("child_count")
     val childCount: Int,
-    @SerializedName("children")
+    @SerialName("children")
     val children: List<String>,
-    @SerializedName("abuse_flagged_any_user")
+    @SerialName("abuse_flagged_any_user")
     val abuseFlaggedAnyUser: String?,
-    @SerializedName("profile_image")
+    @SerialName("profile_image")
     val profileImage: ProfileImage?,
-    @SerializedName("users")
+    @SerialName("users")
     val users: Map<String, ThreadsResponse.Thread.DiscussionProfile>?
 ) {
     fun mapToDomain(): DiscussionComment {

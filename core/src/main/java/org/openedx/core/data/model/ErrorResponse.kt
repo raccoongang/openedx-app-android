@@ -1,10 +1,13 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
+@Serializable
 data class ErrorResponse(
-    @SerializedName("error", alternate = ["error_code"])
-    val error: String?,
-    @SerializedName("error_description", alternate = ["value", "developer_message"])
-    val errorDescription: String?
+    @JsonNames("error", "error_code")
+    val error: String? = null,
+    @JsonNames("error_description", "value", "developer_message")
+    val errorDescription: String? = null,
 )

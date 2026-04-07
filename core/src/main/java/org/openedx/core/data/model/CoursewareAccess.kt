@@ -1,21 +1,22 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CoursewareAccessDb
 import org.openedx.core.domain.model.CoursewareAccess
 
 data class CoursewareAccess(
-    @SerializedName("has_access")
+    @SerialName("has_access")
     val hasAccess: Boolean?,
-    @SerializedName("error_code")
+    @SerialName("error_code")
     val errorCode: String?,
-    @SerializedName("developer_message")
+    @SerialName("developer_message")
     val developerMessage: String?,
-    @SerializedName("user_message")
+    @SerialName("user_message")
     val userMessage: String?,
-    @SerializedName("additional_context_user_message")
+    @SerialName("additional_context_user_message")
     val additionalContextUserMessage: String?,
-    @SerializedName("user_fragment")
+    @SerialName("user_fragment")
     val userFragment: String?
 ) {
 

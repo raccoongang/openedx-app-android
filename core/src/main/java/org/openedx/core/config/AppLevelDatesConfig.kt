@@ -1,8 +1,9 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class AppLevelDatesConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     val isEnabled: Boolean = true,
 )

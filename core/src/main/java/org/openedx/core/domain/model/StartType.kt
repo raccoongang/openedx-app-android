@@ -1,23 +1,24 @@
 package org.openedx.core.domain.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 enum class StartType(val type: String) {
     /**
      * Course's start date is provided as an unformatted string
      */
-    @SerializedName("string")
+    @SerialName("string")
     STRING("string"),
 
     /**
      * Course's start date is provided as a date-formatted string
      */
-    @SerializedName("timestamp")
+    @SerialName("timestamp")
     TIMESTAMP("timestamp"),
 
     /**
      * Course's start date is unset
      */
-    @SerializedName("empty")
+    @SerialName("empty")
     EMPTY("empty")
 }

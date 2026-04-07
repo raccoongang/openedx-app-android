@@ -1,7 +1,8 @@
 package org.openedx.core.data.model
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 import org.openedx.core.data.model.room.discovery.CourseDateBlockDb
 import org.openedx.core.domain.model.CourseDateBlock
@@ -9,26 +10,26 @@ import org.openedx.core.utils.TimeUtils
 
 @Parcelize
 data class CourseDateBlock(
-    @SerializedName("complete")
+    @SerialName("complete")
     val complete: Boolean = false,
-    @SerializedName("date")
+    @SerialName("date")
     val date: String = "", // ISO 8601 compliant format
-    @SerializedName("assignment_type")
+    @SerialName("assignment_type")
     val assignmentType: String? = "",
-    @SerializedName("date_type")
+    @SerialName("date_type")
     val dateType: DateType = DateType.NONE,
-    @SerializedName("description")
+    @SerialName("description")
     val description: String = "",
-    @SerializedName("learner_has_access")
+    @SerialName("learner_has_access")
     val learnerHasAccess: Boolean = false,
-    @SerializedName("link")
+    @SerialName("link")
     val link: String = "",
-    @SerializedName("link_text")
+    @SerialName("link_text")
     val linkText: String = "",
-    @SerializedName("title")
+    @SerialName("title")
     val title: String = "",
     // component blockId in-case of navigating inside the app for component available in mobile
-    @SerializedName("first_component_block_id")
+    @SerialName("first_component_block_id")
     val blockId: String = "",
 ) : Parcelable {
     fun mapToDomain(): CourseDateBlock? {

@@ -1,9 +1,10 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class DashboardConfig(
-    @SerializedName("TYPE")
+    @SerialName("TYPE")
     private val viewType: String = DashboardType.GALLERY.name,
 ) {
     fun getType(): DashboardType {

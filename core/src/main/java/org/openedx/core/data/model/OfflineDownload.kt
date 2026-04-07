@@ -1,15 +1,16 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.OfflineDownloadDb
 import org.openedx.core.domain.model.OfflineDownload
 
 data class OfflineDownload(
-    @SerializedName("file_url")
+    @SerialName("file_url")
     var fileUrl: String?,
-    @SerializedName("last_modified")
+    @SerialName("last_modified")
     var lastModified: String?,
-    @SerializedName("file_size")
+    @SerialName("file_size")
     var fileSize: Long?,
 ) {
     fun mapToDomain() = OfflineDownload(

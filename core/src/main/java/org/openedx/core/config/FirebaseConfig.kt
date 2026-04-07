@@ -1,23 +1,24 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class FirebaseConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     val enabled: Boolean = false,
 
-    @SerializedName("CLOUD_MESSAGING_ENABLED")
+    @SerialName("CLOUD_MESSAGING_ENABLED")
     val isCloudMessagingEnabled: Boolean = false,
 
-    @SerializedName("PROJECT_NUMBER")
+    @SerialName("PROJECT_NUMBER")
     val projectNumber: String = "",
 
-    @SerializedName("PROJECT_ID")
+    @SerialName("PROJECT_ID")
     val projectId: String = "",
 
-    @SerializedName("APPLICATION_ID")
+    @SerialName("APPLICATION_ID")
     val applicationId: String = "",
 
-    @SerializedName("API_KEY")
+    @SerialName("API_KEY")
     val apiKey: String = "",
 )

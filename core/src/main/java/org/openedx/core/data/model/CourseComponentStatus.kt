@@ -1,10 +1,11 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseComponentStatus
 
 data class CourseComponentStatus(
-    @SerializedName("last_visited_block_id")
+    @SerialName("last_visited_block_id")
     var lastVisitedBlockId: String?,
 ) {
 

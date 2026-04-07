@@ -1,12 +1,13 @@
 package org.openedx.whatsnew.data.model
 
 import android.content.Context
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class WhatsNewItem(
-    @SerializedName("version")
+    @SerialName("version")
     val version: String,
-    @SerializedName("messages")
+    @SerialName("messages")
     val messages: List<WhatsNewMessage>
 ) {
     fun mapToDomain(context: Context) = org.openedx.whatsnew.domain.model.WhatsNewItem(

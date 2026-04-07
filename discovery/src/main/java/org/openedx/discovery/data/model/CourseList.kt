@@ -1,11 +1,12 @@
 package org.openedx.discovery.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.Pagination
 
 data class CourseList(
-    @SerializedName("pagination")
+    @SerialName("pagination")
     val pagination: Pagination,
-    @SerializedName("results")
+    @SerialName("results")
     val results: List<CourseDetails>?,
 )

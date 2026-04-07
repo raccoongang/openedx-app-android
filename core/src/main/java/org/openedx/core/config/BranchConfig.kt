@@ -1,20 +1,21 @@
 package org.openedx.core.config
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class BranchConfig(
-    @SerializedName("ENABLED")
+    @SerialName("ENABLED")
     val enabled: Boolean = false,
 
-    @SerializedName("KEY")
+    @SerialName("KEY")
     val key: String = "",
 
-    @SerializedName("URI_SCHEME")
+    @SerialName("URI_SCHEME")
     val uriScheme: String = "",
 
-    @SerializedName("HOST")
+    @SerialName("HOST")
     val host: String = "",
 
-    @SerializedName("ALTERNATE_HOST")
+    @SerialName("ALTERNATE_HOST")
     val alternateHost: String = "",
 )

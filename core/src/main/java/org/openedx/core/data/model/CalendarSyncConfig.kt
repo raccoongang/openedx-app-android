@@ -1,10 +1,11 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesCalendarSync
 
 data class CalendarSyncConfig(
-    @SerializedName("android")
+    @SerialName("android")
     val platformConfig: CalendarSyncPlatform = CalendarSyncPlatform(),
 ) {
     fun mapToDomain(): CourseDatesCalendarSync {
@@ -18,12 +19,12 @@ data class CalendarSyncConfig(
 }
 
 data class CalendarSyncPlatform(
-    @SerializedName("enabled")
+    @SerialName("enabled")
     val enabled: Boolean = false,
-    @SerializedName("self_paced_enabled")
+    @SerialName("self_paced_enabled")
     val selfPacedEnabled: Boolean = false,
-    @SerializedName("instructor_paced_enabled")
+    @SerialName("instructor_paced_enabled")
     val instructorPacedEnabled: Boolean = false,
-    @SerializedName("deep_links_enabled")
+    @SerialName("deep_links_enabled")
     val deepLinksEnabled: Boolean = false,
 )

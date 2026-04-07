@@ -1,6 +1,7 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesBannerInfo
 import org.openedx.core.domain.model.CourseDatesResult
 import org.openedx.core.domain.model.DatesSection
@@ -12,11 +13,11 @@ import java.util.Date
 import org.openedx.core.domain.model.CourseDateBlock as DomainCourseDateBlock
 
 data class CourseDates(
-    @SerializedName("course_date_blocks")
+    @SerialName("course_date_blocks")
     val courseDateBlocks: List<CourseDateBlock>,
-    @SerializedName("dates_banner_info")
+    @SerialName("dates_banner_info")
     val datesBannerInfo: DatesBannerInfo?,
-    @SerializedName("has_ended")
+    @SerialName("has_ended")
     val hasEnded: Boolean?,
 ) {
     fun getCourseDatesResult(): CourseDatesResult {

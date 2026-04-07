@@ -1,16 +1,17 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.User
 
 data class User(
-    @SerializedName("id")
+    @SerialName("id")
     val id: Long,
-    @SerializedName("username")
+    @SerialName("username")
     val username: String?,
-    @SerializedName("email")
+    @SerialName("email")
     val email: String?,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String?
 ) {
     fun mapToDomain(): User {

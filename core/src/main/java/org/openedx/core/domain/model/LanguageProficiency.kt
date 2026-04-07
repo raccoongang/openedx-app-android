@@ -1,11 +1,12 @@
 package org.openedx.core.domain.model
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LanguageProficiency(
-    @SerializedName("code")
+    @SerialName("code")
     val code: String
 ) : Parcelable

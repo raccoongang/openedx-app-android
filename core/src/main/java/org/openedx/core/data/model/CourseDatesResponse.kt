@@ -1,24 +1,25 @@
 package org.openedx.core.data.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.CourseDate as DomainCourseDate
 import org.openedx.core.domain.model.CourseDatesResponse as DomainCourseDatesResponse
 
 data class CourseDate(
-    @SerializedName("course_id")
+    @SerialName("course_id")
     val courseId: String,
-    @SerializedName("first_component_block_id")
+    @SerialName("first_component_block_id")
     val firstComponentBlockId: String?,
-    @SerializedName("due_date")
+    @SerialName("due_date")
     val dueDate: String?,
-    @SerializedName("assignment_title")
+    @SerialName("assignment_title")
     val assignmentTitle: String?,
-    @SerializedName("learner_has_access")
+    @SerialName("learner_has_access")
     val learnerHasAccess: Boolean?,
-    @SerializedName("relative")
+    @SerialName("relative")
     val relative: Boolean?,
-    @SerializedName("course_name")
+    @SerialName("course_name")
     val courseName: String?
 ) {
     fun mapToDomain(): DomainCourseDate? {
@@ -36,13 +37,13 @@ data class CourseDate(
 }
 
 data class CourseDatesResponse(
-    @SerializedName("count")
+    @SerialName("count")
     val count: Int,
-    @SerializedName("next")
+    @SerialName("next")
     val next: String?,
-    @SerializedName("previous")
+    @SerialName("previous")
     val previous: String?,
-    @SerializedName("results")
+    @SerialName("results")
     val results: List<CourseDate>
 ) {
     fun mapToDomain(): DomainCourseDatesResponse {

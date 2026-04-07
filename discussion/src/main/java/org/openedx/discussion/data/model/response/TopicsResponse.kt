@@ -1,23 +1,24 @@
 package org.openedx.discussion.data.model.response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.openedx.discussion.domain.model.TopicsData
 
 data class TopicsResponse(
-    @SerializedName("courseware_topics")
+    @SerialName("courseware_topics")
     val coursewareTopics: List<Topic>?,
-    @SerializedName("non_courseware_topics")
+    @SerialName("non_courseware_topics")
     val nonCoursewareTopics: List<Topic>?
 ) {
 
     data class Topic(
-        @SerializedName("id")
+        @SerialName("id")
         val id: String?,
-        @SerializedName("name")
+        @SerialName("name")
         val name: String?,
-        @SerializedName("thread_list_url")
+        @SerialName("thread_list_url")
         val threadListUrl: String?,
-        @SerializedName("children")
+        @SerialName("children")
         val children: List<Topic>?
     ) {
         fun mapToDomain(): org.openedx.discussion.domain.model.Topic {
