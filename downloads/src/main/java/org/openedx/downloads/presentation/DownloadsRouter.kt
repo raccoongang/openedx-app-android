@@ -1,13 +1,12 @@
 package org.openedx.downloads.presentation
 
-import androidx.fragment.app.FragmentManager
 
 interface DownloadsRouter {
 
-    fun navigateToSettings(fm: FragmentManager)
+    fun navigateToSettings(fm: Any?)
 
     fun navigateToCourseOutline(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         courseTitle: String,
     )

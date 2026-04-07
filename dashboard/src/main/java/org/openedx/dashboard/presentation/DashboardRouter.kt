@@ -1,23 +1,22 @@
 package org.openedx.dashboard.presentation
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 
 interface DashboardRouter {
 
     fun navigateToCourseOutline(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         courseTitle: String,
         openTab: String,
         resumeBlockId: String
     )
 
-    fun navigateToSettings(fm: FragmentManager)
+    fun navigateToSettings(fm: Any?)
 
-    fun navigateToCourseSearch(fm: FragmentManager, querySearch: String)
+    fun navigateToCourseSearch(fm: Any?, querySearch: String)
 
-    fun navigateToAllEnrolledCourses(fm: FragmentManager)
+    fun navigateToAllEnrolledCourses(fm: Any?)
 
     fun getProgramFragment(): Fragment
 }

@@ -1,18 +1,17 @@
 package org.openedx.course.presentation
 
-import androidx.fragment.app.FragmentManager
 import org.openedx.course.presentation.handouts.HandoutsType
 import org.openedx.course.presentation.unit.container.CourseViewMode
 
 interface CourseRouter {
 
     fun navigateToNoAccess(
-        fm: FragmentManager,
+        fm: Any?,
         title: String
     )
 
     fun navigateToCourseSubsections(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         subSectionId: String,
         unitId: String = "",
@@ -21,7 +20,7 @@ interface CourseRouter {
     )
 
     fun navigateToCourseContainer(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         unitId: String,
         componentId: String = "",
@@ -29,7 +28,7 @@ interface CourseRouter {
     )
 
     fun replaceCourseContainer(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         unitId: String,
         componentId: String = "",
@@ -37,7 +36,7 @@ interface CourseRouter {
     )
 
     fun navigateToFullScreenVideo(
-        fm: FragmentManager,
+        fm: Any?,
         videoUrl: String,
         videoTime: Long,
         blockId: String,
@@ -46,7 +45,7 @@ interface CourseRouter {
     )
 
     fun navigateToFullScreenYoutubeVideo(
-        fm: FragmentManager,
+        fm: Any?,
         videoUrl: String,
         videoTime: Long,
         blockId: String,
@@ -55,12 +54,12 @@ interface CourseRouter {
     )
 
     fun navigateToHandoutsWebView(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         type: HandoutsType
     )
 
-    fun navigateToDownloadQueue(fm: FragmentManager, descendants: List<String> = arrayListOf())
+    fun navigateToDownloadQueue(fm: Any?, descendants: List<String> = arrayListOf())
 
-    fun navigateToDiscover(fm: FragmentManager)
+    fun navigateToDiscover(fm: Any?)
 }

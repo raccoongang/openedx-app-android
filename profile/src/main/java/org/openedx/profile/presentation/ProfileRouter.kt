@@ -1,26 +1,25 @@
 package org.openedx.profile.presentation
 
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.presentation.settings.video.VideoQualityType
 import org.openedx.profile.domain.model.Account
 
 interface ProfileRouter {
 
-    fun navigateToEditProfile(fm: FragmentManager, account: Account)
+    fun navigateToEditProfile(fm: Any?, account: Account)
 
-    fun navigateToDeleteAccount(fm: FragmentManager)
+    fun navigateToDeleteAccount(fm: Any?)
 
-    fun navigateToSettings(fm: FragmentManager)
+    fun navigateToSettings(fm: Any?)
 
-    fun restartApp(fm: FragmentManager, isLogistrationEnabled: Boolean)
+    fun restartApp(fm: Any?, isLogistrationEnabled: Boolean)
 
-    fun navigateToVideoSettings(fm: FragmentManager)
+    fun navigateToVideoSettings(fm: Any?)
 
-    fun navigateToVideoQuality(fm: FragmentManager, videoQualityType: VideoQualityType)
+    fun navigateToVideoQuality(fm: Any?, videoQualityType: VideoQualityType)
 
-    fun navigateToWebContent(fm: FragmentManager, title: String, url: String)
+    fun navigateToWebContent(fm: Any?, title: String, url: String)
 
-    fun navigateToManageAccount(fm: FragmentManager)
+    fun navigateToManageAccount(fm: Any?)
 
-    fun navigateToCoursesToSync(fm: FragmentManager)
+    fun navigateToCoursesToSync(fm: Any?)
 }

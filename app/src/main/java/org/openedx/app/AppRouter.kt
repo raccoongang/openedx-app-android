@@ -75,62 +75,62 @@ class AppRouter :
 
     // region AuthRouter
     override fun navigateToMain(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String?,
         infoType: String?,
         openTab: String
     ) {
         try {
-            fm.popBackStack()
-            fm.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance(courseId, infoType, openTab))
-                .commit()
+            (fm as? FragmentManager)?.popBackStack()
+            (fm as? FragmentManager)?.beginTransaction()
+                ?.replace(R.id.container, MainFragment.newInstance(courseId, infoType, openTab))
+                ?.commit()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    override fun navigateToSignIn(fm: FragmentManager, courseId: String?, infoType: String?) {
+    override fun navigateToSignIn(fm: Any?, courseId: String?, infoType: String?) {
         replaceFragmentWithBackStack(fm, SignInFragment.newInstance(courseId, infoType))
     }
 
-    override fun navigateToSignUp(fm: FragmentManager, courseId: String?, infoType: String?) {
+    override fun navigateToSignUp(fm: Any?, courseId: String?, infoType: String?) {
         replaceFragmentWithBackStack(fm, SignUpFragment.newInstance(courseId, infoType))
     }
 
-    override fun navigateToLogistration(fm: FragmentManager, courseId: String?) {
+    override fun navigateToLogistration(fm: Any?, courseId: String?) {
         replaceFragmentWithBackStack(fm, LogistrationFragment.newInstance(courseId))
     }
 
-    override fun navigateToDownloadQueue(fm: FragmentManager, descendants: List<String>) {
+    override fun navigateToDownloadQueue(fm: Any?, descendants: List<String>) {
         replaceFragmentWithBackStack(fm, DownloadQueueFragment.newInstance(descendants))
     }
 
-    override fun navigateToRestorePassword(fm: FragmentManager) {
+    override fun navigateToRestorePassword(fm: Any?) {
         replaceFragmentWithBackStack(fm, RestorePasswordFragment())
     }
 
-    override fun navigateToNativeDiscoverCourses(fm: FragmentManager, querySearch: String) {
+    override fun navigateToNativeDiscoverCourses(fm: Any?, querySearch: String) {
         replaceFragmentWithBackStack(fm, NativeDiscoveryFragment.newInstance(querySearch))
     }
 
-    override fun navigateToWebDiscoverCourses(fm: FragmentManager, querySearch: String) {
+    override fun navigateToWebDiscoverCourses(fm: Any?, querySearch: String) {
         replaceFragmentWithBackStack(fm, WebViewDiscoveryFragment.newInstance(querySearch))
     }
 
-    override fun navigateToWhatsNew(fm: FragmentManager, courseId: String?, infoType: String?) {
+    override fun navigateToWhatsNew(fm: Any?, courseId: String?, infoType: String?) {
         try {
-            fm.popBackStack()
-            fm.beginTransaction()
-                .replace(R.id.container, WhatsNewFragment.newInstance(courseId, infoType))
-                .commit()
+            (fm as? FragmentManager)?.popBackStack()
+            (fm as? FragmentManager)?.beginTransaction()
+                ?.replace(R.id.container, WhatsNewFragment.newInstance(courseId, infoType))
+                ?.commit()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    override fun clearBackStack(fm: FragmentManager) {
-        fm.apply {
+    override fun clearBackStack(fm: Any?) {
+        (fm as? FragmentManager)?.apply {
             try {
                 for (fragment in fragments) {
                     beginTransaction().remove(fragment).commit()
@@ -144,19 +144,19 @@ class AppRouter :
     // endregion
 
     // region DiscoveryRouter
-    override fun navigateToCourseDetail(fm: FragmentManager, courseId: String) {
+    override fun navigateToCourseDetail(fm: Any?, courseId: String) {
         replaceFragmentWithBackStack(fm, CourseDetailsFragment.newInstance(courseId))
     }
 
-    override fun navigateToCourseSearch(fm: FragmentManager, querySearch: String) {
+    override fun navigateToCourseSearch(fm: Any?, querySearch: String) {
         replaceFragmentWithBackStack(fm, CourseSearchFragment.newInstance(querySearch))
     }
 
-    override fun navigateToUpgradeRequired(fm: FragmentManager) {
+    override fun navigateToUpgradeRequired(fm: Any?) {
         replaceFragmentWithBackStack(fm, UpgradeRequiredFragment())
     }
 
-    override fun navigateToAllEnrolledCourses(fm: FragmentManager) {
+    override fun navigateToAllEnrolledCourses(fm: Any?) {
         replaceFragmentWithBackStack(fm, AllEnrolledCoursesFragment())
     }
 
@@ -165,7 +165,7 @@ class AppRouter :
     }
 
     override fun navigateToCourseInfo(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         infoType: String,
     ) {
@@ -173,7 +173,7 @@ class AppRouter :
     }
 
     override fun navigateToCourseOutline(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         courseTitle: String,
     ) {
@@ -187,7 +187,7 @@ class AppRouter :
     // region DashboardRouter
 
     override fun navigateToCourseOutline(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         courseTitle: String,
         openTab: String,
@@ -204,7 +204,7 @@ class AppRouter :
         )
     }
 
-    override fun navigateToEnrolledProgramInfo(fm: FragmentManager, pathId: String) {
+    override fun navigateToEnrolledProgramInfo(fm: Any?, pathId: String) {
         replaceFragmentWithBackStack(
             fm,
             ProgramFragment.newInstance(pathId = pathId, isNestedFragment = false)
@@ -212,7 +212,7 @@ class AppRouter :
     }
 
     override fun navigateToNoAccess(
-        fm: FragmentManager,
+        fm: Any?,
         title: String,
     ) {
         replaceFragment(fm, NoAccessCourseContainerFragment.newInstance(title))
@@ -222,7 +222,7 @@ class AppRouter :
     // region CourseRouter
 
     override fun navigateToCourseSubsections(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         subSectionId: String,
         unitId: String,
@@ -242,7 +242,7 @@ class AppRouter :
     }
 
     override fun navigateToCourseContainer(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         unitId: String,
         componentId: String,
@@ -260,7 +260,7 @@ class AppRouter :
     }
 
     override fun replaceCourseContainer(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         unitId: String,
         componentId: String,
@@ -279,7 +279,7 @@ class AppRouter :
     }
 
     override fun navigateToFullScreenVideo(
-        fm: FragmentManager,
+        fm: Any?,
         videoUrl: String,
         videoTime: Long,
         blockId: String,
@@ -293,7 +293,7 @@ class AppRouter :
     }
 
     override fun navigateToFullScreenYoutubeVideo(
-        fm: FragmentManager,
+        fm: Any?,
         videoUrl: String,
         videoTime: Long,
         blockId: String,
@@ -313,7 +313,7 @@ class AppRouter :
     }
 
     override fun navigateToHandoutsWebView(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         type: HandoutsType,
     ) {
@@ -326,7 +326,7 @@ class AppRouter :
 
     // region DiscussionRouter
     override fun navigateToDiscussionThread(
-        fm: FragmentManager,
+        fm: Any?,
         action: String,
         courseId: String,
         topicId: String,
@@ -339,7 +339,7 @@ class AppRouter :
         )
     }
 
-    override fun navigateToDiscussionComments(fm: FragmentManager, thread: Thread) {
+    override fun navigateToDiscussionComments(fm: Any?, thread: Thread) {
         replaceFragmentWithBackStack(
             fm,
             DiscussionCommentsFragment.newInstance(thread)
@@ -347,7 +347,7 @@ class AppRouter :
     }
 
     override fun navigateToDiscussionResponses(
-        fm: FragmentManager,
+        fm: Any?,
         comment: DiscussionComment,
         isClosed: Boolean,
     ) {
@@ -358,7 +358,7 @@ class AppRouter :
     }
 
     override fun navigateToAddThread(
-        fm: FragmentManager,
+        fm: Any?,
         topicId: String,
         courseId: String,
     ) {
@@ -368,7 +368,7 @@ class AppRouter :
         )
     }
 
-    override fun navigateToSearchThread(fm: FragmentManager, courseId: String) {
+    override fun navigateToSearchThread(fm: Any?, courseId: String) {
         replaceFragmentWithBackStack(
             fm,
             DiscussionSearchThreadFragment.newInstance(courseId)
@@ -376,7 +376,7 @@ class AppRouter :
     }
 
     override fun navigateToAnothersProfile(
-        fm: FragmentManager,
+        fm: Any?,
         username: String,
     ) {
         replaceFragmentWithBackStack(
@@ -387,23 +387,23 @@ class AppRouter :
     // endregion
 
     // region ProfileRouter
-    override fun navigateToEditProfile(fm: FragmentManager, account: Account) {
+    override fun navigateToEditProfile(fm: Any?, account: Account) {
         replaceFragmentWithBackStack(fm, EditProfileFragment.newInstance(account))
     }
 
-    override fun navigateToDeleteAccount(fm: FragmentManager) {
+    override fun navigateToDeleteAccount(fm: Any?) {
         replaceFragmentWithBackStack(fm, DeleteProfileFragment())
     }
 
-    override fun navigateToSettings(fm: FragmentManager) {
+    override fun navigateToSettings(fm: Any?) {
         replaceFragmentWithBackStack(
             fm,
             SettingsFragment()
         )
     }
 
-    override fun restartApp(fm: FragmentManager, isLogistrationEnabled: Boolean) {
-        fm.apply {
+    override fun restartApp(fm: Any?, isLogistrationEnabled: Boolean) {
+        (fm as? FragmentManager)?.apply {
             clearBackStack(this)
             if (isLogistrationEnabled) {
                 replaceFragment(fm, LogistrationFragment())
@@ -413,47 +413,49 @@ class AppRouter :
         }
     }
 
-    override fun navigateToVideoSettings(fm: FragmentManager) {
+    override fun navigateToVideoSettings(fm: Any?) {
         replaceFragmentWithBackStack(fm, VideoSettingsFragment())
     }
 
-    override fun navigateToVideoQuality(fm: FragmentManager, videoQualityType: VideoQualityType) {
+    override fun navigateToVideoQuality(fm: Any?, videoQualityType: VideoQualityType) {
         replaceFragmentWithBackStack(fm, VideoQualityFragment.newInstance(videoQualityType.name))
     }
 
-    override fun navigateToDiscover(fm: FragmentManager) {
-        fm.beginTransaction()
-            .replace(R.id.container, MainFragment.newInstance("", "", HomeTab.DISCOVER.name))
-            .commit()
+    override fun navigateToDiscover(fm: Any?) {
+        (fm as? FragmentManager)?.beginTransaction()
+            ?.replace(R.id.container, MainFragment.newInstance("", "", HomeTab.DISCOVER.name))
+            ?.commit()
     }
 
-    override fun navigateToWebContent(fm: FragmentManager, title: String, url: String) {
+    override fun navigateToWebContent(fm: Any?, title: String, url: String) {
         replaceFragmentWithBackStack(
             fm,
             WebContentFragment.newInstance(title = title, url = url)
         )
     }
 
-    override fun navigateToManageAccount(fm: FragmentManager) {
+    override fun navigateToManageAccount(fm: Any?) {
         replaceFragmentWithBackStack(fm, ManageAccountFragment())
     }
 
-    override fun navigateToCalendarSettings(fm: FragmentManager) {
+    override fun navigateToCalendarSettings(fm: Any?) {
         replaceFragmentWithBackStack(fm, CalendarFragment())
     }
 
-    override fun navigateToCoursesToSync(fm: FragmentManager) {
+    override fun navigateToCoursesToSync(fm: Any?) {
         replaceFragmentWithBackStack(fm, CoursesToSyncFragment())
     }
     // endregion
 
-    fun getVisibleFragment(fm: FragmentManager): Fragment? {
-        return fm.fragments.firstOrNull { it.isVisible }
+    fun getVisibleFragment(fm: Any?): Fragment? {
+        val fragmentManager = fm as? FragmentManager ?: return null
+        return fragmentManager.fragments.firstOrNull { it.isVisible }
     }
 
-    private fun replaceFragmentWithBackStack(fm: FragmentManager, fragment: Fragment) {
+    private fun replaceFragmentWithBackStack(fm: Any?, fragment: Fragment) {
+        val fragmentManager = fm as? FragmentManager ?: return
         try {
-            fm.beginTransaction()
+            fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment, fragment.javaClass.simpleName)
                 .addToBackStack(fragment.javaClass.simpleName)
                 .commit()
@@ -463,12 +465,13 @@ class AppRouter :
     }
 
     private fun replaceFragment(
-        fm: FragmentManager,
+        fm: Any?,
         fragment: Fragment,
         transaction: Int = FragmentTransaction.TRANSIT_NONE,
     ) {
+        val fragmentManager = fm as? FragmentManager ?: return
         try {
-            fm.beginTransaction()
+            fragmentManager.beginTransaction()
                 .setTransition(transaction)
                 .replace(R.id.container, fragment, fragment.javaClass.simpleName)
                 .commit()
@@ -478,12 +481,12 @@ class AppRouter :
     }
 
     // App upgrade
-    override fun navigateToUserProfile(fm: FragmentManager) {
+    override fun navigateToUserProfile(fm: Any?) {
         try {
-            fm.popBackStack()
-            fm.beginTransaction()
-                .replace(R.id.container, ProfileFragment())
-                .commit()
+            (fm as? FragmentManager)?.popBackStack()
+            (fm as? FragmentManager)?.beginTransaction()
+                ?.replace(R.id.container, ProfileFragment())
+                ?.commit()
         } catch (e: Exception) {
             e.printStackTrace()
         }

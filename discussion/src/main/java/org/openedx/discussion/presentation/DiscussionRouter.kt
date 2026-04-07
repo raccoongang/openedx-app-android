@@ -1,13 +1,12 @@
 package org.openedx.discussion.presentation
 
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.FragmentViewType
 import org.openedx.discussion.domain.model.DiscussionComment
 
 interface DiscussionRouter {
 
     fun navigateToDiscussionThread(
-        fm: FragmentManager,
+        fm: Any?,
         action: String,
         courseId: String,
         topicId: String,
@@ -16,29 +15,29 @@ interface DiscussionRouter {
     )
 
     fun navigateToDiscussionComments(
-        fm: FragmentManager,
+        fm: Any?,
         thread: org.openedx.discussion.domain.model.Thread
     )
 
     fun navigateToDiscussionResponses(
-        fm: FragmentManager,
+        fm: Any?,
         comment: DiscussionComment,
         isClosed: Boolean
     )
 
     fun navigateToAddThread(
-        fm: FragmentManager,
+        fm: Any?,
         topicId: String,
         courseId: String
     )
 
     fun navigateToSearchThread(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String
     )
 
     fun navigateToAnothersProfile(
-        fm: FragmentManager,
+        fm: Any?,
         username: String
     )
 }

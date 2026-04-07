@@ -1,30 +1,29 @@
 package org.openedx.discovery.presentation
 
-import androidx.fragment.app.FragmentManager
 
 interface DiscoveryRouter {
 
     fun navigateToCourseOutline(
-        fm: FragmentManager,
+        fm: Any?,
         courseId: String,
         courseTitle: String,
     )
 
-    fun navigateToLogistration(fm: FragmentManager, courseId: String?)
+    fun navigateToLogistration(fm: Any?, courseId: String?)
 
-    fun navigateToCourseDetail(fm: FragmentManager, courseId: String)
+    fun navigateToCourseDetail(fm: Any?, courseId: String)
 
-    fun navigateToCourseSearch(fm: FragmentManager, querySearch: String)
+    fun navigateToCourseSearch(fm: Any?, querySearch: String)
 
-    fun navigateToUpgradeRequired(fm: FragmentManager)
+    fun navigateToUpgradeRequired(fm: Any?)
 
-    fun navigateToCourseInfo(fm: FragmentManager, courseId: String, infoType: String)
+    fun navigateToCourseInfo(fm: Any?, courseId: String, infoType: String)
 
-    fun navigateToSignUp(fm: FragmentManager, courseId: String? = null, infoType: String? = null)
+    fun navigateToSignUp(fm: Any?, courseId: String? = null, infoType: String? = null)
 
-    fun navigateToSignIn(fm: FragmentManager, courseId: String?, infoType: String?)
+    fun navigateToSignIn(fm: Any?, courseId: String?, infoType: String?)
 
-    fun navigateToSettings(fm: FragmentManager)
+    fun navigateToSettings(fm: Any?)
 
-    fun navigateToEnrolledProgramInfo(fm: FragmentManager, pathId: String)
+    fun navigateToEnrolledProgramInfo(fm: Any?, pathId: String)
 }
