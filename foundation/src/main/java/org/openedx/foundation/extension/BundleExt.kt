@@ -3,8 +3,17 @@ package org.openedx.foundation.extension
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import com.google.gson.Gson
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.Serializable
+
+@PublishedApi
+internal val json = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    encodeDefaults = true
+    coerceInputValues = true
+}
 
 inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -33,23 +42,23 @@ inline fun <reified T : Parcelable> Bundle.parcelableArrayList(key: String): Arr
     }
 }
 
-fun <T> T.objectToString(): String {
-    return Gson().toJson(this)
+inline fun <reified T> T.objectToString(): String {
+    return json.encodeToString(this)
 }
 
 @JvmName("objectToStringFromValue")
-fun <T> objectToString(value: T): String {
-    return Gson().toJson(value)
+inline fun <reified T> objectToString(value: T): String {
+    return json.encodeToString(value)
 }
 
 inline fun <reified T> String.stringToObject(): T {
-    return Gson().fromJson(this, genericType<T>())
+    return json.decodeFromString(this)
 }
 
 @JvmName("stringToObjectFromJson")
-inline fun <reified T> stringToObject(json: String): T? {
+inline fun <reified T> stringToObject(jsonString: String): T? {
     return try {
-        Gson().fromJson(json, genericType<T>())
+        json.decodeFromString(jsonString)
     } catch (_: Exception) {
         null
     }

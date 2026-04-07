@@ -1,8 +1,8 @@
 package org.openedx.foundation.utils
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -11,6 +11,12 @@ class FileUtil(
     private val context: Context,
     private val dirName: String = "",
 ) {
+    @PublishedApi
+    internal val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        encodeDefaults = true
+    }
 
     fun getExternalAppDir(): File {
         val dir = if (dirName.isNotEmpty()) {
@@ -22,10 +28,10 @@ class FileUtil(
         return dir
     }
 
-    fun <T> saveObjectToFile(obj: T, fileName: String = "data.json") {
+    inline fun <reified T> saveObjectToFile(obj: T, fileName: String = "data.json") {
         val file = File(getExternalAppDir(), fileName)
         FileWriter(file).use { writer ->
-            Gson().toJson(obj, writer)
+            writer.write(json.encodeToString(obj))
         }
     }
 
@@ -34,7 +40,7 @@ class FileUtil(
         if (!file.exists()) return null
         return try {
             FileReader(file).use { reader ->
-                Gson().fromJson(reader, object : TypeToken<T>() {}.type)
+                json.decodeFromString(reader.readText())
             }
         } catch (_: Exception) {
             null
