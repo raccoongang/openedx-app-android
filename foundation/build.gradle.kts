@@ -70,9 +70,6 @@ dependencies {
     api("androidx.fragment:fragment-ktx:1.8.6")
     api("androidx.appcompat:appcompat:1.7.0")
 
-    // Gson (for objectToString/stringToObject compatibility)
-    api("com.google.code.gson:gson:2.13.1")
-
     // Coroutines
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
@@ -83,8 +80,8 @@ dependencies {
     api("io.insert-koin:koin-androidx-compose:4.1.0")
     api("androidx.room:room-runtime:2.7.2")
     api("androidx.room:room-ktx:2.7.2")
+    // OkHttp (still used by Ktor engine and file downloader)
     api("com.squareup.retrofit2:retrofit:3.0.0")
-    api("com.squareup.retrofit2:converter-gson:3.0.0")
     api("com.squareup.okhttp3:okhttp:5.1.0")
     api("com.squareup.okhttp3:logging-interceptor:5.1.0")
     api("io.coil-kt:coil-compose:2.7.0")
