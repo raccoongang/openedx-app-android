@@ -35,6 +35,12 @@ android {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
