@@ -2,17 +2,16 @@ package org.openedx.core.utils
 
 import android.content.Context
 import android.text.format.DateUtils
-import com.google.gson.internal.bind.util.ISO8601Utils
 import org.openedx.core.R
 import org.openedx.core.domain.model.StartType
 import org.openedx.foundation.system.ResourceManager
 import java.text.DateFormat
 import java.text.ParseException
-import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.absoluteValue
 
 @Suppress("MagicNumber")
@@ -109,9 +108,23 @@ object TimeUtils {
 
     fun iso8601ToDate(text: String): Date? {
         return try {
-            val parsePosition = ParsePosition(0)
-            return ISO8601Utils.parse(text, parsePosition)
-        } catch (e: ParseException) {
+            val formats = arrayOf(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                "yyyy-MM-dd'T'HH:mm:ssZ",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            )
+            for (format in formats) {
+                try {
+                    return SimpleDateFormat(format, Locale.US).apply {
+                        timeZone = TimeZone.getTimeZone("UTC")
+                    }.parse(text)
+                } catch (_: Exception) {
+                    continue
+                }
+            }
+            null
+        } catch (e: Exception) {
             null
         }
     }

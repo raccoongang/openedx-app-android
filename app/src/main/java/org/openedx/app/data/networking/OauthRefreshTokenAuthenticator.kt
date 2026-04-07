@@ -1,12 +1,16 @@
 package org.openedx.app.data.networking
 
 import android.util.Log
-import com.google.gson.Gson
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
@@ -26,8 +30,6 @@ import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.system.notifier.app.AppNotifier
 import org.openedx.core.system.notifier.app.LogoutEvent
 import org.openedx.core.utils.TimeUtils
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -51,19 +53,29 @@ class OauthRefreshTokenAuthenticator(
     }
 
     init {
-        val okHttpClient = OkHttpClient.Builder().apply {
-            writeTimeout(timeout = 60, TimeUnit.SECONDS)
-            readTimeout(timeout = 60, TimeUnit.SECONDS)
-            if (BuildConfig.DEBUG) {
-                addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        val refreshClient = HttpClient(OkHttp) {
+            engine {
+                config {
+                    writeTimeout(60, TimeUnit.SECONDS)
+                    readTimeout(60, TimeUnit.SECONDS)
+                }
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                }
             }
-        }.build()
-        authApi = Retrofit.Builder()
-            .baseUrl(config.getApiHostURL())
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(Gson()))
-            .build()
-            .create(AuthApi::class.java)
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    isLenient = true
+                    encodeDefaults = true
+                    coerceInputValues = true
+                })
+            }
+            defaultRequest {
+                url(config.getApiHostURL())
+            }
+        }
+        authApi = AuthApi(refreshClient)
     }
 
     @Suppress("ReturnCount")
