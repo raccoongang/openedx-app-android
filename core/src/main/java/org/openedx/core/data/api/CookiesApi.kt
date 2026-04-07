@@ -1,11 +1,12 @@
 package org.openedx.core.data.api
 
-import okhttp3.RequestBody
+import io.ktor.client.HttpClient
+import io.ktor.client.request.post
+import io.ktor.client.statement.HttpResponse
 import org.openedx.core.ApiConstants
-import retrofit2.Response
-import retrofit2.http.POST
 
-interface CookiesApi {
-    @POST(ApiConstants.URL_LOGIN)
-    suspend fun userCookies(): Response<RequestBody>
+class CookiesApi(private val client: HttpClient) {
+    suspend fun userCookies(): HttpResponse {
+        return client.post(ApiConstants.URL_LOGIN)
+    }
 }

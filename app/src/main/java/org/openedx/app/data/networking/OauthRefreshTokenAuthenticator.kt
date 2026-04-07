@@ -159,14 +159,19 @@ class OauthRefreshTokenAuthenticator(
     private fun refreshAccessToken(refreshToken: String): AuthResponse? {
         var authResponse: AuthResponse? = null
         if (canRequestTokenRefresh()) {
-            val response = authApi.refreshAccessToken(
-                ApiConstants.TOKEN_TYPE_REFRESH,
-                config.getOAuthClientId(),
-                refreshToken,
-                config.getAccessTokenType()
-            ).execute()
-            authResponse = response.body()?.mapToDomain()
-            if (response.isSuccessful && authResponse != null) {
+            authResponse = try {
+                kotlinx.coroutines.runBlocking {
+                    authApi.refreshAccessToken(
+                        ApiConstants.TOKEN_TYPE_REFRESH,
+                        config.getOAuthClientId(),
+                        refreshToken,
+                        config.getAccessTokenType()
+                    ).mapToDomain()
+                }
+            } catch (_: Exception) {
+                null
+            }
+            if (authResponse != null) {
                 val newAccessToken = authResponse.accessToken ?: ""
                 val newRefreshToken = authResponse.refreshToken ?: ""
                 val newExpireTime = authResponse.getTokenExpiryTime()
@@ -177,8 +182,8 @@ class OauthRefreshTokenAuthenticator(
                     preferencesManager.accessTokenExpiresAt = newExpireTime
                     lastTokenRefreshRequestTime = TimeUtils.getCurrentTime()
                 }
-            } else if (response.code() == 400) {
-                // another refresh already in progress
+            } else {
+                // refresh failed - another refresh may already be in progress
                 Thread.sleep(REFRESH_TOKEN_THREAD_SLEEP)
             }
         }

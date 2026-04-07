@@ -1,6 +1,18 @@
 package org.openedx.core.data.api
 
-import okhttp3.MultipartBody
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import org.openedx.core.data.model.AnnouncementModel
 import org.openedx.core.data.model.BlocksCompletionBody
 import org.openedx.core.data.model.CourseComponentStatus
@@ -15,115 +27,147 @@ import org.openedx.core.data.model.DownloadCoursePreview
 import org.openedx.core.data.model.EnrollmentStatus
 import org.openedx.core.data.model.HandoutsModel
 import org.openedx.core.data.model.ResetCourseDates
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
 
-interface CourseApi {
+class CourseApi(private val client: HttpClient) {
 
-    @GET("/api/mobile/v3/users/{username}/course_enrollments/")
     suspend fun getEnrolledCourses(
-        @Header("Cache-Control") cacheControlHeaderParam: String? = null,
-        @Path("username") username: String,
-        @Query("org") org: String? = null,
-        @Query("page") page: Int
-    ): CourseEnrollments
+        cacheControlHeaderParam: String? = null,
+        username: String,
+        org: String? = null,
+        page: Int,
+    ): CourseEnrollments {
+        return client.get("/api/mobile/v3/users/$username/course_enrollments/") {
+            cacheControlHeaderParam?.let { header("Cache-Control", it) }
+            org?.let { parameter("org", it) }
+            parameter("page", page)
+        }.body()
+    }
 
-    @GET(
-        "/api/mobile/{api_version}/course_info/blocks/?" +
+    suspend fun getCourseStructure(
+        cacheControlHeaderParam: String,
+        blocksApiVersion: String,
+        username: String?,
+        courseId: String,
+    ): CourseStructureModel {
+        return client.get(
+            "/api/mobile/$blocksApiVersion/course_info/blocks/?" +
                 "depth=all&" +
                 "requested_fields=contains_gated_content,show_gated_sections,special_exam_info,graded,format," +
                 "student_view_multi_device,due,completion&" +
                 "student_view_data=video,discussion&" +
                 "block_counts=video&" +
                 "nav_depth=3"
-    )
-    suspend fun getCourseStructure(
-        @Header("Cache-Control") cacheControlHeaderParam: String,
-        @Path("api_version") blocksApiVersion: String,
-        @Query("username") username: String?,
-        @Query("course_id") courseId: String,
-    ): CourseStructureModel
+        ) {
+            header("Cache-Control", cacheControlHeaderParam)
+            username?.let { parameter("username", it) }
+            parameter("course_id", courseId)
+        }.body()
+    }
 
-    @GET("/api/mobile/v1/users/{username}/course_status_info/{course_id}")
     suspend fun getCourseStatus(
-        @Path("username") username: String,
-        @Path("course_id") courseId: String,
-    ): CourseComponentStatus
+        username: String,
+        courseId: String,
+    ): CourseComponentStatus {
+        return client.get("/api/mobile/v1/users/$username/course_status_info/$courseId").body()
+    }
 
-    @POST("/api/completion/v1/completion-batch")
-    suspend fun markBlocksCompletion(
-        @Body
-        blocksCompletionBody: BlocksCompletionBody
-    )
+    suspend fun markBlocksCompletion(blocksCompletionBody: BlocksCompletionBody) {
+        client.post("/api/completion/v1/completion-batch") {
+            contentType(ContentType.Application.Json)
+            setBody(blocksCompletionBody)
+        }
+    }
 
-    @GET("/api/course_home/v1/dates/{course_id}")
     suspend fun getCourseDates(
-        @Path("course_id") courseId: String,
-        @Query("allow_not_started_courses") allowNotStartedCourses: Boolean = true,
-        @Query("mobile") mobile: Boolean = true,
-    ): CourseDates
+        courseId: String,
+        allowNotStartedCourses: Boolean = true,
+        mobile: Boolean = true,
+    ): CourseDates {
+        return client.get("/api/course_home/v1/dates/$courseId") {
+            parameter("allow_not_started_courses", allowNotStartedCourses)
+            parameter("mobile", mobile)
+        }.body()
+    }
 
-    @POST("/api/course_experience/v1/reset_course_deadlines")
-    suspend fun resetCourseDates(@Body courseBody: Map<String, String>): ResetCourseDates
+    suspend fun resetCourseDates(courseBody: Map<String, String>): ResetCourseDates {
+        return client.post("/api/course_experience/v1/reset_course_deadlines") {
+            contentType(ContentType.Application.Json)
+            setBody(courseBody)
+        }.body()
+    }
 
-    @GET("/api/course_experience/v1/course_deadlines_info/{course_id}")
-    suspend fun getDatesBannerInfo(@Path("course_id") courseId: String): CourseDatesBannerInfo
+    suspend fun getDatesBannerInfo(courseId: String): CourseDatesBannerInfo {
+        return client.get("/api/course_experience/v1/course_deadlines_info/$courseId").body()
+    }
 
-    @GET("/api/mobile/v1/course_info/{course_id}/handouts")
-    suspend fun getHandouts(@Path("course_id") courseId: String): HandoutsModel
+    suspend fun getHandouts(courseId: String): HandoutsModel {
+        return client.get("/api/mobile/v1/course_info/$courseId/handouts").body()
+    }
 
-    @GET("/api/mobile/v1/course_info/{course_id}/updates")
-    suspend fun getAnnouncements(@Path("course_id") courseId: String): List<AnnouncementModel>
+    suspend fun getAnnouncements(courseId: String): List<AnnouncementModel> {
+        return client.get("/api/mobile/v1/course_info/$courseId/updates").body()
+    }
 
-    @GET("/api/mobile/v4/users/{username}/course_enrollments/")
     suspend fun getUserCourses(
-        @Path("username") username: String,
-        @Query("page") page: Int = 1,
-        @Query("page_size") pageSize: Int = 20,
-        @Query("status") status: String? = null,
-        @Query("requested_fields") fields: List<String> = emptyList()
-    ): CourseEnrollments
+        username: String,
+        page: Int = 1,
+        pageSize: Int = 20,
+        status: String? = null,
+        fields: List<String> = emptyList(),
+    ): CourseEnrollments {
+        return client.get("/api/mobile/v4/users/$username/course_enrollments/") {
+            parameter("page", page)
+            parameter("page_size", pageSize)
+            status?.let { parameter("status", it) }
+            if (fields.isNotEmpty()) {
+                parameter("requested_fields", fields.joinToString(","))
+            }
+        }.body()
+    }
 
-    @Multipart
-    @POST("/courses/{course_id}/xblock/{block_id}/handler/xmodule_handler/problem_check")
     suspend fun submitOfflineXBlockProgress(
-        @Path("course_id") courseId: String,
-        @Path("block_id") blockId: String,
-        @Part progress: List<MultipartBody.Part>
-    )
+        courseId: String,
+        blockId: String,
+        progressParts: List<Pair<String, ByteArray>>,
+    ) {
+        client.post("/courses/$courseId/xblock/$blockId/handler/xmodule_handler/problem_check") {
+            setBody(
+                MultiPartFormDataContent(
+                    formData {
+                        progressParts.forEach { (name, bytes) ->
+                            append(name, bytes, Headers.build {
+                                append(HttpHeaders.ContentDisposition, "form-data; name=\"$name\"")
+                            })
+                        }
+                    }
+                )
+            )
+        }
+    }
 
-    @GET("/api/mobile/v1/users/{username}/enrollments_status/")
-    suspend fun getEnrollmentsStatus(
-        @Path("username") username: String
-    ): List<EnrollmentStatus>
+    suspend fun getEnrollmentsStatus(username: String): List<EnrollmentStatus> {
+        return client.get("/api/mobile/v1/users/$username/enrollments_status/").body()
+    }
 
-    @GET("/api/mobile/v1/course_info/{course_id}/enrollment_details")
-    suspend fun getEnrollmentDetails(
-        @Path("course_id") courseId: String,
-    ): CourseEnrollmentDetails
+    suspend fun getEnrollmentDetails(courseId: String): CourseEnrollmentDetails {
+        return client.get("/api/mobile/v1/course_info/$courseId/enrollment_details").body()
+    }
 
-    @GET("/api/mobile/v1/download_courses/{username}")
-    suspend fun getDownloadCoursesPreview(
-        @Path("username") username: String
-    ): List<DownloadCoursePreview>
+    suspend fun getDownloadCoursesPreview(username: String): List<DownloadCoursePreview> {
+        return client.get("/api/mobile/v1/download_courses/$username").body()
+    }
 
-    @GET("/api/mobile/v1/course_dates/{username}/")
-    suspend fun getUserDates(
-        @Path("username") username: String,
-        @Query("page") page: Int
-    ): CourseDatesResponse
+    suspend fun getUserDates(username: String, page: Int): CourseDatesResponse {
+        return client.get("/api/mobile/v1/course_dates/$username/") {
+            parameter("page", page)
+        }.body()
+    }
 
-    @GET("/api/course_home/progress/{course_id}")
-    suspend fun getCourseProgress(
-        @Path("course_id") courseId: String,
-    ): CourseProgressResponse
+    suspend fun getCourseProgress(courseId: String): CourseProgressResponse {
+        return client.get("/api/course_home/progress/$courseId").body()
+    }
 
-    @POST("/api/course_experience/v1/reset_all_relative_course_deadlines/")
-    suspend fun shiftAllDueDates()
+    suspend fun shiftAllDueDates() {
+        client.post("/api/course_experience/v1/reset_all_relative_course_deadlines/")
+    }
 }

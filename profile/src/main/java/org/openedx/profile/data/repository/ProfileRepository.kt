@@ -1,7 +1,6 @@
 package org.openedx.profile.data.repository
 
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.asRequestBody
 import org.openedx.core.ApiConstants
 import org.openedx.core.DatabaseManager
 import org.openedx.core.config.Config
@@ -43,7 +42,7 @@ class ProfileRepository(
             corePreferences.user?.username!!,
             "attachment;filename=filename.${file.extension}",
             true,
-            file.asRequestBody(mimeType.toMediaType())
+            file.readBytes()
         )
     }
 

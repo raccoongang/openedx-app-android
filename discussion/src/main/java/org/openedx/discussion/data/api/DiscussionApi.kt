@@ -1,5 +1,15 @@
 package org.openedx.discussion.data.api
 
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.patch
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import org.openedx.core.data.model.BlocksCompletionBody
 import org.openedx.discussion.data.model.request.CommentBody
 import org.openedx.discussion.data.model.request.FollowBody
@@ -12,129 +22,171 @@ import org.openedx.discussion.data.model.response.CommentsResponse
 import org.openedx.discussion.data.model.response.ThreadsResponse
 import org.openedx.discussion.data.model.response.ThreadsResponse.Thread
 import org.openedx.discussion.data.model.response.TopicsResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
 
-interface DiscussionApi {
+class DiscussionApi(private val client: HttpClient) {
 
-    @GET("/api/discussion/v1/course_topics/{course_id}")
-    suspend fun getCourseTopics(
-        @Path("course_id") courseId: String,
-    ): TopicsResponse
+    suspend fun getCourseTopics(courseId: String): TopicsResponse {
+        return client.get("/api/discussion/v1/course_topics/$courseId").body()
+    }
 
-    @GET("/api/discussion/v1/threads/")
     suspend fun getCourseThreads(
-        @Query("course_id") courseId: String,
-        @Query("following") following: Boolean?,
-        @Query("topic_id") topicId: String?,
-        @Query("order_by") orderBy: String,
-        @Query("view") view: String?,
-        @Query("page") page: Int = 1,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): ThreadsResponse
+        courseId: String,
+        following: Boolean?,
+        topicId: String?,
+        orderBy: String,
+        view: String?,
+        page: Int = 1,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): ThreadsResponse {
+        return client.get("/api/discussion/v1/threads/") {
+            parameter("course_id", courseId)
+            following?.let { parameter("following", it) }
+            topicId?.let { parameter("topic_id", it) }
+            parameter("order_by", orderBy)
+            view?.let { parameter("view", it) }
+            parameter("page", page)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @GET("/api/discussion/v1/threads/{thread_id}")
     suspend fun getCourseThread(
-        @Path("thread_id") threadId: String,
-        @Query("course_id") courseId: String,
-        @Query("topic_id") topicId: String,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): Thread
+        threadId: String,
+        courseId: String,
+        topicId: String,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): Thread {
+        return client.get("/api/discussion/v1/threads/$threadId") {
+            parameter("course_id", courseId)
+            parameter("topic_id", topicId)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @GET("/api/discussion/v1/threads/")
     suspend fun searchThreads(
-        @Query("course_id") courseId: String,
-        @Query("text_search") query: String,
-        @Query("page") page: Int = 1,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): ThreadsResponse
+        courseId: String,
+        query: String,
+        page: Int = 1,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): ThreadsResponse {
+        return client.get("/api/discussion/v1/threads/") {
+            parameter("course_id", courseId)
+            parameter("text_search", query)
+            parameter("page", page)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @GET("/api/discussion/v1/comments/")
     suspend fun getThreadComments(
-        @Query("thread_id") threadId: String,
-        @Query("page") page: Int,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): CommentsResponse
+        threadId: String,
+        page: Int,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): CommentsResponse {
+        return client.get("/api/discussion/v1/comments/") {
+            parameter("thread_id", threadId)
+            parameter("page", page)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @Headers("Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/comments/{response_id}/")
-    suspend fun getResponse(
-        @Path("response_id") responseId: String
-    ): CommentResult
+    suspend fun getResponse(responseId: String): CommentResult {
+        return client.patch("/api/discussion/v1/comments/$responseId/") {
+            contentType(ContentType("application", "merge-patch+json"))
+        }.body()
+    }
 
-    @GET("/api/discussion/v1/comments/")
     suspend fun getThreadQuestionComments(
-        @Query("thread_id") threadId: String,
-        @Query("page") page: Int,
-        @Query("endorsed") endorsed: Boolean,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): CommentsResponse
+        threadId: String,
+        page: Int,
+        endorsed: Boolean,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): CommentsResponse {
+        return client.get("/api/discussion/v1/comments/") {
+            parameter("thread_id", threadId)
+            parameter("page", page)
+            parameter("endorsed", endorsed)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/threads/{thread_id}/")
-    suspend fun setThreadRead(
-        @Path("thread_id") threadId: String,
-        @Body body: ReadBody
-    ): Thread
+    private fun mergePatchJson() = ContentType("application", "merge-patch+json")
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/threads/{thread_id}/")
-    suspend fun setThreadVoted(
-        @Path("thread_id") threadId: String,
-        @Body body: VoteBody
-    ): Thread
+    suspend fun setThreadRead(threadId: String, body: ReadBody): Thread {
+        return client.patch("/api/discussion/v1/threads/$threadId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(body)
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/threads/{thread_id}/")
-    suspend fun setThreadFlagged(
-        @Path("thread_id") threadId: String,
-        @Body reportBody: ReportBody
-    ): Thread
+    suspend fun setThreadVoted(threadId: String, body: VoteBody): Thread {
+        return client.patch("/api/discussion/v1/threads/$threadId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(body)
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/threads/{thread_id}/")
-    suspend fun setThreadFollowed(
-        @Path("thread_id") threadId: String,
-        @Body followBody: FollowBody
-    ): Thread
+    suspend fun setThreadFlagged(threadId: String, reportBody: ReportBody): Thread {
+        return client.patch("/api/discussion/v1/threads/$threadId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(reportBody)
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/comments/{comment_id}/")
-    suspend fun setCommentVoted(
-        @Path("comment_id") commentId: String,
-        @Body voteBody: VoteBody
-    ): CommentResult
+    suspend fun setThreadFollowed(threadId: String, followBody: FollowBody): Thread {
+        return client.patch("/api/discussion/v1/threads/$threadId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(followBody)
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/discussion/v1/comments/{comment_id}/")
-    suspend fun setCommentFlagged(
-        @Path("comment_id") commentId: String,
-        @Body reportBody: ReportBody
-    ): CommentResult
+    suspend fun setCommentVoted(commentId: String, voteBody: VoteBody): CommentResult {
+        return client.patch("/api/discussion/v1/comments/$commentId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(voteBody)
+        }.body()
+    }
 
-    @GET("/api/discussion/v1/comments/{comment_id}/")
+    suspend fun setCommentFlagged(commentId: String, reportBody: ReportBody): CommentResult {
+        return client.patch("/api/discussion/v1/comments/$commentId/") {
+            header("Cache-Control", "no-cache")
+            contentType(mergePatchJson())
+            setBody(reportBody)
+        }.body()
+    }
+
     suspend fun getCommentsResponses(
-        @Path("comment_id") commentId: String,
-        @Query("page") page: Int,
-        @Query("requested_fields") requestedFields: List<String> = listOf("profile_image")
-    ): CommentsResponse
+        commentId: String,
+        page: Int,
+        requestedFields: List<String> = listOf("profile_image"),
+    ): CommentsResponse {
+        return client.get("/api/discussion/v1/comments/$commentId/") {
+            parameter("page", page)
+            requestedFields.forEach { parameter("requested_fields", it) }
+        }.body()
+    }
 
-    @POST("/api/discussion/v1/comments/")
-    suspend fun createComment(
-        @Body commentBody: CommentBody
-    ): CommentResult
+    suspend fun createComment(commentBody: CommentBody): CommentResult {
+        return client.post("/api/discussion/v1/comments/") {
+            contentType(ContentType.Application.Json)
+            setBody(commentBody)
+        }.body()
+    }
 
-    @POST("/api/discussion/v1/threads/")
-    suspend fun createThread(@Body threadBody: ThreadBody): Thread
+    suspend fun createThread(threadBody: ThreadBody): Thread {
+        return client.post("/api/discussion/v1/threads/") {
+            contentType(ContentType.Application.Json)
+            setBody(threadBody)
+        }.body()
+    }
 
-    @POST("/api/completion/v1/completion-batch")
-    suspend fun markBlocksCompletion(
-        @Body
-        blocksCompletionBody: BlocksCompletionBody
-    )
+    suspend fun markBlocksCompletion(blocksCompletionBody: BlocksCompletionBody) {
+        client.post("/api/completion/v1/completion-batch") {
+            contentType(ContentType.Application.Json)
+            setBody(blocksCompletionBody)
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package org.openedx.discovery.data.repository
 
-import okhttp3.ResponseBody
+import io.ktor.client.statement.HttpResponse
 import org.openedx.core.data.model.EnrollBody
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.discovery.data.api.DiscoveryApi
@@ -25,7 +25,7 @@ class DiscoveryRepository(
         return dao.getCourseById(id)?.mapToDomain()
     }
 
-    suspend fun enrollInACourse(courseId: String): ResponseBody {
+    suspend fun enrollInACourse(courseId: String): HttpResponse {
         val enrollBody = EnrollBody(
             EnrollBody.CourseDetails(
                 courseId = courseId,

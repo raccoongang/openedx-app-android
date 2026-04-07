@@ -1,11 +1,10 @@
 package org.openedx.core.system
 
 import android.webkit.CookieManager
-import okhttp3.Cookie
-import okhttp3.RequestBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.setCookie
 import org.openedx.core.config.Config
 import org.openedx.core.data.api.CookiesApi
-import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 class AppCookieManager(private val config: Config, private val api: CookiesApi) {
@@ -15,15 +14,18 @@ class AppCookieManager(private val config: Config, private val api: CookiesApi) 
     }
 
     private var authSessionCookieExpiration: Long = -1
-    private var response: Response<RequestBody>? = null
+    private var response: HttpResponse? = null
 
     suspend fun tryToRefreshSessionCookie() {
         try {
             response = api.userCookies()
             clearWebViewCookie()
             val cookieManager = CookieManager.getInstance()
-            for (cookie in Cookie.parseAll(response!!.raw().request.url, response!!.headers())) {
-                cookieManager.setCookie(config.getApiHostURL(), cookie.toString())
+            response?.setCookie()?.forEach { cookie ->
+                cookieManager.setCookie(
+                    config.getApiHostURL(),
+                    "${cookie.name}=${cookie.value}"
+                )
             }
             authSessionCookieExpiration = System.currentTimeMillis() + FRESHNESS_INTERVAL
         } catch (e: Exception) {

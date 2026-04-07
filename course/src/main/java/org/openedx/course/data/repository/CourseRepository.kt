@@ -3,7 +3,6 @@ package org.openedx.course.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import okhttp3.MultipartBody
 import org.openedx.core.ApiConstants
 import org.openedx.core.data.api.CourseApi
 import org.openedx.core.data.model.BlocksCompletionBody
@@ -294,12 +293,12 @@ class CourseRepository(
         jsonProgressData: String?
     ) {
         if (!jsonProgressData.isNullOrEmpty()) {
-            val parts = mutableListOf<MultipartBody.Part>()
+            val parts = mutableListOf<Pair<String, ByteArray>>()
             val decodedQuery = URLDecoder.decode(jsonProgressData, StandardCharsets.UTF_8.name())
             val keyValuePairs = decodedQuery.split("&")
             for (pair in keyValuePairs) {
                 val (key, value) = pair.split("=")
-                parts.add(MultipartBody.Part.createFormData(key, value))
+                parts.add(key to value.toByteArray())
             }
             api.submitOfflineXBlockProgress(courseId, blockId, parts)
             downloadDao.removeOfflineXBlockProgress(listOf(blockId))

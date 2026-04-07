@@ -1,14 +1,14 @@
 package org.openedx.app.data.api
 
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import io.ktor.client.HttpClient
+import io.ktor.client.request.forms.submitForm
+import io.ktor.http.parameters
 
-interface NotificationsApi {
-    @POST("/api/mobile/v4/notifications/create-token/")
-    @FormUrlEncoded
-    suspend fun syncFirebaseToken(
-        @Field("registration_id") token: String,
-        @Field("active") active: Boolean = true
-    )
+class NotificationsApi(private val client: HttpClient) {
+    suspend fun syncFirebaseToken(token: String, active: Boolean = true) {
+        client.submitForm("/api/mobile/v4/notifications/create-token/", parameters {
+            append("registration_id", token)
+            append("active", active.toString())
+        })
+    }
 }

@@ -1,59 +1,74 @@
 package org.openedx.profile.data.api
 
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.patch
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.http.parameters
 import org.openedx.core.ApiConstants
 import org.openedx.profile.data.model.Account
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
 
-interface ProfileApi {
+class ProfileApi(private val client: HttpClient) {
 
-    @FormUrlEncoded
-    @POST(ApiConstants.URL_REVOKE_TOKEN)
     suspend fun revokeAccessToken(
-        @Field("client_id") clientId: String?,
-        @Field("token") token: String?,
-        @Field("token_type_hint") tokenTypeHint: String?
-    ): ResponseBody
+        clientId: String?,
+        token: String?,
+        tokenTypeHint: String?,
+    ): HttpResponse {
+        return client.submitForm(ApiConstants.URL_REVOKE_TOKEN, parameters {
+            clientId?.let { append("client_id", it) }
+            token?.let { append("token", it) }
+            tokenTypeHint?.let { append("token_type_hint", it) }
+        })
+    }
 
-    @GET("/api/user/v1/accounts/{username}")
-    suspend fun getAccount(@Path("username") username: String): Account
+    suspend fun getAccount(username: String): Account {
+        return client.get("/api/user/v1/accounts/$username").body()
+    }
 
-    @Headers("Cache-Control: no-cache", "Content-type: application/merge-patch+json")
-    @PATCH("/api/user/v1/accounts/{username}")
-    @JvmSuppressWildcards
-    suspend fun updateAccount(
-        @Path("username") username: String,
-        @Body fields: Map<String, Any?>
-    ): Account
+    suspend fun updateAccount(username: String, fields: Map<String, Any?>): Account {
+        return client.patch("/api/user/v1/accounts/$username") {
+            header("Cache-Control", "no-cache")
+            contentType(ContentType("application", "merge-patch+json"))
+            setBody(fields)
+        }.body()
+    }
 
-    @Headers("Cache-Control: no-cache")
-    @POST("/api/user/v1/accounts/{username}/image")
     suspend fun setProfileImage(
-        @Path("username") username: String?,
-        @Header("Content-Disposition") contentDisposition: String?,
-        @Query("mobile") mobile: Boolean = true,
-        @Body file: RequestBody?
-    ): Response<Unit>
+        username: String?,
+        contentDisposition: String?,
+        mobile: Boolean = true,
+        fileBytes: ByteArray?,
+    ): HttpResponse {
+        return client.post("/api/user/v1/accounts/$username/image") {
+            header("Cache-Control", "no-cache")
+            contentDisposition?.let { header("Content-Disposition", it) }
+            parameter("mobile", mobile)
+            fileBytes?.let {
+                contentType(ContentType.Application.OctetStream)
+                setBody(it)
+            }
+        }
+    }
 
-    @Headers("Cache-Control: no-cache")
-    @DELETE("/api/user/v1/accounts/{username}/image")
-    suspend fun deleteProfileImage(@Path("username") username: String?): Response<Unit>
+    suspend fun deleteProfileImage(username: String?): HttpResponse {
+        return client.delete("/api/user/v1/accounts/$username/image") {
+            header("Cache-Control", "no-cache")
+        }
+    }
 
-    @FormUrlEncoded
-    @POST("/api/user/v1/accounts/deactivate_logout/")
-    suspend fun deactivateAccount(
-        @Field("password") password: String
-    ): Response<Unit>
+    suspend fun deactivateAccount(password: String): HttpResponse {
+        return client.submitForm("/api/user/v1/accounts/deactivate_logout/", parameters {
+            append("password", password)
+        })
+    }
 }

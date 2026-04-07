@@ -1,7 +1,15 @@
 package org.openedx.app.di
 
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import org.openedx.app.data.api.NotificationsApi
 import org.openedx.app.data.networking.AppUpgradeInterceptor
@@ -16,47 +24,70 @@ import org.openedx.core.data.api.CourseApi
 import org.openedx.discovery.data.api.DiscoveryApi
 import org.openedx.discussion.data.api.DiscussionApi
 import org.openedx.profile.data.api.ProfileApi
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 val networkingModule = module {
 
     single { OauthRefreshTokenAuthenticator(get(), get(), get()) }
 
     single {
-        OkHttpClient.Builder().apply {
-            writeTimeout(60, TimeUnit.SECONDS)
-            readTimeout(60, TimeUnit.SECONDS)
-            addInterceptor(HeadersInterceptor(get(), get(), get()))
-            if (BuildConfig.DEBUG) {
-                addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            encodeDefaults = true
+            coerceInputValues = true
+        }
+    }
+
+    single {
+        val config = get<Config>()
+        HttpClient(OkHttp) {
+            engine {
+                config {
+                    retryOnConnectionFailure(true)
+                }
+                addInterceptor(HeadersInterceptor(get(), get(), get()))
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(okhttp3.logging.HttpLoggingInterceptor().setLevel(
+                        okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+                    ))
+                }
+                addInterceptor(HandleErrorInterceptor(get()))
+                addInterceptor(AppUpgradeInterceptor(get()))
+                addInterceptor(get<OauthRefreshTokenAuthenticator>())
             }
-            addInterceptor(HandleErrorInterceptor(get()))
-            addInterceptor(AppUpgradeInterceptor(get()))
-            addInterceptor(get<OauthRefreshTokenAuthenticator>())
-            authenticator(get<OauthRefreshTokenAuthenticator>())
-        }.build()
+
+            install(ContentNegotiation) {
+                json(get())
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 60_000
+                socketTimeoutMillis = 60_000
+            }
+
+            defaultRequest {
+                url(config.getApiHostURL())
+            }
+
+            if (BuildConfig.DEBUG) {
+                install(Logging) {
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            android.util.Log.d("KtorClient", message)
+                        }
+                    }
+                    level = LogLevel.HEADERS
+                }
+            }
+        }
     }
 
-    single<Retrofit> {
-        val config = this.get<Config>()
-        Retrofit.Builder()
-            .baseUrl(config.getApiHostURL())
-            .client(get())
-            .addConverterFactory(GsonConverterFactory.create(get()))
-            .build()
-    }
-
-    single { provideApi<AuthApi>(get()) }
-    single { provideApi<CookiesApi>(get()) }
-    single { provideApi<CourseApi>(get()) }
-    single { provideApi<ProfileApi>(get()) }
-    single { provideApi<DiscussionApi>(get()) }
-    single { provideApi<DiscoveryApi>(get()) }
-    single { provideApi<NotificationsApi>(get()) }
-}
-
-inline fun <reified T> provideApi(retrofit: Retrofit): T {
-    return retrofit.create(T::class.java)
+    single { AuthApi(get()) }
+    single { CookiesApi(get()) }
+    single { CourseApi(get()) }
+    single { ProfileApi(get()) }
+    single { DiscussionApi(get()) }
+    single { DiscoveryApi(get()) }
+    single { NotificationsApi(get()) }
 }
