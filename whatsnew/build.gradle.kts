@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -38,7 +37,6 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         compose = true
     }
 
@@ -47,6 +45,13 @@ android {
         create("prod") { dimension = "env" }
         create("develop") { dimension = "env" }
         create("stage") { dimension = "env" }
+    }
+
+    // Include commonMain sources in the Android compilation
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+        }
     }
 }
 

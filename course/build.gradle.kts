@@ -42,6 +42,12 @@ android {
         compose = true
     }
 
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+        }
+    }
+
     flavorDimensions += "env"
     productFlavors {
         create("prod") { dimension = "env" }
