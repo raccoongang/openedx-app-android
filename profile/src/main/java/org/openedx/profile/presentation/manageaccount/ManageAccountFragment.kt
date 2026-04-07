@@ -14,6 +14,7 @@ import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.profile.presentation.manageaccount.compose.ManageAccountView
 import org.openedx.profile.presentation.manageaccount.compose.ManageAccountViewAction
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class ManageAccountFragment : Fragment() {
 
     private val viewModel: ManageAccountViewModel by viewModel()

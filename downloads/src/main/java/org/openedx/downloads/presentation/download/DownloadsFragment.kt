@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.openedx.core.ui.theme.OpenEdXTheme
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class DownloadsFragment : Fragment() {
 
     private val viewModel by viewModel<DownloadsViewModel>()

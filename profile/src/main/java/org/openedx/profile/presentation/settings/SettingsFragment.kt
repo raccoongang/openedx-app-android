@@ -13,6 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class SettingsFragment : Fragment() {
 
     private val viewModel by viewModel<SettingsViewModel>()

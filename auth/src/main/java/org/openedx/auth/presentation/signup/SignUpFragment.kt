@@ -21,6 +21,7 @@ import org.openedx.core.presentation.global.appupgrade.AppUpgradeRequiredScreen
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class SignUpFragment : Fragment() {
 
     private val viewModel by viewModel<SignUpViewModel> {

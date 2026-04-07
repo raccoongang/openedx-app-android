@@ -15,6 +15,7 @@ import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.profile.presentation.profile.compose.ProfileView
 import org.openedx.profile.presentation.profile.compose.ProfileViewAction
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModel()

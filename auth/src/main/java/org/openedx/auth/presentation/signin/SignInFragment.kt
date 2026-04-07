@@ -20,6 +20,7 @@ import org.openedx.core.presentation.global.appupgrade.AppUpgradeRequiredScreen
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class SignInFragment : Fragment() {
 
     private val viewModel: SignInViewModel by viewModel {

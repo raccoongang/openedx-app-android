@@ -11,6 +11,7 @@ import androidx.fragment.app.setFragmentResult
 import org.openedx.core.AppUpdateState
 import org.openedx.core.ui.theme.OpenEdXTheme
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class UpgradeRequiredFragment : Fragment() {
 
     override fun onCreateView(

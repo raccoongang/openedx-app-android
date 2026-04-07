@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import org.openedx.core.ui.theme.OpenEdXTheme
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class AllEnrolledCoursesFragment : Fragment() {
 
     override fun onCreateView(

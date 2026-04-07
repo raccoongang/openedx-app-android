@@ -14,6 +14,7 @@ import org.openedx.core.ui.WebContentScreen
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
 
+@Deprecated("Replaced by Compose Navigation destination in AppNavHost")
 class WebContentFragment : Fragment() {
 
     private val config: Config by inject()
