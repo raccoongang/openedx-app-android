@@ -121,6 +121,7 @@ val appModule = module {
     single { DiscoveryNotifier() }
     single { CalendarNotifier() }
 
+    single { org.openedx.core.presentation.global.AppNavigator() }
     single { AppRouter() }
     single<AuthRouter> { get<AppRouter>() }
     single<DiscoveryRouter> { get<AppRouter>() }
