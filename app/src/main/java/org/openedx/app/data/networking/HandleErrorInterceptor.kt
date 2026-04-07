@@ -1,7 +1,6 @@
 package org.openedx.app.data.networking
 
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
@@ -9,7 +8,7 @@ import org.openedx.core.data.model.ErrorResponse
 import org.openedx.core.system.EdxError
 
 class HandleErrorInterceptor(
-    private val gson: Gson
+    private val json: Json,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
@@ -28,10 +27,10 @@ class HandleErrorInterceptor(
 
     private fun handleErrorResponse(response: Response, jsonStr: String): Response {
         return try {
-            val errorResponse = gson.fromJson(jsonStr, ErrorResponse::class.java)
+            val errorResponse = json.decodeFromString<ErrorResponse>(jsonStr)
             handleParsedErrorResponse(errorResponse) ?: response
-        } catch (e: JsonSyntaxException) {
-            throw IOException("JsonSyntaxException $jsonStr", e)
+        } catch (e: Exception) {
+            throw IOException("JSON parse error: $jsonStr", e)
         }
     }
 
