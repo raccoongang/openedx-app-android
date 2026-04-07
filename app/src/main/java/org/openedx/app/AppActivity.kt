@@ -134,7 +134,19 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     @Composable
     private fun AppContent() {
         if (USE_COMPOSE_NAVIGATION) {
+            val startDest: Any = when {
+                corePreferencesManager.user == null -> {
+                    if (viewModel.isLogistrationEnabled) {
+                        org.openedx.app.navigation.AppNavRoutes.Logistration()
+                    } else {
+                        org.openedx.app.navigation.AppNavRoutes.SignIn()
+                    }
+                }
+                whatsNewManager.shouldShowWhatsNew() -> org.openedx.app.navigation.AppNavRoutes.WhatsNew()
+                else -> org.openedx.app.navigation.AppNavRoutes.Main()
+            }
             org.openedx.app.navigation.AppNavHost(
+                startDestination = startDest,
                 modifier = Modifier.fillMaxSize(),
             )
         } else {
@@ -203,6 +215,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     }
 
     private fun setupInitialFragment(savedInstanceState: Bundle?) {
+        if (USE_COMPOSE_NAVIGATION) return // NavHost handles initial destination
         if (savedInstanceState == null) {
             when {
                 corePreferencesManager.user == null -> {
@@ -331,6 +344,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
          * When true, AppActivity uses AppNavHost for all navigation.
          * When false (default), uses legacy Fragment-based navigation.
          */
-        const val USE_COMPOSE_NAVIGATION = false
+        const val USE_COMPOSE_NAVIGATION = true
     }
 }
