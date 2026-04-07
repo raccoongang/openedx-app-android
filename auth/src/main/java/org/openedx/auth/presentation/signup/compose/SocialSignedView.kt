@@ -26,7 +26,7 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.R as coreR
 
 @Composable
-internal fun SocialSignedView(authType: AuthType) {
+fun SocialSignedView(authType: AuthType) {
     Column(
         modifier = Modifier
             .background(

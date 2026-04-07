@@ -56,7 +56,7 @@ import org.openedx.profile.presentation.ui.ProfileTopic
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-internal fun ProfileView(
+fun ProfileView(
     windowSize: WindowSize,
     uiState: ProfileUIState,
     uiMessage: UIMessage?,
@@ -202,7 +202,7 @@ private fun ProfileScreenTabletPreview() {
     }
 }
 
-internal interface ProfileViewAction {
+interface ProfileViewAction {
     object EditAccountClick : ProfileViewAction
     object SwipeRefresh : ProfileViewAction
 }

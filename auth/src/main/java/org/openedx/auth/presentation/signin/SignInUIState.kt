@@ -12,7 +12,7 @@ import org.openedx.core.domain.model.RegistrationField
  * @param showProgress is progress visible
  * @param loginSuccess is login succeed
  */
-internal data class SignInUIState(
+data class SignInUIState(
     val isFacebookAuthEnabled: Boolean = false,
     val isGoogleAuthEnabled: Boolean = false,
     val isMicrosoftAuthEnabled: Boolean = false,

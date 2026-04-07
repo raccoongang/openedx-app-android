@@ -72,7 +72,7 @@ import org.openedx.profile.presentation.ui.SettingsItem
 import org.openedx.profile.R as profileR
 
 @Composable
-internal fun SettingsScreen(
+fun SettingsScreen(
     windowSize: WindowSize,
     uiState: SettingsUIState,
     onBackClick: () -> Unit,

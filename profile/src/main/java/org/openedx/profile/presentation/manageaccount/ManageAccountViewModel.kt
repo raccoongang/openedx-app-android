@@ -26,7 +26,7 @@ class ManageAccountViewModel(
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState: MutableStateFlow<ManageAccountUIState> = MutableStateFlow(ManageAccountUIState.Loading)
-    internal val uiState: StateFlow<ManageAccountUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ManageAccountUIState> = _uiState.asStateFlow()
 
     private val _isUpdating = MutableStateFlow(false)
     val isUpdating: StateFlow<Boolean>

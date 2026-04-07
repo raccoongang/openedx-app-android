@@ -90,7 +90,7 @@ import org.openedx.core.R as coreR
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-internal fun SignUpView(
+fun SignUpView(
     windowSize: WindowSize,
     uiState: SignUpUIState,
     uiMessage: UIMessage?,

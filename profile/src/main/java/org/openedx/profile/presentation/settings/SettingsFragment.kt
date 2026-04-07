@@ -106,7 +106,7 @@ class SettingsFragment : Fragment() {
     }
 }
 
-internal interface SettingsScreenAction {
+interface SettingsScreenAction {
     object AppVersionClick : SettingsScreenAction
     object LogoutClick : SettingsScreenAction
     object PrivacyPolicyClick : SettingsScreenAction

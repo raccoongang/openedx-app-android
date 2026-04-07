@@ -61,7 +61,7 @@ import org.openedx.profile.R as ProfileR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-internal fun ManageAccountView(
+fun ManageAccountView(
     windowSize: WindowSize,
     uiState: ManageAccountUIState,
     uiMessage: UIMessage?,
@@ -234,7 +234,7 @@ private fun ManageAccountViewTabletPreview() {
     }
 }
 
-internal interface ManageAccountViewAction {
+interface ManageAccountViewAction {
     object EditAccountClick : ManageAccountViewAction
     object SwipeRefresh : ManageAccountViewAction
     object DeleteAccount : ManageAccountViewAction

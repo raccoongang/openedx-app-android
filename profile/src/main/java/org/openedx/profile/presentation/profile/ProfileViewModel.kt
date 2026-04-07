@@ -28,7 +28,7 @@ class ProfileViewModel(
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState: MutableStateFlow<ProfileUIState> = MutableStateFlow(ProfileUIState.Loading)
-    internal val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
 
     private val _isUpdating = MutableLiveData<Boolean>()
     val isUpdating: LiveData<Boolean>

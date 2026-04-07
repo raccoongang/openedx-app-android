@@ -179,7 +179,7 @@ class NativeDiscoveryFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-internal fun DiscoveryScreen(
+fun DiscoveryScreen(
     windowSize: WindowSize,
     state: DiscoveryUIState,
     uiMessage: UIMessage?,

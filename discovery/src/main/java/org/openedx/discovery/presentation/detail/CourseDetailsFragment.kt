@@ -208,7 +208,7 @@ class CourseDetailsFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-internal fun CourseDetailsScreen(
+fun CourseDetailsScreen(
     windowSize: WindowSize,
     uiState: CourseDetailsUIState,
     uiMessage: UIMessage?,

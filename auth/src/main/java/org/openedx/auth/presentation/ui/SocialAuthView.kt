@@ -25,7 +25,7 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 
 @Composable
-internal fun SocialAuthView(
+fun SocialAuthView(
     modifier: Modifier = Modifier,
     isGoogleAuthEnabled: Boolean = true,
     isFacebookAuthEnabled: Boolean = true,

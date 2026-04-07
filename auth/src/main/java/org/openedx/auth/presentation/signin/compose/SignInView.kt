@@ -84,7 +84,7 @@ import org.openedx.core.R as coreR
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-internal fun LoginScreen(
+fun LoginScreen(
     windowSize: WindowSize,
     state: SignInUIState,
     uiMessage: UIMessage?,

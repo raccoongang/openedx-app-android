@@ -159,7 +159,7 @@ class DashboardListFragment : Fragment() {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-internal fun DashboardListView(
+fun DashboardListView(
     windowSize: WindowSize,
     apiHostUrl: String,
     state: DashboardUIState,

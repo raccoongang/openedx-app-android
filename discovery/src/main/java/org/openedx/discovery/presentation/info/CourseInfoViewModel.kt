@@ -55,7 +55,7 @@ class CourseInfoViewModel(
                 isPreLogin = config.isPreLoginExperienceEnabled() && corePreferences.user == null
             )
         )
-    internal val uiState: StateFlow<CourseInfoUIState> = _uiState
+    val uiState: StateFlow<CourseInfoUIState> = _uiState
 
     private val _webViewUIState = MutableStateFlow<WebViewUIState>(WebViewUIState.Loading)
     val webViewState

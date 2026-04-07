@@ -49,7 +49,7 @@ class SettingsViewModel(
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState: MutableStateFlow<SettingsUIState> = MutableStateFlow(SettingsUIState.Data(configuration))
-    internal val uiState: StateFlow<SettingsUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<SettingsUIState> = _uiState.asStateFlow()
 
     private val _successLogout = MutableSharedFlow<Boolean>()
     val successLogout: SharedFlow<Boolean>

@@ -74,7 +74,7 @@ class SignInViewModel(
             agreement = agreementProvider.getAgreement(isSignIn = true)?.createHonorCodeField(),
         )
     )
-    internal val uiState: StateFlow<SignInUIState> = _uiState
+    val uiState: StateFlow<SignInUIState> = _uiState
 
     private val _appUpgradeEvent = MutableLiveData<AppUpgradeEvent>()
     val appUpgradeEvent: LiveData<AppUpgradeEvent>
