@@ -133,16 +133,24 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
     @Composable
     private fun AppContent() {
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                FragmentContainerView(context).apply {
-                    id = R.id.container
-                    fragmentContainer = this
-                }
-            },
-        )
+        if (USE_COMPOSE_NAVIGATION) {
+            org.openedx.app.navigation.AppNavHost(
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            // Legacy Fragment-based navigation
+            AndroidView(
+                modifier = Modifier.fillMaxSize(),
+                factory = { context ->
+                    FragmentContainerView(context).apply {
+                        id = R.id.container
+                        fragmentContainer = this
+                    }
+                },
+            )
+        }
     }
+
 
     private fun setupWindowInsets(savedInstanceState: Bundle?) {
         val rootView = window.decorView.rootView
@@ -317,5 +325,12 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         internal const val MEDIUM_MAX_WIDTH = 840
         internal const val COMPACT_MAX_HEIGHT = 480
         internal const val MEDIUM_MAX_HEIGHT = 900
+
+        /**
+         * Feature flag: set to true to use Compose NavHost instead of Fragments.
+         * When true, AppActivity uses AppNavHost for all navigation.
+         * When false (default), uses legacy Fragment-based navigation.
+         */
+        const val USE_COMPOSE_NAVIGATION = false
     }
 }
