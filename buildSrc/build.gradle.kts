@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    `kotlin-dsl`
 }
 
 repositories {
@@ -12,7 +12,6 @@ java {
 }
 
 dependencies {
-    implementation localGroovy()
-    implementation gradleApi()
-    implementation "org.yaml:snakeyaml:2.4"
+    implementation(gradleApi())
+    implementation("org.yaml:snakeyaml:2.4")
 }
