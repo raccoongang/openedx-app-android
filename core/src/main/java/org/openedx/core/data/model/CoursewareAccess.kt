@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CoursewareAccessDb
 import org.openedx.core.domain.model.CoursewareAccess
 
+@Serializable
 data class CoursewareAccess(
     @SerialName("has_access")
     val hasAccess: Boolean?,

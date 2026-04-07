@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseEnrollmentDetails as DomainCourseEnrollmentDetails
 
+@Serializable
 data class CourseEnrollmentDetails(
     @SerialName("id")
     val id: String,

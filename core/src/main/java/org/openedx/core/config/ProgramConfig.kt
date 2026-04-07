@@ -3,6 +3,7 @@ package org.openedx.core.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class ProgramConfig(
     @SerialName("TYPE")
     private val viewType: String = Config.ViewType.NATIVE.name,
@@ -14,6 +15,7 @@ data class ProgramConfig(
     }
 }
 
+@Serializable
 data class ProgramWebViewConfig(
     @SerialName("BASE_URL")
     val programUrl: String = "",

@@ -6,6 +6,7 @@ import org.openedx.core.data.model.room.discovery.CourseAccessDetailsDb
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.CourseAccessDetails as DomainCourseAccessDetails
 
+@Serializable
 data class CourseAccessDetails(
     @SerialName("has_unmet_prerequisites")
     val hasUnmetPrerequisites: Boolean,

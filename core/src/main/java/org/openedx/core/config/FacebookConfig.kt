@@ -3,6 +3,7 @@ package org.openedx.core.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class FacebookConfig(
     @SerialName("ENABLED")
     private val enabled: Boolean = false,

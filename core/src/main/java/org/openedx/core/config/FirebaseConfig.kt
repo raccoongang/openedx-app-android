@@ -3,6 +3,7 @@ package org.openedx.core.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class FirebaseConfig(
     @SerialName("ENABLED")
     val enabled: Boolean = false,

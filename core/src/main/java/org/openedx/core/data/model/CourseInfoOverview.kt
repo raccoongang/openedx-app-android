@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.CourseInfoOverview as DomainCourseInfoOverview
 
+@Serializable
 data class CourseInfoOverview(
     @SerialName("name")
     val name: String,

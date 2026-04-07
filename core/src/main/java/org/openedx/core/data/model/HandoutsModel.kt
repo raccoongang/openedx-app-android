@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.HandoutsModel
 
+@Serializable
 data class HandoutsModel(
     @SerialName("handouts_html")
     val handoutsHtml: String

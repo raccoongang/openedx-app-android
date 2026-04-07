@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.discussion.domain.model.TopicsData
 
+@Serializable
 data class TopicsResponse(
     @SerialName("courseware_topics")
     val coursewareTopics: List<Topic>?,
@@ -11,6 +12,7 @@ data class TopicsResponse(
     val nonCoursewareTopics: List<Topic>?
 ) {
 
+    @Serializable
     data class Topic(
         @SerialName("id")
         val id: String?,

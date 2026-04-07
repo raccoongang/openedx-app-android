@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class WhatsNewItem(
     @SerialName("version")
     val version: String,

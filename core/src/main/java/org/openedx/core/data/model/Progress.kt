@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.Progress
 
+@Serializable
 data class Progress(
     @SerialName("assignments_completed")
     val assignmentsCompleted: Int?,

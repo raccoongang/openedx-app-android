@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CourseStatusDb
 import org.openedx.core.domain.model.CourseStatus
 
+@Serializable
 data class CourseStatus(
     @SerialName("last_visited_module_id")
     val lastVisitedModuleId: String?,

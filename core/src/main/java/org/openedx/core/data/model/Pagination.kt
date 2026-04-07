@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.Pagination as domainPagination
 
+@Serializable
 data class Pagination(
     @SerialName("count")
     val count: Int?,

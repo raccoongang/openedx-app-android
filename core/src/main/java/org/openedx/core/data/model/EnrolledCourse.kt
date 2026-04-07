@@ -8,6 +8,7 @@ import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.Progress as ProgressDomain
 
+@Serializable
 data class EnrolledCourse(
     @SerialName("audit_access_expires")
     val auditAccessExpires: String?,

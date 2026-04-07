@@ -2,6 +2,7 @@ package org.openedx.core.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
 import org.openedx.core.BlockType
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.Block as DomainBlock
@@ -10,6 +11,7 @@ import org.openedx.core.domain.model.EncodedVideos as DomainEncodedVideos
 import org.openedx.core.domain.model.StudentViewData as DomainStudentViewData
 import org.openedx.core.domain.model.VideoInfo as DomainVideoInfo
 
+@Serializable
 data class Block(
     @SerialName("id")
     val id: String?,
@@ -83,17 +85,18 @@ data class Block(
     }
 }
 
+@Serializable
 data class StudentViewData(
     @SerialName("only_on_web")
     var onlyOnWeb: Boolean?,
     @SerialName("duration")
-    var duration: Any?,
+    @Contextual var duration: Any?,
     @SerialName("transcripts")
     var transcripts: HashMap<String, String>?,
     @SerialName("encoded_videos")
     var encodedVideos: EncodedVideos?,
     @SerialName("all_sources")
-    var allSources: List<Any?>?,
+    var allSources: List<@Contextual Any?>?,
     @SerialName("topic_id")
     val topicId: String?
 ) {
@@ -106,6 +109,7 @@ data class StudentViewData(
     )
 }
 
+@Serializable
 data class EncodedVideos(
     @SerialName("youtube")
     var videoInfo: VideoInfo?,
@@ -130,6 +134,7 @@ data class EncodedVideos(
     )
 }
 
+@Serializable
 data class VideoInfo(
     @SerialName("url")
     var url: String?,
@@ -144,6 +149,7 @@ data class VideoInfo(
     )
 }
 
+@Serializable
 data class BlockCounts(
     @SerialName("video")
     var video: Int?

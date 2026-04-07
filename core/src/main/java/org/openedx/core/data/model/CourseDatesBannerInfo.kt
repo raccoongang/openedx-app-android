@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesBannerInfo
 
+@Serializable
 data class CourseDatesBannerInfo(
     @SerialName("dates_banner_info")
     val datesBannerInfo: DatesBannerInfo?,

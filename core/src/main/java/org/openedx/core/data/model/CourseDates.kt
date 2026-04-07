@@ -12,6 +12,7 @@ import org.openedx.core.utils.isToday
 import java.util.Date
 import org.openedx.core.domain.model.CourseDateBlock as DomainCourseDateBlock
 
+@Serializable
 data class CourseDates(
     @SerialName("course_date_blocks")
     val courseDateBlocks: List<CourseDateBlock>,

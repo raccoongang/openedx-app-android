@@ -2,11 +2,13 @@ package org.openedx.profile.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
 import org.openedx.core.data.model.ProfileImage
 import org.openedx.profile.domain.model.Account
 import java.util.Date
 import org.openedx.profile.domain.model.Account as DomainAccount
 
+@Serializable
 data class Account(
     @SerialName("username")
     val username: String?,
@@ -37,7 +39,7 @@ data class Account(
     @SerialName("email")
     val email: String?,
     @SerialName("date_joined")
-    val dateJoined: Date?,
+    @Contextual val dateJoined: Date?,
     @SerialName("account_privacy")
     val accountPrivacy: Privacy?
 ) {

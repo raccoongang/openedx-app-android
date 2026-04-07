@@ -3,6 +3,7 @@ package org.openedx.core.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class DiscoveryConfig(
     @SerialName("TYPE")
     private val viewType: String = Config.ViewType.NATIVE.name,
@@ -16,6 +17,7 @@ data class DiscoveryConfig(
     }
 }
 
+@Serializable
 data class DiscoveryWebViewConfig(
     @SerialName("BASE_URL")
     val baseUrl: String = "",

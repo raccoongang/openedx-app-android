@@ -7,6 +7,7 @@ import org.openedx.core.data.model.ProfileImage
 import org.openedx.discussion.domain.model.CommentsData
 import org.openedx.discussion.domain.model.DiscussionComment
 
+@Serializable
 data class CommentsResponse(
     @SerialName("results")
     val results: List<CommentResult>,
@@ -21,6 +22,7 @@ data class CommentsResponse(
     }
 }
 
+@Serializable
 data class CommentResult(
     @SerialName("id")
     val id: String,

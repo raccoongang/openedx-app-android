@@ -7,6 +7,7 @@ import org.openedx.core.domain.model.AssignmentProgress
 
 private const val DEFAULT_LABEL_LENGTH = 5
 
+@Serializable
 data class AssignmentProgress(
     @SerialName("assignment_type")
     val assignmentType: String?,

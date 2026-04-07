@@ -6,6 +6,7 @@ import org.openedx.core.data.model.room.discovery.EnrollmentDetailsDB
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.EnrollmentDetails as DomainEnrollmentDetails
 
+@Serializable
 data class EnrollmentDetails(
     @SerialName("created")
     var created: String?,

@@ -6,6 +6,7 @@ import org.openedx.core.data.model.Media
 import org.openedx.core.utils.TimeUtils
 import org.openedx.discovery.domain.model.Course
 
+@Serializable
 data class CourseDetails(
     @SerialName("blocks_url")
     val blocksUrl: String?,

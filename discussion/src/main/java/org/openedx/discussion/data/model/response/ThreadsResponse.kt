@@ -2,11 +2,13 @@ package org.openedx.discussion.data.model.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
 import org.openedx.core.data.model.Pagination
 import org.openedx.core.data.model.ProfileImage
 import org.openedx.discussion.domain.model.DiscussionType
 import org.openedx.discussion.domain.model.ThreadsData
 
+@Serializable
 data class ThreadsResponse(
     @SerialName("results")
     val results: List<Thread>,
@@ -15,6 +17,7 @@ data class ThreadsResponse(
     @SerialName("pagination")
     val pagination: Pagination
 ) {
+    @Serializable
     data class Thread(
         @SerialName("id")
         val id: String,
@@ -57,7 +60,7 @@ data class ThreadsResponse(
         @SerialName("preview_body")
         val previewBody: String,
         @SerialName("abuse_flagged_count")
-        val abuseFlaggedCount: Any?,
+        @Contextual val abuseFlaggedCount: Any?,
         @SerialName("title")
         val title: String,
         @SerialName("pinned")
@@ -79,6 +82,7 @@ data class ThreadsResponse(
         @SerialName("users")
         val users: Map<String, DiscussionProfile>?
     ) {
+    @Serializable
         data class DiscussionProfile(
             @SerialName("profile")
             val profile: ProfileResponse
@@ -90,6 +94,7 @@ data class ThreadsResponse(
             }
         }
 
+    @Serializable
         data class ProfileResponse(
             @SerialName("image")
             val image: ProfileImage

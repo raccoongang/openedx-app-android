@@ -8,7 +8,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.gson.Gson
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -55,6 +56,13 @@ class PreferencesManager(
         get() = context.dataStore
 
     private val encryption = DataStoreEncryption()
+
+    private val jsonSerializer = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        encodeDefaults = true
+        coerceInputValues = true
+    }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -159,9 +167,9 @@ class PreferencesManager(
     override var user: User?
         get() {
             val json = getEncryptedString(Keys.USER, "")
-            return if (json.isEmpty()) null else Gson().fromJson(json, User::class.java)
+            return if (json.isEmpty()) null else jsonSerializer.decodeFromString<User>(json)
         }
-        set(value) = setEncryptedString(Keys.USER, Gson().toJson(value))
+        set(value) = setEncryptedString(Keys.USER, jsonSerializer.encodeToString(value))
 
     override var videoSettings: VideoSettings
         get() {
@@ -188,10 +196,10 @@ class PreferencesManager(
 
     override var appConfig: AppConfig
         get() {
-            val json = getValue(Keys.APP_CONFIG, Gson().toJson(AppConfig()))
-            return Gson().fromJson(json, AppConfig::class.java)
+            val json = getValue(Keys.APP_CONFIG, jsonSerializer.encodeToString(AppConfig()))
+            return jsonSerializer.decodeFromString<AppConfig>(json)
         }
-        set(value) = setValue(Keys.APP_CONFIG, Gson().toJson(value))
+        set(value) = setValue(Keys.APP_CONFIG, jsonSerializer.encodeToString(value))
 
     override var canResetAppDirectory: Boolean
         get() = getValue(Keys.CAN_RESET_APP_DIRECTORY, true)
@@ -204,9 +212,9 @@ class PreferencesManager(
     override var profile: Account?
         get() {
             val json = getEncryptedString(Keys.ACCOUNT, "")
-            return if (json.isEmpty()) null else Gson().fromJson(json, Account::class.java)
+            return if (json.isEmpty()) null else jsonSerializer.decodeFromString<Account>(json)
         }
-        set(value) = setEncryptedString(Keys.ACCOUNT, Gson().toJson(value))
+        set(value) = setEncryptedString(Keys.ACCOUNT, jsonSerializer.encodeToString(value))
 
     override var lastWhatsNewVersion: String
         get() = getValue(Keys.LAST_WHATS_NEW_VERSION, "")
@@ -218,11 +226,11 @@ class PreferencesManager(
             return if (json.isEmpty()) {
                 InAppReviewPreferences.VersionName.default
             } else {
-                Gson().fromJson(json, InAppReviewPreferences.VersionName::class.java)
+                jsonSerializer.decodeFromString<InAppReviewPreferences.VersionName>(json)
                     ?: InAppReviewPreferences.VersionName.default
             }
         }
-        set(value) = setValue(Keys.LAST_REVIEW_VERSION, Gson().toJson(value))
+        set(value) = setValue(Keys.LAST_REVIEW_VERSION, jsonSerializer.encodeToString(value))
 
     override var wasPositiveRated: Boolean
         get() = getValue(Keys.WAS_POSITIVE_RATED, false)

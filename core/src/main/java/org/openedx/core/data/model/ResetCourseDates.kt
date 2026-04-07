@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.ResetCourseDates
 
+@Serializable
 data class ResetCourseDates(
     @SerialName("message")
     val message: String = "",

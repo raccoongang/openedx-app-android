@@ -3,6 +3,7 @@ package org.openedx.core.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class BranchConfig(
     @SerialName("ENABLED")
     val enabled: Boolean = false,

@@ -3,10 +3,12 @@ package org.openedx.core.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class AppConfig(
     val courseDatesCalendarSync: CourseDatesCalendarSync = CourseDatesCalendarSync(),
 )
 
+@Serializable
 data class CourseDatesCalendarSync(
     @SerialName("is_enabled")
     val isEnabled: Boolean = false,

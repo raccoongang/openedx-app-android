@@ -5,11 +5,13 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.RegistrationField
 import org.openedx.core.domain.model.RegistrationFieldType
 
+@Serializable
 data class RegistrationFields(
     @SerialName("fields")
     val fields: List<Field>?,
 ) {
 
+    @Serializable
     data class Field(
         @SerialName("name")
         val name: String?,
@@ -45,6 +47,7 @@ data class RegistrationFields(
         }
     }
 
+    @Serializable
     data class Restrictions(
         @SerialName("max_length")
         val maxLength: Int?,
@@ -59,6 +62,7 @@ data class RegistrationFields(
         }
     }
 
+    @Serializable
     data class Option(
         @SerialName("value")
         val value: String?,

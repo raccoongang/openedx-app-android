@@ -6,6 +6,7 @@ import org.openedx.core.data.model.room.discovery.CourseDateBlockDb
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.utils.TimeUtils
 
+@Serializable
 data class CourseDateBlock(
     @SerialName("complete")
     val complete: Boolean = false,

@@ -9,6 +9,7 @@ import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.CourseStructure
 import org.openedx.core.utils.TimeUtils
 
+@Serializable
 data class CourseStructureModel(
     @SerialName("root")
     val root: String,

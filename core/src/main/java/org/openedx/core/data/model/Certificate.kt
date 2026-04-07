@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CertificateDb
 import org.openedx.core.domain.model.Certificate
 
+@Serializable
 data class Certificate(
     @SerialName("url")
     val certificateURL: String?

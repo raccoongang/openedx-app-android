@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.OfflineDownloadDb
 import org.openedx.core.domain.model.OfflineDownload
 
+@Serializable
 data class OfflineDownload(
     @SerialName("file_url")
     var fileUrl: String?,

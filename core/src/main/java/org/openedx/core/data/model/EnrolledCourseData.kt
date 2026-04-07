@@ -7,6 +7,7 @@ import org.openedx.core.data.model.room.discovery.EnrolledCourseDataDb
 import org.openedx.core.domain.model.EnrolledCourseData
 import org.openedx.core.utils.TimeUtils
 
+@Serializable
 data class EnrolledCourseData(
     @SerialName("id")
     var id: String?,

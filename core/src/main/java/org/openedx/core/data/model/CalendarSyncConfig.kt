@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesCalendarSync
 
+@Serializable
 data class CalendarSyncConfig(
     @SerialName("android")
     val platformConfig: CalendarSyncPlatform = CalendarSyncPlatform(),
@@ -18,6 +19,7 @@ data class CalendarSyncConfig(
     }
 }
 
+@Serializable
 data class CalendarSyncPlatform(
     @SerialName("enabled")
     val enabled: Boolean = false,

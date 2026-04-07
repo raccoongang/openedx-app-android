@@ -13,6 +13,7 @@ import org.openedx.core.data.model.room.SectionScoreDb
 import org.openedx.core.data.model.room.VerificationDataDb
 import org.openedx.core.domain.model.CourseProgress
 
+@Serializable
 data class CourseProgressResponse(
     @SerialName("verified_mode") val verifiedMode: String?,
     @SerialName("access_expiration") val accessExpiration: String?,
@@ -31,6 +32,7 @@ data class CourseProgressResponse(
     @SerialName("verification_data") val verificationData: VerificationData?,
     @SerialName("disable_progress_graph") val disableProgressGraph: Boolean?,
 ) {
+    @Serializable
     data class CertificateData(
         @SerialName("cert_status") val certStatus: String?,
         @SerialName("cert_web_view_url") val certWebViewUrl: String?,
@@ -52,6 +54,7 @@ data class CourseProgressResponse(
         )
     }
 
+    @Serializable
     data class CompletionSummary(
         @SerialName("complete_count") val completeCount: Int?,
         @SerialName("incomplete_count") val incompleteCount: Int?,
@@ -70,6 +73,7 @@ data class CourseProgressResponse(
         )
     }
 
+    @Serializable
     data class CourseGrade(
         @SerialName("letter_grade") val letterGrade: String?,
         @SerialName("percent") val percent: Double?,
@@ -88,6 +92,7 @@ data class CourseProgressResponse(
         )
     }
 
+    @Serializable
     data class GradingPolicy(
         @SerialName("assignment_policies") val assignmentPolicies: List<AssignmentPolicy>?,
         @SerialName("grade_range") val gradeRange: Map<String, Float>?,
@@ -122,6 +127,7 @@ data class CourseProgressResponse(
             } ?: DEFAULT_COLORS.map { Color(it.toColorInt()) }
         )
 
+        @Serializable
         data class AssignmentPolicy(
             @SerialName("num_droppable") val numDroppable: Int?,
             @SerialName("num_total") val numTotal: Int?,
@@ -147,6 +153,7 @@ data class CourseProgressResponse(
         }
     }
 
+    @Serializable
     data class SectionScore(
         @SerialName("display_name") val displayName: String?,
         @SerialName("subsections") val subsections: List<Subsection>?
@@ -161,6 +168,7 @@ data class CourseProgressResponse(
             subsections = subsections?.map { it.mapToDomain() } ?: emptyList()
         )
 
+        @Serializable
         data class Subsection(
             @SerialName("assignment_type") val assignmentType: String?,
             @SerialName("block_key") val blockKey: String?,
@@ -208,6 +216,7 @@ data class CourseProgressResponse(
                 url = url ?: ""
             )
 
+            @Serializable
             data class ProblemScore(
                 @SerialName("earned") val earned: Double?,
                 @SerialName("possible") val possible: Double?
@@ -225,6 +234,7 @@ data class CourseProgressResponse(
         }
     }
 
+    @Serializable
     data class VerificationData(
         @SerialName("link") val link: String?,
         @SerialName("status") val status: String?,

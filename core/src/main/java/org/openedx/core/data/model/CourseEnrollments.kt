@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 import java.lang.reflect.Type
 import org.openedx.core.domain.model.CourseEnrollments as DomainCourseEnrollments
 
+@Serializable
 data class CourseEnrollments(
     @SerialName("enrollments")
     val enrollments: DashboardCourseList,

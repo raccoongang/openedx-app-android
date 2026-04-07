@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.Media
 
+@Serializable
 data class Media(
     @SerialName("banner_image")
     val bannerImage: BannerImage?,
@@ -25,6 +26,7 @@ data class Media(
     }
 }
 
+@Serializable
 data class Image(
     @SerialName("large")
     val large: String?,
@@ -42,6 +44,7 @@ data class Image(
     }
 }
 
+@Serializable
 data class CourseVideo(
     @SerialName("uri")
     val uri: String?,
@@ -53,6 +56,7 @@ data class CourseVideo(
     }
 }
 
+@Serializable
 data class CourseImage(
     @SerialName("uri")
     val uri: String?,
@@ -67,6 +71,7 @@ data class CourseImage(
     }
 }
 
+@Serializable
 data class BannerImage(
     @SerialName("uri")
     val uri: String?,

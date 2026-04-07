@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.DownloadCoursePreview as EntityDownloadCoursePreview
 import org.openedx.core.domain.model.DownloadCoursePreview as DomainDownloadCoursePreview
 
+@Serializable
 data class DownloadCoursePreview(
     @SerialName("course_id")
     val id: String,

@@ -3,6 +3,7 @@ package org.openedx.core.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class AnnouncementModel(
     @SerialName("date")
     val date: String,

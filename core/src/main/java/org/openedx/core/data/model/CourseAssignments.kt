@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CourseAssignmentsDb
 import org.openedx.core.domain.model.CourseAssignments
 
+@Serializable
 data class CourseAssignments(
     @SerialName("future_assignments")
     val futureAssignments: List<CourseDateBlock>?,

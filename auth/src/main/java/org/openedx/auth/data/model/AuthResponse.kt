@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.auth.domain.model.AuthResponse
 
+@Serializable
 data class AuthResponse(
     @SerialName("access_token")
     var accessToken: String?,

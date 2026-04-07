@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CourseSharingUtmParametersDb
 import org.openedx.core.domain.model.CourseSharingUtmParameters
 
+@Serializable
 data class CourseSharingUtmParameters(
     @SerialName("facebook")
     val facebook: String?,

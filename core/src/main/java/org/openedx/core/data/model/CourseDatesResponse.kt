@@ -6,6 +6,7 @@ import org.openedx.core.utils.TimeUtils
 import org.openedx.core.domain.model.CourseDate as DomainCourseDate
 import org.openedx.core.domain.model.CourseDatesResponse as DomainCourseDatesResponse
 
+@Serializable
 data class CourseDate(
     @SerialName("course_id")
     val courseId: String,
@@ -36,6 +37,7 @@ data class CourseDate(
     }
 }
 
+@Serializable
 data class CourseDatesResponse(
     @SerialName("count")
     val count: Int,

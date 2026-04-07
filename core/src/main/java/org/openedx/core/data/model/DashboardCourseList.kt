@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.DashboardCourseList
 
+@Serializable
 data class DashboardCourseList(
     @SerialName("next")
     val next: String?,

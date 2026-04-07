@@ -1,5 +1,7 @@
 package org.openedx.core.data.storage
 
+import kotlinx.serialization.Serializable
+
 interface InAppReviewPreferences {
     var lastReviewVersion: VersionName
     var wasPositiveRated: Boolean
@@ -17,6 +19,7 @@ interface InAppReviewPreferences {
                 )
             }
 
+    @Serializable
     data class VersionName(
         var majorVersion: Int,
         var minorVersion: Int
