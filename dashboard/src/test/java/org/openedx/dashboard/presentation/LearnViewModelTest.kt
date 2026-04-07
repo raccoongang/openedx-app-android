@@ -1,6 +1,5 @@
 package org.openedx.dashboard.presentation
 
-import androidx.fragment.app.FragmentManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -31,7 +30,7 @@ class LearnViewModelTest {
     private val dashboardRouter = mockk<DashboardRouter>(relaxed = true)
     private val analytics = mockk<DashboardAnalytics>(relaxed = true)
     private val resourceManager = mockk<ResourceManager>()
-    private val fragmentManager = mockk<FragmentManager>()
+    private val fragmentManager = mockk<Any>()
 
     @Before
     fun setUp() {

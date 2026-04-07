@@ -1,7 +1,6 @@
 package org.openedx.profile.presentation.calendar
 
 import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -100,14 +99,13 @@ class CalendarViewModel(
         permissionLauncher.launch(calendarManager.permissions)
     }
 
-    fun setCalendarSyncEnabled(isEnabled: Boolean, fragmentManager: FragmentManager) {
+    fun setCalendarSyncEnabled(isEnabled: Boolean, fragmentManager: Any?) {
         if (!isEnabled) {
             _uiState.value.calendarData?.let {
                 val dialog = DisableCalendarSyncDialogFragment.newInstance(it)
-                dialog.show(
-                    fragmentManager,
-                    DisableCalendarSyncDialogFragment.DIALOG_TAG
-                )
+                (fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
+                    dialog.show(fm, DisableCalendarSyncDialogFragment.DIALOG_TAG)
+                }
             }
         } else {
             calendarPreferences.isCalendarSyncEnabled = true
@@ -121,7 +119,7 @@ class CalendarViewModel(
         _uiState.update { it.copy(isRelativeDateEnabled = isEnabled) }
     }
 
-    fun navigateToCoursesToSync(fragmentManager: FragmentManager) {
+    fun navigateToCoursesToSync(fragmentManager: Any?) {
         profileRouter.navigateToCoursesToSync(fragmentManager)
     }
 

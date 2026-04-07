@@ -60,7 +60,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.DatesSection
@@ -92,7 +91,7 @@ import org.openedx.core.R as CoreR
 fun CourseDatesScreen(
     windowSize: WindowSize,
     viewModel: CourseDatesViewModel,
-    fragmentManager: FragmentManager,
+    fragmentManager: Any?,
     isFragmentResumed: Boolean,
     updateCourseStructure: () -> Unit
 ) {
@@ -141,10 +140,11 @@ fun CourseDatesScreen(
                         ),
                         url = block.link,
                         source = CoreAnalyticsScreen.COURSE_DATES.screenName
-                    ).show(
-                        fragmentManager,
-                        ActionDialogFragment::class.simpleName
-                    )
+                    ).also { dialog ->
+                        (fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
+                            dialog.show(fm, ActionDialogFragment::class.simpleName)
+                        }
+                    }
                 }
             }
         },

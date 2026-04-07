@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -49,7 +48,7 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun ContentTabScreen(
     viewModel: ContentTabViewModel,
     windowSize: WindowSize,
-    fragmentManager: FragmentManager,
+    fragmentManager: Any?,
     courseId: String,
     courseName: String,
     pagerState: PagerState,

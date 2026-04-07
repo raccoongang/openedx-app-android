@@ -1,7 +1,6 @@
 package org.openedx.profile.presentation.profile
 
 import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.FragmentManager
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -47,7 +46,7 @@ class CalendarViewModelTest {
     private val resourceManager = mockk<ResourceManager>()
     private val networkConnection = mockk<NetworkConnection>()
     private val permissionLauncher = mockk<ActivityResultLauncher<Array<String>>>()
-    private val fragmentManager = mockk<FragmentManager>()
+    private val fragmentManager = mockk<Any>()
 
     @Before
     fun setup() {

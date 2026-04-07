@@ -1,6 +1,5 @@
 package org.openedx.discovery.presentation.program
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -75,13 +74,13 @@ class ProgramViewModel(
         }
     }
 
-    fun onProgramCardClick(fragmentManager: FragmentManager, pathId: String) {
+    fun onProgramCardClick(fragmentManager: Any?, pathId: String) {
         if (pathId.isNotEmpty()) {
             router.navigateToEnrolledProgramInfo(fm = fragmentManager, pathId = pathId)
         }
     }
 
-    fun onViewCourseClick(fragmentManager: FragmentManager, courseId: String, infoType: String) {
+    fun onViewCourseClick(fragmentManager: Any?, courseId: String, infoType: String) {
         if (courseId.isNotEmpty() && infoType.isNotEmpty()) {
             router.navigateToCourseInfo(
                 fm = fragmentManager,
@@ -91,7 +90,7 @@ class ProgramViewModel(
         }
     }
 
-    fun onEnrolledCourseClick(fragmentManager: FragmentManager, courseId: String) {
+    fun onEnrolledCourseClick(fragmentManager: Any?, courseId: String) {
         if (courseId.isNotEmpty()) {
             router.navigateToCourseOutline(
                 fm = fragmentManager,
@@ -108,7 +107,7 @@ class ProgramViewModel(
         viewModelScope.launch { notifier.send(NavigationToDiscovery()) }
     }
 
-    fun navigateToSettings(fragmentManager: FragmentManager) {
+    fun navigateToSettings(fragmentManager: Any?) {
         router.navigateToSettings(fragmentManager)
     }
 

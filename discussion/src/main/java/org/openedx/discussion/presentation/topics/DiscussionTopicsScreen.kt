@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.FragmentViewType
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.ui.HandleUIMessage
@@ -63,7 +62,7 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun DiscussionTopicsScreen(
     discussionTopicsViewModel: DiscussionTopicsViewModel,
     windowSize: WindowSize,
-    fragmentManager: FragmentManager
+    fragmentManager: Any?
 ) {
     val uiState by discussionTopicsViewModel.uiState.observeAsState(DiscussionTopicsUIState.Loading)
     val uiMessage by discussionTopicsViewModel.uiMessage.collectAsState(null)

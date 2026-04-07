@@ -1,6 +1,5 @@
 package org.openedx.learn.presentation
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +39,7 @@ class LearnViewModel(
     private val dashboardType get() = config.getDashboardConfig().getType()
     val isProgramTypeWebView get() = config.getProgramConfig().isViewTypeWebView()
 
-    fun onSettingsClick(fragmentManager: FragmentManager) {
+    fun onSettingsClick(fragmentManager: Any?) {
         dashboardRouter.navigateToSettings(fragmentManager)
     }
 

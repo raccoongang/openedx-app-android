@@ -68,7 +68,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
@@ -101,7 +100,7 @@ import org.openedx.core.R as CoreR
 
 @Composable
 fun DashboardGalleryView(
-    fragmentManager: FragmentManager,
+    fragmentManager: Any?,
 ) {
     val windowSize = rememberWindowSize()
     val viewModel: DashboardGalleryViewModel = koinViewModel { parametersOf(windowSize) }

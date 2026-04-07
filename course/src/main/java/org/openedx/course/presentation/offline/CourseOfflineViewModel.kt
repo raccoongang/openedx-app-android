@@ -3,7 +3,6 @@ package org.openedx.course.presentation.offline
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.InsertDriveFile
 import androidx.compose.material.icons.outlined.SmartDisplay
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +79,7 @@ class CourseOfflineViewModel(
         collectCourseNotifier()
     }
 
-    fun downloadAllBlocks(fragmentManager: FragmentManager) {
+    fun downloadAllBlocks(fragmentManager: Any?) {
         viewModelScope.launch {
             val courseStructure = courseInteractor.getCourseStructureFromCache(courseId)
             val downloadModels = courseInteractor.getAllDownloadModels()
@@ -108,7 +107,7 @@ class CourseOfflineViewModel(
         }
     }
 
-    fun removeDownloadModel(downloadModel: DownloadModel, fragmentManager: FragmentManager) {
+    fun removeDownloadModel(downloadModel: DownloadModel, fragmentManager: Any?) {
         val icon = when (downloadModel.type) {
             FileType.VIDEO -> Icons.Outlined.SmartDisplay
             else -> Icons.AutoMirrored.Outlined.InsertDriveFile
@@ -127,7 +126,7 @@ class CourseOfflineViewModel(
         )
     }
 
-    fun deleteAll(fragmentManager: FragmentManager) {
+    fun deleteAll(fragmentManager: Any?) {
         viewModelScope.launch {
             val downloadModels =
                 courseInteractor.getAllDownloadModels().filter { it.courseId == courseId }

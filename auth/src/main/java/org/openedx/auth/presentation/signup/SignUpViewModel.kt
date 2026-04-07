@@ -1,7 +1,6 @@
 package org.openedx.auth.presentation.signup
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -296,7 +295,7 @@ class SignUpViewModel(
         updateFields(updatedFields)
     }
 
-    fun openLink(fragmentManager: FragmentManager, links: Map<String, String>, link: String) {
+    fun openLink(fragmentManager: Any?, links: Map<String, String>, link: String) {
         links.forEach { (key, value) ->
             if (value == link) {
                 router.navigateToWebContent(fragmentManager, key, value)

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -121,7 +120,9 @@ class DownloadDialogManager(
                 }
                 if (dialog != null) {
                     dialog.listener = dialogListener
-                    dialog.show(state.fragmentManager, dialog::class.java.simpleName)
+                    (state.fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
+                        dialog.show(fm, dialog::class.java.simpleName)
+                    }
                 } else {
                     state.onConfirmClick()
                     state.saveDownloadModels()
@@ -135,7 +136,7 @@ class DownloadDialogManager(
         courseId: String,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean = false,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: (blockId: String) -> Unit,
         onDismissClick: () -> Unit = {},
@@ -157,7 +158,7 @@ class DownloadDialogManager(
     fun showPopup(
         coursePreview: DownloadCoursePreview,
         isBlocksDownloaded: Boolean,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,
         onDismissClick: () -> Unit = {},
@@ -176,7 +177,7 @@ class DownloadDialogManager(
 
     fun showRemoveDownloadModelPopup(
         downloadDialogItem: DownloadDialogItem,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         removeDownloadModels: () -> Unit,
     ) {
         coroutineScope.launch {
@@ -196,7 +197,7 @@ class DownloadDialogManager(
 
     fun showDownloadFailedPopup(
         downloadModel: List<DownloadModel>,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
     ) {
         createDownloadItems(
             downloadModels = downloadModel,
@@ -206,7 +207,7 @@ class DownloadDialogManager(
 
     private fun createDownloadItems(
         downloadModels: List<DownloadModel>,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
     ) {
         coroutineScope.launch {
             val courseIds = downloadModels.map { it.courseId }.distinct()
@@ -260,7 +261,7 @@ class DownloadDialogManager(
     private fun createDownloadItems(
         subSectionsBlocks: List<Block>,
         courseId: String,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
@@ -318,7 +319,7 @@ class DownloadDialogManager(
 
     private fun createCourseDownloadItems(
         coursePreview: DownloadCoursePreview,
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         isBlocksDownloaded: Boolean,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,

@@ -1,6 +1,5 @@
 package org.openedx.discovery.presentation
 
-import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -75,7 +74,7 @@ class WebViewDiscoveryViewModel(
         }
     }
 
-    fun infoCardClicked(fragmentManager: FragmentManager, pathId: String, infoType: String) {
+    fun infoCardClicked(fragmentManager: Any?, pathId: String, infoType: String) {
         if (pathId.isNotEmpty() && infoType.isNotEmpty()) {
             router.navigateToCourseInfo(
                 fragmentManager,
@@ -85,15 +84,15 @@ class WebViewDiscoveryViewModel(
         }
     }
 
-    fun navigateToSignUp(fragmentManager: FragmentManager) {
+    fun navigateToSignUp(fragmentManager: Any?) {
         router.navigateToSignUp(fragmentManager, null)
     }
 
-    fun navigateToSignIn(fragmentManager: FragmentManager) {
+    fun navigateToSignIn(fragmentManager: Any?) {
         router.navigateToSignIn(fragmentManager, null, null)
     }
 
-    fun navigateToSettings(fragmentManager: FragmentManager) {
+    fun navigateToSettings(fragmentManager: Any?) {
         router.navigateToSettings(fragmentManager)
     }
 

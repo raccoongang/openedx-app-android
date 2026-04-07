@@ -1,6 +1,5 @@
 package org.openedx.dates.presentation.dates
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -170,12 +169,12 @@ class DatesViewModel(
         fetchDates(true)
     }
 
-    fun onSettingsClick(fragmentManager: FragmentManager) {
+    fun onSettingsClick(fragmentManager: Any?) {
         datesRouter.navigateToSettings(fragmentManager)
     }
 
     fun navigateToCourseOutline(
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         courseDate: CourseDate,
     ) {
         val currentTime = System.currentTimeMillis()

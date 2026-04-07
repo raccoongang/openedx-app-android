@@ -1,6 +1,5 @@
 package org.openedx.course.presentation.videos
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -241,7 +240,7 @@ class CourseVideoViewModel(
         subSectionsDownloadsCount[sequentialBlock.id] = sequentialBlock.getDownloadsCount(blocks)
     }
 
-    fun downloadBlocks(blocksIds: List<String>, fragmentManager: FragmentManager) {
+    fun downloadBlocks(blocksIds: List<String>, fragmentManager: Any?) {
         viewModelScope.launch {
             val subSectionsBlocks =
                 courseSubSections.values.flatten().filter { it.id in blocksIds }

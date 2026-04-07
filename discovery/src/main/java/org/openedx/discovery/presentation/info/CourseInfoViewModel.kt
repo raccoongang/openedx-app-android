@@ -1,6 +1,5 @@
 package org.openedx.discovery.presentation.info
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -124,7 +123,7 @@ class CourseInfoViewModel(
         }
     }
 
-    fun onSuccessfulCourseEnrollment(fragmentManager: FragmentManager, courseId: String) {
+    fun onSuccessfulCourseEnrollment(fragmentManager: Any?, courseId: String) {
         if (courseId.isNotEmpty()) {
             router.navigateToCourseOutline(
                 fm = fragmentManager,
@@ -134,7 +133,7 @@ class CourseInfoViewModel(
         }
     }
 
-    fun infoCardClicked(fragmentManager: FragmentManager, pathId: String, infoType: String) {
+    fun infoCardClicked(fragmentManager: Any?, pathId: String, infoType: String) {
         if (pathId.isNotEmpty() && infoType.isNotEmpty()) {
             router.navigateToCourseInfo(
                 fm = fragmentManager,
@@ -144,11 +143,11 @@ class CourseInfoViewModel(
         }
     }
 
-    fun navigateToSignUp(fragmentManager: FragmentManager, courseId: String?, infoType: String) {
+    fun navigateToSignUp(fragmentManager: Any?, courseId: String?, infoType: String) {
         router.navigateToSignUp(fragmentManager, courseId, infoType)
     }
 
-    fun navigateToSignIn(fragmentManager: FragmentManager, courseId: String, infoType: String) {
+    fun navigateToSignIn(fragmentManager: Any?, courseId: String, infoType: String) {
         router.navigateToSignIn(fragmentManager, courseId, infoType)
     }
 

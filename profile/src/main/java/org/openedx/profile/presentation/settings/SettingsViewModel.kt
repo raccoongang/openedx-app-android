@@ -2,7 +2,6 @@ package org.openedx.profile.presentation.settings
 
 import android.content.Context
 import androidx.compose.ui.text.intl.Locale
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -105,12 +104,12 @@ class SettingsViewModel(
         }
     }
 
-    fun videoSettingsClicked(fragmentManager: FragmentManager) {
+    fun videoSettingsClicked(fragmentManager: Any?) {
         profileRouter.navigateToVideoSettings(fragmentManager)
         logProfileEvent(ProfileAnalyticsEvent.VIDEO_SETTING_CLICKED)
     }
 
-    fun privacyPolicyClicked(fragmentManager: FragmentManager) {
+    fun privacyPolicyClicked(fragmentManager: Any?) {
         profileRouter.navigateToWebContent(
             fm = fragmentManager,
             title = resourceManager.getString(R.string.core_privacy_policy),
@@ -119,7 +118,7 @@ class SettingsViewModel(
         logProfileEvent(ProfileAnalyticsEvent.PRIVACY_POLICY_CLICKED)
     }
 
-    fun cookiePolicyClicked(fragmentManager: FragmentManager) {
+    fun cookiePolicyClicked(fragmentManager: Any?) {
         profileRouter.navigateToWebContent(
             fm = fragmentManager,
             title = resourceManager.getString(R.string.core_cookie_policy),
@@ -128,7 +127,7 @@ class SettingsViewModel(
         logProfileEvent(ProfileAnalyticsEvent.COOKIE_POLICY_CLICKED)
     }
 
-    fun dataSellClicked(fragmentManager: FragmentManager) {
+    fun dataSellClicked(fragmentManager: Any?) {
         profileRouter.navigateToWebContent(
             fm = fragmentManager,
             title = resourceManager.getString(R.string.core_data_sell),
@@ -141,7 +140,7 @@ class SettingsViewModel(
         logProfileEvent(ProfileAnalyticsEvent.FAQ_CLICKED)
     }
 
-    fun termsOfUseClicked(fragmentManager: FragmentManager) {
+    fun termsOfUseClicked(fragmentManager: Any?) {
         profileRouter.navigateToWebContent(
             fm = fragmentManager,
             title = resourceManager.getString(R.string.core_terms_of_use),
@@ -163,15 +162,15 @@ class SettingsViewModel(
         AppUpdateState.openPlayMarket(context)
     }
 
-    fun manageAccountClicked(fragmentManager: FragmentManager) {
+    fun manageAccountClicked(fragmentManager: Any?) {
         profileRouter.navigateToManageAccount(fragmentManager)
     }
 
-    fun calendarSettingsClicked(fragmentManager: FragmentManager) {
+    fun calendarSettingsClicked(fragmentManager: Any?) {
         calendarRouter.navigateToCalendarSettings(fragmentManager)
     }
 
-    fun restartApp(fragmentManager: FragmentManager) {
+    fun restartApp(fragmentManager: Any?) {
         profileRouter.restartApp(
             fragmentManager,
             isLogistrationEnabled

@@ -1,7 +1,6 @@
 package org.openedx.downloads
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.FragmentManager
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -133,7 +132,7 @@ class DownloadsViewModelTest {
         )
         advanceUntilIdle()
 
-        val fragmentManager = mockk<FragmentManager>(relaxed = true)
+        val fragmentManager = mockk<Any>(relaxed = true)
         viewModel.onSettingsClick(fragmentManager)
         verify(exactly = 1) { downloadsRouter.navigateToSettings(fragmentManager) }
     }
@@ -160,7 +159,7 @@ class DownloadsViewModelTest {
             downloadHelper
         )
         advanceUntilIdle()
-        val fragmentManager = mockk<FragmentManager>(relaxed = true)
+        val fragmentManager = mockk<Any>(relaxed = true)
         viewModel.downloadCourse(fragmentManager, "course1")
         advanceUntilIdle()
 
@@ -203,7 +202,7 @@ class DownloadsViewModelTest {
             )
             advanceUntilIdle()
 
-            val fragmentManager = mockk<FragmentManager>(relaxed = true)
+            val fragmentManager = mockk<Any>(relaxed = true)
             viewModel.downloadCourse(fragmentManager, "course1")
             advanceUntilIdle()
 
@@ -238,7 +237,7 @@ class DownloadsViewModelTest {
         )
         advanceUntilIdle()
 
-        val fragmentManager = mockk<FragmentManager>(relaxed = true)
+        val fragmentManager = mockk<Any>(relaxed = true)
         viewModel.removeDownloads(fragmentManager, "course1")
         advanceUntilIdle()
 

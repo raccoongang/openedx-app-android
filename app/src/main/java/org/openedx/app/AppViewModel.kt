@@ -3,7 +3,6 @@ package org.openedx.app
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -109,7 +108,7 @@ class AppViewModel(
         preferencesManager.canResetAppDirectory = false
     }
 
-    fun makeExternalRoute(fm: FragmentManager, deepLink: DeepLink) {
+    fun makeExternalRoute(fm: Any?, deepLink: DeepLink) {
         deepLinkRouter.makeRoute(fm, deepLink)
     }
 

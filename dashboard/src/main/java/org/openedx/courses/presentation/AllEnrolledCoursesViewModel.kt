@@ -1,6 +1,5 @@
 package org.openedx.courses.presentation
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -157,7 +156,7 @@ class AllEnrolledCoursesViewModel(
         }
     }
 
-    fun navigateToCourseSearch(fragmentManager: FragmentManager) {
+    fun navigateToCourseSearch(fragmentManager: Any?) {
         dashboardRouter.navigateToCourseSearch(
             fragmentManager,
             ""
@@ -165,7 +164,7 @@ class AllEnrolledCoursesViewModel(
     }
 
     fun navigateToCourseOutline(
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         courseId: String,
         courseName: String,
     ) {

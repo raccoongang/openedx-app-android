@@ -1,6 +1,5 @@
 package org.openedx.profile.presentation.profile
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -80,7 +79,7 @@ class ProfileViewModel(
         getAccount()
     }
 
-    fun profileEditClicked(fragmentManager: FragmentManager) {
+    fun profileEditClicked(fragmentManager: Any?) {
         (uiState.value as? ProfileUIState.Data)?.let { data ->
             profileRouter.navigateToEditProfile(
                 fragmentManager,

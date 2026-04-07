@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
 import org.openedx.core.domain.model.Progress
@@ -51,7 +50,7 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun CourseContentVideoScreen(
     windowSize: WindowSize,
     viewModel: CourseVideoViewModel,
-    fragmentManager: FragmentManager,
+    fragmentManager: Any?,
     onNavigateToHome: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState(CourseVideoUIState.Loading)

@@ -1,7 +1,6 @@
 package org.openedx.auth.presentation.logistration
 
 import android.app.Activity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.openedx.auth.presentation.AuthAnalytics
@@ -36,7 +35,7 @@ class LogistrationViewModel(
         logLogistrationScreenEvent()
     }
 
-    fun navigateToSignIn(parentFragmentManager: FragmentManager) {
+    fun navigateToSignIn(parentFragmentManager: Any?) {
         router.navigateToSignIn(parentFragmentManager, courseId, null)
         logEvent(AuthAnalyticsEvent.SIGN_IN_CLICKED)
     }
@@ -51,12 +50,12 @@ class LogistrationViewModel(
         }
     }
 
-    fun navigateToSignUp(parentFragmentManager: FragmentManager) {
+    fun navigateToSignUp(parentFragmentManager: Any?) {
         router.navigateToSignUp(parentFragmentManager, courseId, null)
         logEvent(AuthAnalyticsEvent.REGISTER_CLICKED)
     }
 
-    fun navigateToDiscovery(parentFragmentManager: FragmentManager, querySearch: String) {
+    fun navigateToDiscovery(parentFragmentManager: Any?, querySearch: String) {
         if (discoveryTypeWebView) {
             router.navigateToWebDiscoverCourses(
                 parentFragmentManager,

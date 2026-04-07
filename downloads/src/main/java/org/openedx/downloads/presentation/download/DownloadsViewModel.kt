@@ -2,7 +2,6 @@ package org.openedx.downloads.presentation.download
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.School
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -209,11 +208,11 @@ class DownloadsViewModel(
         fetchDownloads(refresh = true)
     }
 
-    fun onSettingsClick(fragmentManager: FragmentManager) {
+    fun onSettingsClick(fragmentManager: Any?) {
         downloadsRouter.navigateToSettings(fragmentManager)
     }
 
-    fun downloadCourse(fragmentManager: FragmentManager, courseId: String) {
+    fun downloadCourse(fragmentManager: Any?, courseId: String) {
         logEvent(DownloadsAnalyticsEvent.DOWNLOAD_COURSE_CLICKED)
         try {
             showDownloadPopup(fragmentManager, courseId)
@@ -234,7 +233,7 @@ class DownloadsViewModel(
         }
     }
 
-    fun removeDownloads(fragmentManager: FragmentManager, courseId: String) {
+    fun removeDownloads(fragmentManager: Any?, courseId: String) {
         logEvent(DownloadsAnalyticsEvent.REMOVE_DOWNLOAD_CLICKED)
         viewModelScope.launch {
             val downloadModels = interactor.getDownloadModelsByCourseIds(courseId)
@@ -273,7 +272,7 @@ class DownloadsViewModel(
         return courseStructure
     }
 
-    private fun showDownloadPopup(fragmentManager: FragmentManager, courseId: String) {
+    private fun showDownloadPopup(fragmentManager: Any?, courseId: String) {
         viewModelScope.launch {
             val coursePreview = getCoursePreview(courseId) ?: return@launch
             val downloadModels = interactor.getDownloadModelsByCourseIds(courseId)
@@ -321,7 +320,7 @@ class DownloadsViewModel(
         }
     }
 
-    fun navigateToCourseOutline(fm: FragmentManager, courseId: String) {
+    fun navigateToCourseOutline(fm: Any?, courseId: String) {
         val coursePreview = getCoursePreview(courseId) ?: return
         router.navigateToCourseOutline(
             fm = fm,

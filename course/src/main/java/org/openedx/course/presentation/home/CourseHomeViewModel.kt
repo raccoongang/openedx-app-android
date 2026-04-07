@@ -1,6 +1,5 @@
 package org.openedx.course.presentation.home
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -367,7 +366,7 @@ class CourseHomeViewModel(
         return sequentialBlocks.find { !it.isCompleted() }
     }
 
-    fun openBlock(fragmentManager: FragmentManager, blockId: String) {
+    fun openBlock(fragmentManager: Any?, blockId: String) {
         viewModelScope.launch {
             val courseStructure = interactor.getCourseStructure(courseId, false)
             val blocks = courseStructure.blockData
@@ -376,7 +375,7 @@ class CourseHomeViewModel(
         }
     }
 
-    private fun resumeBlock(fragmentManager: FragmentManager, blockId: String) {
+    private fun resumeBlock(fragmentManager: Any?, blockId: String) {
         resumeSectionBlock?.let { subSection ->
             resumeCourseTappedEvent(subSection.id)
             resumeVerticalBlock?.let { unit ->
@@ -402,7 +401,7 @@ class CourseHomeViewModel(
         }
     }
 
-    fun downloadBlocks(blocksIds: List<String>, fragmentManager: FragmentManager) {
+    fun downloadBlocks(blocksIds: List<String>, fragmentManager: Any?) {
         viewModelScope.launch {
             val courseData = _uiState.value as? CourseHomeUIState.CourseData ?: return@launch
 

@@ -68,7 +68,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.koin.androidx.compose.koinViewModel
@@ -100,7 +99,7 @@ import java.util.Date
 
 @Composable
 fun AllEnrolledCoursesView(
-    fragmentManager: FragmentManager
+    fragmentManager: Any?
 ) {
     val viewModel: AllEnrolledCoursesViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -126,7 +125,7 @@ fun AllEnrolledCoursesView(
                 }
 
                 AllEnrolledCoursesAction.Back -> {
-                    fragmentManager.popBackStack()
+                    (fragmentManager as? androidx.fragment.app.FragmentManager)?.popBackStack()
                 }
 
                 AllEnrolledCoursesAction.Search -> {

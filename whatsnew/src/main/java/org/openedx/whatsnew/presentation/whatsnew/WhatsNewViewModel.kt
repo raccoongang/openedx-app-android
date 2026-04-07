@@ -2,7 +2,6 @@ package org.openedx.whatsnew.presentation.whatsnew
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.presentation.global.AppData
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
@@ -37,7 +36,7 @@ class WhatsNewViewModel(
         _whatsNewItem.value = whatsNewManager.getNewestData()
     }
 
-    fun navigateToMain(fm: FragmentManager) {
+    fun navigateToMain(fm: Any? = null) {
         val versionName = appData.versionName
         preferencesManager.lastWhatsNewVersion = versionName
         router.navigateToMain(

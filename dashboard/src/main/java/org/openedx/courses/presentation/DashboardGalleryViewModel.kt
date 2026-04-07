@@ -1,6 +1,5 @@
 package org.openedx.courses.presentation
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -111,12 +110,12 @@ class DashboardGalleryViewModel(
         viewModelScope.launch { discoveryNotifier.send(NavigationToDiscovery()) }
     }
 
-    fun navigateToAllEnrolledCourses(fragmentManager: FragmentManager) {
+    fun navigateToAllEnrolledCourses(fragmentManager: Any?) {
         dashboardRouter.navigateToAllEnrolledCourses(fragmentManager)
     }
 
     fun navigateToCourseOutline(
-        fragmentManager: FragmentManager,
+        fragmentManager: Any?,
         enrolledCourse: EnrolledCourse,
         openDates: Boolean = false,
         resumeBlockId: String = "",

@@ -53,7 +53,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentManager
 import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
 import org.openedx.core.domain.model.Progress
@@ -83,7 +82,7 @@ private const val ASSIGNMENT_BUTTON_CARD_BACKGROUND_ALPHA = 0.5f
 fun CourseContentAssignmentScreen(
     windowSize: WindowSize,
     viewModel: CourseAssignmentViewModel,
-    fragmentManager: FragmentManager,
+    fragmentManager: Any?,
     onNavigateToHome: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()

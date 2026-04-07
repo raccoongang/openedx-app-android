@@ -1,6 +1,5 @@
 package org.openedx.profile.presentation.video
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -61,14 +60,14 @@ class VideoSettingsViewModel(
         )
     }
 
-    fun navigateToVideoStreamingQuality(fragmentManager: FragmentManager) {
+    fun navigateToVideoStreamingQuality(fragmentManager: Any?) {
         router.navigateToVideoQuality(
             fragmentManager,
             VideoQualityType.Streaming
         )
     }
 
-    fun navigateToVideoDownloadQuality(fragmentManager: FragmentManager) {
+    fun navigateToVideoDownloadQuality(fragmentManager: Any?) {
         router.navigateToVideoQuality(
             fragmentManager,
             VideoQualityType.Download

@@ -2,7 +2,6 @@ package org.openedx.auth.presentation.signin
 
 import android.app.Activity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -176,7 +175,7 @@ class SignInViewModel(
         }
     }
 
-    fun navigateToSignUp(parentFragmentManager: FragmentManager) {
+    fun navigateToSignUp(parentFragmentManager: Any?) {
         router.navigateToSignUp(parentFragmentManager, null, null)
         logEvent(AuthAnalyticsEvent.REGISTER_CLICKED)
     }
@@ -200,7 +199,7 @@ class SignInViewModel(
         }
     }
 
-    fun navigateToForgotPassword(parentFragmentManager: FragmentManager) {
+    fun navigateToForgotPassword(parentFragmentManager: Any?) {
         router.navigateToRestorePassword(parentFragmentManager)
         logEvent(AuthAnalyticsEvent.FORGOT_PASSWORD_CLICKED)
     }
@@ -253,7 +252,7 @@ class SignInViewModel(
         } ?: onUnknownError()
     }
 
-    fun openLink(fragmentManager: FragmentManager, links: Map<String, String>, link: String) {
+    fun openLink(fragmentManager: Any?, links: Map<String, String>, link: String) {
         links.forEach { (key, value) ->
             if (value == link) {
                 router.navigateToWebContent(fragmentManager, key, value)
@@ -262,7 +261,7 @@ class SignInViewModel(
         }
     }
 
-    fun proceedWhatsNew(parentFragmentManager: FragmentManager) {
+    fun proceedWhatsNew(parentFragmentManager: Any?) {
         val isNeedToShowWhatsNew = whatsNewGlobalManager.shouldShowWhatsNew()
         if (uiState.value.loginSuccess) {
             router.clearBackStack(parentFragmentManager)

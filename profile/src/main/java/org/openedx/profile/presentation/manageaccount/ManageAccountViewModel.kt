@@ -1,6 +1,5 @@
 package org.openedx.profile.presentation.manageaccount
 
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,7 +77,7 @@ class ManageAccountViewModel(
         getAccount()
     }
 
-    fun profileEditClicked(fragmentManager: FragmentManager) {
+    fun profileEditClicked(fragmentManager: Any?) {
         (uiState.value as? ManageAccountUIState.Data)?.let { data ->
             profileRouter.navigateToEditProfile(
                 fragmentManager,
