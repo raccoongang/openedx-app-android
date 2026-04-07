@@ -110,7 +110,7 @@ class AnothersProfileFragment : Fragment() {
 }
 
 @Composable
-private fun AnothersProfileScreen(
+fun AnothersProfileScreen(
     windowSize: WindowSize,
     uiState: AnothersProfileUIState,
     uiMessage: UIMessage?,
@@ -218,7 +218,7 @@ private fun AnothersProfileScreen(
 @Preview(name = "NEXUS_5_Light", device = Devices.NEXUS_5, uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_5_Dark", device = Devices.NEXUS_5, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun ProfileScreenPreview() {
+fun ProfileScreenPreview() {
     OpenEdXTheme {
         AnothersProfileScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
@@ -232,7 +232,7 @@ private fun ProfileScreenPreview() {
 @Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "NEXUS_9_Dark", device = Devices.NEXUS_9, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun ProfileScreenTabletPreview() {
+fun ProfileScreenTabletPreview() {
     OpenEdXTheme {
         AnothersProfileScreen(
             windowSize = WindowSize(WindowType.Medium, WindowType.Medium),

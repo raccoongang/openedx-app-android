@@ -109,7 +109,7 @@ class VideoSettingsFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun VideoSettingsScreen(
+fun VideoSettingsScreen(
     windowSize: WindowSize,
     videoSettings: VideoSettings,
     wifiDownloadChanged: (Boolean) -> Unit,
@@ -293,7 +293,7 @@ private fun VideoSettingsScreen(
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun VideoSettingsScreenPreview() {
+fun VideoSettingsScreenPreview() {
     OpenEdXTheme {
         VideoSettingsScreen(
             windowSize = WindowSize(WindowType.Compact, WindowType.Compact),

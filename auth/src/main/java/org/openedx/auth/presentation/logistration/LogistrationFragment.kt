@@ -109,7 +109,7 @@ class LogistrationFragment : Fragment() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun LogistrationScreen(
+fun LogistrationScreen(
     onSearchClick: (String) -> Unit,
     onRegisterClick: () -> Unit,
     onSignInClick: () -> Unit,
