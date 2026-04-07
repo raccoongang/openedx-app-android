@@ -6,14 +6,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.openedx.app.MainScreen
 import org.openedx.core.ui.theme.OpenEdXTheme
 
 /**
  * Root navigation host for the app.
- * This is a placeholder that will be expanded as Fragments are converted to composable destinations.
  *
- * Current approach: Activity still uses Fragment-based navigation.
- * Migration will proceed incrementally by converting one Fragment at a time.
+ * Current state: AppActivity uses FragmentContainerView for backward compat.
+ * This NavHost is prepared for full Compose Navigation migration.
+ *
+ * To switch: Replace FragmentContainerView in AppActivity.AppContent()
+ * with AppNavHost() call.
  */
 @Composable
 fun AppNavHost(
@@ -27,10 +30,16 @@ fun AppNavHost(
             startDestination = startDestination,
             modifier = modifier,
         ) {
-            // Placeholder - destinations will be added as Fragments are converted
             composable<AppNavRoutes.Main> {
-                // Will host the main screen with bottom navigation
+                MainScreen()
             }
+
+            // Auth flow — to be wired when Fragments are removed
+            // composable<AppNavRoutes.SignIn> { SignInDestination(navController) }
+            // composable<AppNavRoutes.SignUp> { SignUpDestination(navController) }
+            // composable<AppNavRoutes.RestorePassword> { RestorePasswordDestination(navController) }
+            // composable<AppNavRoutes.Logistration> { LogistrationDestination(navController) }
+            // composable<AppNavRoutes.WhatsNew> { WhatsNewDestination(navController) }
         }
     }
 }
