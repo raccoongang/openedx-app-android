@@ -1,0 +1,27 @@
+package org.openedx.shared.ui
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.interop.UIKitView
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSURL
+import platform.Foundation.NSURLRequest
+import platform.WebKit.WKWebView
+
+@OptIn(ExperimentalForeignApi::class)
+@Composable
+actual fun PlatformWebView(
+    url: String,
+    modifier: Modifier,
+    onPageFinished: (() -> Unit)?,
+) {
+    UIKitView(
+        modifier = modifier,
+        factory = {
+            WKWebView().apply {
+                val request = NSURLRequest(uRL = NSURL(string = url))
+                loadRequest(request)
+            }
+        },
+    )
+}
