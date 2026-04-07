@@ -1,7 +1,6 @@
 package org.openedx.core.module
 
 import android.content.Context
-import okhttp3.OkHttpClient
 import org.openedx.core.module.download.AbstractDownloader
 import org.openedx.core.utils.Directories
 import org.openedx.core.utils.IOUtils
@@ -25,8 +24,8 @@ class TranscriptManager(
     private val logger = Logger(TAG)
 
     private val transcriptDownloader = object : AbstractDownloader() {
-        override val client: OkHttpClient
-            get() = OkHttpClient.Builder().build()
+        override val httpClient: io.ktor.client.HttpClient
+            get() = io.ktor.client.HttpClient(io.ktor.client.engine.okhttp.OkHttp)
     }
 
     private var transcriptObject: TimedTextObject? = null
