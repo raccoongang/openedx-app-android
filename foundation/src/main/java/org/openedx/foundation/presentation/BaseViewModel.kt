@@ -60,8 +60,10 @@ open class BaseViewModel(
     override fun onDestroy(owner: LifecycleOwner) {}
 }
 
-fun TestScope.captureUiMessage(viewModel: BaseViewModel): Deferred<UIMessage> {
+fun TestScope.captureUiMessage(viewModel: BaseViewModel): Deferred<UIMessage?> {
     return async {
-        viewModel.uiMessage.first()
+        kotlinx.coroutines.withTimeoutOrNull(100) {
+            viewModel.uiMessage.first()
+        }
     }
 }
