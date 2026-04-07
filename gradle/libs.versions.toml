@@ -38,6 +38,9 @@ playServicesAdsIdentifier = "18.2.0"
 googleId = "1.1.1"
 inAppReview = "2.0.2"
 
+# Navigation
+composeNavigation = "2.9.0-alpha07"
+
 # Ktor
 ktor = "3.1.3"
 kotlinxSerialization = "1.8.1"
@@ -75,6 +78,9 @@ androidx-credentials = { group = "androidx.credentials", name = "credentials", v
 androidx-credentials-playServicesAuth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCore" }
+
+# Navigation
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 
 # Room
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }

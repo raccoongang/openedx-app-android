@@ -95,6 +95,9 @@ dependencies {
     api("androidx.compose.material:material")
     api("androidx.compose.runtime:runtime-livedata")
 
+    // Navigation
+    api(libs.androidx.navigation.compose)
+
     // Ktor (KMP networking)
     api(libs.ktor.client.core)
     api(libs.ktor.client.okhttp)
