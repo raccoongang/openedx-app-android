@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
@@ -31,7 +29,6 @@ import org.openedx.auth.presentation.sso.OAuthHelper
 import org.openedx.core.CalendarRouter
 import org.openedx.core.R
 import org.openedx.core.config.Config
-import org.openedx.core.data.model.CourseEnrollments
 import org.openedx.core.data.storage.CalendarPreferences
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.data.storage.InAppReviewPreferences
@@ -105,12 +102,6 @@ val appModule = module {
     single<IDatabaseManager> { get<DatabaseManager>() }
 
     single { ImageProcessor(get()) }
-
-    single<Gson> {
-        GsonBuilder()
-            .registerTypeAdapter(CourseEnrollments::class.java, CourseEnrollments.Deserializer())
-            .create()
-    }
 
     single { AppNotifier() }
     single { CourseNotifier() }

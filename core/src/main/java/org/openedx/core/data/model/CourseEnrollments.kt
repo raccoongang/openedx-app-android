@@ -1,24 +1,24 @@
 package org.openedx.core.data.model
 
-import com.google.gson.Gson
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.lang.reflect.Type
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.openedx.core.domain.model.CourseEnrollments as DomainCourseEnrollments
 
-@Serializable
+@Serializable(with = CourseEnrollmentsSerializer::class)
 data class CourseEnrollments(
-    @SerialName("enrollments")
     val enrollments: DashboardCourseList,
-
-    @SerialName("config")
     val configs: AppConfig,
-
-    @SerialName("primary")
     val primary: EnrolledCourse?,
 ) {
     fun mapToDomain() = DomainCourseEnrollments(
@@ -26,70 +26,85 @@ data class CourseEnrollments(
         configs = configs.mapToDomain(),
         primary = primary?.mapToDomain()
     )
+}
 
-    class Deserializer : JsonDeserializer<CourseEnrollments> {
-        override fun deserialize(
-            json: JsonElement?,
-            typeOfT: Type?,
-            context: JsonDeserializationContext?,
-        ): CourseEnrollments {
-            val enrollments = deserializeEnrollments(json)
-            val appConfig = deserializeAppConfig(json)
-            val primaryCourse = deserializePrimaryCourse(json)
+object CourseEnrollmentsSerializer : KSerializer<CourseEnrollments> {
 
-            return CourseEnrollments(enrollments, appConfig, primaryCourse)
-        }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+    }
 
-        private fun deserializePrimaryCourse(json: JsonElement?): EnrolledCourse? {
-            return try {
-                Gson().fromJson(
-                    (json as JsonObject).get("primary"),
-                    EnrolledCourse::class.java
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("CourseEnrollments")
+
+    override fun serialize(encoder: Encoder, value: CourseEnrollments) {
+        val jsonEncoder = encoder as JsonEncoder
+        val jsonObject = JsonObject(
+            mapOf(
+                "enrollments" to json.encodeToJsonElement(DashboardCourseList.serializer(), value.enrollments),
+                "primary" to json.encodeToJsonElement(EnrolledCourse.serializer(), value.primary ?: return),
+            )
+        )
+        jsonEncoder.encodeJsonElement(jsonObject)
+    }
+
+    override fun deserialize(decoder: Decoder): CourseEnrollments {
+        val jsonDecoder = decoder as JsonDecoder
+        val jsonElement = jsonDecoder.decodeJsonElement()
+        val jsonObject = jsonElement.jsonObject
+
+        val enrollments = deserializeEnrollments(jsonObject)
+        val appConfig = deserializeAppConfig(jsonObject)
+        val primaryCourse = deserializePrimaryCourse(jsonObject)
+
+        return CourseEnrollments(enrollments, appConfig, primaryCourse)
+    }
+
+    private fun deserializePrimaryCourse(jsonObject: JsonObject): EnrolledCourse? {
+        return try {
+            jsonObject["primary"]?.let {
+                json.decodeFromJsonElement(EnrolledCourse.serializer(), it)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
+    }
 
-        private fun deserializeEnrollments(json: JsonElement?): DashboardCourseList {
-            return try {
-                Gson().fromJson(
-                    (json as JsonObject).get("enrollments"),
-                    DashboardCourseList::class.java
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                DashboardCourseList(
-                    next = null,
-                    previous = null,
-                    count = 0,
-                    numPages = 0,
-                    currentPage = 0,
-                    results = listOf()
-                )
-            }
+    private fun deserializeEnrollments(jsonObject: JsonObject): DashboardCourseList {
+        return try {
+            jsonObject["enrollments"]?.let {
+                json.decodeFromJsonElement(DashboardCourseList.serializer(), it)
+            } ?: DashboardCourseList(
+                next = null, previous = null, count = 0,
+                numPages = 0, currentPage = 0, results = listOf()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            DashboardCourseList(
+                next = null, previous = null, count = 0,
+                numPages = 0, currentPage = 0, results = listOf()
+            )
         }
+    }
 
-        /**
-         * To remove dependency on the backend, all the data related to Remote Config
-         * will be received under the `configs` key. The `config` is the key under
-         * 'configs` which defines the data that is related to the configuration of the
-         * app.
-         */
-        private fun deserializeAppConfig(json: JsonElement?): AppConfig {
-            return try {
-                val config = (json as JsonObject)
-                    .getAsJsonObject("configs")
-                    .getAsJsonPrimitive("config")
+    /**
+     * To remove dependency on the backend, all the data related to Remote Config
+     * will be received under the `configs` key. The `config` is the key under
+     * 'configs` which defines the data that is related to the configuration of the
+     * app.
+     */
+    private fun deserializeAppConfig(jsonObject: JsonObject): AppConfig {
+        return try {
+            val configString = jsonObject["configs"]
+                ?.jsonObject?.get("config")
+                ?.jsonPrimitive?.content
+                ?: return AppConfig()
 
-                Gson().fromJson(
-                    config.asString,
-                    AppConfig::class.java
-                )
-            } catch (_: Exception) {
-                AppConfig()
-            }
+            json.decodeFromString(AppConfig.serializer(), configString)
+        } catch (_: Exception) {
+            AppConfig()
         }
     }
 }
