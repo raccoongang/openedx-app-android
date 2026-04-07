@@ -1,0 +1,29 @@
+name: iosApp
+options:
+  bundleIdPrefix: org.openedx
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+    settings:
+      base:
+        INFOPLIST_FILE: iosApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: org.openedx.app.ios
+        DEVELOPMENT_TEAM: ""
+    dependencies:
+      - framework: ../shared/build/bin/iosSimulatorArm64/debugFramework/shared.framework
+        embed: true
+    preBuildScripts:
+      - name: Build Shared KMP Framework
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64
+        basedOnDependencyAnalysis: false
