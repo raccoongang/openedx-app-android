@@ -240,81 +240,42 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.CalendarSettings> {
-                PlaceholderDestination("Calendar Settings")
-            }
-            composable<AppNavRoutes.CoursesToSync> {
-                PlaceholderDestination("Courses to Sync")
-            }
-            composable<AppNavRoutes.VideoQuality> {
-                PlaceholderDestination("Video Quality")
-            }
-
-            composable<AppNavRoutes.EditProfile> {
-                // EditProfile has 1294-line Fragment with complex image picker, form fields, etc.
-                // Wiring requires significant refactoring — keeping as placeholder
-                PlaceholderDestination("Edit Profile")
-            }
+            composable<AppNavRoutes.CalendarSettings> { PlaceholderDestination("Calendar Settings") }
+            composable<AppNavRoutes.CoursesToSync> { PlaceholderDestination("Courses to Sync") }
+            composable<AppNavRoutes.VideoQuality> { PlaceholderDestination("Video Quality") }
+            composable<AppNavRoutes.EditProfile> { PlaceholderDestination("Edit Profile") }
 
             // =================== DISCOVERY ===================
-            composable<AppNavRoutes.CourseDetails> {
-                PlaceholderDestination("Course Details")
-            }
-            composable<AppNavRoutes.CourseSearch> {
-                PlaceholderDestination("Course Search")
-            }
-            composable<AppNavRoutes.CourseInfo> {
-                PlaceholderDestination("Course Info")
-            }
+            composable<AppNavRoutes.CourseDetails> { PlaceholderDestination("Course Details") }
+            composable<AppNavRoutes.CourseSearch> { PlaceholderDestination("Course Search") }
+            composable<AppNavRoutes.CourseInfo> { PlaceholderDestination("Course Info") }
             composable<AppNavRoutes.AllEnrolledCourses> {
                 org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
             }
-            composable<AppNavRoutes.Program> {
-                PlaceholderDestination("Programs")
-            }
+            composable<AppNavRoutes.Program> { PlaceholderDestination("Programs") }
 
             // =================== COURSE ===================
-            composable<AppNavRoutes.CourseContainer> {
-                PlaceholderDestination("Course Container")
-            }
-            composable<AppNavRoutes.CourseSection> {
-                PlaceholderDestination("Course Section")
-            }
-            composable<AppNavRoutes.CourseUnitContainer> {
-                PlaceholderDestination("Course Unit")
-            }
-            composable<AppNavRoutes.HandoutsWebView> {
-                PlaceholderDestination("Handouts")
-            }
-            composable<AppNavRoutes.VideoFullScreen> {
-                PlaceholderDestination("Video Full Screen")
-            }
-            composable<AppNavRoutes.YoutubeVideoFullScreen> {
-                PlaceholderDestination("YouTube Video")
-            }
-            composable<AppNavRoutes.DownloadQueue> {
-                PlaceholderDestination("Download Queue")
-            }
-            composable<AppNavRoutes.NoAccessCourseContainer> {
-                PlaceholderDestination("No Access")
+            composable<AppNavRoutes.CourseContainer> { PlaceholderDestination("Course") }
+            composable<AppNavRoutes.CourseSection> { PlaceholderDestination("Course Section") }
+            composable<AppNavRoutes.CourseUnitContainer> { PlaceholderDestination("Course Unit") }
+            composable<AppNavRoutes.HandoutsWebView> { PlaceholderDestination("Handouts") }
+            composable<AppNavRoutes.VideoFullScreen> { PlaceholderDestination("Video") }
+            composable<AppNavRoutes.YoutubeVideoFullScreen> { PlaceholderDestination("YouTube") }
+            composable<AppNavRoutes.DownloadQueue> { PlaceholderDestination("Download Queue") }
+            composable<AppNavRoutes.NoAccessCourseContainer> { entry ->
+                val route = entry.toRoute<AppNavRoutes.NoAccessCourseContainer>()
+                org.openedx.course.presentation.container.NoAccessCourseContainerScreen(
+                    windowSize = rememberWindowSize(), title = route.title,
+                    onBackClick = { navController.popBackStack() },
+                )
             }
 
             // =================== DISCUSSION ===================
-            composable<AppNavRoutes.DiscussionThreads> {
-                PlaceholderDestination("Discussion Threads")
-            }
-            composable<AppNavRoutes.DiscussionComments> {
-                PlaceholderDestination("Discussion Comments")
-            }
-            composable<AppNavRoutes.DiscussionResponses> {
-                PlaceholderDestination("Discussion Responses")
-            }
-            composable<AppNavRoutes.DiscussionAddThread> {
-                PlaceholderDestination("Add Thread")
-            }
-            composable<AppNavRoutes.DiscussionSearchThread> {
-                PlaceholderDestination("Search Threads")
-            }
+            composable<AppNavRoutes.DiscussionThreads> { PlaceholderDestination("Discussion Threads") }
+            composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments") }
+            composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses") }
+            composable<AppNavRoutes.DiscussionAddThread> { PlaceholderDestination("Add Thread") }
+            composable<AppNavRoutes.DiscussionSearchThread> { PlaceholderDestination("Search") }
         }
     }
 }
