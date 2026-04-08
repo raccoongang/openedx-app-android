@@ -108,7 +108,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.observeAsState(RestorePasswordUIState.Initial)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 RestorePasswordScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },
                     onRestoreButtonClick = { viewModel.passwordReset(it) },
                 )
@@ -123,7 +123,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 SignUpView(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },
                     onFieldUpdated = { key, value -> viewModel.updateField(key, value) },
                     onRegisterClick = { viewModel.register() },
@@ -187,7 +187,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.manageaccount.compose.ManageAccountView(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     refreshing = false, onAction = {},
                 )
             }
@@ -198,7 +198,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.observeAsState(org.openedx.profile.presentation.delete.DeleteProfileFragmentUIState.Initial)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.delete.DeleteProfileScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onDeleteClick = { viewModel.deleteProfile(it) },
                     onBackClick = { navController.popBackStack() },
                 )
@@ -213,7 +213,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.anothersaccount.AnothersProfileScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },
                 )
             }
@@ -259,7 +259,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.calendar.CoursesToSyncView(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },
                     onHideInactiveCoursesSwitchClick = { viewModel.setHideInactiveCoursesEnabled(it) },
                     onCourseSyncCheckChange = { enabled, courseId -> viewModel.setCourseSyncEnabled(enabled, courseId) },
@@ -281,7 +281,30 @@ fun AppNavHost(
                     onBackClick = { navController.popBackStack() },
                 )
             }
-            composable<AppNavRoutes.EditProfile> { PlaceholderDestination("Edit Profile") }
+            composable<AppNavRoutes.EditProfile> { entry ->
+                val route = entry.toRoute<AppNavRoutes.EditProfile>()
+                val vm: org.openedx.profile.presentation.edit.EditProfileViewModel = koinViewModel {
+                    parametersOf(null) // Account passed as null - VM fetches from cache
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.observeAsState()
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                val selectedImage by vm.selectedImageUri.observeAsState(null)
+                val isDeleted by vm.deleteImage.observeAsState(false)
+                val leaveDialog by vm.showLeaveDialog.observeAsState(false)
+                org.openedx.profile.presentation.edit.EditProfileScreen(
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                    selectedImageUri = selectedImage, isImageDeleted = isDeleted,
+                    leaveDialog = leaveDialog,
+                    onKeepEdit = { vm.setShowLeaveDialog(false) },
+                    onDataChanged = { vm.profileDataChanged = it },
+                    onLimitedProfileChange = {},
+                    onBackClick = { navController.popBackStack() },
+                    onSaveClick = { vm.updateAccount(it) },
+                    onSelectImageClick = {},
+                    onDeleteImageClick = { vm.deleteImage() },
+                )
+            }
 
             // =================== DISCOVERY ===================
             composable<AppNavRoutes.CourseDetails> { entry ->
@@ -293,7 +316,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.observeAsState(org.openedx.discovery.presentation.detail.CourseDetailsUIState.Loading)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.discovery.presentation.detail.CourseDetailsScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     apiHostUrl = viewModel.apiHostUrl, htmlBody = "",
                     hasInternetConnection = viewModel.hasInternetConnection,
                     isUserLoggedIn = viewModel.isUserLoggedIn,
@@ -329,20 +352,61 @@ fun AppNavHost(
 
             composable<AppNavRoutes.CourseInfo> { entry ->
                 val route = entry.toRoute<AppNavRoutes.CourseInfo>()
-                PlaceholderDestination("Info: ${route.courseId}")
+                val vm: org.openedx.discovery.presentation.info.CourseInfoViewModel = koinViewModel {
+                    parametersOf(route.courseId, route.infoType)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.collectAsState()
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                org.openedx.discovery.presentation.info.CourseInfoScreen(
+                    windowSize = windowSize, uiState = uiState,
+                    webViewUIState = vm.webViewState.value, uiMessage = uiMessage,
+                    uriScheme = vm.uriScheme, isRegistrationEnabled = vm.isRegistrationEnabled,
+                    userAgent = vm.appUserAgent, hasInternetConnection = vm.hasInternetConnection,
+                    onWebViewUIAction = {},
+                    onRegisterClick = { navController.navigate(AppNavRoutes.SignUp()) },
+                    onSignInClick = { navController.navigate(AppNavRoutes.SignIn()) },
+                    onUriClick = { _, _ -> },
+                    onBackClick = { navController.popBackStack() },
+                )
             }
             composable<AppNavRoutes.AllEnrolledCourses> {
                 org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
             }
             composable<AppNavRoutes.Program> { entry ->
                 val route = entry.toRoute<AppNavRoutes.Program>()
-                PlaceholderDestination("Programs: ${route.pathId}")
+                val vm: org.openedx.discovery.presentation.program.ProgramViewModel = koinViewModel {
+                    parametersOf(route.pathId)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.collectAsState()
+                org.openedx.discovery.presentation.program.ProgramInfoScreen(
+                    windowSize = windowSize, uiState = uiState,
+                    contentUrl = vm.programConfig.programUrl,
+                    cookieManager = vm.cookieManager,
+                    uriScheme = vm.uriScheme, userAgent = vm.appUserAgent,
+                    canShowBackBtn = !route.isNestedFragment,
+                    isNestedFragment = route.isNestedFragment,
+                    hasInternetConnection = vm.hasInternetConnection,
+                    onWebViewUIAction = {},
+                    onSettingsClick = { navController.navigate(AppNavRoutes.Settings) },
+                    onUriClick = { _, _ -> },
+                    onBackClick = { navController.popBackStack() },
+                )
             }
 
             // =================== COURSE ===================
             composable<AppNavRoutes.CourseContainer> { entry ->
                 val route = entry.toRoute<AppNavRoutes.CourseContainer>()
-                PlaceholderDestination("Course: ${route.courseTitle}")
+                val vm: org.openedx.course.presentation.home.CourseHomeViewModel = koinViewModel {
+                    parametersOf(route.courseId, route.courseTitle)
+                }
+                val windowSize = rememberWindowSize()
+                val pagerState = androidx.compose.foundation.pager.rememberPagerState { 5 }
+                org.openedx.course.presentation.home.CourseHomeScreen(
+                    windowSize = windowSize, viewModel = vm,
+                    fragmentManager = null, homePagerState = pagerState,
+                )
             }
 
             composable<AppNavRoutes.CourseSection> { entry ->
@@ -354,7 +418,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.observeAsState(org.openedx.course.presentation.section.CourseSectionUIState.Loading)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.course.presentation.section.CourseSectionScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },
                     onItemClick = {},
                 )
@@ -414,7 +478,7 @@ fun AppNavHost(
                 val updating by vm.isUpdating.observeAsState(false)
                 org.openedx.discussion.presentation.threads.DiscussionThreadsScreen(
                     windowSize = windowSize, title = route.title,
-                    uiState = uiState, uiMessage = uiMessage, canLoadMore = canLoad,
+                    uiState = uiState ?: return@composable, uiMessage = uiMessage, canLoadMore = canLoad,
                     viewType = org.openedx.core.FragmentViewType.valueOf(route.viewType),
                     refreshing = updating,
                     onSwipeRefresh = {}, updatedOrder = { vm.getThreadByType(it) },
@@ -426,11 +490,58 @@ fun AppNavHost(
 
             composable<AppNavRoutes.DiscussionComments> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DiscussionComments>()
-                PlaceholderDestination("Discussion Comments")
+                // Thread passed as JSON string in route, deserialize
+                val thread = try {
+                    kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+                        .decodeFromString<org.openedx.discussion.domain.model.Thread>(route.threadJson)
+                } catch (_: Exception) { null }
+                if (thread != null) {
+                    val vm: org.openedx.discussion.presentation.comments.DiscussionCommentsViewModel = koinViewModel {
+                        parametersOf(thread)
+                    }
+                    val windowSize = rememberWindowSize()
+                    val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.comments.DiscussionCommentsUIState.Loading)
+                    val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                    val canLoad by vm.canLoadMore.observeAsState(false)
+                    val updating by vm.isUpdating.observeAsState(false)
+                    org.openedx.discussion.presentation.comments.DiscussionCommentsScreen(
+                        windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                        title = vm.title, canLoadMore = canLoad, refreshing = updating,
+                        onSwipeRefresh = { vm.updateThreadComments() },
+                        paginationCallBack = { vm.fetchMore() },
+                        onItemClick = { _, _, _ -> }, onCommentClick = {},
+                        onAddResponseClick = {}, onBackClick = { navController.popBackStack() },
+                        onUserPhotoClick = {},
+                    )
+                } else PlaceholderDestination("Comments")
             }
+
             composable<AppNavRoutes.DiscussionResponses> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DiscussionResponses>()
-                PlaceholderDestination("Discussion Responses")
+                val comment = try {
+                    kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+                        .decodeFromString<org.openedx.discussion.domain.model.DiscussionComment>(route.commentJson)
+                } catch (_: Exception) { null }
+                if (comment != null) {
+                    val vm: org.openedx.discussion.presentation.responses.DiscussionResponsesViewModel = koinViewModel {
+                        parametersOf(comment, route.isClosed)
+                    }
+                    val windowSize = rememberWindowSize()
+                    val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.responses.DiscussionResponsesUIState.Loading)
+                    val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                    val canLoad by vm.canLoadMore.observeAsState(false)
+                    val updating by vm.isUpdating.observeAsState(false)
+                    org.openedx.discussion.presentation.responses.DiscussionResponsesScreen(
+                        windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                        canLoadMore = canLoad, refreshing = updating,
+                        onSwipeRefresh = { vm.updateCommentResponses() },
+                        isClosed = route.isClosed,
+                        paginationCallBack = { vm.fetchMore() },
+                        addCommentClick = {},
+                        onItemClick = { _, _, _ -> }, onBackClick = { navController.popBackStack() },
+                        onUserPhotoClick = {},
+                    )
+                } else PlaceholderDestination("Responses")
             }
 
             composable<AppNavRoutes.DiscussionAddThread> { entry ->
@@ -458,7 +569,7 @@ fun AppNavHost(
                 val canLoad by vm.canLoadMore.observeAsState(false)
                 val updating by vm.isUpdating.observeAsState(false)
                 org.openedx.discussion.presentation.search.DiscussionSearchThreadScreen(
-                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     refreshing = updating, canLoadMore = canLoad,
                     onItemClick = {}, onSearchTextChanged = { vm.searchThreads(it) },
                     onSwipeRefresh = {}, paginationCallback = { vm.fetchMore() },
