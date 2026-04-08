@@ -394,10 +394,24 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments") }
-            composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses") }
+            composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments - needs Thread object") }
+            composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses - needs Comment object") }
 
-            composable<AppNavRoutes.DiscussionAddThread> { PlaceholderDestination("Add Thread") }
+            composable<AppNavRoutes.DiscussionAddThread> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DiscussionAddThread>()
+                val vm: org.openedx.discussion.presentation.threads.DiscussionAddThreadViewModel = koinViewModel { parametersOf(route.courseId, route.topicId) }
+                val windowSize = rememberWindowSize()
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                val isLoading by vm.isLoading.observeAsState(false)
+                org.openedx.discussion.presentation.threads.DiscussionAddThreadScreen(
+                    windowSize = windowSize,
+                    topicData = route.topicId to "",
+                    topics = vm.getHandledTopics(),
+                    uiMessage = uiMessage, isLoading = isLoading,
+                    onPostDiscussionClick = { type, title, body, topicId, follow -> vm.createThread(title, body, topicId, type, follow) },
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
 
             composable<AppNavRoutes.DiscussionSearchThread> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DiscussionSearchThread>()
