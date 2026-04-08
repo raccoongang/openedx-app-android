@@ -434,17 +434,31 @@ fun AppNavHost(
                 }
                 val windowSize = rememberWindowSize()
                 val uiState by viewModel.uiState.collectAsState()
-                // HandoutsWebView displays HTML content - needs WebView composable
-                // For now showing handouts/announcements title
-                PlaceholderDestination("${route.type}: ${route.courseId}")
+                when (val state = uiState) {
+                    is org.openedx.course.presentation.handouts.HandoutsUIState.HTMLContent -> {
+                        org.openedx.shared.ui.PlatformWebView(
+                            url = "data:text/html;charset=utf-8," +
+                                java.net.URLEncoder.encode(state.htmlContent, "UTF-8"),
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                    else -> PlaceholderDestination("Loading ${route.type}...")
+                }
             }
             composable<AppNavRoutes.VideoFullScreen> { entry ->
                 val route = entry.toRoute<AppNavRoutes.VideoFullScreen>()
-                PlaceholderDestination("Video: ${route.videoUrl}")
+                org.openedx.shared.ui.PlatformVideoPlayer(
+                    url = route.videoUrl,
+                    modifier = Modifier.fillMaxSize(),
+                    isPlaying = route.isPlaying,
+                )
             }
             composable<AppNavRoutes.YoutubeVideoFullScreen> { entry ->
                 val route = entry.toRoute<AppNavRoutes.YoutubeVideoFullScreen>()
-                PlaceholderDestination("YouTube: ${route.videoUrl}")
+                org.openedx.shared.ui.PlatformWebView(
+                    url = "https://www.youtube.com/embed/${route.videoUrl}?autoplay=1",
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
             composable<AppNavRoutes.DownloadQueue> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DownloadQueue>()

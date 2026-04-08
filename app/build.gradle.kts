@@ -134,6 +134,7 @@ dependencies {
     implementation(project(":whatsnew"))
     implementation(project(":dates"))
     implementation(project(":downloads"))
+    implementation(project(":shared"))
 
     ksp(libs.androidx.room.compiler)
 
