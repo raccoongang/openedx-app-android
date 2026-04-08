@@ -67,7 +67,6 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun CourseOfflineScreen(
     windowSize: WindowSize,
     viewModel: CourseOfflineViewModel,
-    fragmentManager: Any?,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,7 +75,7 @@ fun CourseOfflineScreen(
         uiState = uiState,
         hasInternetConnection = viewModel.hasInternetConnection,
         onDownloadAllClick = {
-            viewModel.downloadAllBlocks(fragmentManager)
+            viewModel.downloadAllBlocks(null)
         },
         onCancelDownloadClick = {
             viewModel.removeDownloadModel()
@@ -84,11 +83,11 @@ fun CourseOfflineScreen(
         onDeleteClick = { downloadModel ->
             viewModel.removeDownloadModel(
                 downloadModel,
-                fragmentManager
+                null
             )
         },
         onDeleteAllClick = {
-            viewModel.deleteAll(fragmentManager)
+            viewModel.deleteAll(null)
         },
     )
 }

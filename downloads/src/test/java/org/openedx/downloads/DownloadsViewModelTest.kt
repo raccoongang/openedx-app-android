@@ -37,7 +37,6 @@ import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.downloads.domain.interactor.DownloadInteractor
-import org.openedx.downloads.presentation.DownloadsRouter
 import org.openedx.downloads.presentation.download.DownloadsViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
@@ -53,7 +52,6 @@ class DownloadsViewModelTest {
     private val dispatcher = StandardTestDispatcher()
 
     // Mocks for all dependencies
-    private val downloadsRouter = mockk<DownloadsRouter>(relaxed = true)
     private val networkConnection = mockk<NetworkConnection>(relaxed = true)
     private val interactor = mockk<DownloadInteractor>(relaxed = true)
     private val downloadDialogManager = mockk<DownloadDialogManager>(relaxed = true)
@@ -66,7 +64,6 @@ class DownloadsViewModelTest {
     private val downloadDao = mockk<DownloadDao>(relaxed = true)
     private val workerController = mockk<DownloadWorkerController>(relaxed = true)
     private val downloadHelper = mockk<DownloadHelper>(relaxed = true)
-    private val router = mockk<DownloadsRouter>(relaxed = true)
     private val discoveryNotifier = mockk<DiscoveryNotifier>(relaxed = true)
     private val courseNotifier = mockk<CourseNotifier>(relaxed = true)
 
@@ -111,37 +108,8 @@ class DownloadsViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `onSettingsClick should navigate to settings`() = runTest {
-        val viewModel = DownloadsViewModel(
-            downloadsRouter,
-            networkConnection,
-            interactor,
-            downloadDialogManager,
-            resourceManager,
-            fileUtil,
-            config,
-            analytics,
-            discoveryNotifier,
-            courseNotifier,
-            router,
-            preferencesManager,
-            coreAnalytics,
-            downloadDao,
-            workerController,
-            downloadHelper
-        )
-        advanceUntilIdle()
-
-        val fragmentManager = mockk<Any>(relaxed = true)
-        viewModel.onSettingsClick(fragmentManager)
-        verify(exactly = 1) { downloadsRouter.navigateToSettings(fragmentManager) }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
     fun `downloadCourse should show download dialog`() = runTest {
         val viewModel = DownloadsViewModel(
-            downloadsRouter,
             networkConnection,
             interactor,
             downloadDialogManager,
@@ -151,7 +119,6 @@ class DownloadsViewModelTest {
             analytics,
             discoveryNotifier,
             courseNotifier,
-            router,
             preferencesManager,
             coreAnalytics,
             downloadDao,
@@ -183,7 +150,6 @@ class DownloadsViewModelTest {
     fun `cancelDownloading should update courseDownloadState to NOT_DOWNLOADED and cancel download job`() =
         runTest {
             val viewModel = DownloadsViewModel(
-                downloadsRouter,
                 networkConnection,
                 interactor,
                 downloadDialogManager,
@@ -193,7 +159,6 @@ class DownloadsViewModelTest {
                 analytics,
                 discoveryNotifier,
                 courseNotifier,
-                router,
                 preferencesManager,
                 coreAnalytics,
                 downloadDao,
@@ -218,7 +183,6 @@ class DownloadsViewModelTest {
         coEvery { interactor.getDownloadModelsByCourseIds(any()) } returns listOf(CoreMocks.mockDownloadModel)
 
         val viewModel = DownloadsViewModel(
-            downloadsRouter,
             networkConnection,
             interactor,
             downloadDialogManager,
@@ -228,7 +192,6 @@ class DownloadsViewModelTest {
             analytics,
             discoveryNotifier,
             courseNotifier,
-            router,
             preferencesManager,
             coreAnalytics,
             downloadDao,
@@ -259,7 +222,6 @@ class DownloadsViewModelTest {
         coEvery { interactor.getDownloadCoursesPreview(any()) } returns flow { throw UnknownHostException() }
 
         val viewModel = DownloadsViewModel(
-            downloadsRouter,
             networkConnection,
             interactor,
             downloadDialogManager,
@@ -269,7 +231,6 @@ class DownloadsViewModelTest {
             analytics,
             discoveryNotifier,
             courseNotifier,
-            router,
             preferencesManager,
             coreAnalytics,
             downloadDao,

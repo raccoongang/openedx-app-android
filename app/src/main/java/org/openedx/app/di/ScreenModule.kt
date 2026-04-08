@@ -113,13 +113,11 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
         )
     }
 
     viewModel { (courseId: String?, infoType: String?, authCode: String) ->
         SignInViewModel(
-            get(),
             get(),
             get(),
             get(),
@@ -149,7 +147,6 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
             courseId,
             infoType
         )
@@ -167,7 +164,6 @@ val screenModule = module {
             discoveryNotifier = get(),
             networkConnection = get(),
             fileUtil = get(),
-            dashboardRouter = get(),
             corePreferences = get(),
             windowSize = windowSize
         )
@@ -180,11 +176,10 @@ val screenModule = module {
             resourceManager = get(),
             discoveryNotifier = get(),
             analytics = get(),
-            dashboardRouter = get(),
         )
     }
     viewModel { (openTab: String) ->
-        LearnViewModel(openTab, get(), get(), get(), get())
+        LearnViewModel(openTab, get(), get(), get())
     }
 
     factory { DiscoveryRepository(get(), get(), get()) }
@@ -197,7 +192,6 @@ val screenModule = module {
             config = get(),
             networkConnection = get(),
             corePreferences = get(),
-            router = get(),
             analytics = get(),
             resourceManager = get(),
         )
@@ -211,7 +205,6 @@ val screenModule = module {
             resourceManager = get(),
             notifier = get(),
             analytics = get(),
-            profileRouter = get(),
         )
     }
     viewModel { (account: Account) ->
@@ -224,7 +217,7 @@ val screenModule = module {
             account
         )
     }
-    viewModel { VideoSettingsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { VideoSettingsViewModel(get(), get(), get(), get()) }
     viewModel { (qualityType: String) ->
         VideoQualityViewModel(
             qualityType,
@@ -247,8 +240,6 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
-            get(),
         )
     }
     viewModel {
@@ -257,10 +248,9 @@ val screenModule = module {
             resourceManager = get(),
             notifier = get(),
             analytics = get(),
-            profileRouter = get(),
         )
     }
-    viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CoursesToSyncViewModel(get(), get(), get(), get()) }
     viewModel { NewCalendarDialogViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { DisableCalendarSyncDialogViewModel(get(), get(), get(), get(), get()) }
@@ -275,7 +265,6 @@ val screenModule = module {
         CourseInfoViewModel(
             pathId,
             infoType,
-            get(),
             get(),
             get(),
             get(),
@@ -313,14 +302,12 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
         )
     }
     viewModel { (courseId: String, courseTitle: String) ->
         CourseContentAllViewModel(
             courseId,
             courseTitle,
-            get(),
             get(),
             get(),
             get(),
@@ -348,7 +335,6 @@ val screenModule = module {
         CourseHomeViewModel(
             courseId,
             courseTitle,
-            get(),
             get(),
             get(),
             get(),
@@ -399,7 +385,6 @@ val screenModule = module {
             courseNotifier = get(),
             downloadDialogManager = get(),
             fileUtil = get(),
-            courseRouter = get(),
             analytics = get(),
             videoPreviewHelper = get(),
             coreAnalytics = get(),
@@ -449,8 +434,6 @@ val screenModule = module {
             calendarInteractor = get(),
             calendarNotifier = get(),
             corePreferences = get(),
-            courseRouter = get(),
-            calendarRouter = get(),
             resourceManager = get(),
         )
     }
@@ -477,7 +460,6 @@ val screenModule = module {
             resourceManager = get(),
             analytics = get(),
             courseNotifier = get(),
-            discussionRouter = get(),
         )
     }
     viewModel { (courseId: String, topicId: String, threadType: String) ->
@@ -525,7 +507,6 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
         )
     }
 
@@ -560,7 +541,6 @@ val screenModule = module {
             appData = get(),
             config = get(),
             networkConnection = get(),
-            router = get(),
             notifier = get(),
             edxCookieManager = get(),
             resourceManager = get(),
@@ -609,7 +589,6 @@ val screenModule = module {
     }
     viewModel {
         DownloadsViewModel(
-            downloadsRouter = get(),
             networkConnection = get(),
             interactor = get(),
             downloadDialogManager = get(),
@@ -619,7 +598,6 @@ val screenModule = module {
             analytics = get(),
             discoveryNotifier = get(),
             courseNotifier = get(),
-            router = get(),
             preferencesManager = get(),
             coreAnalytics = get(),
             downloadDao = get(),
@@ -631,7 +609,6 @@ val screenModule = module {
         CourseAssignmentViewModel(
             courseId = courseId,
             interactor = get(),
-            courseRouter = get(),
             courseNotifier = get(),
             analytics = get()
         )
@@ -651,13 +628,12 @@ val screenModule = module {
     }
     viewModel {
         DatesViewModel(
-            datesRouter = get(),
             networkConnection = get(),
             resourceManager = get(),
             datesInteractor = get(),
-            corePreferences = get(),
             analytics = get(),
-            calendarSyncScheduler = get()
+            calendarSyncScheduler = get(),
+            corePreferences = get(),
         )
     }
 }

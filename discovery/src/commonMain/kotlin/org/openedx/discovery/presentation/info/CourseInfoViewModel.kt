@@ -25,7 +25,6 @@ import org.openedx.discovery.domain.interactor.DiscoveryInteractor
 import org.openedx.discovery.presentation.DiscoveryAnalytics
 import org.openedx.discovery.presentation.DiscoveryAnalyticsEvent
 import org.openedx.discovery.presentation.DiscoveryAnalyticsKey
-import org.openedx.discovery.presentation.DiscoveryRouter
 import org.openedx.discovery.presentation.catalog.WebViewLink
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
@@ -39,7 +38,6 @@ class CourseInfoViewModel(
     private val appData: AppData,
     private val config: Config,
     private val networkConnection: NetworkConnection,
-    private val router: DiscoveryRouter,
     private val interactor: DiscoveryInteractor,
     private val notifier: DiscoveryNotifier,
     private val resourceManager: ResourceManager,
@@ -63,6 +61,10 @@ class CourseInfoViewModel(
     private val _showAlert = MutableSharedFlow<Boolean>()
     val showAlert: SharedFlow<Boolean>
         get() = _showAlert.asSharedFlow()
+
+    private val _navigationEvent = MutableSharedFlow<CourseInfoNavEvent>()
+    val navigationEvent: SharedFlow<CourseInfoNavEvent>
+        get() = _navigationEvent.asSharedFlow()
 
     val hasInternetConnection: Boolean
         get() = networkConnection.isOnline()
@@ -123,32 +125,46 @@ class CourseInfoViewModel(
         }
     }
 
-    fun onSuccessfulCourseEnrollment(fragmentManager: Any?, courseId: String) {
+    fun onSuccessfulCourseEnrollment(courseId: String) {
         if (courseId.isNotEmpty()) {
-            router.navigateToCourseOutline(
-                fm = fragmentManager,
-                courseId = courseId,
-                courseTitle = "",
-            )
+            viewModelScope.launch {
+                _navigationEvent.emit(
+                    CourseInfoNavEvent.CourseOutline(
+                        courseId = courseId,
+                        courseTitle = "",
+                    )
+                )
+            }
         }
     }
 
-    fun infoCardClicked(fragmentManager: Any?, pathId: String, infoType: String) {
+    fun infoCardClicked(pathId: String, infoType: String) {
         if (pathId.isNotEmpty() && infoType.isNotEmpty()) {
-            router.navigateToCourseInfo(
-                fm = fragmentManager,
-                courseId = pathId,
-                infoType = infoType
+            viewModelScope.launch {
+                _navigationEvent.emit(
+                    CourseInfoNavEvent.CourseInfo(
+                        pathId = pathId,
+                        infoType = infoType,
+                    )
+                )
+            }
+        }
+    }
+
+    fun navigateToSignUp(courseId: String?, infoType: String) {
+        viewModelScope.launch {
+            _navigationEvent.emit(
+                CourseInfoNavEvent.SignUp(courseId = courseId, infoType = infoType)
             )
         }
     }
 
-    fun navigateToSignUp(fragmentManager: Any?, courseId: String?, infoType: String) {
-        router.navigateToSignUp(fragmentManager, courseId, infoType)
-    }
-
-    fun navigateToSignIn(fragmentManager: Any?, courseId: String, infoType: String) {
-        router.navigateToSignIn(fragmentManager, courseId, infoType)
+    fun navigateToSignIn(courseId: String, infoType: String) {
+        viewModelScope.launch {
+            _navigationEvent.emit(
+                CourseInfoNavEvent.SignIn(courseId = courseId, infoType = infoType)
+            )
+        }
     }
 
     fun courseInfoClickedEvent(courseId: String) {
@@ -214,4 +230,11 @@ class CourseInfoViewModel(
     companion object {
         private const val ARG_PATH_ID = "path_id"
     }
+}
+
+sealed class CourseInfoNavEvent {
+    data class CourseOutline(val courseId: String, val courseTitle: String) : CourseInfoNavEvent()
+    data class CourseInfo(val pathId: String, val infoType: String) : CourseInfoNavEvent()
+    data class SignUp(val courseId: String?, val infoType: String) : CourseInfoNavEvent()
+    data class SignIn(val courseId: String, val infoType: String) : CourseInfoNavEvent()
 }

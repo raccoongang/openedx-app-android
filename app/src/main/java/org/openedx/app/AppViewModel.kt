@@ -108,8 +108,8 @@ class AppViewModel(
         preferencesManager.canResetAppDirectory = false
     }
 
-    fun makeExternalRoute(fm: Any?, deepLink: DeepLink) {
-        deepLinkRouter.makeRoute(fm, deepLink)
+    fun makeExternalRoute(navController: androidx.navigation.NavController?, deepLink: DeepLink) {
+        deepLinkRouter.makeRoute(navController, deepLink)
     }
 
     private fun setUserId(user: User?) {

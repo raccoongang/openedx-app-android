@@ -48,7 +48,6 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun ContentTabScreen(
     viewModel: ContentTabViewModel,
     windowSize: WindowSize,
-    fragmentManager: Any?,
     courseId: String,
     courseName: String,
     pagerState: PagerState,
@@ -159,7 +158,6 @@ fun ContentTabScreen(
                                 courseName
                             )
                         }),
-                        fragmentManager = fragmentManager,
                         onNavigateToHome = onNavigateToHome
                     )
 
@@ -171,14 +169,12 @@ fun ContentTabScreen(
                                 courseName
                             )
                         }),
-                        fragmentManager = fragmentManager,
                         onNavigateToHome = onNavigateToHome
                     )
 
                     CourseContentTab.ASSIGNMENTS -> CourseContentAssignmentScreen(
                         windowSize = windowSize,
                         viewModel = koinViewModel(parameters = { parametersOf(courseId) }),
-                        fragmentManager = fragmentManager,
                         onNavigateToHome = onNavigateToHome
                     )
                 }

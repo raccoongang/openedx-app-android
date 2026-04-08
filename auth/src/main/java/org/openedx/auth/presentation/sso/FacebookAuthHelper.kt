@@ -1,7 +1,8 @@
 package org.openedx.auth.presentation.sso
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import androidx.activity.result.ActivityResultRegistryOwner
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -22,7 +23,7 @@ class FacebookAuthHelper {
     private val logger = Logger(TAG)
     private val callbackManager = CallbackManager.Factory.create()
 
-    suspend fun socialAuth(fragment: Fragment): SocialAuthResponse? =
+    suspend fun socialAuth(activity: Activity): SocialAuthResponse? =
         suspendCancellableCoroutine { continuation ->
             LoginManager.getInstance().registerCallback(
                 callbackManager,
@@ -65,7 +66,7 @@ class FacebookAuthHelper {
             )
             LoginManager.getInstance().logOut()
             LoginManager.getInstance().logInWithReadPermissions(
-                fragment,
+                activity as ActivityResultRegistryOwner,
                 callbackManager,
                 PERMISSIONS_LIST
             )

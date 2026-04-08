@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.openedx.core.FragmentViewType
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.NoContentScreen
@@ -62,7 +61,8 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun DiscussionTopicsScreen(
     discussionTopicsViewModel: DiscussionTopicsViewModel,
     windowSize: WindowSize,
-    fragmentManager: Any?
+    onSearchClick: (courseId: String) -> Unit = {},
+    onItemClick: (action: String, courseId: String, topicId: String, title: String) -> Unit = { _, _, _, _ -> },
 ) {
     val uiState by discussionTopicsViewModel.uiState.observeAsState(DiscussionTopicsUIState.Loading)
     val uiMessage by discussionTopicsViewModel.uiMessage.collectAsState(null)
@@ -72,10 +72,7 @@ fun DiscussionTopicsScreen(
         uiState = uiState,
         uiMessage = uiMessage,
         onSearchClick = {
-            discussionTopicsViewModel.discussionRouter.navigateToSearchThread(
-                fragmentManager,
-                discussionTopicsViewModel.courseId
-            )
+            onSearchClick(discussionTopicsViewModel.courseId)
         },
         onItemClick = { action, data, title ->
             discussionTopicsViewModel.discussionClickedEvent(
@@ -83,13 +80,11 @@ fun DiscussionTopicsScreen(
                 data,
                 title
             )
-            discussionTopicsViewModel.discussionRouter.navigateToDiscussionThread(
-                fragmentManager,
+            onItemClick(
                 action,
                 discussionTopicsViewModel.courseId,
                 data,
-                title,
-                FragmentViewType.FULL_CONTENT
+                title
             )
         },
     )

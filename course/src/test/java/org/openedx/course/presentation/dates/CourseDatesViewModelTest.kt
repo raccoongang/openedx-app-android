@@ -23,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.openedx.core.CalendarRouter
 import org.openedx.core.CoreMocks
 import org.openedx.core.R
 import org.openedx.core.config.Config
@@ -40,7 +39,6 @@ import org.openedx.core.system.notifier.calendar.CalendarSynced
 import org.openedx.course.CourseMocks
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
@@ -59,8 +57,6 @@ class CourseDatesViewModelTest {
     private val corePreferences = mockk<CorePreferences>()
     private val analytics = mockk<CourseAnalytics>()
     private val config = mockk<Config>()
-    private val courseRouter = mockk<CourseRouter>()
-    private val calendarRouter = mockk<CalendarRouter>()
     private val calendarNotifier = mockk<CalendarNotifier>()
     private val calendarInteractor = mockk<CalendarInteractor>()
     private val preferencesManager = mockk<CorePreferences>()
@@ -108,8 +104,6 @@ class CourseDatesViewModelTest {
             calendarInteractor,
             calendarNotifier,
             preferencesManager,
-            courseRouter,
-            calendarRouter,
             resourceManager,
         )
         coEvery { interactor.getCourseDates(any(), any()) } throws UnknownHostException()
@@ -138,8 +132,6 @@ class CourseDatesViewModelTest {
             calendarInteractor,
             calendarNotifier,
             preferencesManager,
-            courseRouter,
-            calendarRouter,
             resourceManager,
         )
         coEvery { interactor.getCourseDates(any(), any()) } throws Exception()
@@ -168,8 +160,6 @@ class CourseDatesViewModelTest {
             calendarInteractor,
             calendarNotifier,
             preferencesManager,
-            courseRouter,
-            calendarRouter,
             resourceManager,
         )
         coEvery {
@@ -203,8 +193,6 @@ class CourseDatesViewModelTest {
             calendarInteractor,
             calendarNotifier,
             preferencesManager,
-            courseRouter,
-            calendarRouter,
             resourceManager,
         )
         coEvery { interactor.getCourseDates(any(), any()) } returns CourseDatesResult(

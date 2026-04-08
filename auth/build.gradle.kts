@@ -1,10 +1,50 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+}
+
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            kotlin.setSrcDirs(emptyList<String>())
+        }
+        androidMain.dependencies {
+            implementation(project(":core"))
+
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+
+            // AndroidX
+            implementation(libs.androidx.browser)
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.playServicesAuth)
+
+            // Social Login
+            implementation(libs.facebook.login)
+            implementation(libs.google.playServices.auth)
+            implementation(libs.google.googleId)
+            implementation(libs.microsoft.msal.get().toString()) {
+                exclude(group = "com.microsoft.identity.client", module = "msal-browser")
+                exclude(group = "io.opentelemetry", module = "opentelemetry-bom")
+            }
+
+            // OpenTelemetry
+            implementation(libs.opentelemetry.api)
+            implementation(libs.opentelemetry.context)
+        }
+    }
 }
 
 android {
@@ -17,12 +57,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-    }
-
-    sourceSets {
-        getByName("main") {
-            java.srcDirs("src/main/java", "src/commonMain/kotlin")
-        }
     }
 
     flavorDimensions += "env"
@@ -42,10 +76,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
         }
     }
     buildFeatures {
@@ -54,26 +87,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-
-    // AndroidX
-    implementation(libs.androidx.browser)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.playServicesAuth)
-
-    // Social Login
-    implementation(libs.facebook.login)
-    implementation(libs.google.playServices.auth)
-    implementation(libs.google.googleId)
-    implementation(libs.microsoft.msal) {
-        exclude(group = "com.microsoft.identity.client", module = "msal-browser")
-        exclude(group = "io.opentelemetry", module = "opentelemetry-bom")
-    }
-
-    // OpenTelemetry
-    implementation(libs.opentelemetry.api)
-    implementation(libs.opentelemetry.context)
-
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.arch.core.testing)

@@ -1,6 +1,5 @@
 package org.openedx.core.domain.model
 
-import kotlinx.parcelize.IgnoredOnParcel
 import org.openedx.core.extension.safeDivBy
 
 data class Progress(
@@ -8,7 +7,6 @@ data class Progress(
     val total: Int,
 ) {
 
-    @IgnoredOnParcel
     val value: Float = completed.toFloat().safeDivBy(total.toFloat())
 
     companion object {

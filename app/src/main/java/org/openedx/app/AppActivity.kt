@@ -6,20 +6,16 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.WindowMetricsCalculator
 import com.braze.support.toStringMap
@@ -29,10 +25,8 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.openedx.app.deeplink.DeepLink
-import org.openedx.auth.presentation.logistration.LogistrationFragment
 import org.openedx.core.ApiConstants
 import org.openedx.core.data.storage.CorePreferences
-import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
 import org.openedx.core.presentation.global.InsetHolder
 import org.openedx.core.presentation.global.WindowSizeHolder
 import org.openedx.core.ui.theme.OpenEdXTheme
@@ -41,9 +35,7 @@ import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.foundation.extension.requestApplyInsetsWhenAttached
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.whatsnew.WhatsNewManager
-import org.openedx.whatsnew.presentation.whatsnew.WhatsNewFragment
 
 class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
@@ -60,8 +52,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     private val viewModel by viewModel<AppViewModel>()
     private val whatsNewManager by inject<WhatsNewManager>()
     private val corePreferencesManager by inject<CorePreferences>()
-    private val profileRouter by inject<ProfileRouter>()
-    private val downloadDialogManager by inject<DownloadDialogManager>()
     private val calendarSyncScheduler by inject<CalendarSyncScheduler>()
 
     private val branchLogger = Logger(BRANCH_TAG)
@@ -72,7 +62,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
     private var _windowSize = WindowSize(WindowType.Compact, WindowType.Compact)
 
-    private var fragmentContainer: FragmentContainerView? = null
+    private var navController: androidx.navigation.NavController? = null
 
     private val authCode: String?
         get() {
@@ -93,7 +83,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
                 branchLogger.i { "Branch init complete." }
                 branchLogger.i { branchUniversalObject.contentMetadata.customMetadata.toString() }
                 viewModel.makeExternalRoute(
-                    fm = supportFragmentManager,
+                    navController = navController,
                     deepLink = DeepLink(branchUniversalObject.contentMetadata.customMetadata)
                 )
             } else if (error != null) {
@@ -114,7 +104,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         lifecycle.addObserver(viewModel)
         viewModel.logAppLaunchEvent()
 
-        // Use Compose setContent with embedded FragmentContainerView
         setContent {
             OpenEdXTheme {
                 AppContent()
@@ -123,45 +112,39 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
         setupWindowInsets(savedInstanceState)
         setupWindowSettings()
-        setupInitialFragment(savedInstanceState)
         observeLogoutEvent()
-        observeDownloadFailedDialog()
+
+        if (savedInstanceState == null) {
+            intent.extras?.takeIf { it.containsKey(DeepLink.Keys.NOTIFICATION_TYPE.value) }?.let {
+                handlePushNotification(it)
+            }
+        }
 
         calendarSyncScheduler.scheduleDailySync()
     }
 
     @Composable
     private fun AppContent() {
-        if (USE_COMPOSE_NAVIGATION) {
-            val startDest: Any = when {
-                corePreferencesManager.user == null -> {
-                    if (viewModel.isLogistrationEnabled) {
-                        org.openedx.app.navigation.AppNavRoutes.Logistration()
-                    } else {
-                        org.openedx.app.navigation.AppNavRoutes.SignIn()
-                    }
-                }
-                whatsNewManager.shouldShowWhatsNew() -> org.openedx.app.navigation.AppNavRoutes.WhatsNew()
-                else -> org.openedx.app.navigation.AppNavRoutes.Main()
-            }
-            org.openedx.app.navigation.AppNavHost(
-                startDestination = startDest,
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            // Legacy Fragment-based navigation
-            AndroidView(
-                modifier = Modifier.fillMaxSize(),
-                factory = { context ->
-                    FragmentContainerView(context).apply {
-                        id = R.id.container
-                        fragmentContainer = this
-                    }
-                },
-            )
-        }
-    }
+        val nc = androidx.navigation.compose.rememberNavController()
+        navController = nc
 
+        val startDest: Any = when {
+            corePreferencesManager.user == null -> {
+                if (viewModel.isLogistrationEnabled) {
+                    org.openedx.app.navigation.AppNavRoutes.Logistration()
+                } else {
+                    org.openedx.app.navigation.AppNavRoutes.SignIn()
+                }
+            }
+            whatsNewManager.shouldShowWhatsNew() -> org.openedx.app.navigation.AppNavRoutes.WhatsNew()
+            else -> org.openedx.app.navigation.AppNavRoutes.Main()
+        }
+        org.openedx.app.navigation.AppNavHost(
+            navController = nc,
+            startDestination = startDest,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 
     private fun setupWindowInsets(savedInstanceState: Bundle?) {
         val rootView = window.decorView.rootView
@@ -213,42 +196,15 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         }
     }
 
-    private fun setupInitialFragment(savedInstanceState: Bundle?) {
-        if (USE_COMPOSE_NAVIGATION) return // NavHost handles initial destination
-        if (savedInstanceState == null) {
-            when {
-                corePreferencesManager.user == null -> {
-                    val fragment = if (viewModel.isLogistrationEnabled && authCode == null) {
-                        LogistrationFragment()
-                    } else {
-                        androidx.fragment.app.Fragment()
-                    }
-                    addFragment(fragment)
-                }
-
-                whatsNewManager.shouldShowWhatsNew() -> addFragment(WhatsNewFragment.newInstance())
-                else -> addFragment(MainFragment.newInstance())
-            }
-
-            intent.extras?.takeIf { it.containsKey(DeepLink.Keys.NOTIFICATION_TYPE.value) }?.let {
-                handlePushNotification(it)
-            }
-        }
-    }
-
     private fun observeLogoutEvent() {
         viewModel.logoutUser.observe(this) {
-            profileRouter.restartApp(supportFragmentManager, viewModel.isLogistrationEnabled)
-        }
-    }
-
-    private fun observeDownloadFailedDialog() {
-        lifecycleScope.launch {
-            viewModel.downloadFailedDialog.collect {
-                downloadDialogManager.showDownloadFailedPopup(
-                    downloadModel = it.downloadModel,
-                    fragmentManager = supportFragmentManager,
-                )
+            val dest = if (viewModel.isLogistrationEnabled) {
+                org.openedx.app.navigation.AppNavRoutes.Logistration()
+            } else {
+                org.openedx.app.navigation.AppNavRoutes.SignIn()
+            }
+            navController?.navigate(dest) {
+                popUpTo(0) { inclusive = true }
             }
         }
     }
@@ -268,10 +224,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         super.onNewIntent(intent)
         this.intent = intent
 
-        if (authCode != null) {
-            addFragment(androidx.fragment.app.Fragment())
-        }
-
         val extras = intent.extras
         if (extras?.containsKey(DeepLink.Keys.NOTIFICATION_TYPE.value) == true) {
             handlePushNotification(extras)
@@ -284,12 +236,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
                     .reInit()
             }
         }
-    }
-
-    private fun addFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .add(R.id.container, fragment)
-            .commit()
     }
 
     private fun computeWindowSizeClasses() {
@@ -323,7 +269,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
     private fun handlePushNotification(data: Bundle) {
         val deepLink = DeepLink(data.toStringMap())
-        viewModel.makeExternalRoute(supportFragmentManager, deepLink)
+        viewModel.makeExternalRoute(navController, deepLink)
     }
 
     companion object {
@@ -337,12 +283,5 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         internal const val MEDIUM_MAX_WIDTH = 840
         internal const val COMPACT_MAX_HEIGHT = 480
         internal const val MEDIUM_MAX_HEIGHT = 900
-
-        /**
-         * Feature flag: set to true to use Compose NavHost instead of Fragments.
-         * When true, AppActivity uses AppNavHost for all navigation.
-         * When false (default), uses legacy Fragment-based navigation.
-         */
-        const val USE_COMPOSE_NAVIGATION = true
     }
 }

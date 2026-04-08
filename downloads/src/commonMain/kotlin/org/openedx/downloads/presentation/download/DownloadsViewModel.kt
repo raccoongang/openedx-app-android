@@ -34,12 +34,10 @@ import org.openedx.core.system.notifier.CourseStructureGot
 import org.openedx.core.system.notifier.CourseStructureUpdated
 import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.downloads.domain.interactor.DownloadInteractor
-import org.openedx.downloads.presentation.DownloadsRouter
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 
 class DownloadsViewModel(
-    private val downloadsRouter: DownloadsRouter,
     private val networkConnection: NetworkConnection,
     private val interactor: DownloadInteractor,
     private val downloadDialogManager: DownloadDialogManager,
@@ -49,7 +47,6 @@ class DownloadsViewModel(
     private val analytics: DownloadsAnalytics,
     private val discoveryNotifier: DiscoveryNotifier,
     private val courseNotifier: CourseNotifier,
-    private val router: DownloadsRouter,
     preferencesManager: CorePreferences,
     coreAnalytics: CoreAnalytics,
     downloadDao: DownloadDao,
@@ -208,10 +205,6 @@ class DownloadsViewModel(
         fetchDownloads(refresh = true)
     }
 
-    fun onSettingsClick(fragmentManager: Any?) {
-        downloadsRouter.navigateToSettings(fragmentManager)
-    }
-
     fun downloadCourse(fragmentManager: Any?, courseId: String) {
         logEvent(DownloadsAnalyticsEvent.DOWNLOAD_COURSE_CLICKED)
         try {
@@ -318,15 +311,6 @@ class DownloadsViewModel(
                 emitErrorMessage(e)
             }
         }
-    }
-
-    fun navigateToCourseOutline(fm: Any?, courseId: String) {
-        val coursePreview = getCoursePreview(courseId) ?: return
-        router.navigateToCourseOutline(
-            fm = fm,
-            courseId = coursePreview.id,
-            courseTitle = coursePreview.name,
-        )
     }
 
     private fun logEvent(event: DownloadsAnalyticsEvent) {

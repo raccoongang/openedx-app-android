@@ -1,8 +1,13 @@
 package org.openedx.discovery.presentation
 
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.presentation.global.AppData
@@ -19,13 +24,16 @@ class WebViewDiscoveryViewModel(
     private val config: Config,
     private val networkConnection: NetworkConnection,
     private val corePreferences: CorePreferences,
-    private val router: DiscoveryRouter,
     private val analytics: DiscoveryAnalytics,
     private val resourceManager: ResourceManager,
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState = MutableStateFlow<WebViewUIState>(WebViewUIState.Loading)
     val uiState: StateFlow<WebViewUIState> = _uiState.asStateFlow()
+
+    private val _navigationEvent = MutableSharedFlow<WebViewDiscoveryNavEvent>()
+    val navigationEvent: SharedFlow<WebViewDiscoveryNavEvent> get() = _navigationEvent.asSharedFlow()
+
     val uriScheme: String get() = config.getUriScheme()
 
     private val webViewConfig get() = config.getDiscoveryConfig().webViewConfig
@@ -74,26 +82,32 @@ class WebViewDiscoveryViewModel(
         }
     }
 
-    fun infoCardClicked(fragmentManager: Any?, pathId: String, infoType: String) {
+    fun infoCardClicked(pathId: String, infoType: String) {
         if (pathId.isNotEmpty() && infoType.isNotEmpty()) {
-            router.navigateToCourseInfo(
-                fragmentManager,
-                pathId,
-                infoType
-            )
+            viewModelScope.launch {
+                _navigationEvent.emit(
+                    WebViewDiscoveryNavEvent.CourseInfo(pathId = pathId, infoType = infoType)
+                )
+            }
         }
     }
 
-    fun navigateToSignUp(fragmentManager: Any?) {
-        router.navigateToSignUp(fragmentManager, null)
+    fun navigateToSignUp() {
+        viewModelScope.launch {
+            _navigationEvent.emit(WebViewDiscoveryNavEvent.SignUp)
+        }
     }
 
-    fun navigateToSignIn(fragmentManager: Any?) {
-        router.navigateToSignIn(fragmentManager, null, null)
+    fun navigateToSignIn() {
+        viewModelScope.launch {
+            _navigationEvent.emit(WebViewDiscoveryNavEvent.SignIn)
+        }
     }
 
-    fun navigateToSettings(fragmentManager: Any?) {
-        router.navigateToSettings(fragmentManager)
+    fun navigateToSettings() {
+        viewModelScope.launch {
+            _navigationEvent.emit(WebViewDiscoveryNavEvent.Settings)
+        }
     }
 
     fun courseInfoClickedEvent(courseId: String) {
@@ -117,4 +131,11 @@ class WebViewDiscoveryViewModel(
             }
         )
     }
+}
+
+sealed class WebViewDiscoveryNavEvent {
+    data class CourseInfo(val pathId: String, val infoType: String) : WebViewDiscoveryNavEvent()
+    data object SignUp : WebViewDiscoveryNavEvent()
+    data object SignIn : WebViewDiscoveryNavEvent()
+    data object Settings : WebViewDiscoveryNavEvent()
 }

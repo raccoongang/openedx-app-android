@@ -1,9 +1,5 @@
 package org.openedx.profile.presentation.calendar
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-enum class NewCalendarDialogType : Parcelable {
+enum class NewCalendarDialogType {
     CREATE_NEW, UPDATE
 }

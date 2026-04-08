@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +51,26 @@ import org.openedx.foundation.presentation.windowSizeValue
 fun CourseContentVideoScreen(
     windowSize: WindowSize,
     viewModel: CourseVideoViewModel,
-    fragmentManager: Any?,
     onNavigateToHome: () -> Unit = {},
+    onNavigateToCourseContainer: (courseId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _ -> },
+    onNavigateToDownloadQueue: (List<String>) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState(CourseVideoUIState.Loading)
     val uiMessage by viewModel.uiMessage.collectAsState(null)
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationAction.collect { action ->
+            when (action) {
+                is org.openedx.course.presentation.CourseNavigationAction.NavigateToDownloadQueue -> {
+                    onNavigateToDownloadQueue(action.descendants)
+                }
+                is org.openedx.course.presentation.CourseNavigationAction.NavigateToCourseContainer -> {
+                    onNavigateToCourseContainer(action.courseId, action.unitId, action.componentId, action.mode)
+                }
+                else -> {}
+            }
+        }
+    }
 
     CourseVideosUI(
         windowSize = windowSize,
@@ -62,18 +78,19 @@ fun CourseContentVideoScreen(
         uiMessage = uiMessage,
         onNavigateToHome = onNavigateToHome,
         onVideoClick = { videoBlock ->
-            viewModel.courseRouter.navigateToCourseContainer(
-                fragmentManager,
-                courseId = viewModel.courseId,
-                unitId = viewModel.getBlockParent(videoBlock.id)?.id ?: return@CourseVideosUI,
-                mode = CourseViewMode.VIDEOS
+            val parentId = viewModel.getBlockParent(videoBlock.id)?.id ?: return@CourseVideosUI
+            onNavigateToCourseContainer(
+                viewModel.courseId,
+                parentId,
+                "",
+                CourseViewMode.VIDEOS
             )
             viewModel.logVideoClick(videoBlock.id)
         },
         onDownloadClick = { blocksIds ->
             viewModel.downloadBlocks(
                 blocksIds = blocksIds,
-                fragmentManager = fragmentManager,
+                fragmentManager = null,
             )
         },
         onCompletedSectionVisibilityChange = {

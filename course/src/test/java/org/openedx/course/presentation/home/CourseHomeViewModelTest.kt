@@ -40,7 +40,6 @@ import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 import java.net.UnknownHostException
@@ -65,7 +64,6 @@ class CourseHomeViewModelTest {
     private val analytics = mockk<CourseAnalytics>()
     private val downloadDialogManager = mockk<DownloadDialogManager>()
     private val fileUtil = mockk<FileUtil>()
-    private val courseRouter = mockk<CourseRouter>()
     private val coreAnalytics = mockk<CoreAnalytics>()
     private val downloadDao = mockk<DownloadDao>()
     private val workerController = mockk<DownloadWorkerController>()
@@ -169,7 +167,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -230,7 +228,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -283,7 +281,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -337,7 +335,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -434,7 +432,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -495,7 +493,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -550,7 +548,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -603,7 +601,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -654,7 +652,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -707,7 +705,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,
@@ -760,7 +758,7 @@ class CourseHomeViewModelTest {
             analytics = analytics,
             downloadDialogManager = downloadDialogManager,
             fileUtil = fileUtil,
-            courseRouter = courseRouter,
+
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
             downloadDao = downloadDao,

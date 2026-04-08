@@ -45,7 +45,6 @@ import org.openedx.core.system.notifier.CourseStructureUpdated
 import org.openedx.course.R
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
@@ -67,7 +66,6 @@ class CourseVideoViewModelTest {
     private val networkConnection = mockk<NetworkConnection>()
     private val downloadDao = mockk<DownloadDao>()
     private val workerController = mockk<DownloadWorkerController>()
-    private val courseRouter = mockk<CourseRouter>()
     private val downloadHelper = mockk<DownloadHelper>()
     private val downloadDialogManager = mockk<DownloadDialogManager>()
     private val fileUtil = mockk<FileUtil>()
@@ -128,7 +126,6 @@ class CourseVideoViewModelTest {
             courseNotifier,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             courseAnalytics,
             videoPreviewHelper,
             coreAnalytics,
@@ -166,7 +163,6 @@ class CourseVideoViewModelTest {
             courseNotifier,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             courseAnalytics,
             videoPreviewHelper,
             coreAnalytics,
@@ -210,7 +206,6 @@ class CourseVideoViewModelTest {
             courseNotifier,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             courseAnalytics,
             videoPreviewHelper,
             coreAnalytics,
@@ -256,7 +251,6 @@ class CourseVideoViewModelTest {
             courseNotifier,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             courseAnalytics,
             videoPreviewHelper,
             coreAnalytics,
@@ -298,7 +292,6 @@ class CourseVideoViewModelTest {
                 courseNotifier,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 courseAnalytics,
                 videoPreviewHelper,
                 coreAnalytics,
@@ -344,7 +337,6 @@ class CourseVideoViewModelTest {
                 courseNotifier,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 courseAnalytics,
                 videoPreviewHelper,
                 coreAnalytics,

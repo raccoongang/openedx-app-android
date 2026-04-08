@@ -58,7 +58,7 @@ import org.openedx.discussion.R
 import org.openedx.discussion.domain.model.DiscussionComment
 import org.openedx.discussion.domain.model.DiscussionType
 import org.openedx.discussion.domain.model.Topic
-import org.openedx.discussion.presentation.comments.DiscussionCommentsFragment
+import org.openedx.discussion.presentation.DiscussionActions
 import org.openedx.core.R as CoreR
 
 @Composable
@@ -154,7 +154,7 @@ fun ThreadMainItem(
                 textStyle = MaterialTheme.appTypography.labelLarge,
                 color = MaterialTheme.appColors.textPrimaryVariant,
                 onClick = {
-                    onClick(DiscussionCommentsFragment.ACTION_FOLLOW_THREAD, !thread.following)
+                    onClick(DiscussionActions.ACTION_FOLLOW_THREAD, !thread.following)
                 }
             )
         }
@@ -179,7 +179,7 @@ fun ThreadMainItem(
                 color = voteColor,
                 textStyle = MaterialTheme.appTypography.labelLarge,
                 onClick = {
-                    onClick(DiscussionCommentsFragment.ACTION_UPVOTE_THREAD, !thread.voted)
+                    onClick(DiscussionActions.ACTION_UPVOTE_THREAD, !thread.voted)
                 }
             )
             IconText(
@@ -188,7 +188,7 @@ fun ThreadMainItem(
                 textStyle = MaterialTheme.appTypography.labelLarge,
                 color = reportColor,
                 onClick = {
-                    onClick(DiscussionCommentsFragment.ACTION_REPORT_THREAD, !thread.abuseFlagged)
+                    onClick(DiscussionActions.ACTION_REPORT_THREAD, !thread.abuseFlagged)
                 }
             )
         }
@@ -303,7 +303,7 @@ fun CommentItem(
                     color = reportColor,
                     onClick = {
                         onClick(
-                            DiscussionCommentsFragment.ACTION_REPORT_COMMENT,
+                            DiscussionActions.ACTION_REPORT_COMMENT,
                             comment.id,
                             !comment.abuseFlagged
                         )
@@ -333,7 +333,7 @@ fun CommentItem(
                     textStyle = MaterialTheme.appTypography.labelLarge,
                     onClick = {
                         onClick(
-                            DiscussionCommentsFragment.ACTION_UPVOTE_COMMENT,
+                            DiscussionActions.ACTION_UPVOTE_COMMENT,
                             comment.id,
                             !comment.voted
                         )
@@ -470,7 +470,7 @@ fun CommentMainItem(
                     textStyle = MaterialTheme.appTypography.labelLarge,
                     onClick = {
                         onClick(
-                            DiscussionCommentsFragment.ACTION_UPVOTE_COMMENT,
+                            DiscussionActions.ACTION_UPVOTE_COMMENT,
                             comment.id,
                             !comment.voted
                         )
@@ -483,7 +483,7 @@ fun CommentMainItem(
                     color = reportColor,
                     onClick = {
                         onClick(
-                            DiscussionCommentsFragment.ACTION_REPORT_COMMENT,
+                            DiscussionActions.ACTION_REPORT_COMMENT,
                             comment.id,
                             !comment.abuseFlagged
                         )

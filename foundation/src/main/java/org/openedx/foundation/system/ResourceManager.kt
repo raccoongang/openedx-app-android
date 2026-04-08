@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import java.io.InputStream
 
-class ResourceManager(private val context: Context) {
+class AndroidResourceManager(private val context: Context) : ResourceManager {
 
-    fun getString(@StringRes id: Int): String = context.getString(id)
+    override fun getString(@StringRes id: Int): String = context.getString(id)
 
-    fun getString(@StringRes id: Int, vararg formatArgs: Any): String = context.getString(id, *formatArgs)
+    override fun getString(@StringRes id: Int, vararg formatArgs: Any): String = context.getString(id, *formatArgs)
 
     fun getStringArray(@ArrayRes id: Int): Array<String> = context.resources.getStringArray(id)
 

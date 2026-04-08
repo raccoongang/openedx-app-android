@@ -15,7 +15,6 @@ import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.dashboard.domain.CourseStatusFilter
 import org.openedx.dashboard.domain.interactor.DashboardInteractor
 import org.openedx.dashboard.presentation.DashboardAnalytics
-import org.openedx.dashboard.presentation.DashboardRouter
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 
@@ -26,7 +25,6 @@ class AllEnrolledCoursesViewModel(
     private val resourceManager: ResourceManager,
     private val discoveryNotifier: DiscoveryNotifier,
     private val analytics: DashboardAnalytics,
-    private val dashboardRouter: DashboardRouter
 ) : BaseViewModel(resourceManager) {
 
     val apiHostUrl get() = config.getApiHostURL()
@@ -156,25 +154,10 @@ class AllEnrolledCoursesViewModel(
         }
     }
 
-    fun navigateToCourseSearch(fragmentManager: Any?) {
-        dashboardRouter.navigateToCourseSearch(
-            fragmentManager,
-            ""
-        )
-    }
-
-    fun navigateToCourseOutline(
-        fragmentManager: Any?,
+    fun navigateToCourseOutlineEvent(
         courseId: String,
         courseName: String,
     ) {
         dashboardCourseClickedEvent(courseId, courseName)
-        dashboardRouter.navigateToCourseOutline(
-            fm = fragmentManager,
-            courseId = courseId,
-            courseTitle = courseName,
-            openTab = "",
-            resumeBlockId = ""
-        )
     }
 }

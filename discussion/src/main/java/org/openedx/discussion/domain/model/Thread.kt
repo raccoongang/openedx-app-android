@@ -3,13 +3,10 @@ package org.openedx.discussion.domain.model
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import org.openedx.core.domain.model.ProfileImage
 import org.openedx.discussion.R
 
 @Serializable
-@Parcelize
 data class Thread(
     val id: String,
     val author: String,
@@ -42,13 +39,12 @@ data class Thread(
     val responseCount: Int,
     val anonymous: Boolean,
     val anonymousToPeers: Boolean
-) : Parcelable
+)
 
 @Serializable
-@Parcelize
 data class DiscussionProfile(
     val image: ProfileImage?
-) : Parcelable
+)
 
 enum class DiscussionType(
     val value: String,

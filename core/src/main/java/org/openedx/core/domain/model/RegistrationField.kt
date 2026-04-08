@@ -1,7 +1,5 @@
 package org.openedx.core.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import org.openedx.core.ApiConstants
 
 data class RegistrationField(
@@ -23,12 +21,11 @@ data class RegistrationField(
         val minLength: Int = 1,
     )
 
-    @Parcelize
     data class Option(
         val value: String,
         val name: String,
         val default: String,
-    ) : Parcelable
+    )
 }
 
 fun String.createHonorCodeField() = RegistrationField(

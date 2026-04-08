@@ -95,9 +95,7 @@ import org.openedx.foundation.presentation.windowSizeValue
 import java.util.Date
 
 @Composable
-fun AllEnrolledCoursesView(
-    fragmentManager: Any?
-) {
+fun AllEnrolledCoursesView() {
     val viewModel: AllEnrolledCoursesViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState(null)
@@ -122,21 +120,14 @@ fun AllEnrolledCoursesView(
                 }
 
                 AllEnrolledCoursesAction.Back -> {
-                    (fragmentManager as? androidx.fragment.app.FragmentManager)?.popBackStack()
                 }
 
                 AllEnrolledCoursesAction.Search -> {
-                    viewModel.navigateToCourseSearch(fragmentManager)
+                    // Navigation handled by parent composable
                 }
 
                 is AllEnrolledCoursesAction.OpenCourse -> {
-                    with(action.enrolledCourse) {
-                        viewModel.navigateToCourseOutline(
-                            fragmentManager,
-                            course.id,
-                            course.name,
-                        )
-                    }
+                    // Navigation handled by parent composable
                 }
 
                 is AllEnrolledCoursesAction.FilterChange -> {

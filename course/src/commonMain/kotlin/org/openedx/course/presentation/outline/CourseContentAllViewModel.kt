@@ -35,7 +35,7 @@ import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
+import org.openedx.course.presentation.CourseNavigationAction
 import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
@@ -54,7 +54,6 @@ class CourseContentAllViewModel(
     private val analytics: CourseAnalytics,
     private val downloadDialogManager: DownloadDialogManager,
     private val fileUtil: FileUtil,
-    val courseRouter: CourseRouter,
     coreAnalytics: CoreAnalytics,
     downloadDao: DownloadDao,
     workerController: DownloadWorkerController,
@@ -77,6 +76,10 @@ class CourseContentAllViewModel(
     private val _resumeBlockId = MutableSharedFlow<String>()
     val resumeBlockId: SharedFlow<String>
         get() = _resumeBlockId.asSharedFlow()
+
+    private val _navigationAction = MutableSharedFlow<CourseNavigationAction>()
+    val navigationAction: SharedFlow<CourseNavigationAction>
+        get() = _navigationAction.asSharedFlow()
 
     private var resumeSectionBlock: Block? = null
     private var resumeVerticalBlock: Block? = null
@@ -279,35 +282,37 @@ class CourseContentAllViewModel(
         return resumeBlock
     }
 
-    fun openBlock(fragmentManager: Any?, blockId: String) {
+    fun openBlock(blockId: String) {
         viewModelScope.launch {
             val courseStructure = interactor.getCourseStructure(courseId, false)
             val blocks = courseStructure.blockData
             getResumeBlock(blocks, blockId)
-            resumeBlock(fragmentManager, blockId)
+            resumeBlock(blockId)
         }
     }
 
-    private fun resumeBlock(fragmentManager: Any?, blockId: String) {
+    private suspend fun resumeBlock(blockId: String) {
         resumeSectionBlock?.let { subSection ->
             resumeCourseTappedEvent(subSection.id)
             resumeVerticalBlock?.let { unit ->
                 if (isCourseExpandableSectionsEnabled) {
-                    courseRouter.navigateToCourseContainer(
-                        fm = fragmentManager,
-                        courseId = courseId,
-                        unitId = unit.id,
-                        componentId = blockId,
-                        mode = CourseViewMode.FULL
+                    _navigationAction.emit(
+                        CourseNavigationAction.NavigateToCourseContainer(
+                            courseId = courseId,
+                            unitId = unit.id,
+                            componentId = blockId,
+                            mode = CourseViewMode.FULL
+                        )
                     )
                 } else {
-                    courseRouter.navigateToCourseSubsections(
-                        fragmentManager,
-                        courseId = courseId,
-                        subSectionId = subSection.id,
-                        mode = CourseViewMode.FULL,
-                        unitId = unit.id,
-                        componentId = blockId
+                    _navigationAction.emit(
+                        CourseNavigationAction.NavigateToCourseSubsections(
+                            courseId = courseId,
+                            subSectionId = subSection.id,
+                            mode = CourseViewMode.FULL,
+                            unitId = unit.id,
+                            componentId = blockId
+                        )
                     )
                 }
             }
@@ -422,7 +427,9 @@ class CourseContentAllViewModel(
                 val downloadableChildren =
                     downloadingBlocks.flatMap { getDownloadableChildren(it).orEmpty() }
                 if (config.getCourseUIConfig().isCourseDownloadQueueEnabled) {
-                    courseRouter.navigateToDownloadQueue(fragmentManager, downloadableChildren)
+                    _navigationAction.emit(
+                        CourseNavigationAction.NavigateToDownloadQueue(downloadableChildren)
+                    )
                 } else {
                     downloadableChildren.forEach {
                         if (!isBlockDownloaded(it)) {

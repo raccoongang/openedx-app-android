@@ -63,9 +63,9 @@ import androidx.compose.ui.unit.dp
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.DatesSection
-import org.openedx.core.presentation.CoreAnalyticsScreen
+
 import org.openedx.core.presentation.dates.CourseDateBlockSection
-import org.openedx.core.presentation.dialog.alert.ActionDialogFragment
+
 import org.openedx.core.presentation.settings.calendarsync.CalendarSyncState
 import org.openedx.core.ui.CircularProgress
 import org.openedx.core.ui.HandleUIMessage
@@ -91,13 +91,13 @@ import org.openedx.core.R as CoreR
 fun CourseDatesScreen(
     windowSize: WindowSize,
     viewModel: CourseDatesViewModel,
-    fragmentManager: Any?,
-    isFragmentResumed: Boolean,
-    updateCourseStructure: () -> Unit
+    updateCourseStructure: () -> Unit,
+    onNavigateToCourseContainer: (courseId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _ -> },
+    onNavigateToCourseSubsections: (courseId: String, subSectionId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _, _ -> },
+    onNavigateToCalendarSettings: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState(CourseDatesUIState.Loading)
     val uiMessage by viewModel.uiMessage.collectAsState(null)
-    val context = LocalContext.current
 
     CourseDatesUI(
         windowSize = windowSize,
@@ -111,47 +111,31 @@ fun CourseDatesScreen(
                     ?.let { verticalBlock ->
                         viewModel.logCourseComponentTapped(true, block)
                         if (viewModel.isCourseExpandableSectionsEnabled) {
-                            viewModel.courseRouter.navigateToCourseContainer(
-                                fm = fragmentManager,
-                                courseId = viewModel.courseId,
-                                unitId = verticalBlock.id,
-                                componentId = "",
-                                mode = CourseViewMode.FULL
+                            onNavigateToCourseContainer(
+                                viewModel.courseId,
+                                verticalBlock.id,
+                                "",
+                                CourseViewMode.FULL
                             )
                         } else {
                             viewModel.getSequentialBlock(verticalBlock.id)
                                 ?.let { sequentialBlock ->
-                                    viewModel.courseRouter.navigateToCourseSubsections(
-                                        fm = fragmentManager,
-                                        subSectionId = sequentialBlock.id,
-                                        courseId = viewModel.courseId,
-                                        unitId = verticalBlock.id,
-                                        mode = CourseViewMode.FULL
+                                    onNavigateToCourseSubsections(
+                                        viewModel.courseId,
+                                        sequentialBlock.id,
+                                        verticalBlock.id,
+                                        "",
+                                        CourseViewMode.FULL
                                     )
                                 }
                         }
                     } ?: {
                     viewModel.logCourseComponentTapped(false, block)
-                    ActionDialogFragment.newInstance(
-                        title = context.getString(CoreR.string.core_leaving_the_app),
-                        message = context.getString(
-                            CoreR.string.core_leaving_the_app_message,
-                            context.getString(CoreR.string.platform_name)
-                        ),
-                        url = block.link,
-                        source = CoreAnalyticsScreen.COURSE_DATES.screenName
-                    ).also { dialog ->
-                        (fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
-                            dialog.show(fm, ActionDialogFragment::class.simpleName)
-                        }
-                    }
                 }
             }
         },
         onPLSBannerViewed = {
-            if (isFragmentResumed) {
-                viewModel.logPlsBannerViewed()
-            }
+            viewModel.logPlsBannerViewed()
         },
         onSyncDates = {
             viewModel.logPlsShiftButtonClicked()
@@ -163,7 +147,7 @@ fun CourseDatesScreen(
             }
         },
         onCalendarSyncStateClick = {
-            viewModel.calendarRouter.navigateToCalendarSettings(fragmentManager)
+            onNavigateToCalendarSettings()
         }
     )
 }

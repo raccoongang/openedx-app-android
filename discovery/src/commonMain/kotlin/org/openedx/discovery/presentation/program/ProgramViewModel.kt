@@ -1,8 +1,11 @@
 package org.openedx.discovery.presentation.program
 
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.openedx.core.config.Config
@@ -14,7 +17,6 @@ import org.openedx.core.system.notifier.CourseDashboardUpdate
 import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.core.system.notifier.NavigationToDiscovery
 import org.openedx.discovery.domain.interactor.DiscoveryInteractor
-import org.openedx.discovery.presentation.DiscoveryRouter
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
@@ -24,7 +26,6 @@ class ProgramViewModel(
     private val appData: AppData,
     private val config: Config,
     private val networkConnection: NetworkConnection,
-    private val router: DiscoveryRouter,
     private val notifier: DiscoveryNotifier,
     private val edxCookieManager: AppCookieManager,
     private val resourceManager: ResourceManager,
@@ -42,6 +43,9 @@ class ProgramViewModel(
 
     private val _uiState = MutableStateFlow<ProgramUIState>(ProgramUIState.Loading)
     val uiState: StateFlow<ProgramUIState> get() = _uiState.asStateFlow()
+
+    private val _navigationEvent = MutableSharedFlow<ProgramNavEvent>()
+    val navigationEvent: SharedFlow<ProgramNavEvent> get() = _navigationEvent.asSharedFlow()
 
     fun showLoading(isLoading: Boolean) {
         viewModelScope.launch {
@@ -74,29 +78,31 @@ class ProgramViewModel(
         }
     }
 
-    fun onProgramCardClick(fragmentManager: Any?, pathId: String) {
+    fun onProgramCardClick(pathId: String) {
         if (pathId.isNotEmpty()) {
-            router.navigateToEnrolledProgramInfo(fm = fragmentManager, pathId = pathId)
+            viewModelScope.launch {
+                _navigationEvent.emit(ProgramNavEvent.EnrolledProgramInfo(pathId = pathId))
+            }
         }
     }
 
-    fun onViewCourseClick(fragmentManager: Any?, courseId: String, infoType: String) {
+    fun onViewCourseClick(courseId: String, infoType: String) {
         if (courseId.isNotEmpty() && infoType.isNotEmpty()) {
-            router.navigateToCourseInfo(
-                fm = fragmentManager,
-                courseId = courseId,
-                infoType = infoType
-            )
+            viewModelScope.launch {
+                _navigationEvent.emit(
+                    ProgramNavEvent.CourseInfo(courseId = courseId, infoType = infoType)
+                )
+            }
         }
     }
 
-    fun onEnrolledCourseClick(fragmentManager: Any?, courseId: String) {
+    fun onEnrolledCourseClick(courseId: String) {
         if (courseId.isNotEmpty()) {
-            router.navigateToCourseOutline(
-                fm = fragmentManager,
-                courseId = courseId,
-                courseTitle = "",
-            )
+            viewModelScope.launch {
+                _navigationEvent.emit(
+                    ProgramNavEvent.CourseOutline(courseId = courseId, courseTitle = "")
+                )
+            }
         }
         viewModelScope.launch {
             _uiState.emit(ProgramUIState.Loaded)
@@ -107,8 +113,10 @@ class ProgramViewModel(
         viewModelScope.launch { notifier.send(NavigationToDiscovery()) }
     }
 
-    fun navigateToSettings(fragmentManager: Any?) {
-        router.navigateToSettings(fragmentManager)
+    fun navigateToSettings() {
+        viewModelScope.launch {
+            _navigationEvent.emit(ProgramNavEvent.Settings)
+        }
     }
 
     fun onPageLoadError() {
@@ -124,4 +132,11 @@ class ProgramViewModel(
             )
         }
     }
+}
+
+sealed class ProgramNavEvent {
+    data class EnrolledProgramInfo(val pathId: String) : ProgramNavEvent()
+    data class CourseInfo(val courseId: String, val infoType: String) : ProgramNavEvent()
+    data class CourseOutline(val courseId: String, val courseTitle: String) : ProgramNavEvent()
+    data object Settings : ProgramNavEvent()
 }

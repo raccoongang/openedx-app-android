@@ -2,8 +2,11 @@ package org.openedx.course.presentation.videos
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.openedx.core.BlockType
@@ -27,7 +30,7 @@ import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
+import org.openedx.course.presentation.CourseNavigationAction
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
@@ -42,7 +45,6 @@ class CourseVideoViewModel(
     private val courseNotifier: CourseNotifier,
     private val downloadDialogManager: DownloadDialogManager,
     private val fileUtil: FileUtil,
-    val courseRouter: CourseRouter,
     private val analytics: CourseAnalytics,
     private val videoPreviewHelper: VideoPreviewHelper,
     coreAnalytics: CoreAnalytics,
@@ -60,6 +62,10 @@ class CourseVideoViewModel(
     private val _uiState = MutableStateFlow<CourseVideoUIState>(CourseVideoUIState.Loading)
     val uiState: StateFlow<CourseVideoUIState>
         get() = _uiState.asStateFlow()
+
+    private val _navigationAction = MutableSharedFlow<CourseNavigationAction>()
+    val navigationAction: SharedFlow<CourseNavigationAction>
+        get() = _navigationAction.asSharedFlow()
 
     private val courseVideos = mutableMapOf<String, MutableList<Block>>()
     private val courseSubSections = mutableMapOf<String, MutableList<Block>>()
@@ -274,7 +280,9 @@ class CourseVideoViewModel(
                 val downloadableChildren =
                     downloadingBlocks.flatMap { getDownloadableChildren(it).orEmpty() }
                 if (config.getCourseUIConfig().isCourseDownloadQueueEnabled) {
-                    courseRouter.navigateToDownloadQueue(fragmentManager, downloadableChildren)
+                    _navigationAction.emit(
+                        CourseNavigationAction.NavigateToDownloadQueue(downloadableChildren)
+                    )
                 } else {
                     downloadableChildren.forEach {
                         if (!isBlockDownloaded(it)) {

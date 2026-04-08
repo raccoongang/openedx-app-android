@@ -2,7 +2,6 @@ package org.openedx.core.domain.model
 
 import android.content.Context
 import android.webkit.URLUtil
-import kotlinx.parcelize.RawValue
 import org.openedx.core.AppDataConstants
 import org.openedx.core.BlockType
 import org.openedx.core.module.db.DownloadModel
@@ -124,7 +123,7 @@ data class Block(
 
 data class StudentViewData(
     val onlyOnWeb: Boolean,
-    val duration: @RawValue Any,
+    val duration: Any,
     val transcripts: HashMap<String, String>?,
     val encodedVideos: EncodedVideos?,
     val topicId: String,

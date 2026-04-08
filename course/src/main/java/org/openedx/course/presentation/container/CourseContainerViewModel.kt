@@ -45,7 +45,6 @@ import org.openedx.course.presentation.CalendarSyncDialog
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.course.utils.ImageProcessor
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.extension.toImageLink
@@ -68,7 +67,6 @@ class CourseContainerViewModel(
     private val courseAnalytics: CourseAnalytics,
     private val imageProcessor: ImageProcessor,
     private val calendarSyncScheduler: CalendarSyncScheduler,
-    val courseRouter: CourseRouter,
 ) : BaseViewModel(resourceManager) {
 
     private val _dataReady = MutableLiveData<Boolean?>()

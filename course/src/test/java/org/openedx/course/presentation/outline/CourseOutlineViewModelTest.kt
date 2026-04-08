@@ -44,7 +44,6 @@ import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseStructureUpdated
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
@@ -69,7 +68,6 @@ class CourseOutlineViewModelTest {
     private val workerController = mockk<DownloadWorkerController>()
     private val analytics = mockk<CourseAnalytics>()
     private val coreAnalytics = mockk<CoreAnalytics>()
-    private val courseRouter = mockk<CourseRouter>()
     private val fileUtil = mockk<FileUtil>()
     private val downloadDialogManager = mockk<DownloadDialogManager>()
     private val downloadHelper = mockk<DownloadHelper>()
@@ -148,7 +146,6 @@ class CourseOutlineViewModelTest {
                 analytics,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 coreAnalytics,
                 downloadDao,
                 workerController,
@@ -189,7 +186,6 @@ class CourseOutlineViewModelTest {
             analytics,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             coreAnalytics,
             downloadDao,
             workerController,
@@ -242,7 +238,6 @@ class CourseOutlineViewModelTest {
                 analytics,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 coreAnalytics,
                 downloadDao,
                 workerController,
@@ -298,7 +293,6 @@ class CourseOutlineViewModelTest {
                 analytics,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 coreAnalytics,
                 downloadDao,
                 workerController,
@@ -353,7 +347,6 @@ class CourseOutlineViewModelTest {
                 analytics,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 coreAnalytics,
                 downloadDao,
                 workerController,
@@ -399,7 +392,6 @@ class CourseOutlineViewModelTest {
             analytics,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             coreAnalytics,
             downloadDao,
             workerController,
@@ -453,7 +445,6 @@ class CourseOutlineViewModelTest {
             analytics,
             downloadDialogManager,
             fileUtil,
-            courseRouter,
             coreAnalytics,
             downloadDao,
             workerController,
@@ -507,7 +498,6 @@ class CourseOutlineViewModelTest {
                 analytics,
                 downloadDialogManager,
                 fileUtil,
-                courseRouter,
                 coreAnalytics,
                 downloadDao,
                 workerController,

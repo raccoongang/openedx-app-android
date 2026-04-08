@@ -10,7 +10,6 @@ import org.openedx.core.config.Config
 import org.openedx.dashboard.presentation.DashboardAnalytics
 import org.openedx.dashboard.presentation.DashboardAnalyticsEvent
 import org.openedx.dashboard.presentation.DashboardAnalyticsKey
-import org.openedx.dashboard.presentation.DashboardRouter
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.learn.LearnType
@@ -18,7 +17,6 @@ import org.openedx.learn.LearnType
 class LearnViewModel(
     openTab: String,
     private val config: Config,
-    private val dashboardRouter: DashboardRouter,
     private val analytics: DashboardAnalytics,
     private val resourceManager: ResourceManager,
 ) : BaseViewModel(resourceManager) {
@@ -37,13 +35,6 @@ class LearnViewModel(
 
     private val dashboardType get() = config.getDashboardConfig().getType()
     val isProgramTypeWebView get() = config.getProgramConfig().isViewTypeWebView()
-
-    fun onSettingsClick(fragmentManager: Any?) {
-        dashboardRouter.navigateToSettings(fragmentManager)
-    }
-
-
-    val getProgramFragment get() = dashboardRouter.getProgramFragment()
 
     init {
         viewModelScope.launch {

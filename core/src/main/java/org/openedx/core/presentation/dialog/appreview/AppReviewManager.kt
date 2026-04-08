@@ -12,21 +12,15 @@ class AppReviewManager(
     var isDialogShowed = false
 
     fun tryToOpenRateDialog() {
-        val supportFragmentManager = activity.supportFragmentManager
-        if (!supportFragmentManager.isDestroyed) {
+        if (!activity.isDestroyed) {
             isDialogShowed = true
             val currentVersionName = reviewPreferences.formatVersionName(appData.versionName)
-            // Check is app wasn't positive rated AND 2 minor OR 1 major app versions passed since the last review
             val minorVersionPassed =
                 currentVersionName.minorVersion - 2 >= reviewPreferences.lastReviewVersion.minorVersion
             val majorVersionPassed =
                 currentVersionName.majorVersion - 1 >= reviewPreferences.lastReviewVersion.majorVersion
             if (!reviewPreferences.wasPositiveRated && (minorVersionPassed || majorVersionPassed)) {
-                val dialog = RateDialogFragment.newInstance()
-                dialog.show(
-                    supportFragmentManager,
-                    RateDialogFragment::class.simpleName
-                )
+                // TODO: Show Compose dialog for app rating
             }
         }
     }

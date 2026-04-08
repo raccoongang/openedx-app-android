@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.openedx.core.CalendarRouter
 import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
@@ -29,7 +28,6 @@ import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
@@ -44,8 +42,6 @@ class CourseDatesViewModel(
     private val calendarInteractor: CalendarInteractor,
     private val calendarNotifier: CalendarNotifier,
     private val corePreferences: CorePreferences,
-    val courseRouter: CourseRouter,
-    val calendarRouter: CalendarRouter,
     resourceManager: ResourceManager,
 ) : BaseViewModel(resourceManager) {
 

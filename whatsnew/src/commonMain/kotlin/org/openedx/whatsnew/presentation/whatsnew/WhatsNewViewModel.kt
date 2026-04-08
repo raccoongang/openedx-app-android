@@ -6,7 +6,6 @@ import org.openedx.core.presentation.global.AppData
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.whatsnew.WhatsNewManager
-import org.openedx.whatsnew.WhatsNewRouter
 import org.openedx.whatsnew.data.storage.WhatsNewPreferences
 import org.openedx.whatsnew.domain.model.WhatsNewItem
 import org.openedx.whatsnew.presentation.WhatsNewAnalytics
@@ -18,7 +17,6 @@ class WhatsNewViewModel(
     val infoType: String?,
     private val whatsNewManager: WhatsNewManager,
     private val analytics: WhatsNewAnalytics,
-    private val router: WhatsNewRouter,
     private val preferencesManager: WhatsNewPreferences,
     private val appData: AppData,
     private val resourceManager: ResourceManager,
@@ -36,15 +34,8 @@ class WhatsNewViewModel(
         _whatsNewItem.value = whatsNewManager.getNewestData()
     }
 
-    fun navigateToMain(fm: Any? = null) {
-        val versionName = appData.versionName
-        preferencesManager.lastWhatsNewVersion = versionName
-        router.navigateToMain(
-            fm,
-            courseId,
-            infoType,
-            ""
-        )
+    fun saveWhatsNewVersion() {
+        preferencesManager.lastWhatsNewVersion = appData.versionName
     }
 
     fun logWhatsNewViewed() {

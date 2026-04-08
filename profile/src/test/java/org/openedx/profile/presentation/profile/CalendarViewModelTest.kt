@@ -27,7 +27,6 @@ import org.openedx.core.system.notifier.calendar.CalendarNotifier
 import org.openedx.core.system.notifier.calendar.CalendarSynced
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.foundation.system.ResourceManager
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.profile.presentation.calendar.CalendarViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,7 +41,6 @@ class CalendarViewModelTest {
     private val calendarNotifier = mockk<CalendarNotifier>(relaxed = true)
     private val calendarInteractor = mockk<CalendarInteractor>(relaxed = true)
     private val corePreferences = mockk<CorePreferences>(relaxed = true)
-    private val profileRouter = mockk<ProfileRouter>()
     private val resourceManager = mockk<ResourceManager>()
     private val networkConnection = mockk<NetworkConnection>()
     private val permissionLauncher = mockk<ActivityResultLauncher<Array<String>>>()
@@ -59,7 +57,6 @@ class CalendarViewModelTest {
             calendarNotifier = calendarNotifier,
             calendarInteractor = calendarInteractor,
             corePreferences = corePreferences,
-            profileRouter = profileRouter,
             networkConnection = networkConnection,
             resourceManager = resourceManager,
         )
@@ -112,7 +109,6 @@ class CalendarViewModelTest {
             calendarNotifier,
             calendarInteractor,
             corePreferences,
-            profileRouter,
             networkConnection,
             resourceManager,
         )
@@ -131,7 +127,6 @@ class CalendarViewModelTest {
             },
             calendarInteractor,
             corePreferences,
-            profileRouter,
             networkConnection,
             resourceManager,
         )
@@ -153,7 +148,6 @@ class CalendarViewModelTest {
             },
             calendarInteractor,
             corePreferences,
-            profileRouter,
             networkConnection,
             resourceManager,
         )

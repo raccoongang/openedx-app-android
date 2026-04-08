@@ -28,7 +28,6 @@ import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.discussion.DiscussionMocks
 import org.openedx.discussion.domain.interactor.DiscussionInteractor
 import org.openedx.discussion.presentation.DiscussionAnalytics
-import org.openedx.discussion.presentation.DiscussionRouter
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
@@ -45,7 +44,6 @@ class DiscussionTopicsViewModelTest {
     private val resourceManager = mockk<ResourceManager>()
     private val interactor = mockk<DiscussionInteractor>()
     private val analytics = mockk<DiscussionAnalytics>()
-    private val router = mockk<DiscussionRouter>()
     private val courseNotifier = mockk<CourseNotifier>()
 
     private val noInternet = "Slow or no internet connection"
@@ -74,7 +72,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } throws UnknownHostException()
@@ -99,7 +96,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } throws Exception()
@@ -125,7 +121,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } returns listOf(
@@ -153,7 +148,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } throws UnknownHostException()
@@ -178,7 +172,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } throws Exception()
@@ -204,7 +197,6 @@ class DiscussionTopicsViewModelTest {
             resourceManager,
             analytics,
             courseNotifier,
-            router
         )
 
         coEvery { interactor.getCourseTopics(any()) } returns listOf(

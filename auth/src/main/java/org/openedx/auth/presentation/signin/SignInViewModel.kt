@@ -1,11 +1,11 @@
 package org.openedx.auth.presentation.signin
 
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +19,6 @@ import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
 import org.openedx.auth.presentation.AuthAnalyticsEvent
 import org.openedx.auth.presentation.AuthAnalyticsKey
-import org.openedx.auth.presentation.AuthRouter
 import org.openedx.auth.presentation.sso.BrowserAuthHelper
 import org.openedx.auth.presentation.sso.OAuthHelper
 import org.openedx.core.Validator
@@ -46,7 +45,6 @@ class SignInViewModel(
     private val appNotifier: AppNotifier,
     private val analytics: AuthAnalytics,
     private val oAuthHelper: OAuthHelper,
-    private val router: AuthRouter,
     private val whatsNewGlobalManager: WhatsNewGlobalManager,
     private val calendarPreferences: CalendarPreferences,
     private val calendarInteractor: CalendarInteractor,
@@ -151,12 +149,12 @@ class SignInViewModel(
         }
     }
 
-    fun socialAuth(fragment: Fragment, authType: AuthType) {
+    fun socialAuth(activity: Activity, authType: AuthType) {
         _uiState.update { it.copy(showProgress = true) }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 runCatching {
-                    oAuthHelper.socialAuth(fragment, authType)
+                    oAuthHelper.socialAuth(activity, authType)
                 }
             }
                 .getOrNull()
@@ -173,11 +171,6 @@ class SignInViewModel(
                 logger.e { "Browser auth error: $it" }
             }
         }
-    }
-
-    fun navigateToSignUp(parentFragmentManager: Any?) {
-        router.navigateToSignUp(parentFragmentManager, null, null)
-        logEvent(AuthAnalyticsEvent.REGISTER_CLICKED)
     }
 
     fun signInAuthCode(authCode: String) {
@@ -197,11 +190,6 @@ class SignInViewModel(
                     _uiState.update { it.copy(showProgress = false) }
                 }
         }
-    }
-
-    fun navigateToForgotPassword(parentFragmentManager: Any?) {
-        router.navigateToRestorePassword(parentFragmentManager)
-        logEvent(AuthAnalyticsEvent.FORGOT_PASSWORD_CLICKED)
     }
 
     override fun onCleared() {
@@ -252,32 +240,29 @@ class SignInViewModel(
         } ?: onUnknownError()
     }
 
-    fun openLink(fragmentManager: Any?, links: Map<String, String>, link: String) {
+    val webContentEvent = MutableSharedFlow<Pair<String, String>>()
+
+    fun openLink(links: Map<String, String>, link: String) {
         links.forEach { (key, value) ->
             if (value == link) {
-                router.navigateToWebContent(fragmentManager, key, value)
+                viewModelScope.launch {
+                    webContentEvent.emit(key to value)
+                }
                 return
             }
         }
     }
 
-    fun proceedWhatsNew(parentFragmentManager: Any?) {
-        val isNeedToShowWhatsNew = whatsNewGlobalManager.shouldShowWhatsNew()
-        if (uiState.value.loginSuccess) {
-            router.clearBackStack(parentFragmentManager)
-            if (isNeedToShowWhatsNew) {
-                router.navigateToWhatsNew(
-                    parentFragmentManager,
-                    courseId,
-                    infoType
-                )
-            } else {
-                router.navigateToMain(
-                    parentFragmentManager,
-                    courseId,
-                    infoType
-                )
-            }
+    sealed class PostLoginDestination {
+        data class Main(val courseId: String?, val infoType: String?) : PostLoginDestination()
+        data class WhatsNew(val courseId: String?, val infoType: String?) : PostLoginDestination()
+    }
+
+    fun getPostLoginDestination(): PostLoginDestination {
+        return if (whatsNewGlobalManager.shouldShowWhatsNew()) {
+            PostLoginDestination.WhatsNew(courseId, infoType)
+        } else {
+            PostLoginDestination.Main(courseId, infoType)
         }
     }
 

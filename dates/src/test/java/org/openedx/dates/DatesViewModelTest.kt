@@ -5,7 +5,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -31,7 +30,6 @@ import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.dates.domain.interactor.DatesInteractor
 import org.openedx.dates.presentation.DatesAnalytics
-import org.openedx.dates.presentation.DatesRouter
 import org.openedx.dates.presentation.dates.DatesViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
@@ -47,7 +45,6 @@ class DatesViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
 
-    private val datesRouter = mockk<DatesRouter>(relaxed = true)
     private val networkConnection = mockk<NetworkConnection>()
     private val resourceManager = mockk<ResourceManager>()
     private val datesInteractor = mockk<DatesInteractor>()
@@ -89,7 +86,6 @@ class DatesViewModelTest {
 
         // Instantiate the view model; fetchDates is called in init.
         val viewModel = DatesViewModel(
-            datesRouter,
             networkConnection,
             resourceManager,
             datesInteractor,
@@ -112,7 +108,6 @@ class DatesViewModelTest {
         coEvery { datesInteractor.getUserDatesFromCache() } returns listOf(cachedCourseDate)
 
         val viewModel = DatesViewModel(
-            datesRouter,
             networkConnection,
             resourceManager,
             datesInteractor,
@@ -133,7 +128,6 @@ class DatesViewModelTest {
             every { networkConnection.isOnline() } returns true
 
             val viewModel = DatesViewModel(
-                datesRouter,
                 networkConnection,
                 resourceManager,
                 datesInteractor,
@@ -159,7 +153,6 @@ class DatesViewModelTest {
             coEvery { datesInteractor.getUserDates(any()) } throws UnknownHostException()
 
             val viewModel = DatesViewModel(
-                datesRouter,
                 networkConnection,
                 resourceManager,
                 datesInteractor,
@@ -199,7 +192,6 @@ class DatesViewModelTest {
         coEvery { datesInteractor.getUserDates(any()) } returns courseDatesResponse
 
         val viewModel = DatesViewModel(
-            datesRouter,
             networkConnection,
             resourceManager,
             datesInteractor,
@@ -236,7 +228,6 @@ class DatesViewModelTest {
             coEvery { datesInteractor.shiftAllDueDates() } throws Exception()
 
             val viewModel = DatesViewModel(
-                datesRouter,
                 networkConnection,
                 resourceManager,
                 datesInteractor,
@@ -259,53 +250,6 @@ class DatesViewModelTest {
         }
 
     @Test
-    fun `onSettingsClick navigates to settings`() = runTest {
-        val viewModel = DatesViewModel(
-            datesRouter,
-            networkConnection,
-            resourceManager,
-            datesInteractor,
-            analytics,
-            calendarSyncScheduler,
-            corePreferences
-        )
-        val fragmentManager = mockk<Any>(relaxed = true)
-
-        viewModel.onSettingsClick(fragmentManager)
-        verify { datesRouter.navigateToSettings(fragmentManager) }
-    }
-
-    @Test
-    fun `navigateToCourseOutline calls router with correct parameters`() = runTest {
-        val viewModel = DatesViewModel(
-            datesRouter,
-            networkConnection,
-            resourceManager,
-            datesInteractor,
-            analytics,
-            calendarSyncScheduler,
-            corePreferences
-        )
-        val fragmentManager = mockk<Any>(relaxed = true)
-        val courseDate: CourseDate = mockk(relaxed = true) {
-            every { courseId } returns "course-123"
-            every { courseName } returns "Test Course"
-            every { firstComponentBlockId } returns "block-1"
-        }
-
-        viewModel.navigateToCourseOutline(fragmentManager, courseDate)
-        verify {
-            datesRouter.navigateToCourseOutline(
-                fm = fragmentManager,
-                courseId = "course-123",
-                courseTitle = "Test Course",
-                openTab = "",
-                resumeBlockId = "block-1"
-            )
-        }
-    }
-
-    @Test
     fun `fetchMore calls fetchDates when allowed`() = runTest {
         every { networkConnection.isOnline() } returns true
         val courseDate: CourseDate = mockk(relaxed = true)
@@ -322,7 +266,6 @@ class DatesViewModelTest {
         coEvery { datesInteractor.getUserDates(any()) } returns courseDatesResponse
 
         val viewModel = DatesViewModel(
-            datesRouter,
             networkConnection,
             resourceManager,
             datesInteractor,
@@ -355,7 +298,6 @@ class DatesViewModelTest {
         coEvery { datesInteractor.getUserDates(any()) } returns courseDatesResponse
 
         val viewModel = DatesViewModel(
-            datesRouter,
             networkConnection,
             resourceManager,
             datesInteractor,

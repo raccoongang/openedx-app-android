@@ -10,7 +10,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.openedx.app.AnalyticsManager
 import org.openedx.app.AppAnalytics
-import org.openedx.app.NoOpRouter
 import org.openedx.app.BuildConfig
 import org.openedx.app.PluginManager
 import org.openedx.app.data.storage.PreferencesManager
@@ -20,13 +19,11 @@ import org.openedx.app.room.DATABASE_NAME
 import org.openedx.app.room.DatabaseManager
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
-import org.openedx.auth.presentation.AuthRouter
 import org.openedx.auth.presentation.sso.BrowserAuthHelper
 import org.openedx.auth.presentation.sso.FacebookAuthHelper
 import org.openedx.auth.presentation.sso.GoogleAuthHelper
 import org.openedx.auth.presentation.sso.MicrosoftAuthHelper
 import org.openedx.auth.presentation.sso.OAuthHelper
-import org.openedx.core.CalendarRouter
 import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CalendarPreferences
@@ -44,7 +41,6 @@ import org.openedx.core.presentation.dialog.appreview.AppReviewManager
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
 import org.openedx.core.presentation.global.AppData
 import org.openedx.core.presentation.global.WhatsNewGlobalManager
-import org.openedx.core.presentation.global.appupgrade.AppUpgradeRouter
 import org.openedx.core.system.AppCookieManager
 import org.openedx.core.system.CalendarManager
 import org.openedx.core.system.connection.NetworkConnection
@@ -57,27 +53,20 @@ import org.openedx.core.system.notifier.calendar.CalendarNotifier
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.course.data.storage.CoursePreferences
 import org.openedx.course.presentation.CourseAnalytics
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.course.utils.ImageProcessor
 import org.openedx.course.worker.OfflineProgressSyncScheduler
 import org.openedx.dashboard.presentation.DashboardAnalytics
-import org.openedx.dashboard.presentation.DashboardRouter
 import org.openedx.dates.presentation.DatesAnalytics
-import org.openedx.dates.presentation.DatesRouter
 import org.openedx.discovery.presentation.DiscoveryAnalytics
-import org.openedx.discovery.presentation.DiscoveryRouter
 import org.openedx.discussion.presentation.DiscussionAnalytics
-import org.openedx.discussion.presentation.DiscussionRouter
 import org.openedx.discussion.system.notifier.DiscussionNotifier
-import org.openedx.downloads.presentation.DownloadsRouter
+import org.openedx.foundation.system.AndroidResourceManager
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 import org.openedx.profile.data.storage.ProfilePreferences
 import org.openedx.profile.presentation.ProfileAnalytics
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 import org.openedx.whatsnew.WhatsNewManager
-import org.openedx.whatsnew.WhatsNewRouter
 import org.openedx.whatsnew.data.storage.WhatsNewPreferences
 import org.openedx.whatsnew.presentation.WhatsNewAnalytics
 import org.openedx.core.DatabaseManager as IDatabaseManager
@@ -93,7 +82,7 @@ val appModule = module {
     single<CoursePreferences> { get<PreferencesManager>() }
     single<CalendarPreferences> { get<PreferencesManager>() }
 
-    single { ResourceManager(get()) }
+    single<ResourceManager> { AndroidResourceManager(get()) }
     single { AppCookieManager(get(), get()) }
     single { ReviewManagerFactory.create(get()) }
     single { CalendarManager(get(), get()) }
@@ -113,19 +102,7 @@ val appModule = module {
     single { CalendarNotifier() }
 
     single { org.openedx.core.presentation.global.AppNavigator() }
-    single { NoOpRouter() }
-    single<AuthRouter> { get<NoOpRouter>() }
-    single<DiscoveryRouter> { get<NoOpRouter>() }
-    single<DashboardRouter> { get<NoOpRouter>() }
-    single<CourseRouter> { get<NoOpRouter>() }
-    single<DiscussionRouter> { get<NoOpRouter>() }
-    single<ProfileRouter> { get<NoOpRouter>() }
-    single<WhatsNewRouter> { get<NoOpRouter>() }
-    single<AppUpgradeRouter> { get<NoOpRouter>() }
-    single { DeepLinkRouter(get(), get(), get(), get(), get(), get()) }
-    single<CalendarRouter> { get<NoOpRouter>() }
-    single<DownloadsRouter> { get<NoOpRouter>() }
-    single<DatesRouter> { get<NoOpRouter>() }
+    single { DeepLinkRouter(get(), get(), get(), get(), get()) }
 
     single { NetworkConnection(get()) }
 

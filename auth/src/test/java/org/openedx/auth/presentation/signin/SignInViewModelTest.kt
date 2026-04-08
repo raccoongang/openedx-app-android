@@ -25,7 +25,6 @@ import org.openedx.auth.R
 import org.openedx.auth.domain.interactor.AuthInteractor
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
-import org.openedx.auth.presentation.AuthRouter
 import org.openedx.auth.presentation.sso.BrowserAuthHelper
 import org.openedx.auth.presentation.sso.OAuthHelper
 import org.openedx.core.CoreMocks
@@ -66,7 +65,6 @@ class SignInViewModelTest {
     private val appNotifier = mockk<AppNotifier>()
     private val agreementProvider = mockk<AgreementProvider>()
     private val oAuthHelper = mockk<OAuthHelper>()
-    private val router = mockk<AuthRouter>()
     private val whatsNewGlobalManager = mockk<WhatsNewGlobalManager>()
     private val calendarInteractor = mockk<CalendarInteractor>()
     private val calendarPreferences = mockk<CalendarPreferences>()
@@ -128,7 +126,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -166,7 +163,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -204,7 +200,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -241,7 +236,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -282,7 +276,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -324,7 +317,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -367,7 +359,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",
@@ -410,7 +401,6 @@ class SignInViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             whatsNewGlobalManager = whatsNewGlobalManager,
             browserAuthHelper = browserAuthHelper,
             courseId = "",

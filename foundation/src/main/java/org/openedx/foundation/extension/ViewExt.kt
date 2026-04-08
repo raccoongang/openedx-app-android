@@ -3,10 +3,9 @@ package org.openedx.foundation.extension
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+
 
 fun Context.dpToPixel(dp: Int): Float {
     return TypedValue.applyDimension(
@@ -37,13 +36,6 @@ fun View.requestApplyInsetsWhenAttached() {
             override fun onViewDetachedFromWindow(v: View) = Unit
         })
     }
-}
-
-fun DialogFragment.setWidthPercent(percentage: Int) {
-    val percent = percentage.toFloat() / 100
-    val dm = resources.displayMetrics
-    val width = dm.widthPixels
-    dialog?.window?.setLayout((width * percent).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 }
 
 fun Context.toastMessage(message: String) {

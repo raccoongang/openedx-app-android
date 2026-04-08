@@ -1,14 +1,13 @@
 package org.openedx.app.deeplink
 
+import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-import org.openedx.app.MainFragment
-import org.openedx.app.R
+import kotlinx.serialization.json.Json
+import org.openedx.app.navigation.AppNavRoutes
 import org.openedx.core.FragmentViewType
 import org.openedx.core.config.Config
-import org.openedx.discovery.presentation.DiscoveryRouter
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.handouts.HandoutsType
@@ -22,7 +21,6 @@ import kotlin.coroutines.CoroutineContext
 
 class DeepLinkRouter(
     private val config: Config,
-    private val discoveryRouter: DiscoveryRouter,
     private val corePreferences: CorePreferences,
     private val discoveryInteractor: DiscoveryInteractor,
     private val courseInteractor: CourseInteractor,
@@ -35,388 +33,191 @@ class DeepLinkRouter(
     private val isUserLoggedIn
         get() = corePreferences.user != null
 
-    fun makeRoute(fm: Any?, deepLink: DeepLink) {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    fun makeRoute(navController: NavController?, deepLink: DeepLink) {
+        val nav = navController ?: return
         when (deepLink.type) {
-            DeepLinkType.DISCOVERY -> navigateToDiscoveryScreen(fm)
-            DeepLinkType.DISCOVERY_COURSE_DETAIL -> navigateToCourseDetail(fm, deepLink)
-            DeepLinkType.DISCOVERY_PROGRAM_DETAIL -> navigateToProgramDetail(fm, deepLink)
-            else -> handleLoggedOutOrUserNavigation(fm, deepLink)
+            DeepLinkType.DISCOVERY -> navigateToDiscovery(nav)
+            DeepLinkType.DISCOVERY_COURSE_DETAIL -> navigateToCourseDetail(nav, deepLink)
+            DeepLinkType.DISCOVERY_PROGRAM_DETAIL -> navigateToProgramDetail(nav, deepLink)
+            else -> handleLoggedOutOrUserNavigation(nav, deepLink)
         }
     }
 
-    private fun handleLoggedOutOrUserNavigation(fm: Any?, deepLink: DeepLink) {
+    private fun handleLoggedOutOrUserNavigation(nav: NavController, deepLink: DeepLink) {
         if (!isUserLoggedIn) {
-            navigateToSignIn(fm)
+            nav.navigate(AppNavRoutes.SignIn())
         } else {
-            handleProgramAndProfileNavigation(fm, deepLink)
+            when (deepLink.type) {
+                DeepLinkType.PROGRAM -> navigateToProgram(nav, deepLink)
+                DeepLinkType.PROFILE, DeepLinkType.USER_PROFILE -> {
+                    nav.navigate(AppNavRoutes.Main(openTab = "PROFILE"))
+                }
+                else -> handleCourseRelatedNavigation(nav, deepLink)
+            }
         }
     }
 
-    private fun handleProgramAndProfileNavigation(fm: Any?, deepLink: DeepLink) {
-        when (deepLink.type) {
-            DeepLinkType.PROGRAM -> navigateToProgram(fm, deepLink)
-            DeepLinkType.PROFILE, DeepLinkType.USER_PROFILE -> navigateToProfile(fm)
-            else -> handleCourseRelatedNavigation(fm, deepLink)
-        }
-    }
-
-    private fun handleCourseRelatedNavigation(fm: Any?, deepLink: DeepLink) {
+    private fun handleCourseRelatedNavigation(nav: NavController, deepLink: DeepLink) {
         launch(Dispatchers.Main) {
-            val courseId = deepLink.courseId ?: return@launch navigateToDashboard(fm)
-            val course = getCourseDetails(courseId) ?: return@launch navigateToDashboard(fm)
-            if (!course.isEnrolled) return@launch navigateToDashboard(fm)
+            val courseId = deepLink.courseId ?: return@launch
+            val course = getCourseDetails(courseId) ?: return@launch
+            if (!course.isEnrolled) return@launch
 
-            handleSpecificCourseNavigation(fm, deepLink, course.name)
+            handleSpecificCourseNavigation(nav, deepLink, course.name)
         }
     }
 
-    private fun handleSpecificCourseNavigation(fm: Any?, deepLink: DeepLink, courseTitle: String) {
-        navigateToDashboard(fm)
+    private fun handleSpecificCourseNavigation(nav: NavController, deepLink: DeepLink, courseTitle: String) {
+        val courseId = deepLink.courseId ?: return
         when (deepLink.type) {
             DeepLinkType.COURSE_DASHBOARD, DeepLinkType.ENROLL, DeepLinkType.ADD_BETA_TESTER -> {
-                navigateToCourseDashboard(fm, deepLink, courseTitle)
+                nav.navigate(AppNavRoutes.CourseContainer(courseId = courseId, courseTitle = courseTitle))
             }
-
-            DeepLinkType.UNENROLL, DeepLinkType.REMOVE_BETA_TESTER -> {} // Just navigate to dashboard
-            DeepLinkType.COURSE_VIDEOS -> navigateToCourseVideos(fm, deepLink)
-            DeepLinkType.COURSE_DATES -> navigateToCourseDates(fm, deepLink)
-            DeepLinkType.COURSE_DISCUSSION -> navigateToCourseDiscussion(fm, deepLink)
-            DeepLinkType.COURSE_HANDOUT -> navigateToCourseHandoutWithMore(fm, deepLink)
-            DeepLinkType.COURSE_ANNOUNCEMENT -> navigateToCourseAnnouncementWithMore(fm, deepLink)
-            DeepLinkType.COURSE_COMPONENT -> navigateToCourseComponentWithDashboard(fm, deepLink, courseTitle)
-            DeepLinkType.DISCUSSION_TOPIC -> navigateToDiscussionTopicWithDiscussion(fm, deepLink)
-            DeepLinkType.DISCUSSION_POST -> navigateToDiscussionPostWithDiscussion(fm, deepLink)
+            DeepLinkType.UNENROLL, DeepLinkType.REMOVE_BETA_TESTER -> {}
+            DeepLinkType.COURSE_VIDEOS -> {
+                nav.navigate(AppNavRoutes.CourseContainer(courseId = courseId, courseTitle = "", openTab = "VIDEOS"))
+            }
+            DeepLinkType.COURSE_DATES -> {
+                nav.navigate(AppNavRoutes.CourseContainer(courseId = courseId, courseTitle = "", openTab = "DATES"))
+            }
+            DeepLinkType.COURSE_DISCUSSION -> {
+                nav.navigate(AppNavRoutes.CourseContainer(courseId = courseId, courseTitle = "", openTab = "DISCUSSIONS"))
+            }
+            DeepLinkType.COURSE_HANDOUT -> {
+                nav.navigate(AppNavRoutes.HandoutsWebView(courseId = courseId, type = HandoutsType.Handouts.name))
+            }
+            DeepLinkType.COURSE_ANNOUNCEMENT -> {
+                nav.navigate(AppNavRoutes.HandoutsWebView(courseId = courseId, type = HandoutsType.Announcements.name))
+            }
+            DeepLinkType.COURSE_COMPONENT -> navigateToCourseComponent(nav, deepLink)
+            DeepLinkType.DISCUSSION_TOPIC -> navigateToDiscussionTopic(nav, deepLink)
+            DeepLinkType.DISCUSSION_POST -> navigateToDiscussionPost(nav, deepLink)
             DeepLinkType.DISCUSSION_COMMENT, DeepLinkType.FORUM_RESPONSE -> {
-                navigateToDiscussionResponseWithDiscussion(fm, deepLink)
+                navigateToDiscussionResponse(nav, deepLink)
             }
-
-            DeepLinkType.FORUM_COMMENT -> navigateToDiscussionCommentWithDiscussion(fm, deepLink)
-            else -> {} // ignore
+            DeepLinkType.FORUM_COMMENT -> navigateToDiscussionComment(nav, deepLink)
+            else -> {}
         }
     }
 
-    // Additional helper methods to encapsulate grouped navigation
-    private fun navigateToCourseHandoutWithMore(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseMore(fm, deepLink)
-        navigateToCourseHandout(fm, deepLink)
-    }
-
-    private fun navigateToCourseAnnouncementWithMore(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseMore(fm, deepLink)
-        navigateToCourseAnnouncement(fm, deepLink)
-    }
-
-    private fun navigateToCourseComponentWithDashboard(fm: Any?, deepLink: DeepLink, courseTitle: String) {
-        navigateToCourseDashboard(fm, deepLink, courseTitle)
-        navigateToCourseComponent(fm, deepLink)
-    }
-
-    private fun navigateToDiscussionTopicWithDiscussion(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseDiscussion(fm, deepLink)
-        navigateToDiscussionTopic(fm, deepLink)
-    }
-
-    private fun navigateToDiscussionPostWithDiscussion(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseDiscussion(fm, deepLink)
-        navigateToDiscussionPost(fm, deepLink)
-    }
-
-    private fun navigateToDiscussionResponseWithDiscussion(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseDiscussion(fm, deepLink)
-        navigateToDiscussionResponse(fm, deepLink)
-    }
-
-    private fun navigateToDiscussionCommentWithDiscussion(fm: Any?, deepLink: DeepLink) {
-        navigateToCourseDiscussion(fm, deepLink)
-        navigateToDiscussionComment(fm, deepLink)
-    }
-
-    // Returns true if there was a successful redirect to the discovery screen
-    private fun navigateToDiscoveryScreen(fm: Any?): Boolean {
-        return if (isUserLoggedIn) {
-            (fm as? androidx.fragment.app.FragmentManager)?.let { fragmentManager ->
-                fragmentManager.popBackStack()
-                fragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance(openTab = "DISCOVER"))
-                    .commitNow()
-            }
-            true
+    private fun navigateToDiscovery(nav: NavController) {
+        if (isUserLoggedIn) {
+            nav.navigate(AppNavRoutes.Main(openTab = "DISCOVER"))
         } else if (!config.isPreLoginExperienceEnabled()) {
-            navigateToSignIn(fm = fm)
-            false
-        } else if (config.getDiscoveryConfig().isViewTypeWebView()) {
-            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToWebDiscoverCourses(
-                fm = fm,
-                querySearch = ""
-            )
-            true
-        } else {
-            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToNativeDiscoverCourses(
-                fm = fm,
-                querySearch = ""
-            )
-            true
+            nav.navigate(AppNavRoutes.SignIn())
         }
     }
 
-    private fun navigateToCourseDetail(fm: Any?, deepLink: DeepLink) {
+    private fun navigateToCourseDetail(nav: NavController, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            if (navigateToDiscoveryScreen(fm = fm)) {
-                discoveryRouter.navigateToCourseInfo(
-                    fm = fm,
-                    courseId = courseId,
-                    infoType = WebViewLink.Authority.COURSE_INFO.name
-                )
-            }
+            nav.navigate(AppNavRoutes.CourseInfo(courseId = courseId, infoType = WebViewLink.Authority.COURSE_INFO.name))
         }
     }
 
-    private fun navigateToProgramDetail(fm: Any?, deepLink: DeepLink) {
+    private fun navigateToProgramDetail(nav: NavController, deepLink: DeepLink) {
         deepLink.pathId?.let { pathId ->
-            if (navigateToDiscoveryScreen(fm = fm)) {
-                discoveryRouter.navigateToCourseInfo(
-                    fm = fm,
-                    courseId = pathId,
-                    infoType = WebViewLink.Authority.PROGRAM_INFO.name
-                )
-            }
+            nav.navigate(AppNavRoutes.CourseInfo(courseId = pathId, infoType = WebViewLink.Authority.PROGRAM_INFO.name))
         }
     }
 
-    private fun navigateToSignIn(fm: Any?) {
-        if (true) {
-            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToSignIn(
-                fm = fm,
-                courseId = null,
-                infoType = null
-            )
+    private fun navigateToProgram(nav: NavController, deepLink: DeepLink) {
+        val pathId = deepLink.pathId
+        if (pathId == null) {
+            nav.navigate(AppNavRoutes.Main(openTab = "PROGRAMS"))
+        } else {
+            nav.navigate(AppNavRoutes.Program(pathId = pathId))
         }
     }
 
-    private fun navigateToCourseDashboard(
-        fm: Any?,
-        deepLink: DeepLink,
-        courseTitle: String
-    ) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
-                fm = fm,
-                courseId = courseId,
-                courseTitle = courseTitle, openTab = "", resumeBlockId = "",
-            )
-        }
-    }
-
-    private fun navigateToCourseVideos(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
-                fm = fm,
-                courseId = courseId,
-                courseTitle = "",
-                openTab = "VIDEOS",
-                resumeBlockId = "",
-
-            )
-        }
-    }
-
-    private fun navigateToCourseDates(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
-                fm = fm,
-                courseId = courseId,
-                courseTitle = "",
-                openTab = "DATES",
-                resumeBlockId = "",
-            )
-        }
-    }
-
-    private fun navigateToCourseDiscussion(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
-                fm = fm,
-                courseId = courseId,
-                courseTitle = "",
-                openTab = "DISCUSSIONS",
-                resumeBlockId = "",
-            )
-        }
-    }
-
-    private fun navigateToCourseMore(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
-                fm = fm,
-                courseId = courseId,
-                courseTitle = "",
-                openTab = "MORE",
-                resumeBlockId = "",
-            )
-        }
-    }
-
-    private fun navigateToCourseHandout(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToHandoutsWebView(
-                fm = fm,
-                courseId = courseId,
-                type = HandoutsType.Handouts
-            )
-        }
-    }
-
-    private fun navigateToCourseAnnouncement(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToHandoutsWebView(
-                fm = fm,
-                courseId = courseId,
-                type = HandoutsType.Announcements
-            )
-        }
-    }
-
-    private fun navigateToCourseComponent(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            deepLink.componentId?.let { componentId ->
-                launch {
-                    try {
-                        val courseStructure = courseInteractor.getCourseStructure(courseId)
-                        courseStructure.blockData
-                            .find { it.descendants.contains(componentId) }?.let { block ->
-                                (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToCourseContainer(
-                                    fm = fm,
+    private fun navigateToCourseComponent(nav: NavController, deepLink: DeepLink) {
+        val courseId = deepLink.courseId ?: return
+        val componentId = deepLink.componentId ?: return
+        launch {
+            try {
+                val courseStructure = courseInteractor.getCourseStructure(courseId)
+                courseStructure.blockData
+                    .find { it.descendants.contains(componentId) }?.let { block ->
+                        launch(Dispatchers.Main) {
+                            nav.navigate(
+                                AppNavRoutes.CourseUnitContainer(
                                     courseId = courseId,
                                     unitId = block.id,
                                     componentId = componentId,
-                                    mode = CourseViewMode.FULL
+                                    mode = CourseViewMode.FULL.name
                                 )
-                            }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun navigateToProgram(fm: Any?, deepLink: DeepLink) {
-        val pathId = deepLink.pathId
-        if (pathId == null) {
-            navigateToPrograms(fm = fm)
-        } else {
-            discoveryRouter.navigateToEnrolledProgramInfo(
-                fm = fm,
-                pathId = pathId
-            )
-        }
-    }
-
-    private fun navigateToDiscussionTopic(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            deepLink.topicId?.let { topicId ->
-                launch {
-                    try {
-                        discussionInteractor.getCourseTopics(courseId)
-                            .find { it.id == topicId }?.let { topic ->
-                                launch(Dispatchers.Main) {
-                                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
-                                        fm = fm,
-                                        action = DiscussionTopicsViewModel.TOPIC,
-                                        courseId = courseId,
-                                        topicId = topicId,
-                                        title = topic.name,
-                                        viewType = FragmentViewType.FULL_CONTENT
-                                    )
-                                }
-                            }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun navigateToDiscussionPost(fm: Any?, deepLink: DeepLink) {
-        deepLink.courseId?.let { courseId ->
-            deepLink.topicId?.let { topicId ->
-                deepLink.threadId?.let { threadId ->
-                    launch {
-                        try {
-                            discussionInteractor.getCourseTopics(courseId)
-                                .find { it.id == topicId }?.let { topic ->
-                                    launch(Dispatchers.Main) {
-                                        (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
-                                            fm = fm,
-                                            action = DiscussionTopicsViewModel.TOPIC,
-                                            courseId = courseId,
-                                            topicId = topicId,
-                                            title = topic.name,
-                                            viewType = FragmentViewType.FULL_CONTENT
-                                        )
-                                    }
-                                }
-                            val thread = discussionInteractor.getThread(
-                                threadId,
-                                courseId,
-                                topicId
                             )
-                            launch(Dispatchers.Main) {
-                                (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
-                                    fm = fm,
-                                    thread = thread
-                                )
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                     }
-                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    private fun navigateToDiscussionResponse(fm: Any?, deepLink: DeepLink) {
-        val courseId = deepLink.courseId
-        val topicId = deepLink.topicId
-        val threadId = deepLink.threadId
-        val commentId = deepLink.commentId
-        if (courseId == null || topicId == null || threadId == null || commentId == null) {
-            return
-        }
+    private fun navigateToDiscussionTopic(nav: NavController, deepLink: DeepLink) {
+        val courseId = deepLink.courseId ?: return
+        val topicId = deepLink.topicId ?: return
         launch {
             try {
                 discussionInteractor.getCourseTopics(courseId)
                     .find { it.id == topicId }?.let { topic ->
                         launch(Dispatchers.Main) {
-                            (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
-                                fm = fm,
-                                action = DiscussionTopicsViewModel.TOPIC,
-                                courseId = courseId,
-                                topicId = topicId,
-                                title = topic.name,
-                                viewType = FragmentViewType.FULL_CONTENT
+                            nav.navigate(
+                                AppNavRoutes.DiscussionThreads(
+                                    action = DiscussionTopicsViewModel.TOPIC,
+                                    courseId = courseId,
+                                    topicId = topicId,
+                                    title = topic.name,
+                                    viewType = FragmentViewType.FULL_CONTENT.name
+                                )
                             )
                         }
                     }
-                val thread = discussionInteractor.getThread(
-                    threadId,
-                    courseId,
-                    topicId
-                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun navigateToDiscussionPost(nav: NavController, deepLink: DeepLink) {
+        val courseId = deepLink.courseId ?: return
+        val topicId = deepLink.topicId ?: return
+        val threadId = deepLink.threadId ?: return
+        launch {
+            try {
+                val thread = discussionInteractor.getThread(threadId, courseId, topicId)
                 launch(Dispatchers.Main) {
-                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
-                        fm = fm,
-                        thread = thread
+                    nav.navigate(
+                        AppNavRoutes.DiscussionComments(
+                            threadJson = json.encodeToString(
+                                org.openedx.discussion.domain.model.Thread.serializer(),
+                                thread
+                            )
+                        )
                     )
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun navigateToDiscussionResponse(nav: NavController, deepLink: DeepLink) {
+        val commentId = deepLink.commentId ?: return
+        launch {
+            try {
                 val response = discussionInteractor.getResponse(commentId)
                 launch(Dispatchers.Main) {
-                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionResponses(
-                        fm = fm,
-                        comment = response,
-                        isClosed = false
+                    nav.navigate(
+                        AppNavRoutes.DiscussionResponses(
+                            commentJson = json.encodeToString(
+                                org.openedx.discussion.domain.model.DiscussionComment.serializer(),
+                                response
+                            ),
+                            isClosed = false
+                        )
                     )
                 }
             } catch (e: Exception) {
@@ -425,80 +226,26 @@ class DeepLinkRouter(
         }
     }
 
-    private fun navigateToDiscussionComment(fm: Any?, deepLink: DeepLink) {
-        val courseId = deepLink.courseId
-        val topicId = deepLink.topicId
-        val threadId = deepLink.threadId
-        val commentId = deepLink.commentId
-        val parentId = deepLink.parentId
-        if (courseId == null || topicId == null || threadId == null || commentId == null || parentId == null) {
-            return
-        }
+    private fun navigateToDiscussionComment(nav: NavController, deepLink: DeepLink) {
+        val parentId = deepLink.parentId ?: return
         launch {
             try {
-                discussionInteractor.getCourseTopics(courseId)
-                    .find { it.id == topicId }?.let { topic ->
-                        launch(Dispatchers.Main) {
-                            (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
-                                fm = fm,
-                                action = DiscussionTopicsViewModel.TOPIC,
-                                courseId = courseId,
-                                topicId = topicId,
-                                title = topic.name,
-                                viewType = FragmentViewType.FULL_CONTENT
-                            )
-                        }
-                    }
-                val thread = discussionInteractor.getThread(
-                    threadId,
-                    courseId,
-                    topicId
-                )
-                launch(Dispatchers.Main) {
-                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
-                        fm = fm,
-                        thread = thread
-                    )
-                }
                 val comment = discussionInteractor.getResponse(parentId)
                 launch(Dispatchers.Main) {
-                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionResponses(
-                        fm = fm,
-                        comment = comment,
-                        isClosed = false
+                    nav.navigate(
+                        AppNavRoutes.DiscussionResponses(
+                            commentJson = json.encodeToString(
+                                org.openedx.discussion.domain.model.DiscussionComment.serializer(),
+                                comment
+                            ),
+                            isClosed = false
+                        )
                     )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun navigateToDashboard(fm: Any?) {
-        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
-            fm = fm,
-            courseId = null,
-            infoType = null,
-            openTab = "LEARN"
-        )
-    }
-
-    private fun navigateToPrograms(fm: Any?) {
-        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
-            fm = fm,
-            courseId = null,
-            infoType = null,
-            openTab = "PROGRAMS"
-        )
-    }
-
-    private fun navigateToProfile(fm: Any?) {
-        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
-            fm = fm,
-            courseId = null,
-            infoType = null,
-            openTab = "PROFILE"
-        )
     }
 
     private suspend fun getCourseDetails(courseId: String): Course? {

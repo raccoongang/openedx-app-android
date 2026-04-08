@@ -1,8 +1,9 @@
 package org.openedx.auth.presentation.signup
 
-import androidx.fragment.app.Fragment
+import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +16,6 @@ import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
 import org.openedx.auth.presentation.AuthAnalyticsEvent
 import org.openedx.auth.presentation.AuthAnalyticsKey
-import org.openedx.auth.presentation.AuthRouter
 import org.openedx.auth.presentation.sso.OAuthHelper
 import org.openedx.core.ApiConstants
 import org.openedx.core.config.Config
@@ -39,7 +39,6 @@ class SignUpViewModel(
     private val agreementProvider: AgreementProvider,
     private val oAuthHelper: OAuthHelper,
     private val config: Config,
-    private val router: AuthRouter,
     val courseId: String?,
     val infoType: String?,
 ) : BaseViewModel(resourceManager) {
@@ -193,12 +192,12 @@ class SignUpViewModel(
         )
     }
 
-    fun socialAuth(fragment: Fragment, authType: AuthType) {
+    fun socialAuth(activity: Activity, authType: AuthType) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 runCatching {
-                    oAuthHelper.socialAuth(fragment, authType)
+                    oAuthHelper.socialAuth(activity, authType)
                 }
             }
                 .getOrNull()
@@ -295,10 +294,14 @@ class SignUpViewModel(
         updateFields(updatedFields)
     }
 
-    fun openLink(fragmentManager: Any?, links: Map<String, String>, link: String) {
+    val webContentEvent = MutableSharedFlow<Pair<String, String>>()
+
+    fun openLink(links: Map<String, String>, link: String) {
         links.forEach { (key, value) ->
             if (value == link) {
-                router.navigateToWebContent(fragmentManager, key, value)
+                viewModelScope.launch {
+                    webContentEvent.emit(key to value)
+                }
                 return
             }
         }

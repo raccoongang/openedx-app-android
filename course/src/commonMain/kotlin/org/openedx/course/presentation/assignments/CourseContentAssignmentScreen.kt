@@ -82,8 +82,8 @@ private const val ASSIGNMENT_BUTTON_CARD_BACKGROUND_ALPHA = 0.5f
 fun CourseContentAssignmentScreen(
     windowSize: WindowSize,
     viewModel: CourseAssignmentViewModel,
-    fragmentManager: Any?,
     onNavigateToHome: () -> Unit = {},
+    onNavigateToCourseSubsections: (courseId: String, subSectionId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _, _ -> },
 ) {
     val uiState by viewModel.uiState.collectAsState()
     CourseContentAssignmentScreen(
@@ -91,11 +91,12 @@ fun CourseContentAssignmentScreen(
         windowSize = windowSize,
         onNavigateToHome = onNavigateToHome,
         onAssignmentClick = { subSectionBlock ->
-            viewModel.courseRouter.navigateToCourseSubsections(
-                fm = fragmentManager,
-                courseId = viewModel.courseId,
-                subSectionId = subSectionBlock.id,
-                mode = CourseViewMode.FULL
+            onNavigateToCourseSubsections(
+                viewModel.courseId,
+                subSectionBlock.id,
+                "",
+                "",
+                CourseViewMode.FULL
             )
             viewModel.logAssignmentClick(subSectionBlock.id)
         },

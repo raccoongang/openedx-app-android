@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.VideoSettings
-import org.openedx.core.presentation.settings.video.VideoQualityType
 import org.openedx.core.system.notifier.VideoNotifier
 import org.openedx.core.system.notifier.VideoQualityChanged
 import org.openedx.foundation.presentation.BaseViewModel
@@ -16,13 +15,11 @@ import org.openedx.foundation.system.ResourceManager
 import org.openedx.profile.presentation.ProfileAnalytics
 import org.openedx.profile.presentation.ProfileAnalyticsEvent
 import org.openedx.profile.presentation.ProfileAnalyticsKey
-import org.openedx.profile.presentation.ProfileRouter
 
 class VideoSettingsViewModel(
     private val preferencesManager: CorePreferences,
     private val notifier: VideoNotifier,
     private val analytics: ProfileAnalytics,
-    private val router: ProfileRouter,
     private val resourceManager: ResourceManager,
 ) : BaseViewModel(resourceManager) {
 
@@ -57,20 +54,6 @@ class VideoSettingsViewModel(
             buildMap {
                 put(ProfileAnalyticsKey.ACTION.key, value)
             }
-        )
-    }
-
-    fun navigateToVideoStreamingQuality(fragmentManager: Any?) {
-        router.navigateToVideoQuality(
-            fragmentManager,
-            VideoQualityType.Streaming
-        )
-    }
-
-    fun navigateToVideoDownloadQuality(fragmentManager: Any?) {
-        router.navigateToVideoQuality(
-            fragmentManager,
-            VideoQualityType.Download
         )
     }
 

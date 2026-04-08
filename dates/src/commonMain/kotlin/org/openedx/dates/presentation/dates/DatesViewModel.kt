@@ -20,14 +20,12 @@ import org.openedx.dates.domain.interactor.DatesInteractor
 import org.openedx.dates.presentation.DatesAnalytics
 import org.openedx.dates.presentation.DatesAnalyticsEvent
 import org.openedx.dates.presentation.DatesAnalyticsKey
-import org.openedx.dates.presentation.DatesRouter
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import java.util.Calendar
 import java.util.Date
 
 class DatesViewModel(
-    private val datesRouter: DatesRouter,
     private val networkConnection: NetworkConnection,
     private val resourceManager: ResourceManager,
     private val datesInteractor: DatesInteractor,
@@ -47,7 +45,6 @@ class DatesViewModel(
 
     private var page = 1
     private var fetchDataJob: Job? = null
-    private var lastNavigationTime = 0L
 
     init {
         preloadFirstPageCachedDates()
@@ -169,31 +166,8 @@ class DatesViewModel(
         fetchDates(true)
     }
 
-    fun onSettingsClick(fragmentManager: Any?) {
-        datesRouter.navigateToSettings(fragmentManager)
-    }
-
-    fun navigateToCourseOutline(
-        fragmentManager: Any?,
-        courseDate: CourseDate,
-    ) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastNavigationTime < NAVIGATION_DEBOUNCE_MS) {
-            return
-        }
-        lastNavigationTime = currentTime
+    fun logAssignmentClick() {
         logEvent(DatesAnalyticsEvent.ASSIGNMENT_CLICK)
-        datesRouter.navigateToCourseOutline(
-            fm = fragmentManager,
-            courseId = courseDate.courseId,
-            courseTitle = courseDate.courseName,
-            openTab = "",
-            resumeBlockId = courseDate.firstComponentBlockId
-        )
-    }
-
-    companion object {
-        private const val NAVIGATION_DEBOUNCE_MS = 500L
     }
 
     private fun groupCourseDates(dates: List<CourseDate>): Map<DatesSection, List<CourseDate>> {

@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.openedx.core.AppUpdateState
-import org.openedx.core.CalendarRouter
-import org.openedx.core.R
 import org.openedx.core.config.Config
 import org.openedx.core.module.DownloadWorkerController
 import org.openedx.core.presentation.global.AppData
@@ -29,7 +27,6 @@ import org.openedx.profile.domain.model.Configuration
 import org.openedx.profile.presentation.ProfileAnalytics
 import org.openedx.profile.presentation.ProfileAnalyticsEvent
 import org.openedx.profile.presentation.ProfileAnalyticsKey
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.profile.system.notifier.account.AccountDeactivated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 
@@ -41,8 +38,6 @@ class SettingsViewModel(
     private val cookieManager: AppCookieManager,
     private val workerController: DownloadWorkerController,
     private val analytics: ProfileAnalytics,
-    private val profileRouter: ProfileRouter,
-    private val calendarRouter: CalendarRouter,
     private val appNotifier: AppNotifier,
     private val profileNotifier: ProfileNotifier,
 ) : BaseViewModel(resourceManager) {
@@ -104,35 +99,19 @@ class SettingsViewModel(
         }
     }
 
-    fun videoSettingsClicked(fragmentManager: Any?) {
-        profileRouter.navigateToVideoSettings(fragmentManager)
+    fun videoSettingsClicked() {
         logProfileEvent(ProfileAnalyticsEvent.VIDEO_SETTING_CLICKED)
     }
 
-    fun privacyPolicyClicked(fragmentManager: Any?) {
-        profileRouter.navigateToWebContent(
-            fm = fragmentManager,
-            title = resourceManager.getString(R.string.core_privacy_policy),
-            url = configuration.agreementUrls.privacyPolicyUrl,
-        )
+    fun privacyPolicyClicked() {
         logProfileEvent(ProfileAnalyticsEvent.PRIVACY_POLICY_CLICKED)
     }
 
-    fun cookiePolicyClicked(fragmentManager: Any?) {
-        profileRouter.navigateToWebContent(
-            fm = fragmentManager,
-            title = resourceManager.getString(R.string.core_cookie_policy),
-            url = configuration.agreementUrls.cookiePolicyUrl,
-        )
+    fun cookiePolicyClicked() {
         logProfileEvent(ProfileAnalyticsEvent.COOKIE_POLICY_CLICKED)
     }
 
-    fun dataSellClicked(fragmentManager: Any?) {
-        profileRouter.navigateToWebContent(
-            fm = fragmentManager,
-            title = resourceManager.getString(R.string.core_data_sell),
-            url = configuration.agreementUrls.dataSellConsentUrl,
-        )
+    fun dataSellClicked() {
         logProfileEvent(ProfileAnalyticsEvent.DATA_SELL_CLICKED)
     }
 
@@ -140,12 +119,7 @@ class SettingsViewModel(
         logProfileEvent(ProfileAnalyticsEvent.FAQ_CLICKED)
     }
 
-    fun termsOfUseClicked(fragmentManager: Any?) {
-        profileRouter.navigateToWebContent(
-            fm = fragmentManager,
-            title = resourceManager.getString(R.string.core_terms_of_use),
-            url = configuration.agreementUrls.tosUrl,
-        )
+    fun termsOfUseClicked() {
         logProfileEvent(ProfileAnalyticsEvent.TERMS_OF_USE_CLICKED)
     }
 
@@ -162,19 +136,14 @@ class SettingsViewModel(
         AppUpdateState.openPlayMarket(context)
     }
 
-    fun manageAccountClicked(fragmentManager: Any?) {
-        profileRouter.navigateToManageAccount(fragmentManager)
-    }
+    private val _restartAppEvent = MutableSharedFlow<Boolean>()
+    val restartAppEvent: SharedFlow<Boolean>
+        get() = _restartAppEvent.asSharedFlow()
 
-    fun calendarSettingsClicked(fragmentManager: Any?) {
-        calendarRouter.navigateToCalendarSettings(fragmentManager)
-    }
-
-    fun restartApp(fragmentManager: Any?) {
-        profileRouter.restartApp(
-            fragmentManager,
-            isLogistrationEnabled
-        )
+    fun restartApp() {
+        viewModelScope.launch {
+            _restartAppEvent.emit(isLogistrationEnabled)
+        }
     }
 
     private fun logProfileEvent(

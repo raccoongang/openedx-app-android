@@ -9,7 +9,6 @@ import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.RefreshDiscussions
 import org.openedx.discussion.domain.interactor.DiscussionInteractor
 import org.openedx.discussion.presentation.DiscussionAnalytics
-import org.openedx.discussion.presentation.DiscussionRouter
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
@@ -21,7 +20,6 @@ class DiscussionTopicsViewModel(
     private val resourceManager: ResourceManager,
     private val analytics: DiscussionAnalytics,
     private val courseNotifier: CourseNotifier,
-    val discussionRouter: DiscussionRouter,
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState = MutableLiveData<DiscussionTopicsUIState>()

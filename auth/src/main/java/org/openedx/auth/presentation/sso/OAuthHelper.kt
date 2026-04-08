@@ -1,6 +1,6 @@
 package org.openedx.auth.presentation.sso
 
-import androidx.fragment.app.Fragment
+import android.app.Activity
 import org.openedx.auth.data.model.AuthType
 import org.openedx.auth.domain.model.SocialAuthResponse
 
@@ -15,12 +15,12 @@ class OAuthHelper(
      * https://developers.facebook.com/docs/facebook-login/android/
      * https://github.com/AzureAD/microsoft-authentication-library-for-android
      */
-    internal suspend fun socialAuth(fragment: Fragment, authType: AuthType): SocialAuthResponse? {
+    internal suspend fun socialAuth(activity: Activity, authType: AuthType): SocialAuthResponse? {
         return when (authType) {
             AuthType.PASSWORD -> null
-            AuthType.GOOGLE -> googleAuthHelper.socialAuth(fragment.requireActivity())
-            AuthType.FACEBOOK -> facebookAuthHelper.socialAuth(fragment)
-            AuthType.MICROSOFT -> microsoftAuthHelper.socialAuth(fragment.requireActivity())
+            AuthType.GOOGLE -> googleAuthHelper.socialAuth(activity)
+            AuthType.FACEBOOK -> facebookAuthHelper.socialAuth(activity)
+            AuthType.MICROSOFT -> microsoftAuthHelper.socialAuth(activity)
             AuthType.BROWSER -> null
         }
     }

@@ -14,7 +14,6 @@ import org.openedx.profile.domain.interactor.ProfileInteractor
 import org.openedx.profile.presentation.ProfileAnalytics
 import org.openedx.profile.presentation.ProfileAnalyticsEvent
 import org.openedx.profile.presentation.ProfileAnalyticsKey
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.profile.system.notifier.account.AccountUpdated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 
@@ -23,7 +22,6 @@ class ProfileViewModel(
     private val resourceManager: ResourceManager,
     private val notifier: ProfileNotifier,
     private val analytics: ProfileAnalytics,
-    val profileRouter: ProfileRouter
 ) : BaseViewModel(resourceManager) {
 
     private val _uiState: MutableStateFlow<ProfileUIState> = MutableStateFlow(ProfileUIState.Loading)
@@ -79,13 +77,7 @@ class ProfileViewModel(
         getAccount()
     }
 
-    fun profileEditClicked(fragmentManager: Any?) {
-        (uiState.value as? ProfileUIState.Data)?.let { data ->
-            profileRouter.navigateToEditProfile(
-                fragmentManager,
-                data.account
-            )
-        }
+    fun profileEditClicked() {
         logProfileEvent(ProfileAnalyticsEvent.EDIT_CLICKED)
     }
 

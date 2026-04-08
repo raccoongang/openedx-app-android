@@ -16,7 +16,6 @@ class WhatsNewViewModelTest {
 
     private val whatsNewManager = mockk<WhatsNewManager>()
     private val analytics = mockk<WhatsNewAnalytics>()
-    private val router = mockk<WhatsNewRouter>()
     private val preferencesManager = mockk<WhatsNewPreferences>()
     private val appData = mockk<AppData>()
     private val resourceManager = mockk<ResourceManager>()
@@ -35,7 +34,6 @@ class WhatsNewViewModelTest {
             "",
             whatsNewManager,
             analytics,
-            router,
             preferencesManager,
             appData,
             resourceManager

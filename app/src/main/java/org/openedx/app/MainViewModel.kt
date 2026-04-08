@@ -16,7 +16,6 @@ import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.core.system.notifier.NavigationToDiscovery
 import org.openedx.core.system.notifier.app.AppNotifier
 import org.openedx.core.system.notifier.app.AppUpgradeEvent
-import org.openedx.discovery.presentation.DiscoveryNavigator
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 
@@ -41,7 +40,6 @@ class MainViewModel(
         get() = _appUpgradeEvent
 
     val isDiscoveryTypeWebView get() = config.getDiscoveryConfig().isViewTypeWebView()
-    val getDiscoveryFragment get() = DiscoveryNavigator(isDiscoveryTypeWebView).getDiscoveryFragment()
 
     val isDatesFragmentEnabled get() = config.getDatesConfig().isEnabled
     val isDownloadsFragmentEnabled get() = config.getDownloadsConfig().isEnabled

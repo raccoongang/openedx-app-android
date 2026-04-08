@@ -1,14 +1,11 @@
 package org.openedx.profile.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import org.openedx.core.AppDataConstants.USER_MIN_YEAR
 import org.openedx.core.domain.model.LanguageProficiency
 import org.openedx.core.domain.model.ProfileImage
 import java.util.Calendar
 import java.util.Date
 
-@Parcelize
 data class Account(
     val username: String,
     val bio: String,
@@ -26,7 +23,7 @@ data class Account(
     val email: String?,
     val dateJoined: Date?,
     val accountPrivacy: Privacy
-) : Parcelable {
+) {
 
     enum class Privacy {
         PRIVATE,

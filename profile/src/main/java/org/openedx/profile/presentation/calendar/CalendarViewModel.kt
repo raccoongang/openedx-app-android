@@ -23,7 +23,6 @@ import org.openedx.core.system.notifier.calendar.CalendarSyncing
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
-import org.openedx.profile.presentation.ProfileRouter
 
 class CalendarViewModel(
     private val calendarSyncScheduler: CalendarSyncScheduler,
@@ -32,7 +31,6 @@ class CalendarViewModel(
     private val calendarNotifier: CalendarNotifier,
     private val calendarInteractor: CalendarInteractor,
     private val corePreferences: CorePreferences,
-    private val profileRouter: ProfileRouter,
     private val networkConnection: NetworkConnection,
     private val resourceManager: ResourceManager,
 ) : BaseViewModel(resourceManager) {
@@ -101,12 +99,9 @@ class CalendarViewModel(
 
     fun setCalendarSyncEnabled(isEnabled: Boolean, fragmentManager: Any?) {
         if (!isEnabled) {
-            _uiState.value.calendarData?.let {
-                val dialog = DisableCalendarSyncDialogFragment.newInstance(it)
-                (fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
-                    dialog.show(fm, DisableCalendarSyncDialogFragment.DIALOG_TAG)
-                }
-            }
+            // TODO: Show Compose dialog for disable calendar sync confirmation
+            calendarPreferences.isCalendarSyncEnabled = false
+            _uiState.update { it.copy(isCalendarSyncEnabled = false) }
         } else {
             calendarPreferences.isCalendarSyncEnabled = true
             _uiState.update { it.copy(isCalendarSyncEnabled = true) }
@@ -117,10 +112,6 @@ class CalendarViewModel(
     fun setRelativeDateEnabled(isEnabled: Boolean) {
         corePreferences.isRelativeDatesEnabled = isEnabled
         _uiState.update { it.copy(isRelativeDateEnabled = isEnabled) }
-    }
-
-    fun navigateToCoursesToSync(fragmentManager: Any?) {
-        profileRouter.navigateToCoursesToSync(fragmentManager)
     }
 
     private fun getCalendarData() {

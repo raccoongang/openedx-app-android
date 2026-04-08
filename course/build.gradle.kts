@@ -1,11 +1,41 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
+}
+
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            kotlin.setSrcDirs(emptyList<String>())
+        }
+        androidMain.dependencies {
+            implementation(project(":core"))
+            implementation(project(":discussion"))
+            implementation(libs.youtubePlayer.core)
+            implementation(libs.youtubePlayer.customUi)
+
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+
+            // Media3
+            implementation(libs.media3.exoplayer)
+            implementation(libs.media3.exoplayer.hls)
+            implementation(libs.media3.ui)
+            implementation(libs.media3.cast)
+            implementation(libs.extendedspans)
+        }
+    }
 }
 
 android {
@@ -30,22 +60,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
+
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
         }
     }
 
     buildFeatures {
         viewBinding = true
         compose = true
-    }
-
-    sourceSets {
-        getByName("main") {
-            java.srcDirs("src/main/java", "src/commonMain/kotlin")
-        }
     }
 
     flavorDimensions += "env"
@@ -61,18 +85,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":discussion"))
-    implementation(libs.youtubePlayer.core)
-    implementation(libs.youtubePlayer.customUi)
-
-    // Media3
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.exoplayer.hls)
-    implementation(libs.media3.ui)
-    implementation(libs.media3.cast)
-    implementation(libs.extendedspans)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso)

@@ -38,7 +38,6 @@ import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
-import org.openedx.course.presentation.CourseRouter
 import org.openedx.course.utils.ImageProcessor
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.R as foundationR
@@ -60,7 +59,6 @@ class CourseContainerViewModelTest {
     private val corePreferences = mockk<CorePreferences>()
     private val mockBitmap = mockk<Bitmap>()
     private val imageProcessor = mockk<ImageProcessor>()
-    private val courseRouter = mockk<CourseRouter>()
     private val courseApi = mockk<CourseApi>()
     private val calendarSyncScheduler = mockk<CalendarSyncScheduler>()
 
@@ -108,8 +106,7 @@ class CourseContainerViewModelTest {
             corePreferences,
             analytics,
             imageProcessor,
-            calendarSyncScheduler,
-            courseRouter
+            calendarSyncScheduler
         )
         every { networkConnection.isOnline() } returns true
         coEvery {
@@ -164,8 +161,7 @@ class CourseContainerViewModelTest {
             corePreferences,
             analytics,
             imageProcessor,
-            calendarSyncScheduler,
-            courseRouter
+            calendarSyncScheduler
         )
         every { networkConnection.isOnline() } returns true
         coEvery { interactor.getCourseStructureFlow(any(), any()) } returns flowOf(
@@ -221,8 +217,7 @@ class CourseContainerViewModelTest {
             corePreferences,
             analytics,
             imageProcessor,
-            calendarSyncScheduler,
-            courseRouter
+            calendarSyncScheduler
         )
         every { networkConnection.isOnline() } returns false
         coEvery { interactor.getCourseStructureFlow(any(), any()) } returns flowOf(
@@ -278,8 +273,7 @@ class CourseContainerViewModelTest {
             corePreferences,
             analytics,
             imageProcessor,
-            calendarSyncScheduler,
-            courseRouter
+            calendarSyncScheduler
         )
         coEvery { interactor.getCourseStructure(any(), true) } throws Exception()
         coEvery { courseNotifier.send(CourseStructureUpdated("")) } returns Unit
@@ -307,8 +301,7 @@ class CourseContainerViewModelTest {
             corePreferences,
             analytics,
             imageProcessor,
-            calendarSyncScheduler,
-            courseRouter
+            calendarSyncScheduler
         )
         coEvery { interactor.getEnrollmentDetails(any()) } returns CoreMocks.mockCourseEnrollmentDetails
         coEvery { interactor.getCourseStructure(any(), true) } returns CoreMocks.mockCourseStructure

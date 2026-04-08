@@ -127,7 +127,7 @@ fun AppNavHost(
                     onBackClick = { navController.popBackStack() },
                     onFieldUpdated = { key, value -> viewModel.updateField(key, value) },
                     onRegisterClick = { viewModel.register() },
-                    onHyperLinkClick = { links, link -> viewModel.openLink(null, links, link) },
+                    onHyperLinkClick = { links, link -> viewModel.openLink(links, link) },
                 )
             }
 
@@ -137,9 +137,15 @@ fun AppNavHost(
                     parametersOf(route.courseId ?: "")
                 }
                 org.openedx.auth.presentation.logistration.LogistrationScreen(
-                    onSearchClick = { viewModel.navigateToDiscovery(null, it) },
-                    onRegisterClick = { viewModel.navigateToSignUp(null) },
-                    onSignInClick = { viewModel.navigateToSignIn(null) },
+                    onSearchClick = { query ->
+                        if (viewModel.isDiscoveryTypeWebView) {
+                            navController.navigate(AppNavRoutes.WebViewDiscovery(query))
+                        } else {
+                            navController.navigate(AppNavRoutes.NativeDiscovery(query))
+                        }
+                    },
+                    onRegisterClick = { navController.navigate(AppNavRoutes.SignUp(route.courseId)) },
+                    onSignInClick = { navController.navigate(AppNavRoutes.SignIn(route.courseId)) },
                     isRegistrationEnabled = viewModel.isRegistrationEnabled,
                 )
             }
@@ -155,11 +161,17 @@ fun AppNavHost(
                     whatsNewItem = viewModel.whatsNewItem.value,
                     onCloseClick = {
                         viewModel.logWhatsNewDismissed(it)
-                        viewModel.navigateToMain(null)
+                        viewModel.saveWhatsNewVersion()
+                        navController.navigate(AppNavRoutes.Main()) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     },
                     onDoneClick = {
                         viewModel.logWhatsNewCompleted()
-                        viewModel.navigateToMain(null)
+                        viewModel.saveWhatsNewVersion()
+                        navController.navigate(AppNavRoutes.Main()) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     },
                 )
             }
@@ -225,8 +237,8 @@ fun AppNavHost(
                 videoSettings?.let { vs -> org.openedx.profile.presentation.video.VideoSettingsScreen(
                     windowSize = windowSize, videoSettings = vs,
                     wifiDownloadChanged = { viewModel.setWifiDownloadOnly(it) },
-                    videoStreamingQualityClick = { viewModel.navigateToVideoStreamingQuality(null) },
-                    videoDownloadQualityClick = { viewModel.navigateToVideoDownloadQuality(null) },
+                    videoStreamingQualityClick = { navController.navigate(AppNavRoutes.VideoQuality(org.openedx.core.presentation.settings.video.VideoQualityType.Streaming.name)) },
+                    videoDownloadQualityClick = { navController.navigate(AppNavRoutes.VideoQuality(org.openedx.core.presentation.settings.video.VideoQualityType.Download.name)) },
                     onBackClick = { navController.popBackStack() },
                 ) }
             }
@@ -371,7 +383,7 @@ fun AppNavHost(
                 )
             }
             composable<AppNavRoutes.AllEnrolledCourses> {
-                org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
+                org.openedx.courses.presentation.AllEnrolledCoursesView()
             }
             composable<AppNavRoutes.Program> { entry ->
                 val route = entry.toRoute<AppNavRoutes.Program>()
@@ -405,7 +417,7 @@ fun AppNavHost(
                 val pagerState = androidx.compose.foundation.pager.rememberPagerState { 5 }
                 org.openedx.course.presentation.home.CourseHomeScreen(
                     windowSize = windowSize, viewModel = vm,
-                    fragmentManager = null, homePagerState = pagerState,
+                    homePagerState = pagerState,
                 )
             }
 

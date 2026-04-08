@@ -76,19 +76,37 @@ import org.openedx.core.R as coreR
 fun CourseHomeScreen(
     windowSize: WindowSize,
     viewModel: CourseHomeViewModel,
-    fragmentManager: Any?,
     homePagerState: PagerState,
     onNavigateToContent: (CourseContentTab) -> Unit = {},
     onNavigateToProgress: () -> Unit = {},
+    onNavigateToCourseContainer: (courseId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _ -> },
+    onNavigateToCourseSubsections: (courseId: String, subSectionId: String, unitId: String, componentId: String, CourseViewMode) -> Unit = { _, _, _, _, _ -> },
+    onNavigateToDownloadQueue: (List<String>) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState(null)
     val resumeBlockId by viewModel.resumeBlockId.collectAsState("")
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.navigationAction.collect { action ->
+            when (action) {
+                is org.openedx.course.presentation.CourseNavigationAction.NavigateToCourseContainer -> {
+                    onNavigateToCourseContainer(action.courseId, action.unitId, action.componentId, action.mode)
+                }
+                is org.openedx.course.presentation.CourseNavigationAction.NavigateToCourseSubsections -> {
+                    onNavigateToCourseSubsections(action.courseId, action.subSectionId, action.unitId, action.componentId, action.mode)
+                }
+                is org.openedx.course.presentation.CourseNavigationAction.NavigateToDownloadQueue -> {
+                    onNavigateToDownloadQueue(action.descendants)
+                }
+            }
+        }
+    }
+
     LaunchedEffect(resumeBlockId) {
         if (resumeBlockId.isNotEmpty()) {
-            viewModel.openBlock(fragmentManager, resumeBlockId)
+            viewModel.openBlock(resumeBlockId)
         }
     }
 
@@ -105,32 +123,30 @@ fun CourseHomeScreen(
             )
             if (viewModel.isCourseDropdownNavigationEnabled) {
                 viewModel.courseSubSectionUnit[subSectionBlock.id]?.let { unit ->
-                    viewModel.courseRouter.navigateToCourseContainer(
-                        fragmentManager,
-                        courseId = viewModel.courseId,
-                        unitId = unit.id,
-                        mode = CourseViewMode.FULL
+                    onNavigateToCourseContainer(
+                        viewModel.courseId,
+                        unit.id,
+                        "",
+                        CourseViewMode.FULL
                     )
                 }
             } else {
-                viewModel.courseRouter.navigateToCourseSubsections(
-                    fm = fragmentManager,
-                    courseId = viewModel.courseId,
-                    subSectionId = subSectionBlock.id,
-                    mode = CourseViewMode.FULL
+                onNavigateToCourseSubsections(
+                    viewModel.courseId,
+                    subSectionBlock.id,
+                    "",
+                    "",
+                    CourseViewMode.FULL
                 )
             }
         },
         onResumeClick = { componentId ->
-            viewModel.openBlock(
-                fragmentManager,
-                componentId
-            )
+            viewModel.openBlock(componentId)
         },
         onDownloadClick = { blocksIds ->
             viewModel.downloadBlocks(
                 blocksIds = blocksIds,
-                fragmentManager = fragmentManager,
+                fragmentManager = null,
             )
         },
         onCertificateClick = {
@@ -139,20 +155,22 @@ fun CourseHomeScreen(
                 ?.let { url -> AndroidUriHandler(context).openUri(url) }
         },
         onVideoClick = { videoBlock ->
-            viewModel.courseRouter.navigateToCourseContainer(
-                fragmentManager,
-                courseId = viewModel.courseId,
-                unitId = viewModel.getBlockParent(videoBlock.id)?.id ?: return@CourseHomeUI,
-                mode = CourseViewMode.VIDEOS
+            val parentId = viewModel.getBlockParent(videoBlock.id)?.id ?: return@CourseHomeUI
+            onNavigateToCourseContainer(
+                viewModel.courseId,
+                parentId,
+                "",
+                CourseViewMode.VIDEOS
             )
             viewModel.logVideoClick(videoBlock.id)
         },
         onAssignmentClick = { assignmentBlock ->
-            viewModel.courseRouter.navigateToCourseContainer(
-                fragmentManager,
-                courseId = viewModel.courseId,
-                unitId = viewModel.getBlockParent(assignmentBlock.id)?.id ?: return@CourseHomeUI,
-                mode = CourseViewMode.FULL
+            val parentId = viewModel.getBlockParent(assignmentBlock.id)?.id ?: return@CourseHomeUI
+            onNavigateToCourseContainer(
+                viewModel.courseId,
+                parentId,
+                "",
+                CourseViewMode.FULL
             )
             viewModel.logAssignmentClick(assignmentBlock.id)
         },

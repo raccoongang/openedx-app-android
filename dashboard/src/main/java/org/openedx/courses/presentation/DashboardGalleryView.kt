@@ -97,9 +97,7 @@ import java.util.Date
 import org.openedx.core.R as CoreR
 
 @Composable
-fun DashboardGalleryView(
-    fragmentManager: Any?,
-) {
+fun DashboardGalleryView() {
     val windowSize = rememberWindowSize()
     val viewModel: DashboardGalleryViewModel = koinViewModel { parametersOf(windowSize) }
     val updating by viewModel.updating.collectAsState(false)
@@ -126,7 +124,7 @@ fun DashboardGalleryView(
                 }
 
                 DashboardGalleryScreenAction.ViewAll -> {
-                    viewModel.navigateToAllEnrolledCourses(fragmentManager)
+                    // Navigation handled by parent composable
                 }
 
                 DashboardGalleryScreenAction.Reload -> {
@@ -138,26 +136,15 @@ fun DashboardGalleryView(
                 }
 
                 is DashboardGalleryScreenAction.OpenCourse -> {
-                    viewModel.navigateToCourseOutline(
-                        fragmentManager = fragmentManager,
-                        enrolledCourse = action.enrolledCourse
-                    )
+                    // Navigation handled by parent composable
                 }
 
                 is DashboardGalleryScreenAction.NavigateToDates -> {
-                    viewModel.navigateToCourseOutline(
-                        fragmentManager = fragmentManager,
-                        enrolledCourse = action.enrolledCourse,
-                        openDates = true
-                    )
+                    // Navigation handled by parent composable
                 }
 
                 is DashboardGalleryScreenAction.OpenBlock -> {
-                    viewModel.navigateToCourseOutline(
-                        fragmentManager = fragmentManager,
-                        enrolledCourse = action.enrolledCourse,
-                        resumeBlockId = action.blockId
-                    )
+                    // Navigation handled by parent composable
                 }
             }
         }

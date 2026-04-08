@@ -8,13 +8,11 @@ import kotlinx.coroutines.launch
 import org.openedx.core.config.Config
 import org.openedx.core.data.model.CourseEnrollments
 import org.openedx.core.data.storage.CorePreferences
-import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseDashboardUpdate
 import org.openedx.core.system.notifier.DiscoveryNotifier
 import org.openedx.core.system.notifier.NavigationToDiscovery
 import org.openedx.dashboard.domain.interactor.DashboardInteractor
-import org.openedx.dashboard.presentation.DashboardRouter
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.system.ResourceManager
@@ -27,7 +25,6 @@ class DashboardGalleryViewModel(
     private val discoveryNotifier: DiscoveryNotifier,
     private val networkConnection: NetworkConnection,
     private val fileUtil: FileUtil,
-    private val dashboardRouter: DashboardRouter,
     private val corePreferences: CorePreferences,
     private val windowSize: WindowSize,
 ) : BaseViewModel(resourceManager) {
@@ -108,25 +105,6 @@ class DashboardGalleryViewModel(
 
     fun navigateToDiscovery() {
         viewModelScope.launch { discoveryNotifier.send(NavigationToDiscovery()) }
-    }
-
-    fun navigateToAllEnrolledCourses(fragmentManager: Any?) {
-        dashboardRouter.navigateToAllEnrolledCourses(fragmentManager)
-    }
-
-    fun navigateToCourseOutline(
-        fragmentManager: Any?,
-        enrolledCourse: EnrolledCourse,
-        openDates: Boolean = false,
-        resumeBlockId: String = "",
-    ) {
-        dashboardRouter.navigateToCourseOutline(
-            fm = fragmentManager,
-            courseId = enrolledCourse.course.id,
-            courseTitle = enrolledCourse.course.name,
-            openTab = if (openDates) CourseTab.DATES.name else CourseTab.HOME.name,
-            resumeBlockId = resumeBlockId
-        )
     }
 
     private fun collectDiscoveryNotifier() {

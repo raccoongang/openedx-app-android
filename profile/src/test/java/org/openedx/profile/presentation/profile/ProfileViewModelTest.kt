@@ -31,7 +31,6 @@ import org.openedx.foundation.system.ResourceManager
 import org.openedx.profile.ProfileMocks
 import org.openedx.profile.domain.interactor.ProfileInteractor
 import org.openedx.profile.presentation.ProfileAnalytics
-import org.openedx.profile.presentation.ProfileRouter
 import org.openedx.profile.system.notifier.account.AccountUpdated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 import java.net.UnknownHostException
@@ -50,7 +49,6 @@ class ProfileViewModelTest {
     private val interactor = mockk<ProfileInteractor>()
     private val notifier = mockk<ProfileNotifier>()
     private val analytics = mockk<ProfileAnalytics>()
-    private val router = mockk<ProfileRouter>()
 
     private val noInternet = "Slow or no internet connection"
     private val somethingWrong = "Something went wrong"
@@ -82,7 +80,6 @@ class ProfileViewModelTest {
             resourceManager,
             notifier,
             analytics,
-            router
         )
         coEvery { interactor.getCachedAccount() } returns null
         coEvery { interactor.getAccount() } throws UnknownHostException()
@@ -102,7 +99,6 @@ class ProfileViewModelTest {
             resourceManager,
             notifier,
             analytics,
-            router
         )
         coEvery { interactor.getCachedAccount() } returns ProfileMocks.account.copy(
             accountPrivacy = org.openedx.profile.domain.model.Account.Privacy.PRIVATE
@@ -124,7 +120,6 @@ class ProfileViewModelTest {
             resourceManager,
             notifier,
             analytics,
-            router
         )
         coEvery { interactor.getCachedAccount() } returns null
         coEvery { interactor.getAccount() } throws Exception()
@@ -144,7 +139,6 @@ class ProfileViewModelTest {
             resourceManager,
             notifier,
             analytics,
-            router
         )
         coEvery { interactor.getCachedAccount() } returns null
         coEvery { interactor.getAccount() } returns ProfileMocks.account.copy(
@@ -166,7 +160,6 @@ class ProfileViewModelTest {
             resourceManager,
             notifier,
             analytics,
-            router
         )
         coEvery { interactor.getCachedAccount() } returns null
         every { notifier.notifier } returns flow { emit(AccountUpdated()) }

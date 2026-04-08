@@ -29,7 +29,6 @@ import org.openedx.auth.data.model.ValidationFields
 import org.openedx.auth.domain.interactor.AuthInteractor
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
-import org.openedx.auth.presentation.AuthRouter
 import org.openedx.auth.presentation.sso.OAuthHelper
 import org.openedx.core.ApiConstants
 import org.openedx.core.CoreMocks
@@ -63,7 +62,6 @@ class SignUpViewModelTest {
     private val appNotifier = mockk<AppNotifier>()
     private val agreementProvider = mockk<AgreementProvider>()
     private val oAuthHelper = mockk<OAuthHelper>()
-    private val router = mockk<AuthRouter>()
 
     //region parameters
 
@@ -141,7 +139,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -185,7 +182,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -235,7 +231,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -274,7 +269,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -324,7 +318,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -351,7 +344,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )
@@ -378,7 +370,6 @@ class SignUpViewModelTest {
             oAuthHelper = oAuthHelper,
             agreementProvider = agreementProvider,
             config = config,
-            router = router,
             courseId = "",
             infoType = "",
         )

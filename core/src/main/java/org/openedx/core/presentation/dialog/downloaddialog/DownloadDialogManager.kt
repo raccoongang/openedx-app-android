@@ -10,6 +10,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.openedx.core.BlockType
 import org.openedx.core.data.storage.CorePreferences
@@ -22,13 +25,24 @@ import org.openedx.core.system.StorageManager
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.foundation.presentation.rememberWindowSize
 
-interface DownloadDialogListener {
-    fun onCancelClick()
-    fun onConfirmClick()
-}
+/**
+ * Represents a pending dialog to be shown by the Compose UI layer.
+ */
+data class PendingDownloadDialog(
+    val dialogType: DownloadDialogType,
+    val uiState: DownloadDialogUIState,
+    val onConfirm: () -> Unit,
+    val onDismiss: () -> Unit,
+)
 
-interface DownloadDialog {
-    var listener: DownloadDialogListener?
+enum class DownloadDialogType {
+    CONFIRM_DOWNLOAD,
+    DOWNLOAD_ON_CELLULAR,
+    REMOVE_DOWNLOAD,
+    NO_CONNECTION,
+    WIFI_REQUIRED,
+    STORAGE_ERROR,
+    DOWNLOAD_FAILED,
 }
 
 class DownloadDialogManager(
@@ -40,7 +54,7 @@ class DownloadDialogManager(
 
     companion object {
         const val MAX_CELLULAR_SIZE = 104857600 // 100MB
-        const val DOWNLOAD_SIZE_FACTOR = 2 // Multiplier to match required disk size
+        const val DOWNLOAD_SIZE_FACTOR = 2
 
         val listMaxSize: Dp
             @Composable
@@ -48,81 +62,49 @@ class DownloadDialogManager(
                 val configuration = LocalConfiguration.current
                 val windowSize = rememberWindowSize()
                 return when {
-                    configuration.orientation == Configuration.ORIENTATION_PORTRAIT || windowSize.isTablet -> {
-                        200.dp
-                    }
-
-                    else -> {
-                        88.dp
-                    }
+                    configuration.orientation == Configuration.ORIENTATION_PORTRAIT || windowSize.isTablet -> 200.dp
+                    else -> 88.dp
                 }
             }
     }
 
-    private val uiState = MutableSharedFlow<DownloadDialogUIState>()
+    private val internalState = MutableSharedFlow<DownloadDialogUIState>()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private val _pendingDialog = MutableStateFlow<PendingDownloadDialog?>(null)
+    val pendingDialog: StateFlow<PendingDownloadDialog?> = _pendingDialog.asStateFlow()
+
+    fun dismissDialog() {
+        _pendingDialog.value = null
+    }
 
     init {
         coroutineScope.launch {
-            uiState.collect { state ->
-                val dialog = when {
-                    state.isDownloadFailed -> DownloadErrorDialogFragment.newInstance(
-                        dialogType = DownloadErrorDialogType.DOWNLOAD_FAILED,
-                        uiState = state
-                    )
-
-                    state.isAllBlocksDownloaded -> DownloadConfirmDialogFragment.newInstance(
-                        dialogType = DownloadConfirmDialogType.REMOVE,
-                        uiState = state
-                    )
-
-                    !networkConnection.isOnline() -> DownloadErrorDialogFragment.newInstance(
-                        dialogType = DownloadErrorDialogType.NO_CONNECTION,
-                        uiState = state
-                    )
-
-                    StorageManager.getFreeStorage() < state.sizeSum * DOWNLOAD_SIZE_FACTOR -> {
-                        DownloadStorageErrorDialogFragment.newInstance(
-                            uiState = state
-                        )
-                    }
-
-                    corePreferences.videoSettings.wifiDownloadOnly && !networkConnection.isWifiConnected() -> {
-                        DownloadErrorDialogFragment.newInstance(
-                            dialogType = DownloadErrorDialogType.WIFI_REQUIRED,
-                            uiState = state
-                        )
-                    }
-
-                    !corePreferences.videoSettings.wifiDownloadOnly && !networkConnection.isWifiConnected() -> {
-                        DownloadConfirmDialogFragment.newInstance(
-                            dialogType = DownloadConfirmDialogType.DOWNLOAD_ON_CELLULAR,
-                            uiState = state
-                        )
-                    }
-
-                    state.sizeSum >= MAX_CELLULAR_SIZE -> DownloadConfirmDialogFragment.newInstance(
-                        dialogType = DownloadConfirmDialogType.CONFIRM,
-                        uiState = state
-                    )
-
+            internalState.collect { state ->
+                val dialogType = when {
+                    state.isDownloadFailed -> DownloadDialogType.DOWNLOAD_FAILED
+                    state.isAllBlocksDownloaded -> DownloadDialogType.REMOVE_DOWNLOAD
+                    !networkConnection.isOnline() -> DownloadDialogType.NO_CONNECTION
+                    StorageManager.getFreeStorage() < state.sizeSum * DOWNLOAD_SIZE_FACTOR -> DownloadDialogType.STORAGE_ERROR
+                    corePreferences.videoSettings.wifiDownloadOnly && !networkConnection.isWifiConnected() -> DownloadDialogType.WIFI_REQUIRED
+                    !corePreferences.videoSettings.wifiDownloadOnly && !networkConnection.isWifiConnected() -> DownloadDialogType.DOWNLOAD_ON_CELLULAR
+                    state.sizeSum >= MAX_CELLULAR_SIZE -> DownloadDialogType.CONFIRM_DOWNLOAD
                     else -> null
                 }
 
-                val dialogListener = object : DownloadDialogListener {
-                    override fun onCancelClick() {
-                        state.onDismissClick()
-                    }
-
-                    override fun onConfirmClick() {
-                        state.onConfirmClick()
-                    }
-                }
-                if (dialog != null) {
-                    dialog.listener = dialogListener
-                    (state.fragmentManager as? androidx.fragment.app.FragmentManager)?.let { fm ->
-                        dialog.show(fm, dialog::class.java.simpleName)
-                    }
+                if (dialogType != null) {
+                    _pendingDialog.value = PendingDownloadDialog(
+                        dialogType = dialogType,
+                        uiState = state,
+                        onConfirm = {
+                            state.onConfirmClick()
+                            _pendingDialog.value = null
+                        },
+                        onDismiss = {
+                            state.onDismissClick()
+                            _pendingDialog.value = null
+                        },
+                    )
                 } else {
                     state.onConfirmClick()
                     state.saveDownloadModels()
@@ -181,7 +163,7 @@ class DownloadDialogManager(
         removeDownloadModels: () -> Unit,
     ) {
         coroutineScope.launch {
-            uiState.emit(
+            internalState.emit(
                 DownloadDialogUIState(
                     downloadDialogItems = listOf(downloadDialogItem),
                     isAllBlocksDownloaded = true,
@@ -212,7 +194,6 @@ class DownloadDialogManager(
         coroutineScope.launch {
             val courseIds = downloadModels.map { it.courseId }.distinct()
             val blockIds = downloadModels.map { it.id }
-            val notDownloadedSubSections = mutableListOf<Block>()
             val allDownloadDialogItems = mutableListOf<DownloadDialogItem>()
 
             courseIds.forEach { courseId ->
@@ -228,7 +209,6 @@ class DownloadDialogManager(
                     }
                     val totalSize = blocks.sumOf { it.getFileSize() }
 
-                    if (blocks.isNotEmpty()) notDownloadedSubSections.add(subSectionBlock)
                     if (totalSize > 0) {
                         allDownloadDialogItems.add(
                             DownloadDialogItem(
@@ -240,7 +220,7 @@ class DownloadDialogManager(
                 }
             }
 
-            uiState.emit(
+            internalState.emit(
                 DownloadDialogUIState(
                     downloadDialogItems = allDownloadDialogItems,
                     isAllBlocksDownloaded = false,
@@ -294,7 +274,7 @@ class DownloadDialogManager(
                 }
             }
 
-            uiState.emit(
+            internalState.emit(
                 DownloadDialogUIState(
                     downloadDialogItems = downloadDialogItems,
                     isAllBlocksDownloaded = isBlocksDownloaded,
@@ -303,10 +283,7 @@ class DownloadDialogManager(
                     fragmentManager = fragmentManager,
                     removeDownloadModels = {
                         subSectionsBlocks.forEach {
-                            removeDownloadModels(
-                                it.id,
-                                courseId
-                            )
+                            removeDownloadModels(it.id, courseId)
                         }
                     },
                     saveDownloadModels = { subSectionsBlocks.forEach { saveDownloadModels(it.id) } },
@@ -335,7 +312,7 @@ class DownloadDialogManager(
                 )
             )
 
-            uiState.emit(
+            internalState.emit(
                 DownloadDialogUIState(
                     downloadDialogItems = downloadDialogItems,
                     isAllBlocksDownloaded = isBlocksDownloaded,
@@ -348,10 +325,7 @@ class DownloadDialogManager(
                                 it.courseId == coursePreview.id
                             }
                             downloadModels.forEach {
-                                removeDownloadModels(
-                                    it.id,
-                                    coursePreview.id
-                                )
+                                removeDownloadModels(it.id, coursePreview.id)
                             }
                         }
                     },

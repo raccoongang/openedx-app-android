@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.format.DateUtils
 import org.openedx.core.R
 import org.openedx.core.domain.model.StartType
+import org.openedx.foundation.system.AndroidResourceManager
 import org.openedx.foundation.system.ResourceManager
 import java.text.DateFormat
 import java.text.ParseException
@@ -191,7 +192,7 @@ object TimeUtils {
         startType: String,
         startDisplay: String
     ): String {
-        val resourceManager = ResourceManager(context)
+        val resourceManager = AndroidResourceManager(context)
 
         return when {
             isDatePassed(today, start) -> handleDatePassedToday(
@@ -337,7 +338,7 @@ object TimeUtils {
      * Returns a formatted date string for the given date using context.
      */
     fun getCourseAccessFormattedDate(context: Context, date: Date): String {
-        val resourceManager = ResourceManager(context)
+        val resourceManager = AndroidResourceManager(context)
         return dateToCourseDate(resourceManager, date)
     }
 }

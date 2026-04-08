@@ -11,11 +11,11 @@ buildscript {
 }
 
 plugins {
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.library)
-    id("kotlin-parcelize")
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -24,6 +24,49 @@ val configHelper: ConfigHelper by rootProject.extra
 val currentFlavour = getCurrentFlavor()
 val config = configHelper.fetchConfig()
 val themeDirectory = config.getOrDefault("THEME_DIRECTORY", "openedx") as String
+
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
+        }
+    }
+
+    sourceSets {
+        // Core's "commonMain" files still reference Android APIs through foundation.
+        // Disable KMP commonMain; include those files via android.sourceSets instead.
+        commonMain {
+            kotlin.setSrcDirs(emptyList<String>())
+        }
+        androidMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+
+            api(project(":foundation"))
+
+            // jsoup
+            api(libs.jsoup)
+
+            // Firebase
+            api(libs.firebase.common.ktx)
+            api(libs.firebase.crashlytics.ktx)
+
+            // Play In-App Review
+            api(libs.google.inAppReview)
+
+            // Branch SDK Integration
+            api(libs.branch.sdk)
+            api(libs.google.playServices.adsIdentifier)
+            api(libs.installReferrer)
+
+            // Zip
+            api(libs.zip4j)
+        }
+    }
+}
 
 android {
     namespace = "org.openedx.core"
@@ -54,6 +97,9 @@ android {
     }
 
     sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+        }
         getByName("prod") {
             java.srcDirs("src/$themeDirectory")
             res.srcDirs("src/$themeDirectory/res")
@@ -65,10 +111,6 @@ android {
         getByName("stage") {
             java.srcDirs("src/$themeDirectory")
             res.srcDirs("src/$themeDirectory/res")
-        }
-        getByName("main") {
-            java.srcDirs("src/main/java", "src/commonMain/kotlin")
-            assets.srcDirs("src/main/assets", "assets")
         }
     }
 
@@ -82,12 +124,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.set(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
-        }
-    }
     buildFeatures {
         viewBinding = true
         compose = true
@@ -96,34 +132,11 @@ android {
 }
 
 dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+
+    // These don't work in KMP sourceSets DSL
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
-    // Room
-    ksp(libs.androidx.room.compiler)
-
-    // jsoup
-    api(libs.jsoup)
-
-    // Firebase
     api(platform(libs.firebase.bom))
-    api(libs.firebase.common.ktx)
-    api(libs.firebase.crashlytics.ktx)
-
-    // Play In-App Review
-    api(libs.google.inAppReview)
-
-    // Branch SDK Integration
-    api(libs.branch.sdk)
-    api(libs.google.playServices.adsIdentifier)
-    api(libs.installReferrer)
-
-    // Zip
-    api(libs.zip4j)
-
-    // OpenEdx libs
-    api(project(":foundation"))
-
-    // Preview
     debugApi(libs.compose.ui.tooling)
 
     testImplementation(libs.junit)

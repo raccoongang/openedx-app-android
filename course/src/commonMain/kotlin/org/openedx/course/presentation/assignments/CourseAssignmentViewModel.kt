@@ -18,11 +18,9 @@ import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.presentation.CourseAnalyticsKey
-import org.openedx.course.presentation.CourseRouter
 
 class CourseAssignmentViewModel(
     val courseId: String,
-    val courseRouter: CourseRouter,
     private val interactor: CourseInteractor,
     private val courseNotifier: CourseNotifier,
     private val analytics: CourseAnalytics,
