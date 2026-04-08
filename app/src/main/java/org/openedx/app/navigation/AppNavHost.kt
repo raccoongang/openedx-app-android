@@ -294,7 +294,26 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.CourseSearch> { PlaceholderDestination("Course Search") }
+            composable<AppNavRoutes.CourseSearch> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseSearch>()
+                val vm: org.openedx.discovery.presentation.search.CourseSearchViewModel = koinViewModel { parametersOf(route.querySearch) }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.observeAsState(org.openedx.discovery.presentation.search.CourseSearchUIState.Courses(emptyList(), 0))
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                val canLoad by vm.canLoadMore.observeAsState(false)
+                val updating by vm.isUpdating.observeAsState(false)
+                org.openedx.discovery.presentation.search.CourseSearchScreen(
+                    windowSize = windowSize, state = uiState, uiMessage = uiMessage,
+                    apiHostUrl = vm.apiHostUrl, canLoadMore = canLoad, refreshing = updating,
+                    querySearch = route.querySearch, isUserLoggedIn = vm.isUserLoggedIn,
+                    isRegistrationEnabled = vm.isRegistrationEnabled,
+                    onBackClick = { navController.popBackStack() },
+                    onSearchTextChanged = { vm.search(it) },
+                    onSwipeRefresh = {}, paginationCallback = { vm.fetchMore() },
+                    onItemClick = { navController.navigate(AppNavRoutes.CourseDetails(it)) },
+                    onRegisterClick = {}, onSignInClick = {},
+                )
+            }
 
             composable<AppNavRoutes.CourseInfo> { PlaceholderDestination("Course Info") }
             composable<AppNavRoutes.AllEnrolledCourses> {
