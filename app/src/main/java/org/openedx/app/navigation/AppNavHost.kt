@@ -241,8 +241,34 @@ fun AppNavHost(
             }
 
             composable<AppNavRoutes.CalendarSettings> { PlaceholderDestination("Calendar Settings") }
-            composable<AppNavRoutes.CoursesToSync> { PlaceholderDestination("Courses to Sync") }
-            composable<AppNavRoutes.VideoQuality> { PlaceholderDestination("Video Quality") }
+            composable<AppNavRoutes.CoursesToSync> {
+                val viewModel: org.openedx.profile.presentation.calendar.CoursesToSyncViewModel = koinViewModel()
+                val windowSize = rememberWindowSize()
+                val uiState by viewModel.uiState.collectAsState()
+                val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+                org.openedx.profile.presentation.calendar.CoursesToSyncView(
+                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onHideInactiveCoursesSwitchClick = { viewModel.setHideInactiveCoursesEnabled(it) },
+                    onCourseSyncCheckChange = { enabled, courseId -> viewModel.setCourseSyncEnabled(enabled, courseId) },
+                )
+            }
+            composable<AppNavRoutes.VideoQuality> { entry ->
+                val route = entry.toRoute<AppNavRoutes.VideoQuality>()
+                val viewModel: org.openedx.core.presentation.settings.video.VideoQualityViewModel = koinViewModel {
+                    parametersOf(route.videoQualityType)
+                }
+                val windowSize = rememberWindowSize()
+                val quality by viewModel.videoQuality.observeAsState(viewModel.getCurrentVideoQuality())
+                val title = if (viewModel.getQualityType() == org.openedx.core.presentation.settings.video.VideoQualityType.Streaming)
+                    "Video Streaming Quality" else "Video Download Quality"
+                org.openedx.core.presentation.settings.video.VideoQualityScreen(
+                    windowSize = windowSize, title = title,
+                    selectedVideoQuality = quality,
+                    onQualityChanged = { viewModel.setVideoQuality(it) },
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
             composable<AppNavRoutes.EditProfile> { PlaceholderDestination("Edit Profile") }
 
             // =================== DISCOVERY ===================
