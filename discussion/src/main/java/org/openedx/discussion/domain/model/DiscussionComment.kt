@@ -1,9 +1,13 @@
 package org.openedx.discussion.domain.model
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import org.openedx.core.domain.model.ProfileImage
 
+@Serializable
 @Parcelize
 data class DiscussionComment(
     val id: String,

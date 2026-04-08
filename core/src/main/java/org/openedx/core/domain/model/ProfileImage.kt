@@ -1,9 +1,12 @@
 package org.openedx.core.domain.model
 
+import kotlinx.serialization.Serializable
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 
+@Serializable
 @Parcelize
 data class ProfileImage(
     val imageUrlFull: String,

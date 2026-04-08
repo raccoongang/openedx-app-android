@@ -240,7 +240,19 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.CalendarSettings> { PlaceholderDestination("Calendar Settings") }
+            composable<AppNavRoutes.CalendarSettings> {
+                val vm: org.openedx.profile.presentation.calendar.CalendarViewModel = koinViewModel()
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.collectAsState()
+                org.openedx.profile.presentation.calendar.CalendarSettingsView(
+                    windowSize = windowSize, uiState = uiState,
+                    onCalendarSyncSwitchClick = { vm.setCalendarSyncEnabled(it, null) },
+                    onRelativeDateSwitchClick = { vm.setRelativeDateEnabled(it) },
+                    onChangeSyncOptionClick = {},
+                    onCourseToSyncClick = { navController.navigate(AppNavRoutes.CoursesToSync) },
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
             composable<AppNavRoutes.CoursesToSync> {
                 val viewModel: org.openedx.profile.presentation.calendar.CoursesToSyncViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
@@ -315,14 +327,23 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.CourseInfo> { PlaceholderDestination("Course Info") }
+            composable<AppNavRoutes.CourseInfo> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseInfo>()
+                PlaceholderDestination("Info: ${route.courseId}")
+            }
             composable<AppNavRoutes.AllEnrolledCourses> {
                 org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
             }
-            composable<AppNavRoutes.Program> { PlaceholderDestination("Programs") }
+            composable<AppNavRoutes.Program> { entry ->
+                val route = entry.toRoute<AppNavRoutes.Program>()
+                PlaceholderDestination("Programs: ${route.pathId}")
+            }
 
             // =================== COURSE ===================
-            composable<AppNavRoutes.CourseContainer> { PlaceholderDestination("Course") }
+            composable<AppNavRoutes.CourseContainer> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseContainer>()
+                PlaceholderDestination("Course: ${route.courseTitle}")
+            }
 
             composable<AppNavRoutes.CourseSection> { entry ->
                 val route = entry.toRoute<AppNavRoutes.CourseSection>()
@@ -338,7 +359,10 @@ fun AppNavHost(
                     onItemClick = {},
                 )
             }
-            composable<AppNavRoutes.CourseUnitContainer> { PlaceholderDestination("Course Unit") }
+            composable<AppNavRoutes.CourseUnitContainer> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseUnitContainer>()
+                PlaceholderDestination("Unit: ${route.unitId}")
+            }
             composable<AppNavRoutes.HandoutsWebView> { entry ->
                 val route = entry.toRoute<AppNavRoutes.HandoutsWebView>()
                 val viewModel: org.openedx.course.presentation.handouts.HandoutsViewModel = koinViewModel {
@@ -350,8 +374,14 @@ fun AppNavHost(
                 // For now showing handouts/announcements title
                 PlaceholderDestination("${route.type}: ${route.courseId}")
             }
-            composable<AppNavRoutes.VideoFullScreen> { PlaceholderDestination("Video") }
-            composable<AppNavRoutes.YoutubeVideoFullScreen> { PlaceholderDestination("YouTube") }
+            composable<AppNavRoutes.VideoFullScreen> { entry ->
+                val route = entry.toRoute<AppNavRoutes.VideoFullScreen>()
+                PlaceholderDestination("Video: ${route.videoUrl}")
+            }
+            composable<AppNavRoutes.YoutubeVideoFullScreen> { entry ->
+                val route = entry.toRoute<AppNavRoutes.YoutubeVideoFullScreen>()
+                PlaceholderDestination("YouTube: ${route.videoUrl}")
+            }
             composable<AppNavRoutes.DownloadQueue> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DownloadQueue>()
                 val viewModel: org.openedx.course.settings.download.DownloadQueueViewModel = koinViewModel {
@@ -394,8 +424,14 @@ fun AppNavHost(
                 )
             }
 
-            composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments - needs Thread object") }
-            composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses - needs Comment object") }
+            composable<AppNavRoutes.DiscussionComments> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DiscussionComments>()
+                PlaceholderDestination("Discussion Comments")
+            }
+            composable<AppNavRoutes.DiscussionResponses> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DiscussionResponses>()
+                PlaceholderDestination("Discussion Responses")
+            }
 
             composable<AppNavRoutes.DiscussionAddThread> { entry ->
                 val route = entry.toRoute<AppNavRoutes.DiscussionAddThread>()
