@@ -374,14 +374,47 @@ fun AppNavHost(
             }
 
             // =================== DISCUSSION ===================
-            composable<AppNavRoutes.DiscussionThreads> { PlaceholderDestination("Discussion Threads") }
+            composable<AppNavRoutes.DiscussionThreads> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DiscussionThreads>()
+                val vm: org.openedx.discussion.presentation.threads.DiscussionThreadsViewModel = koinViewModel { parametersOf(route.courseId, route.topicId) }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.threads.DiscussionThreadsUIState.Loading)
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                val canLoad by vm.canLoadMore.observeAsState(false)
+                val updating by vm.isUpdating.observeAsState(false)
+                org.openedx.discussion.presentation.threads.DiscussionThreadsScreen(
+                    windowSize = windowSize, title = route.title,
+                    uiState = uiState, uiMessage = uiMessage, canLoadMore = canLoad,
+                    viewType = org.openedx.core.FragmentViewType.valueOf(route.viewType),
+                    refreshing = updating,
+                    onSwipeRefresh = {}, updatedOrder = { vm.getThreadByType(it) },
+                    updatedFilter = {}, onItemClick = {},
+                    onCreatePostClick = {}, paginationCallback = { vm.fetchMore() },
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
 
             composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments") }
             composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses") }
 
             composable<AppNavRoutes.DiscussionAddThread> { PlaceholderDestination("Add Thread") }
 
-            composable<AppNavRoutes.DiscussionSearchThread> { PlaceholderDestination("Search") }
+            composable<AppNavRoutes.DiscussionSearchThread> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DiscussionSearchThread>()
+                val vm: org.openedx.discussion.presentation.search.DiscussionSearchThreadViewModel = koinViewModel { parametersOf(route.courseId) }
+                val windowSize = rememberWindowSize()
+                val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.search.DiscussionSearchThreadUIState.Threads(emptyList(), 0))
+                val uiMessage by vm.uiMessage.collectAsState(initial = null)
+                val canLoad by vm.canLoadMore.observeAsState(false)
+                val updating by vm.isUpdating.observeAsState(false)
+                org.openedx.discussion.presentation.search.DiscussionSearchThreadScreen(
+                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    refreshing = updating, canLoadMore = canLoad,
+                    onItemClick = {}, onSearchTextChanged = { vm.searchThreads(it) },
+                    onSwipeRefresh = {}, paginationCallback = { vm.fetchMore() },
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
         }
     }
 }
