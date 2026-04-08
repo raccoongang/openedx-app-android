@@ -272,8 +272,30 @@ fun AppNavHost(
             composable<AppNavRoutes.EditProfile> { PlaceholderDestination("Edit Profile") }
 
             // =================== DISCOVERY ===================
-            composable<AppNavRoutes.CourseDetails> { PlaceholderDestination("Course Details") }
+            composable<AppNavRoutes.CourseDetails> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseDetails>()
+                val viewModel: org.openedx.discovery.presentation.detail.CourseDetailsViewModel = koinViewModel {
+                    parametersOf(route.courseId)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by viewModel.uiState.observeAsState(org.openedx.discovery.presentation.detail.CourseDetailsUIState.Loading)
+                val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+                org.openedx.discovery.presentation.detail.CourseDetailsScreen(
+                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    apiHostUrl = viewModel.apiHostUrl, htmlBody = "",
+                    hasInternetConnection = viewModel.hasInternetConnection,
+                    isUserLoggedIn = viewModel.isUserLoggedIn,
+                    isRegistrationEnabled = viewModel.isRegistrationEnabled,
+                    onReloadClick = { viewModel.getCourseDetail() },
+                    onBackClick = { navController.popBackStack() },
+                    onButtonClick = {},
+                    onRegisterClick = { navController.navigate(AppNavRoutes.SignUp()) },
+                    onSignInClick = { navController.navigate(AppNavRoutes.SignIn()) },
+                )
+            }
+
             composable<AppNavRoutes.CourseSearch> { PlaceholderDestination("Course Search") }
+
             composable<AppNavRoutes.CourseInfo> { PlaceholderDestination("Course Info") }
             composable<AppNavRoutes.AllEnrolledCourses> {
                 org.openedx.courses.presentation.AllEnrolledCoursesView(fragmentManager = null)
@@ -282,7 +304,21 @@ fun AppNavHost(
 
             // =================== COURSE ===================
             composable<AppNavRoutes.CourseContainer> { PlaceholderDestination("Course") }
-            composable<AppNavRoutes.CourseSection> { PlaceholderDestination("Course Section") }
+
+            composable<AppNavRoutes.CourseSection> { entry ->
+                val route = entry.toRoute<AppNavRoutes.CourseSection>()
+                val viewModel: org.openedx.course.presentation.section.CourseSectionViewModel = koinViewModel {
+                    parametersOf(route.courseId, route.subSectionId)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by viewModel.uiState.observeAsState(org.openedx.course.presentation.section.CourseSectionUIState.Loading)
+                val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+                org.openedx.course.presentation.section.CourseSectionScreen(
+                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onItemClick = {},
+                )
+            }
             composable<AppNavRoutes.CourseUnitContainer> { PlaceholderDestination("Course Unit") }
             composable<AppNavRoutes.HandoutsWebView> { entry ->
                 val route = entry.toRoute<AppNavRoutes.HandoutsWebView>()
@@ -320,9 +356,12 @@ fun AppNavHost(
 
             // =================== DISCUSSION ===================
             composable<AppNavRoutes.DiscussionThreads> { PlaceholderDestination("Discussion Threads") }
+
             composable<AppNavRoutes.DiscussionComments> { PlaceholderDestination("Comments") }
             composable<AppNavRoutes.DiscussionResponses> { PlaceholderDestination("Responses") }
+
             composable<AppNavRoutes.DiscussionAddThread> { PlaceholderDestination("Add Thread") }
+
             composable<AppNavRoutes.DiscussionSearchThread> { PlaceholderDestination("Search") }
         }
     }
