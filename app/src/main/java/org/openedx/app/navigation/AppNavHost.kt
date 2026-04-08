@@ -425,7 +425,21 @@ fun AppNavHost(
             }
             composable<AppNavRoutes.CourseUnitContainer> { entry ->
                 val route = entry.toRoute<AppNavRoutes.CourseUnitContainer>()
-                PlaceholderDestination("Unit: ${route.unitId}")
+                val vm: org.openedx.course.presentation.unit.container.CourseUnitContainerViewModel = koinViewModel {
+                    parametersOf(route.courseId, route.unitId, org.openedx.course.presentation.unit.container.CourseViewMode.valueOf(route.mode))
+                }
+                val blockCount by vm.verticalBlockCounts.observeAsState(0)
+                val index by vm.indexInContainer.observeAsState(0)
+                // CourseUnitContainer displays course blocks in a pager
+                // Full implementation requires block-type switching (video/html/discussion)
+                androidx.compose.foundation.layout.Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                ) {
+                    androidx.compose.material3.Text("Course Unit ${index + 1}/$blockCount")
+                    androidx.compose.material3.Text("Unit: ${route.unitId}", style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
+                }
             }
             composable<AppNavRoutes.HandoutsWebView> { entry ->
                 val route = entry.toRoute<AppNavRoutes.HandoutsWebView>()
