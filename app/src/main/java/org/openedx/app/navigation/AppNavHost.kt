@@ -284,10 +284,32 @@ fun AppNavHost(
             composable<AppNavRoutes.CourseContainer> { PlaceholderDestination("Course") }
             composable<AppNavRoutes.CourseSection> { PlaceholderDestination("Course Section") }
             composable<AppNavRoutes.CourseUnitContainer> { PlaceholderDestination("Course Unit") }
-            composable<AppNavRoutes.HandoutsWebView> { PlaceholderDestination("Handouts") }
+            composable<AppNavRoutes.HandoutsWebView> { entry ->
+                val route = entry.toRoute<AppNavRoutes.HandoutsWebView>()
+                val viewModel: org.openedx.course.presentation.handouts.HandoutsViewModel = koinViewModel {
+                    parametersOf(route.courseId, route.type)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by viewModel.uiState.collectAsState()
+                // HandoutsWebView displays HTML content - needs WebView composable
+                // For now showing handouts/announcements title
+                PlaceholderDestination("${route.type}: ${route.courseId}")
+            }
             composable<AppNavRoutes.VideoFullScreen> { PlaceholderDestination("Video") }
             composable<AppNavRoutes.YoutubeVideoFullScreen> { PlaceholderDestination("YouTube") }
-            composable<AppNavRoutes.DownloadQueue> { PlaceholderDestination("Download Queue") }
+            composable<AppNavRoutes.DownloadQueue> { entry ->
+                val route = entry.toRoute<AppNavRoutes.DownloadQueue>()
+                val viewModel: org.openedx.course.settings.download.DownloadQueueViewModel = koinViewModel {
+                    parametersOf(route.descendants)
+                }
+                val windowSize = rememberWindowSize()
+                val uiState by viewModel.uiState.collectAsState()
+                org.openedx.course.settings.download.DownloadQueueScreen(
+                    windowSize = windowSize, uiState = uiState,
+                    onBackClick = { navController.popBackStack() },
+                    onDownloadClick = {},
+                )
+            }
             composable<AppNavRoutes.NoAccessCourseContainer> { entry ->
                 val route = entry.toRoute<AppNavRoutes.NoAccessCourseContainer>()
                 org.openedx.course.presentation.container.NoAccessCourseContainerScreen(
