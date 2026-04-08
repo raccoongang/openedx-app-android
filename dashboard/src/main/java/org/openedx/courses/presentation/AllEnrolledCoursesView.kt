@@ -86,9 +86,6 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
-import org.openedx.courses.presentation.AllEnrolledCoursesFragment.Companion.LOAD_MORE_THRESHOLD
-import org.openedx.courses.presentation.AllEnrolledCoursesFragment.Companion.MOBILE_GRID_COLUMNS
-import org.openedx.courses.presentation.AllEnrolledCoursesFragment.Companion.TABLET_GRID_COLUMNS
 import org.openedx.dashboard.DashboardMocks
 import org.openedx.dashboard.domain.CourseStatusFilter
 import org.openedx.foundation.extension.toImageLink
@@ -164,7 +161,7 @@ private fun AllEnrolledCoursesView(
     val layoutDirection = LocalLayoutDirection.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberLazyGridState()
-    val columns = if (windowSize.isTablet) TABLET_GRID_COLUMNS else MOBILE_GRID_COLUMNS
+    val columns = if (windowSize.isTablet) 3 else 1
     val pullToRefreshState = rememberPullToRefreshState()
     val tabPagerState = rememberPagerState(pageCount = {
         CourseStatusFilter.entries.size
@@ -343,7 +340,7 @@ private fun AllEnrolledCoursesView(
                                         )
                                         if (scrollState.shouldLoadMore(
                                                 firstVisibleIndex,
-                                                LOAD_MORE_THRESHOLD
+                                                4
                                             )
                                         ) {
                                             onAction(AllEnrolledCoursesAction.EndOfPage)

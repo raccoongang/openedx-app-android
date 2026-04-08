@@ -30,7 +30,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.openedx.app.deeplink.DeepLink
 import org.openedx.auth.presentation.logistration.LogistrationFragment
-import org.openedx.auth.presentation.signin.SignInFragment
 import org.openedx.core.ApiConstants
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
@@ -222,7 +221,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
                     val fragment = if (viewModel.isLogistrationEnabled && authCode == null) {
                         LogistrationFragment()
                     } else {
-                        SignInFragment.newInstance(null, null, authCode = authCode)
+                        androidx.fragment.app.Fragment()
                     }
                     addFragment(fragment)
                 }
@@ -270,7 +269,7 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         this.intent = intent
 
         if (authCode != null) {
-            addFragment(SignInFragment.newInstance(null, null, authCode = authCode))
+            addFragment(androidx.fragment.app.Fragment())
         }
 
         val extras = intent.extras

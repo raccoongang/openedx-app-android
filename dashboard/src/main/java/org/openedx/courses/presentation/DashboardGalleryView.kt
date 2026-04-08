@@ -87,8 +87,6 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
-import org.openedx.courses.presentation.DashboardGalleryFragment.Companion.MOBILE_COURSE_LIST_ITEM_COUNT
-import org.openedx.courses.presentation.DashboardGalleryFragment.Companion.TABLET_COURSE_LIST_ITEM_COUNT
 import org.openedx.dashboard.DashboardMocks
 import org.openedx.dashboard.R
 import org.openedx.foundation.extension.toImageLink
@@ -351,9 +349,9 @@ private fun SecondaryCourses(
 ) {
     val windowSize = rememberWindowSize()
     val itemsCount = if (windowSize.isTablet) {
-        TABLET_COURSE_LIST_ITEM_COUNT
+        7
     } else {
-        MOBILE_COURSE_LIST_ITEM_COUNT
+        7
     }
     val rows = if (windowSize.isTablet) 2 else 1
     val height = if (windowSize.isTablet) 322.dp else 152.dp

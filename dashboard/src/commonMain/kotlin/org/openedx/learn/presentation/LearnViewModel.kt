@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.openedx.DashboardNavigator
 import org.openedx.core.config.Config
 import org.openedx.dashboard.presentation.DashboardAnalytics
 import org.openedx.dashboard.presentation.DashboardAnalyticsEvent
@@ -43,7 +42,6 @@ class LearnViewModel(
         dashboardRouter.navigateToSettings(fragmentManager)
     }
 
-    val getDashboardFragment get() = DashboardNavigator(dashboardType).getDashboardFragment()
 
     val getProgramFragment get() = dashboardRouter.getProgramFragment()
 

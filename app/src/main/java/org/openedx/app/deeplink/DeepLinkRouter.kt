@@ -3,12 +3,12 @@ package org.openedx.app.deeplink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.openedx.app.AppRouter
+
 import org.openedx.app.MainFragment
 import org.openedx.app.R
-import org.openedx.auth.presentation.signin.SignInFragment
 import org.openedx.core.FragmentViewType
 import org.openedx.core.config.Config
+import org.openedx.discovery.presentation.DiscoveryRouter
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.handouts.HandoutsType
@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 
 class DeepLinkRouter(
     private val config: Config,
-    private val appRouter: AppRouter,
+    private val discoveryRouter: DiscoveryRouter,
     private val corePreferences: CorePreferences,
     private val discoveryInteractor: DiscoveryInteractor,
     private val courseInteractor: CourseInteractor,
@@ -145,13 +145,13 @@ class DeepLinkRouter(
             navigateToSignIn(fm = fm)
             false
         } else if (config.getDiscoveryConfig().isViewTypeWebView()) {
-            appRouter.navigateToWebDiscoverCourses(
+            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToWebDiscoverCourses(
                 fm = fm,
                 querySearch = ""
             )
             true
         } else {
-            appRouter.navigateToNativeDiscoverCourses(
+            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToNativeDiscoverCourses(
                 fm = fm,
                 querySearch = ""
             )
@@ -162,7 +162,7 @@ class DeepLinkRouter(
     private fun navigateToCourseDetail(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
             if (navigateToDiscoveryScreen(fm = fm)) {
-                appRouter.navigateToCourseInfo(
+                discoveryRouter.navigateToCourseInfo(
                     fm = fm,
                     courseId = courseId,
                     infoType = WebViewLink.Authority.COURSE_INFO.name
@@ -174,7 +174,7 @@ class DeepLinkRouter(
     private fun navigateToProgramDetail(fm: Any?, deepLink: DeepLink) {
         deepLink.pathId?.let { pathId ->
             if (navigateToDiscoveryScreen(fm = fm)) {
-                appRouter.navigateToCourseInfo(
+                discoveryRouter.navigateToCourseInfo(
                     fm = fm,
                     courseId = pathId,
                     infoType = WebViewLink.Authority.PROGRAM_INFO.name
@@ -184,8 +184,8 @@ class DeepLinkRouter(
     }
 
     private fun navigateToSignIn(fm: Any?) {
-        if (appRouter.getVisibleFragment(fm = fm) !is SignInFragment) {
-            appRouter.navigateToSignIn(
+        if (true) {
+            (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToSignIn(
                 fm = fm,
                 courseId = null,
                 infoType = null
@@ -199,17 +199,17 @@ class DeepLinkRouter(
         courseTitle: String
     ) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToCourseOutline(
+            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
                 fm = fm,
                 courseId = courseId,
-                courseTitle = courseTitle,
+                courseTitle = courseTitle, openTab = "", resumeBlockId = "",
             )
         }
     }
 
     private fun navigateToCourseVideos(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToCourseOutline(
+            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
                 fm = fm,
                 courseId = courseId,
                 courseTitle = "",
@@ -222,7 +222,7 @@ class DeepLinkRouter(
 
     private fun navigateToCourseDates(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToCourseOutline(
+            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
                 fm = fm,
                 courseId = courseId,
                 courseTitle = "",
@@ -234,7 +234,7 @@ class DeepLinkRouter(
 
     private fun navigateToCourseDiscussion(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToCourseOutline(
+            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
                 fm = fm,
                 courseId = courseId,
                 courseTitle = "",
@@ -246,7 +246,7 @@ class DeepLinkRouter(
 
     private fun navigateToCourseMore(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToCourseOutline(
+            (discoveryRouter as? org.openedx.dashboard.presentation.DashboardRouter)?.navigateToCourseOutline(
                 fm = fm,
                 courseId = courseId,
                 courseTitle = "",
@@ -258,7 +258,7 @@ class DeepLinkRouter(
 
     private fun navigateToCourseHandout(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToHandoutsWebView(
+            (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToHandoutsWebView(
                 fm = fm,
                 courseId = courseId,
                 type = HandoutsType.Handouts
@@ -268,7 +268,7 @@ class DeepLinkRouter(
 
     private fun navigateToCourseAnnouncement(fm: Any?, deepLink: DeepLink) {
         deepLink.courseId?.let { courseId ->
-            appRouter.navigateToHandoutsWebView(
+            (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToHandoutsWebView(
                 fm = fm,
                 courseId = courseId,
                 type = HandoutsType.Announcements
@@ -284,7 +284,7 @@ class DeepLinkRouter(
                         val courseStructure = courseInteractor.getCourseStructure(courseId)
                         courseStructure.blockData
                             .find { it.descendants.contains(componentId) }?.let { block ->
-                                appRouter.navigateToCourseContainer(
+                                (discoveryRouter as? org.openedx.course.presentation.CourseRouter)?.navigateToCourseContainer(
                                     fm = fm,
                                     courseId = courseId,
                                     unitId = block.id,
@@ -305,7 +305,7 @@ class DeepLinkRouter(
         if (pathId == null) {
             navigateToPrograms(fm = fm)
         } else {
-            appRouter.navigateToEnrolledProgramInfo(
+            discoveryRouter.navigateToEnrolledProgramInfo(
                 fm = fm,
                 pathId = pathId
             )
@@ -320,7 +320,7 @@ class DeepLinkRouter(
                         discussionInteractor.getCourseTopics(courseId)
                             .find { it.id == topicId }?.let { topic ->
                                 launch(Dispatchers.Main) {
-                                    appRouter.navigateToDiscussionThread(
+                                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
                                         fm = fm,
                                         action = DiscussionTopicsViewModel.TOPIC,
                                         courseId = courseId,
@@ -347,7 +347,7 @@ class DeepLinkRouter(
                             discussionInteractor.getCourseTopics(courseId)
                                 .find { it.id == topicId }?.let { topic ->
                                     launch(Dispatchers.Main) {
-                                        appRouter.navigateToDiscussionThread(
+                                        (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
                                             fm = fm,
                                             action = DiscussionTopicsViewModel.TOPIC,
                                             courseId = courseId,
@@ -363,7 +363,7 @@ class DeepLinkRouter(
                                 topicId
                             )
                             launch(Dispatchers.Main) {
-                                appRouter.navigateToDiscussionComments(
+                                (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
                                     fm = fm,
                                     thread = thread
                                 )
@@ -390,7 +390,7 @@ class DeepLinkRouter(
                 discussionInteractor.getCourseTopics(courseId)
                     .find { it.id == topicId }?.let { topic ->
                         launch(Dispatchers.Main) {
-                            appRouter.navigateToDiscussionThread(
+                            (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
                                 fm = fm,
                                 action = DiscussionTopicsViewModel.TOPIC,
                                 courseId = courseId,
@@ -406,14 +406,14 @@ class DeepLinkRouter(
                     topicId
                 )
                 launch(Dispatchers.Main) {
-                    appRouter.navigateToDiscussionComments(
+                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
                         fm = fm,
                         thread = thread
                     )
                 }
                 val response = discussionInteractor.getResponse(commentId)
                 launch(Dispatchers.Main) {
-                    appRouter.navigateToDiscussionResponses(
+                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionResponses(
                         fm = fm,
                         comment = response,
                         isClosed = false
@@ -439,7 +439,7 @@ class DeepLinkRouter(
                 discussionInteractor.getCourseTopics(courseId)
                     .find { it.id == topicId }?.let { topic ->
                         launch(Dispatchers.Main) {
-                            appRouter.navigateToDiscussionThread(
+                            (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionThread(
                                 fm = fm,
                                 action = DiscussionTopicsViewModel.TOPIC,
                                 courseId = courseId,
@@ -455,14 +455,14 @@ class DeepLinkRouter(
                     topicId
                 )
                 launch(Dispatchers.Main) {
-                    appRouter.navigateToDiscussionComments(
+                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionComments(
                         fm = fm,
                         thread = thread
                     )
                 }
                 val comment = discussionInteractor.getResponse(parentId)
                 launch(Dispatchers.Main) {
-                    appRouter.navigateToDiscussionResponses(
+                    (discoveryRouter as? org.openedx.discussion.presentation.DiscussionRouter)?.navigateToDiscussionResponses(
                         fm = fm,
                         comment = comment,
                         isClosed = false
@@ -475,7 +475,7 @@ class DeepLinkRouter(
     }
 
     private fun navigateToDashboard(fm: Any?) {
-        appRouter.navigateToMain(
+        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
             fm = fm,
             courseId = null,
             infoType = null,
@@ -484,7 +484,7 @@ class DeepLinkRouter(
     }
 
     private fun navigateToPrograms(fm: Any?) {
-        appRouter.navigateToMain(
+        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
             fm = fm,
             courseId = null,
             infoType = null,
@@ -493,7 +493,7 @@ class DeepLinkRouter(
     }
 
     private fun navigateToProfile(fm: Any?) {
-        appRouter.navigateToMain(
+        (discoveryRouter as? org.openedx.auth.presentation.AuthRouter)?.navigateToMain(
             fm = fm,
             courseId = null,
             infoType = null,

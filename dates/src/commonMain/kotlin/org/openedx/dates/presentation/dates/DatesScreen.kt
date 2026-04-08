@@ -59,7 +59,6 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.dates.R
-import org.openedx.dates.presentation.dates.DatesFragment.Companion.LOAD_MORE_THRESHOLD
 import org.openedx.foundation.extension.isNotEmptyThenLet
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
@@ -188,7 +187,7 @@ fun DatesScreen(
                                 layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
                             val totalItemsCount = layoutInfo.totalItemsCount
                             val shouldLoadMore = totalItemsCount > 0 &&
-                                    lastVisibleItemIndex >= (totalItemsCount * LOAD_MORE_THRESHOLD).toInt()
+                                    lastVisibleItemIndex >= (totalItemsCount * 0.8f).toInt()
                             LaunchedEffect(shouldLoadMore) {
                                 if (shouldLoadMore) {
                                     onAction(DatesViewActions.LoadMore)

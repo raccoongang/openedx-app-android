@@ -24,15 +24,11 @@ import org.openedx.core.AppUpdateState.wasUpgradeDialogClosed
 import org.openedx.core.adapter.NavigationFragmentAdapter
 import org.openedx.core.presentation.dialog.appupgrade.AppUpgradeDialogFragment
 import org.openedx.core.presentation.global.appupgrade.AppUpgradeRecommendedBox
-import org.openedx.core.presentation.global.appupgrade.UpgradeRequiredFragment
 import org.openedx.core.presentation.global.viewBinding
 import org.openedx.core.system.notifier.app.AppUpgradeEvent
-import org.openedx.dates.presentation.dates.DatesFragment
 import org.openedx.discovery.presentation.DiscoveryRouter
-import org.openedx.downloads.presentation.download.DownloadsFragment
 import org.openedx.learn.presentation.LearnFragment
 import org.openedx.learn.presentation.LearnTab
-import org.openedx.profile.presentation.profile.ProfileFragment
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -43,7 +39,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(viewModel)
-        setFragmentResultListener(UpgradeRequiredFragment.REQUEST_KEY) { _, _ ->
+        setFragmentResultListener("UpgradeRequiredFragmentRequestKey") { _, _ ->
             binding.bottomNavView.selectedItemId = R.id.fragmentProfile
             viewModel.enableBottomBar(false)
         }
@@ -103,12 +99,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             add(R.id.fragmentLearn to learnFragmentFactory)
             add(R.id.fragmentDiscover to { viewModel.getDiscoveryFragment })
             if (viewModel.isDownloadsFragmentEnabled) {
-                add(R.id.fragmentDownloads to { DownloadsFragment() })
+                add(R.id.fragmentDownloads to { Fragment() })
             }
             if (viewModel.isDatesFragmentEnabled) {
-                add(R.id.fragmentDates to { DatesFragment() })
+                add(R.id.fragmentDates to { Fragment() })
             }
-            add(R.id.fragmentProfile to { ProfileFragment() })
+            add(R.id.fragmentProfile to { Fragment() })
         }
     }
 

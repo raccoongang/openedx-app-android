@@ -10,7 +10,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.openedx.app.AnalyticsManager
 import org.openedx.app.AppAnalytics
-import org.openedx.app.AppRouter
+import org.openedx.app.NoOpRouter
 import org.openedx.app.BuildConfig
 import org.openedx.app.PluginManager
 import org.openedx.app.data.storage.PreferencesManager
@@ -113,19 +113,19 @@ val appModule = module {
     single { CalendarNotifier() }
 
     single { org.openedx.core.presentation.global.AppNavigator() }
-    single { AppRouter() }
-    single<AuthRouter> { get<AppRouter>() }
-    single<DiscoveryRouter> { get<AppRouter>() }
-    single<DashboardRouter> { get<AppRouter>() }
-    single<CourseRouter> { get<AppRouter>() }
-    single<DiscussionRouter> { get<AppRouter>() }
-    single<ProfileRouter> { get<AppRouter>() }
-    single<WhatsNewRouter> { get<AppRouter>() }
-    single<AppUpgradeRouter> { get<AppRouter>() }
+    single { NoOpRouter() }
+    single<AuthRouter> { get<NoOpRouter>() }
+    single<DiscoveryRouter> { get<NoOpRouter>() }
+    single<DashboardRouter> { get<NoOpRouter>() }
+    single<CourseRouter> { get<NoOpRouter>() }
+    single<DiscussionRouter> { get<NoOpRouter>() }
+    single<ProfileRouter> { get<NoOpRouter>() }
+    single<WhatsNewRouter> { get<NoOpRouter>() }
+    single<AppUpgradeRouter> { get<NoOpRouter>() }
     single { DeepLinkRouter(get(), get(), get(), get(), get(), get()) }
-    single<CalendarRouter> { get<AppRouter>() }
-    single<DownloadsRouter> { get<AppRouter>() }
-    single<DatesRouter> { get<AppRouter>() }
+    single<CalendarRouter> { get<NoOpRouter>() }
+    single<DownloadsRouter> { get<NoOpRouter>() }
+    single<DatesRouter> { get<NoOpRouter>() }
 
     single { NetworkConnection(get()) }
 
