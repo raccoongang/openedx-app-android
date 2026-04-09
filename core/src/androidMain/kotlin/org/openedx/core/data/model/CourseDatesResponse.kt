@@ -2,7 +2,7 @@ package org.openedx.core.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.CourseDate as DomainCourseDate
 import org.openedx.core.domain.model.CourseDatesResponse as DomainCourseDatesResponse
 
@@ -24,7 +24,7 @@ data class CourseDate(
     val courseName: String?
 ) {
     fun mapToDomain(): DomainCourseDate? {
-        val dueDate = TimeUtils.iso8601ToDate(dueDate ?: "")
+        val dueDate = InstantUtils.iso8601ToInstant(dueDate ?: "")
         return DomainCourseDate(
             courseId = courseId,
             firstComponentBlockId = firstComponentBlockId ?: "",

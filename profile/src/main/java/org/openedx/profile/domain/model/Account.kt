@@ -1,10 +1,10 @@
 package org.openedx.profile.domain.model
 
+import kotlinx.datetime.Instant
 import org.openedx.core.AppDataConstants.USER_MIN_YEAR
 import org.openedx.core.domain.model.LanguageProficiency
 import org.openedx.core.domain.model.ProfileImage
 import java.util.Calendar
-import java.util.Date
 
 data class Account(
     val username: String,
@@ -21,7 +21,7 @@ data class Account(
     val gender: String,
     val mailingAddress: String,
     val email: String?,
-    val dateJoined: Date?,
+    val dateJoined: Instant?,
     val accountPrivacy: Privacy
 ) {
 

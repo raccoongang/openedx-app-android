@@ -33,10 +33,10 @@ import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.DatesSection
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
+import kotlinx.datetime.Clock
 import org.openedx.core.utils.TimeUtils.formatToString
-import org.openedx.core.utils.clearTime
 import org.openedx.core.utils.isToday
-import java.util.Date
+import org.openedx.core.utils.startOfDay
 
 @Composable
 private fun CourseDateBlockSectionGeneric(
@@ -135,7 +135,7 @@ private fun DateBlock(
     onItemClick: (CourseDateBlock) -> Unit,
 ) {
     DateBlockContainer {
-        var lastAssignmentDate = dateBlocks.first().date.clearTime()
+        var lastAssignmentDate = dateBlocks.first().date.startOfDay()
         dateBlocks.forEachIndexed { index, dateBlock ->
             val canShowDate = if (index == 0) true else (lastAssignmentDate != dateBlock.date)
             CourseDateItem(dateBlock, canShowDate, index != 0, useRelativeDates, onItemClick)
@@ -263,7 +263,7 @@ private fun CourseDateItem(
         if (isMiddleChild) {
             Spacer(modifier = Modifier.height(20.dp))
         }
-        if (!dateBlock.dueDate.isToday() || dateBlock.dueDate < Date()) {
+        if (!dateBlock.dueDate.isToday() || dateBlock.dueDate < Clock.System.now()) {
             val timeTitle = formatToString(context, dateBlock.dueDate, useRelativeDates)
             Text(
                 text = timeTitle,

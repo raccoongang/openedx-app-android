@@ -1,7 +1,8 @@
 package org.openedx.core.domain.model
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.openedx.core.data.model.DateType
-import java.util.Date
 
 data class CourseDateBlock(
     val title: String = "",
@@ -10,7 +11,7 @@ data class CourseDateBlock(
     val blockId: String = "",
     val learnerHasAccess: Boolean = false,
     val complete: Boolean = false,
-    val date: Date,
+    val date: Instant,
     val dateType: DateType = DateType.NONE,
     val assignmentType: String? = "",
 ) {
@@ -22,7 +23,7 @@ data class CourseDateBlock(
             DateType.VERIFIED_UPGRADE_DEADLINE,
             DateType.VERIFICATION_DEADLINE_DATE
         )
-        return complete || (dateTypeInSet && date.before(Date()))
+        return complete || (dateTypeInSet && date < Clock.System.now())
     }
 
     override fun equals(other: Any?): Boolean {

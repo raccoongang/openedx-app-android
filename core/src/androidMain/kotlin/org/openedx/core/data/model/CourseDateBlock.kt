@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.CourseDateBlockDb
 import org.openedx.core.domain.model.CourseDateBlock
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 
 @Serializable
 data class CourseDateBlock(
@@ -31,7 +31,7 @@ data class CourseDateBlock(
     val blockId: String = "",
 ) {
     fun mapToDomain(): CourseDateBlock? {
-        TimeUtils.iso8601ToDate(date)?.let {
+        InstantUtils.iso8601ToInstant(date)?.let {
             return CourseDateBlock(
                 complete = complete,
                 date = it,
@@ -47,10 +47,10 @@ data class CourseDateBlock(
     }
 
     fun mapToRoomEntity(): CourseDateBlockDb? {
-        TimeUtils.iso8601ToDate(date)?.let {
+        InstantUtils.iso8601ToInstant(date)?.let {
             return CourseDateBlockDb(
                 complete = complete,
-                date = it,
+                date = it.toEpochMilliseconds(),
                 assignmentType = assignmentType,
                 dateType = dateType,
                 description = description,

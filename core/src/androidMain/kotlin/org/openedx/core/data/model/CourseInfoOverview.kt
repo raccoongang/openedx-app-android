@@ -2,7 +2,7 @@ package org.openedx.core.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.CourseInfoOverview as DomainCourseInfoOverview
 
 @Serializable
@@ -34,10 +34,10 @@ data class CourseInfoOverview(
         name = name,
         number = number,
         org = org,
-        start = TimeUtils.iso8601ToDate(start ?: ""),
+        start = InstantUtils.iso8601ToInstant(start ?: ""),
         startDisplay = startDisplay,
         startType = startType,
-        end = TimeUtils.iso8601ToDate(end ?: ""),
+        end = InstantUtils.iso8601ToInstant(end ?: ""),
         isSelfPaced = isSelfPaced,
         media = media?.mapToDomain(),
         courseSharingUtmParameters = courseSharingUtmParameters.mapToDomain(),

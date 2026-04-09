@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.MediaDb
 import org.openedx.core.data.model.room.discovery.EnrolledCourseDataDb
 import org.openedx.core.domain.model.EnrolledCourseData
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 
 @Serializable
 data class EnrolledCourseData(
@@ -101,5 +101,5 @@ data class EnrolledCourseData(
         )
     }
 
-    private fun parseDate(date: String?) = TimeUtils.iso8601ToDate(date.orEmpty())
+    private fun parseDate(date: String?) = InstantUtils.iso8601ToInstant(date.orEmpty())
 }

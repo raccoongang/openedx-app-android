@@ -20,7 +20,7 @@ import org.openedx.core.domain.model.EnrolledCourseData
 import org.openedx.core.domain.model.Progress
 import org.openedx.core.ui.WindowSize
 import org.openedx.core.ui.WindowType
-import java.util.Date
+import kotlinx.datetime.Clock
 
 class MyCoursesScreenTest {
 
@@ -39,7 +39,7 @@ class MyCoursesScreenTest {
             name = "name",
             number = "",
             org = "Org",
-            start = Date(),
+            start = Clock.System.now(),
             startDisplay = "",
             startType = "",
             end = null,

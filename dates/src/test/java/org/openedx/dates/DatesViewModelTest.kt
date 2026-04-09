@@ -34,7 +34,7 @@ import org.openedx.dates.presentation.dates.DatesViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import java.util.Date
+import kotlinx.datetime.Instant
 import org.openedx.foundation.R as foundationR
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -179,7 +179,7 @@ class DatesViewModelTest {
             every { relative } returns true
             every { courseId } returns "course-123"
             // Set dueDate to yesterday.
-            every { dueDate } returns Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
+            every { dueDate } returns Instant.fromEpochMilliseconds(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
         }
         val courseDatesResponse = CourseDatesResponse(
             count = 1,
@@ -216,7 +216,7 @@ class DatesViewModelTest {
             val courseDate: CourseDate = mockk(relaxed = true) {
                 every { relative } returns true
                 every { courseId } returns "course-123"
-                every { dueDate } returns Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
+                every { dueDate } returns Instant.fromEpochMilliseconds(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
             }
             val courseDatesResponse = CourseDatesResponse(
                 count = 1,

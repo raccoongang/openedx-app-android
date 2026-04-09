@@ -1,10 +1,10 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class EnrollmentDetails(
-    val created: Date?,
+    val created: Instant?,
     val mode: String?,
     val isActive: Boolean,
-    val upgradeDeadline: Date?,
+    val upgradeDeadline: Instant?,
 )

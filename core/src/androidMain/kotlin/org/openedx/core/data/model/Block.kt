@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
 import org.openedx.core.BlockType
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.Block as DomainBlock
 import org.openedx.core.domain.model.BlockCounts as DomainBlockCounts
 import org.openedx.core.domain.model.EncodedVideos as DomainEncodedVideos
@@ -69,7 +69,7 @@ data class Block(
             completion = completion ?: 0.0,
             containsGatedContent = containsGatedContent ?: false,
             assignmentProgress = assignmentProgress?.mapToDomain(displayName.orEmpty()),
-            due = TimeUtils.iso8601ToDate(due.orEmpty()),
+            due = InstantUtils.iso8601ToInstant(due.orEmpty()),
             offlineDownload = offlineDownload?.mapToDomain()
         )
     }

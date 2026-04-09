@@ -121,7 +121,7 @@ import org.openedx.foundation.extension.nonZero
 import org.openedx.foundation.extension.toFileSize
 import subtitleFile.Caption
 import subtitleFile.TimedTextObject
-import java.util.Date
+import kotlinx.datetime.Clock
 import org.openedx.core.R as coreR
 
 const val AUTO_SCROLL_DELAY = 3000L
@@ -559,11 +559,11 @@ fun VideoSubtitles(
             mutableLongStateOf(0L)
         }
         if (listState.isScrollInProgress) {
-            lastScrollTime = Date().time
+            lastScrollTime = Clock.System.now().toEpochMilliseconds()
         }
 
         LaunchedEffect(key1 = currentIndex) {
-            if (currentIndex > 1 && lastScrollTime + AUTO_SCROLL_DELAY < Date().time) {
+            if (currentIndex > 1 && lastScrollTime + AUTO_SCROLL_DELAY < Clock.System.now().toEpochMilliseconds()) {
                 listState.animateScrollToItem(currentIndex - 1)
             }
         }

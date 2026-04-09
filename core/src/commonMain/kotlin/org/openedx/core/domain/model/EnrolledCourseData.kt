@@ -1,16 +1,16 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class EnrolledCourseData(
     val id: String,
     val name: String,
     val number: String,
     val org: String,
-    val start: Date?,
+    val start: Instant?,
     val startDisplay: String,
     val startType: String,
-    val end: Date?,
+    val end: Instant?,
     val dynamicUpgradeDeadline: String,
     val subscriptionId: String,
     val coursewareAccess: CoursewareAccess?,

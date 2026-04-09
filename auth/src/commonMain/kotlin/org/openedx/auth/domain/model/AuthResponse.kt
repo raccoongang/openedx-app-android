@@ -1,6 +1,6 @@
 package org.openedx.auth.domain.model
 
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 
 data class AuthResponse(
     var accessToken: String?,
@@ -11,6 +11,6 @@ data class AuthResponse(
     var refreshToken: String?,
 ) {
     fun getTokenExpiryTime(): Long {
-        return (expiresIn ?: 0L) + TimeUtils.getCurrentTime()
+        return (expiresIn ?: 0L) + InstantUtils.getCurrentTime()
     }
 }

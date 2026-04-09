@@ -12,9 +12,7 @@ import org.openedx.core.data.model.room.discovery.CourseAccessDetailsDb
 import org.openedx.core.data.model.room.discovery.CourseSharingUtmParametersDb
 import org.openedx.core.data.model.room.discovery.CoursewareAccessDb
 import org.openedx.core.data.model.room.discovery.EnrollmentDetailsDB
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import kotlinx.datetime.Instant
 
 // Certificate -> CertificateDb
 fun Certificate.mapToRoomEntity() = CertificateDb(certificateURL)
@@ -25,11 +23,7 @@ fun CourseAccessDetails.mapToRoomEntity(): CourseAccessDetailsDb =
         hasUnmetPrerequisites = hasUnmetPrerequisites,
         isTooEarly = isTooEarly,
         isStaff = isStaff,
-        auditAccessExpires = auditAccessExpires?.let {
-            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
-            }.format(it)
-        },
+        auditAccessExpires = auditAccessExpires?.toString(),
         coursewareAccess = coursewareAccess?.mapToEntity()
     )
 
@@ -50,10 +44,10 @@ fun CourseInfoOverview.mapToEntity() = CourseInfoOverviewDb(
     name = name,
     number = number,
     org = org,
-    start = start,
+    start = start?.toEpochMilliseconds(),
     startDisplay = startDisplay ?: "",
     startType = startType,
-    end = end,
+    end = end?.toEpochMilliseconds(),
     isSelfPaced = isSelfPaced,
     media = media?.mapToEntity(),
     courseSharingUtmParameters = courseSharingUtmParameters.mapToEntity(),
@@ -77,17 +71,11 @@ fun CoursewareAccess.mapToEntity() = CoursewareAccessDb(
 )
 
 // EnrollmentDetails -> EnrollmentDetailsDB
-private fun formatIso8601(date: java.util.Date): String {
-    return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }.format(date)
-}
-
 fun EnrollmentDetails.mapToEntity() = EnrollmentDetailsDB(
-    created = created?.let { formatIso8601(it) },
+    created = created?.toString(),
     mode = mode,
     isActive = isActive,
-    upgradeDeadline = upgradeDeadline?.let { formatIso8601(it) }
+    upgradeDeadline = upgradeDeadline?.toString()
 )
 
 // Media -> MediaDb

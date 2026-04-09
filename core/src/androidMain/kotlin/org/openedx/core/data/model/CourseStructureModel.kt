@@ -7,7 +7,7 @@ import org.openedx.core.data.model.room.CourseStructureEntity
 import org.openedx.core.data.model.room.MediaDb
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.CourseStructure
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 
 @Serializable
 data class CourseStructureModel(
@@ -56,10 +56,10 @@ data class CourseStructureModel(
             name = name ?: "",
             number = number ?: "",
             org = org ?: "",
-            start = TimeUtils.iso8601ToDate(start ?: ""),
+            start = InstantUtils.iso8601ToInstant(start ?: ""),
             startDisplay = startDisplay ?: "",
             startType = startType ?: "",
-            end = TimeUtils.iso8601ToDate(end ?: ""),
+            end = InstantUtils.iso8601ToInstant(end ?: ""),
             coursewareAccess = coursewareAccess?.mapToDomain(),
             media = media?.mapToDomain(),
             certificate = certificate?.mapToDomain(),

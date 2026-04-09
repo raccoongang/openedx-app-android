@@ -3,7 +3,7 @@ package org.openedx.core.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.EnrollmentDetailsDB
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.EnrollmentDetails as DomainEnrollmentDetails
 
 @Serializable
@@ -20,10 +20,10 @@ data class EnrollmentDetails(
     val upgradeDeadline: String?,
 ) {
     fun mapToDomain() = DomainEnrollmentDetails(
-        created = TimeUtils.iso8601ToDate(date ?: ""),
+        created = InstantUtils.iso8601ToInstant(date ?: ""),
         mode = mode,
         isActive = isActive,
-        upgradeDeadline = TimeUtils.iso8601ToDate(upgradeDeadline ?: ""),
+        upgradeDeadline = InstantUtils.iso8601ToInstant(upgradeDeadline ?: ""),
     )
 
     fun mapToRoomEntity() = EnrollmentDetailsDB(

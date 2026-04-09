@@ -1,6 +1,6 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class CourseDatesResponse(
     val count: Int,
@@ -12,7 +12,7 @@ data class CourseDatesResponse(
 data class CourseDate(
     val courseId: String,
     val firstComponentBlockId: String,
-    val dueDate: Date,
+    val dueDate: Instant,
     val assignmentTitle: String,
     val learnerHasAccess: Boolean,
     val relative: Boolean,

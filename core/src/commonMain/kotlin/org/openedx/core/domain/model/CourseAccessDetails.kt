@@ -1,11 +1,11 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class CourseAccessDetails(
     val hasUnmetPrerequisites: Boolean,
     val isTooEarly: Boolean,
     val isStaff: Boolean,
-    val auditAccessExpires: Date?,
+    val auditAccessExpires: Instant?,
     val coursewareAccess: CoursewareAccess?,
 )

@@ -1,9 +1,9 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class EnrolledCourse(
-    val auditAccessExpires: Date?,
+    val auditAccessExpires: Instant?,
     val created: String,
     val mode: String,
     val isActive: Boolean,

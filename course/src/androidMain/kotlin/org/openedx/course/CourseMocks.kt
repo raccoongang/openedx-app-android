@@ -11,7 +11,7 @@ import org.openedx.core.domain.model.CourseDatesResult
 import org.openedx.core.domain.model.CoursewareAccess
 import org.openedx.core.domain.model.DatesSection
 import org.openedx.core.domain.model.Progress
-import java.util.Date
+import kotlinx.datetime.Clock
 
 object CourseMocks {
 
@@ -37,7 +37,7 @@ object CourseMocks {
             numPointsPossible = 3f,
             shortLabel = "HM1"
         ),
-        due = Date(),
+        due = Clock.System.now(),
         offlineDownload = null
     )
 
@@ -57,7 +57,7 @@ object CourseMocks {
 
     val courseDateBlock = CourseDateBlock(
         complete = false,
-        date = Date(),
+        date = Clock.System.now(),
         dateType = DateType.TODAY_DATE,
         description = "Mocked Course Date Description"
     )

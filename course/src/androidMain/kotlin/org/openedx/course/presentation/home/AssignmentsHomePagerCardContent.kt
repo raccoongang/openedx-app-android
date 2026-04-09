@@ -38,7 +38,7 @@ import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.course.R
 import org.openedx.course.presentation.contenttab.CourseContentAssignmentEmptyState
-import java.util.Date
+import kotlinx.datetime.Clock
 import org.openedx.core.R as coreR
 
 private const val MILLISECONDS_PER_SECOND = 1000
@@ -160,7 +160,7 @@ private fun AssignmentCard(
     onAssignmentClick: (Block) -> Unit,
     background: Color = MaterialTheme.appColors.surface
 ) {
-    val isDuePast = assignment.due != null && assignment.due!! < Date()
+    val isDuePast = assignment.due != null && assignment.due!! < Clock.System.now()
 
     // Header text - "Past Due" or "Due Soon"
     val headerText = if (isDuePast) {
@@ -172,7 +172,7 @@ private fun AssignmentCard(
     // Due date status text
     val dueDateStatusText = assignment.due?.let { due ->
         val formattedDate = TimeUtils.formatToMonthDay(due)
-        val daysDifference = ((due.time - Date().time) / MILLISECONDS_PER_DAY).toInt()
+        val daysDifference = ((due.toEpochMilliseconds() - Clock.System.now().toEpochMilliseconds()) / MILLISECONDS_PER_DAY).toInt()
         when {
             daysDifference < 0 -> {
                 // Past due

@@ -8,9 +8,9 @@ import org.openedx.core.data.model.room.discovery.CertificateDb
 import org.openedx.core.data.model.room.discovery.CourseAccessDetailsDb
 import org.openedx.core.data.model.room.discovery.CourseSharingUtmParametersDb
 import org.openedx.core.data.model.room.discovery.EnrollmentDetailsDB
+import kotlinx.datetime.Instant
 import org.openedx.core.domain.model.CourseEnrollmentDetails
 import org.openedx.core.domain.model.CourseInfoOverview
-import java.util.Date
 
 @Entity(tableName = "course_enrollment_details_table")
 data class CourseEnrollmentDetailsEntity(
@@ -52,13 +52,13 @@ data class CourseInfoOverviewDb(
     @ColumnInfo("org")
     val org: String,
     @ColumnInfo("start")
-    val start: Date?,
+    val start: Long?,
     @ColumnInfo("startDisplay")
     val startDisplay: String,
     @ColumnInfo("startType")
     val startType: String,
     @ColumnInfo("end")
-    val end: Date?,
+    val end: Long?,
     @ColumnInfo("isSelfPaced")
     val isSelfPaced: Boolean,
     @Embedded
@@ -72,10 +72,10 @@ data class CourseInfoOverviewDb(
         name = name,
         number = number,
         org = org,
-        start = start,
+        start = start?.let { Instant.fromEpochMilliseconds(it) },
         startDisplay = startDisplay,
         startType = startType,
-        end = end,
+        end = end?.let { Instant.fromEpochMilliseconds(it) },
         isSelfPaced = isSelfPaced,
         media = media?.mapToDomain(),
         courseSharingUtmParameters = courseSharingUtmParameters.mapToDomain(),

@@ -93,7 +93,7 @@ import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.foundation.presentation.windowSizeValue
-import java.util.Date
+import kotlinx.datetime.Clock
 import org.openedx.core.R as CoreR
 
 @Composable
@@ -815,7 +815,7 @@ private fun PrimaryCourseTitle(
             color = MaterialTheme.appColors.textFieldHint,
             text = TimeUtils.getCourseFormattedDate(
                 LocalContext.current,
-                Date(),
+                Clock.System.now(),
                 primaryCourse.auditAccessExpires,
                 primaryCourse.course.start,
                 primaryCourse.course.end,

@@ -20,7 +20,6 @@ import org.openedx.core.domain.model.CalendarType
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.UserCalendar
 import org.openedx.core.utils.Logger
-import org.openedx.core.utils.toCalendar
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
@@ -273,9 +272,8 @@ class CalendarManager(
         attemptNumber: Int
     ): Long {
         return try {
-            val date = courseDateBlock.date.toCalendar()
-            val startMillis = date.timeInMillis - TimeUnit.HOURS.toMillis(1)
-            val endMillis = date.timeInMillis
+            val endMillis = courseDateBlock.date.toEpochMilliseconds()
+            val startMillis = endMillis - TimeUnit.HOURS.toMillis(1)
 
             val values = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, startMillis)

@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.domain.model.CourseDatesBannerInfo
 import org.openedx.core.domain.model.CourseDatesResult
 import org.openedx.core.domain.model.DatesSection
-import org.openedx.core.utils.TimeUtils
+import kotlinx.datetime.Clock
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.utils.addDays
-import org.openedx.core.utils.clearTime
 import org.openedx.core.utils.isToday
-import java.util.Date
+import org.openedx.core.utils.startOfDay
 import org.openedx.core.domain.model.CourseDateBlock as DomainCourseDateBlock
 
 @Serializable
@@ -39,7 +39,7 @@ data class CourseDates(
     }
 
     private fun getStructuredCourseDates(): LinkedHashMap<DatesSection, List<DomainCourseDateBlock>> {
-        val currentDate = Date()
+        val now = Clock.System.now()
         val courseDatesResponse: LinkedHashMap<DatesSection, List<DomainCourseDateBlock>> =
             LinkedHashMap()
         val datesList = mapToDomain()
@@ -48,27 +48,27 @@ data class CourseDates(
             datesList.filter { it.isCompleted() }.also { datesList.removeAll(it) }
 
         courseDatesResponse[DatesSection.PAST_DUE] =
-            datesList.filter { currentDate.after(it.date) }.also { datesList.removeAll(it) }
+            datesList.filter { now > it.date }.also { datesList.removeAll(it) }
 
         courseDatesResponse[DatesSection.TODAY] =
             datesList.filter { it.date.isToday() }.also { datesList.removeAll(it) }
 
         // Update the date for upcoming comparison without time
-        currentDate.clearTime()
+        val currentDate = now.startOfDay()
 
         // for current week except today
         courseDatesResponse[DatesSection.THIS_WEEK] = datesList.filter {
-            it.date.after(currentDate) && it.date.before(currentDate.addDays(days = 8))
+            it.date > currentDate && it.date < currentDate.addDays(days = 8)
         }.also { datesList.removeAll(it) }
 
         // for coming week
         courseDatesResponse[DatesSection.NEXT_WEEK] = datesList.filter {
-            it.date.after(currentDate.addDays(days = 7)) && it.date.before(currentDate.addDays(days = 15))
+            it.date > currentDate.addDays(days = 7) && it.date < currentDate.addDays(days = 15)
         }.also { datesList.removeAll(it) }
 
         // for upcoming
         courseDatesResponse[DatesSection.UPCOMING] = datesList.filter {
-            it.date.after(currentDate.addDays(days = 14))
+            it.date > currentDate.addDays(days = 14)
         }.also { datesList.removeAll(it) }
 
         return courseDatesResponse
@@ -76,7 +76,7 @@ data class CourseDates(
 
     private fun mapToDomain(): MutableList<DomainCourseDateBlock> {
         return courseDateBlocks.mapNotNull { item ->
-            TimeUtils.iso8601ToDate(item.date)?.let { date ->
+            InstantUtils.iso8601ToInstant(item.date)?.let { date ->
                 DomainCourseDateBlock(
                     title = item.title,
                     description = item.description,

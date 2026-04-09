@@ -92,7 +92,7 @@ import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.foundation.presentation.windowSizeValue
-import java.util.Date
+import kotlinx.datetime.Clock
 
 @Composable
 fun AllEnrolledCoursesView() {
@@ -435,7 +435,7 @@ fun CourseItem(
                     maxLines = 2,
                     text = TimeUtils.getCourseFormattedDate(
                         LocalContext.current,
-                        Date(),
+                        Clock.System.now(),
                         course.auditAccessExpires,
                         course.course.start,
                         course.course.end,

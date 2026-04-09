@@ -7,8 +7,8 @@ import org.openedx.app.BuildConfig
 import org.openedx.core.AppUpdateState
 import org.openedx.core.system.notifier.app.AppNotifier
 import org.openedx.core.system.notifier.app.AppUpgradeEvent
-import org.openedx.core.utils.TimeUtils
-import java.util.Date
+import kotlinx.datetime.Clock
+import org.openedx.core.utils.InstantUtils
 
 class AppUpgradeInterceptor(
     private val appNotifier: AppNotifier
@@ -19,20 +19,20 @@ class AppUpgradeInterceptor(
         val latestAppVersion = response.header(HEADER_APP_LATEST_VERSION) ?: ""
         val lastSupportedDateString = response.header(HEADER_APP_VERSION_LAST_SUPPORTED_DATE) ?: ""
         val lastSupportedDateTime =
-            TimeUtils.iso8601WithTimeZoneToDate(lastSupportedDateString)?.time ?: 0L
+            InstantUtils.iso8601ToInstant(lastSupportedDateString)?.toEpochMilliseconds() ?: 0L
         runBlocking {
             val appUpgradeEvent = when {
                 responseCode == 426 -> {
                     AppUpgradeEvent.UpgradeRequiredEvent
                 }
 
-                BuildConfig.VERSION_NAME != latestAppVersion && lastSupportedDateTime > Date().time -> {
+                BuildConfig.VERSION_NAME != latestAppVersion && lastSupportedDateTime > Clock.System.now().toEpochMilliseconds() -> {
                     AppUpgradeEvent.UpgradeRecommendedEvent(latestAppVersion)
                 }
 
                 latestAppVersion.isNotEmpty() &&
                         BuildConfig.VERSION_NAME != latestAppVersion &&
-                        lastSupportedDateTime < Date().time -> {
+                        lastSupportedDateTime < Clock.System.now().toEpochMilliseconds() -> {
                     AppUpgradeEvent.UpgradeRequiredEvent
                 }
 

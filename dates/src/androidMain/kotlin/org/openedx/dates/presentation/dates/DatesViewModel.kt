@@ -13,8 +13,10 @@ import org.openedx.core.domain.model.CourseDatesResponse
 import org.openedx.core.domain.model.DatesSection
 import org.openedx.core.extension.isNotNull
 import org.openedx.core.system.connection.NetworkConnection
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.openedx.core.utils.isToday
-import org.openedx.core.utils.toCalendar
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.dates.domain.interactor.DatesInteractor
 import org.openedx.dates.presentation.DatesAnalytics
@@ -23,7 +25,6 @@ import org.openedx.dates.presentation.DatesAnalyticsKey
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import java.util.Calendar
-import java.util.Date
 
 class DatesViewModel(
     private val networkConnection: NetworkConnection,
@@ -171,17 +172,21 @@ class DatesViewModel(
     }
 
     private fun groupCourseDates(dates: List<CourseDate>): Map<DatesSection, List<CourseDate>> {
-        val now = Date()
-        val calendar = Calendar.getInstance().apply { time = now }
+        val now = Clock.System.now()
+        val tz = TimeZone.currentSystemDefault()
+        val nowLocal = now.toLocalDateTime(tz)
+        val calNow = Calendar.getInstance()
         return dates.groupBy { courseDate ->
             when {
-                courseDate.dueDate.before(now) -> DatesSection.PAST_DUE
+                courseDate.dueDate < now -> DatesSection.PAST_DUE
                 courseDate.dueDate.isToday() -> DatesSection.TODAY
                 else -> {
-                    val calDue = courseDate.dueDate.toCalendar()
-                    val weekNow = calendar.get(Calendar.WEEK_OF_YEAR)
+                    val calDue = Calendar.getInstance().apply {
+                        timeInMillis = courseDate.dueDate.toEpochMilliseconds()
+                    }
+                    val weekNow = calNow.get(Calendar.WEEK_OF_YEAR)
                     val weekDue = calDue.get(Calendar.WEEK_OF_YEAR)
-                    val yearNow = calendar.get(Calendar.YEAR)
+                    val yearNow = calNow.get(Calendar.YEAR)
                     val yearDue = calDue.get(Calendar.YEAR)
                     if (weekNow == weekDue && yearNow == yearDue) {
                         DatesSection.THIS_WEEK

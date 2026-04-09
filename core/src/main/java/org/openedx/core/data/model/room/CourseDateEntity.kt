@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.openedx.core.data.model.CourseDate
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.CourseDate as DomainCourseDate
 
 @Entity(tableName = "course_dates_table")
@@ -29,7 +29,7 @@ data class CourseDateEntity(
 ) {
 
     fun mapToDomain(): DomainCourseDate? {
-        val dueDate = TimeUtils.iso8601ToDate(dueDate ?: "")
+        val dueDate = InstantUtils.iso8601ToInstant(dueDate ?: "")
         return DomainCourseDate(
             courseId = courseId,
             firstComponentBlockId = firstComponentBlockId ?: "",

@@ -6,6 +6,7 @@ import org.openedx.core.R
 import org.openedx.core.domain.model.StartType
 import org.openedx.foundation.system.AndroidResourceManager
 import org.openedx.foundation.system.ResourceManager
+import kotlinx.datetime.Instant
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -78,6 +79,18 @@ object TimeUtils {
             }
         }
     }
+    fun formatToString(context: Context, instant: Instant, useRelativeDates: Boolean): String {
+        return formatToString(context, Date(instant.toEpochMilliseconds()), useRelativeDates)
+    }
+
+    fun formatToDueInString(context: Context, instant: Instant): String {
+        return formatToDueInString(context, Date(instant.toEpochMilliseconds()))
+    }
+
+    fun formatToMonthDay(instant: Instant): String {
+        return formatToMonthDay(Date(instant.toEpochMilliseconds()))
+    }
+
     fun formatToDueInString(context: Context, date: Date): String {
         val now = Calendar.getInstance()
         val dueDate = Calendar.getInstance().apply { time = date }
@@ -340,6 +353,30 @@ object TimeUtils {
     fun getCourseAccessFormattedDate(context: Context, date: Date): String {
         val resourceManager = AndroidResourceManager(context)
         return dateToCourseDate(resourceManager, date)
+    }
+
+    fun getCourseAccessFormattedDate(context: Context, instant: Instant): String {
+        return getCourseAccessFormattedDate(context, Date(instant.toEpochMilliseconds()))
+    }
+
+    fun getCourseFormattedDate(
+        context: Context,
+        today: Instant,
+        expiry: Instant?,
+        start: Instant?,
+        end: Instant?,
+        startType: String,
+        startDisplay: String
+    ): String {
+        return getCourseFormattedDate(
+            context,
+            Date(today.toEpochMilliseconds()),
+            expiry?.let { Date(it.toEpochMilliseconds()) },
+            start?.let { Date(it.toEpochMilliseconds()) },
+            end?.let { Date(it.toEpochMilliseconds()) },
+            startType,
+            startDisplay
+        )
     }
 }
 

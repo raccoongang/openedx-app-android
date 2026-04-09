@@ -1,7 +1,6 @@
 package org.openedx.core.data.model.room.discovery
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Contextual
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -20,8 +19,7 @@ import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.domain.model.EnrolledCourseData
 import org.openedx.core.domain.model.EnrollmentDetails
 import org.openedx.core.domain.model.Progress
-import org.openedx.core.utils.TimeUtils
-import java.util.Date
+import org.openedx.core.utils.InstantUtils
 
 @Entity(tableName = "course_enrolled_table")
 data class EnrolledCourseEntity(
@@ -50,7 +48,7 @@ data class EnrolledCourseEntity(
 
     fun mapToDomain(): EnrolledCourse {
         return EnrolledCourse(
-            TimeUtils.iso8601ToDate(auditAccessExpires),
+            InstantUtils.iso8601ToInstant(auditAccessExpires),
             created,
             mode,
             isActive,
@@ -112,10 +110,10 @@ data class EnrolledCourseDataDb(
             name,
             number,
             org,
-            TimeUtils.iso8601ToDate(start),
+            InstantUtils.iso8601ToInstant(start),
             startDisplay,
             startType,
-            TimeUtils.iso8601ToDate(end),
+            InstantUtils.iso8601ToInstant(end),
             dynamicUpgradeDeadline,
             subscriptionId,
             coursewareAccess?.mapToDomain(),
@@ -241,8 +239,8 @@ data class CourseDateBlockDb(
     val learnerHasAccess: Boolean = false,
     @ColumnInfo("complete")
     val complete: Boolean = false,
-    @Embedded
-    @Contextual val date: Date,
+    @ColumnInfo("date")
+    val date: Long,
     @ColumnInfo("dateType")
     val dateType: DateType = DateType.NONE,
     @ColumnInfo("assignmentType")
@@ -255,7 +253,7 @@ data class CourseDateBlockDb(
         blockId = blockId,
         learnerHasAccess = learnerHasAccess,
         complete = complete,
-        date = date,
+        date = kotlinx.datetime.Instant.fromEpochMilliseconds(date),
         dateType = dateType,
         assignmentType = assignmentType
     )
@@ -273,10 +271,10 @@ data class EnrollmentDetailsDB(
     var upgradeDeadline: String?,
 ) {
     fun mapToDomain() = EnrollmentDetails(
-        TimeUtils.iso8601ToDate(created ?: ""),
+        InstantUtils.iso8601ToInstant(created ?: ""),
         mode,
         isActive,
-        TimeUtils.iso8601ToDate(upgradeDeadline ?: "")
+        InstantUtils.iso8601ToInstant(upgradeDeadline ?: "")
     )
 }
 
@@ -298,7 +296,7 @@ data class CourseAccessDetailsDb(
             hasUnmetPrerequisites = hasUnmetPrerequisites,
             isTooEarly = isTooEarly,
             isStaff = isStaff,
-            auditAccessExpires = TimeUtils.iso8601ToDate(auditAccessExpires ?: ""),
+            auditAccessExpires = InstantUtils.iso8601ToInstant(auditAccessExpires ?: ""),
             coursewareAccess = coursewareAccess?.mapToDomain()
         )
     }

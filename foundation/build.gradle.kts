@@ -31,6 +31,9 @@ kotlin {
             // kotlinx.serialization
             api(libs.kotlinx.serialization.json)
 
+            // kotlinx.datetime
+            api(libs.kotlinx.datetime)
+
             // Ktor
             api(libs.ktor.client.core)
             api(libs.ktor.client.content.negotiation)

@@ -69,7 +69,7 @@ import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
-import java.util.Date
+import kotlinx.datetime.Clock
 import org.openedx.core.R as coreR
 
 private const val ICON_SIZE_DP = 20
@@ -312,7 +312,7 @@ private fun AssignmentGroupSection(
 
 @Composable
 private fun AssignmentButton(assignment: Block, isSelected: Boolean, onClick: () -> Unit) {
-    val isDuePast = assignment.due != null && assignment.due!! < Date()
+    val isDuePast = assignment.due != null && assignment.due!! < Clock.System.now()
     val cardBorderColor = when {
         isSelected -> MaterialTheme.appColors.primary
         assignment.isCompleted() -> MaterialTheme.appColors.successGreen
@@ -417,7 +417,7 @@ private fun AssignmentDetails(
         assignment.due?.let {
             TimeUtils.formatToDueInString(LocalContext.current, it)
         } ?: ""
-    val isDuePast = assignment.due != null && assignment.due!! < Date()
+    val isDuePast = assignment.due != null && assignment.due!! < Clock.System.now()
     val progress = assignment.completion.toFloat()
     val color = when {
         assignment.isCompleted() -> MaterialTheme.appColors.successGreen

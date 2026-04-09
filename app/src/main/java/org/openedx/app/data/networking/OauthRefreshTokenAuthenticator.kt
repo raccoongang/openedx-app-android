@@ -29,7 +29,7 @@ import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.system.notifier.app.AppNotifier
 import org.openedx.core.system.notifier.app.LogoutEvent
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -158,12 +158,12 @@ class OauthRefreshTokenAuthenticator(
     }
 
     private fun isTokenExpired(): Boolean {
-        val time = TimeUtils.getCurrentTime() + REFRESH_TOKEN_EXPIRY_THRESHOLD
+        val time = InstantUtils.getCurrentTime() + REFRESH_TOKEN_EXPIRY_THRESHOLD
         return time >= preferencesManager.accessTokenExpiresAt
     }
 
     private fun canRequestTokenRefresh(): Boolean {
-        return TimeUtils.getCurrentTime() - lastTokenRefreshRequestTime >
+        return InstantUtils.getCurrentTime() - lastTokenRefreshRequestTime >
                 REFRESH_TOKEN_INTERVAL_MINIMUM
     }
 
@@ -192,7 +192,7 @@ class OauthRefreshTokenAuthenticator(
                     preferencesManager.accessToken = newAccessToken
                     preferencesManager.refreshToken = newRefreshToken
                     preferencesManager.accessTokenExpiresAt = newExpireTime
-                    lastTokenRefreshRequestTime = TimeUtils.getCurrentTime()
+                    lastTokenRefreshRequestTime = InstantUtils.getCurrentTime()
                 }
             } else {
                 // refresh failed - another refresh may already be in progress

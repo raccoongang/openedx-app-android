@@ -94,7 +94,7 @@ import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
 import java.nio.charset.StandardCharsets
-import java.util.Date
+import kotlinx.datetime.Clock
 import org.openedx.core.R as CoreR
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -360,7 +360,7 @@ fun CourseDetailNativeContent(
                 isInternetConnectionShown.value = true
                 NoInternetLabel()
                 Spacer(Modifier.height(24.dp))
-            } else if (enrollmentEnd != null && Date() > enrollmentEnd) {
+            } else if (enrollmentEnd != null && Clock.System.now() > enrollmentEnd) {
                 EnrollOverLabel()
                 Spacer(Modifier.height(24.dp))
             }
@@ -384,7 +384,7 @@ fun CourseDetailNativeContent(
                 style = MaterialTheme.appTypography.labelMedium,
                 color = MaterialTheme.appColors.textAccent
             )
-            if (!(enrollmentEnd != null && Date() > enrollmentEnd)) {
+            if (!(enrollmentEnd != null && Clock.System.now() > enrollmentEnd)) {
                 Spacer(Modifier.height(32.dp))
                 OpenEdXButton(
                     modifier = buttonWidth,
@@ -459,7 +459,7 @@ fun CourseDetailNativeContentLandscape(
                 isInternetConnectionShown.value = true
                 NoInternetLabel()
                 Spacer(Modifier.height(24.dp))
-            } else if (enrollmentEnd != null && Date() > enrollmentEnd) {
+            } else if (enrollmentEnd != null && Clock.System.now() > enrollmentEnd) {
                 EnrollOverLabel()
                 Spacer(Modifier.height(24.dp))
             } else {

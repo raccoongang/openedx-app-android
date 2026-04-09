@@ -8,7 +8,7 @@ import org.openedx.core.data.model.room.discovery.CertificateDb
 import org.openedx.core.data.model.room.discovery.CoursewareAccessDb
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.CourseStructure
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 
 @Entity(tableName = "course_structure_table")
 data class CourseStructureEntity(
@@ -53,10 +53,10 @@ data class CourseStructureEntity(
             name,
             number,
             org,
-            TimeUtils.iso8601ToDate(start ?: ""),
+            InstantUtils.iso8601ToInstant(start ?: ""),
             startDisplay,
             startType,
-            TimeUtils.iso8601ToDate(end ?: ""),
+            InstantUtils.iso8601ToInstant(end ?: ""),
             coursewareAccess?.mapToDomain(),
             media?.mapToDomain(),
             certificate?.mapToDomain(),

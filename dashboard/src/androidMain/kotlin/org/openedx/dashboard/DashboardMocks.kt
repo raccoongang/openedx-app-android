@@ -14,12 +14,12 @@ import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.domain.model.EnrolledCourseData
 import org.openedx.core.domain.model.Pagination
 import org.openedx.core.domain.model.Progress
-import java.util.Date
+import kotlinx.datetime.Clock
 
 object DashboardMocks {
     private val courseDateBlock = CourseDateBlock(
         complete = false,
-        date = Date(),
+        date = Clock.System.now(),
         dateType = DateType.NONE,
         description = "Assignment due"
     )
@@ -34,10 +34,10 @@ object DashboardMocks {
         name = "Introduction to Testing",
         number = "CS101",
         org = "OpenEdX",
-        start = Date(),
+        start = Clock.System.now(),
         startDisplay = "Jan 01",
         startType = "",
-        end = Date(),
+        end = Clock.System.now(),
         dynamicUpgradeDeadline = "",
         subscriptionId = "",
         coursewareAccess = CoursewareAccess(
@@ -60,7 +60,7 @@ object DashboardMocks {
     )
 
     val enrolledCourse = EnrolledCourse(
-        auditAccessExpires = Date(),
+        auditAccessExpires = Clock.System.now(),
         created = "created",
         mode = "audit",
         isActive = true,

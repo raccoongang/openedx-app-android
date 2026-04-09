@@ -22,7 +22,7 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.profile.R
-import java.util.Date
+import kotlinx.datetime.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +36,7 @@ fun OptionsSection(
     } else {
         stringResource(
             R.string.profile_show_full_dates,
-            TimeUtils.formatToString(context, Date(), false)
+            TimeUtils.formatToString(context, Clock.System.now(), false)
         )
     }
     Column {

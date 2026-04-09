@@ -1,6 +1,6 @@
 package org.openedx.core.domain.model
 
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class CourseStructure(
     val root: String,
@@ -9,10 +9,10 @@ data class CourseStructure(
     val name: String,
     val number: String,
     val org: String,
-    val start: Date?,
+    val start: Instant?,
     val startDisplay: String,
     val startType: String,
-    val end: Date?,
+    val end: Instant?,
     val coursewareAccess: CoursewareAccess?,
     val media: Media?,
     val certificate: Certificate?,

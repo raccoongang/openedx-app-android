@@ -10,7 +10,7 @@ import org.openedx.core.data.model.BlockCounts
 import org.openedx.core.data.model.EncodedVideos
 import org.openedx.core.data.model.StudentViewData
 import org.openedx.core.data.model.VideoInfo
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.AssignmentProgress as DomainAssignmentProgress
 import org.openedx.core.domain.model.Block as DomainBlock
 import org.openedx.core.domain.model.BlockCounts as DomainBlockCounts
@@ -84,7 +84,7 @@ data class BlockDb(
             completion = completion,
             containsGatedContent = containsGatedContent,
             assignmentProgress = assignmentProgress?.mapToDomain(),
-            due = TimeUtils.iso8601ToDate(due ?: ""),
+            due = InstantUtils.iso8601ToInstant(due ?: ""),
             offlineDownload = offlineDownload?.mapToDomain()
         )
     }

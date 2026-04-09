@@ -7,17 +7,10 @@ import org.openedx.core.data.model.room.BlockDb
 import org.openedx.core.data.model.room.GradingPolicyDb
 import org.openedx.core.data.model.room.SectionScoreDb
 import org.openedx.core.data.model.room.discovery.CourseDateBlockDb
-import java.util.Date
 
 class CourseConverter {
 
     private val json = Json { ignoreUnknownKeys = true }
-
-    @TypeConverter
-    fun fromDate(value: Date?): Long? = value?.time
-
-    @TypeConverter
-    fun toDate(value: Long?): Date? = value?.let { Date(it) }
 
     @TypeConverter
     fun fromListOfString(value: List<String>): String = json.encodeToString(value)

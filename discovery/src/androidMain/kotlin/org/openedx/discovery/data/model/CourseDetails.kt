@@ -3,7 +3,7 @@ package org.openedx.discovery.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.Media
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.discovery.domain.model.Course
 
 @Serializable
@@ -78,9 +78,9 @@ data class CourseDetails(
         )
     }
 
-    private fun parseEnrollmentStartDate() = TimeUtils.iso8601ToDate(enrollmentStart.orEmpty())
+    private fun parseEnrollmentStartDate() = InstantUtils.iso8601ToInstant(enrollmentStart.orEmpty())
 
-    private fun parseEnrollmentEndDate() = TimeUtils.iso8601ToDate(enrollmentEnd.orEmpty())
+    private fun parseEnrollmentEndDate() = InstantUtils.iso8601ToInstant(enrollmentEnd.orEmpty())
 
     private fun mapMediaToDomain() = media?.mapToDomain() ?: org.openedx.core.domain.model.Media()
 }

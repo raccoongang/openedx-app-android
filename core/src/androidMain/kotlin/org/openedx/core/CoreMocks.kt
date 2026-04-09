@@ -28,7 +28,7 @@ import org.openedx.core.module.db.DownloadModel
 import org.openedx.core.module.db.DownloadedState
 import org.openedx.core.module.db.FileType
 import org.openedx.core.module.download.DownloadModelsSize
-import java.util.Date
+import kotlinx.datetime.Clock
 
 object CoreMocks {
     val mockAssignmentProgress = AssignmentProgress(
@@ -70,7 +70,7 @@ object CoreMocks {
         completion = 0.0,
         containsGatedContent = false,
         assignmentProgress = mockAssignmentProgress,
-        due = Date(),
+        due = Clock.System.now(),
         offlineDownload = null
     )
 
@@ -85,7 +85,7 @@ object CoreMocks {
                 assignmentType = "Homework",
                 shortLabel = "HW1"
             ),
-            due = Date()
+            due = Clock.System.now()
         ),
         mockChapterBlock.copy(
             id = "id1",
@@ -97,7 +97,7 @@ object CoreMocks {
                 assignmentType = "Homework",
                 shortLabel = "HW1"
             ),
-            due = Date()
+            due = Clock.System.now()
         ),
         mockChapterBlock.copy(
             id = "id2",
@@ -109,7 +109,7 @@ object CoreMocks {
                 assignmentType = "Homework",
                 shortLabel = "HW1"
             ),
-            due = Date()
+            due = Clock.System.now()
         ),
         mockChapterBlock.copy(
             id = "id3",
@@ -121,7 +121,7 @@ object CoreMocks {
                 assignmentType = "Homework",
                 shortLabel = "HW1"
             ),
-            due = Date()
+            due = Clock.System.now()
         )
     )
 
@@ -132,10 +132,10 @@ object CoreMocks {
         name = "Course name",
         number = "",
         org = "Org",
-        start = Date(),
+        start = Clock.System.now(),
         startDisplay = "",
         startType = "",
-        end = Date(),
+        end = Clock.System.now(),
         coursewareAccess = CoursewareAccess(
             true,
             "",
@@ -204,17 +204,17 @@ object CoreMocks {
     )
 
     val mockEnrollmentDetails = EnrollmentDetails(
-        created = Date(),
+        created = Clock.System.now(),
         mode = "audit",
         isActive = true,
-        upgradeDeadline = Date()
+        upgradeDeadline = Clock.System.now()
     )
 
     val mockCourseInfoOverview = CourseInfoOverview(
         name = "Open edX Demo Course",
         number = "DemoX",
         org = "edX",
-        start = Date(),
+        start = Clock.System.now(),
         startDisplay = "Today",
         startType = "",
         end = null,
@@ -348,10 +348,10 @@ object CoreMocks {
         name = "Test Course",
         number = "CS101",
         org = "TestOrg",
-        start = Date(),
+        start = Clock.System.now(),
         startDisplay = "2024-01-01",
         startType = "timestamped",
-        end = Date(),
+        end = Clock.System.now(),
         coursewareAccess = CoursewareAccess(
             true,
             "",

@@ -1,7 +1,7 @@
 package org.openedx.core.domain.model
 
+import kotlinx.datetime.Clock
 import org.openedx.core.extension.isNotNull
-import java.util.Date
 
 data class CourseEnrollmentDetails(
     val id: String,
@@ -19,7 +19,7 @@ data class CourseEnrollmentDetails(
 
     val isAuditAccessExpired: Boolean
         get() = courseAccessDetails.auditAccessExpires.isNotNull() &&
-                Date().after(courseAccessDetails.auditAccessExpires)
+                Clock.System.now() > courseAccessDetails.auditAccessExpires!!
 }
 
 enum class CourseAccessError {

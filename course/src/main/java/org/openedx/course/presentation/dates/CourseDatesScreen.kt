@@ -75,7 +75,7 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils.formatToString
-import org.openedx.core.utils.clearTime
+import org.openedx.core.utils.startOfDay
 import org.openedx.course.CourseMocks
 import org.openedx.course.presentation.ui.CourseDatesBanner
 import org.openedx.course.presentation.ui.CourseDatesBannerTablet
@@ -501,7 +501,7 @@ private fun DateBlock(
             .wrapContentHeight()
             .padding(start = 8.dp, end = 8.dp),
     ) {
-        var lastAssignmentDate = dateBlocks.first().date.clearTime()
+        var lastAssignmentDate = dateBlocks.first().date.startOfDay()
         dateBlocks.forEachIndexed { index, dateBlock ->
             var canShowDate = index == 0
             if (index != 0) {

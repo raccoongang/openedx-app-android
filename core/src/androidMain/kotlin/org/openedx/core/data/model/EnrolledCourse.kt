@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import org.openedx.core.data.model.room.discovery.EnrolledCourseEntity
 import org.openedx.core.data.model.room.discovery.ProgressDb
 import org.openedx.core.domain.model.EnrolledCourse
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.Progress as ProgressDomain
 
 @Serializable
@@ -31,7 +31,7 @@ data class EnrolledCourse(
 ) {
     fun mapToDomain(): EnrolledCourse {
         return EnrolledCourse(
-            auditAccessExpires = TimeUtils.iso8601ToDate(auditAccessExpires ?: ""),
+            auditAccessExpires = InstantUtils.iso8601ToInstant(auditAccessExpires ?: ""),
             created = created ?: "",
             mode = mode ?: "",
             isActive = isActive ?: false,

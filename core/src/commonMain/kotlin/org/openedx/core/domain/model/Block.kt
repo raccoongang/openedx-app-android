@@ -5,7 +5,7 @@ import org.openedx.core.BlockType
 import org.openedx.core.module.db.DownloadModel
 import org.openedx.core.module.db.FileType
 import org.openedx.core.utils.VideoUtil
-import java.util.Date
+import kotlinx.datetime.Instant
 
 data class Block(
     val id: String,
@@ -25,7 +25,7 @@ data class Block(
     val containsGatedContent: Boolean = false,
     val downloadModel: DownloadModel? = null,
     val assignmentProgress: AssignmentProgress?,
-    val due: Date?,
+    val due: Instant?,
     val offlineDownload: OfflineDownload?
 ) {
     val isDownloadable: Boolean

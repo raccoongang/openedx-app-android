@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.openedx.core.data.model.room.MediaDb
-import org.openedx.core.utils.TimeUtils
+import org.openedx.core.utils.InstantUtils
 import org.openedx.discovery.data.model.CourseDetails
 import org.openedx.discovery.domain.model.Course
 
@@ -62,8 +62,8 @@ data class CourseEntity(
             blocksUrl = blocksUrl,
             courseId = courseId,
             effort = effort,
-            enrollmentStart = TimeUtils.iso8601ToDate(enrollmentStart),
-            enrollmentEnd = TimeUtils.iso8601ToDate(enrollmentEnd),
+            enrollmentStart = InstantUtils.iso8601ToInstant(enrollmentStart),
+            enrollmentEnd = InstantUtils.iso8601ToInstant(enrollmentEnd),
             hidden = hidden,
             invitationOnly = invitationOnly,
             media = media.mapToDomain(),
