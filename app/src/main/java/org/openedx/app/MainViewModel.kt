@@ -25,7 +25,7 @@ class MainViewModel(
     private val analytics: AppAnalytics,
     private val appNotifier: AppNotifier,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _isBottomBarEnabled = MutableLiveData(true)
     val isBottomBarEnabled: LiveData<Boolean>

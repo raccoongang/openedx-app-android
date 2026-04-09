@@ -17,6 +17,7 @@ import org.openedx.dashboard.domain.interactor.DashboardInteractor
 import org.openedx.dashboard.presentation.DashboardAnalytics
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class AllEnrolledCoursesViewModel(
     private val config: Config,
@@ -25,7 +26,10 @@ class AllEnrolledCoursesViewModel(
     private val resourceManager: ResourceManager,
     private val discoveryNotifier: DiscoveryNotifier,
     private val analytics: DashboardAnalytics,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     val apiHostUrl get() = config.getApiHostURL()
     val hasInternetConnection: Boolean

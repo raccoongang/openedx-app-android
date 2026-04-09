@@ -18,6 +18,7 @@ import org.openedx.core.presentation.CoreAnalyticsEvent
 import org.openedx.core.presentation.CoreAnalyticsKey
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 abstract class BaseDownloadViewModel(
     private val downloadDao: DownloadDao,
@@ -26,7 +27,10 @@ abstract class BaseDownloadViewModel(
     private val analytics: CoreAnalytics,
     private val downloadHelper: DownloadHelper,
     resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     val allBlocks = hashMapOf<String, Block>()
 

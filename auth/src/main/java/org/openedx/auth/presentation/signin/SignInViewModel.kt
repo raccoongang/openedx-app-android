@@ -36,6 +36,7 @@ import org.openedx.core.utils.Logger
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.core.R as CoreRes
+import org.openedx.foundation.R as foundationR
 
 class SignInViewModel(
     private val interactor: AuthInteractor,
@@ -54,7 +55,10 @@ class SignInViewModel(
     val courseId: String?,
     val infoType: String?,
     val authCode: String,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val logger = Logger("SignInViewModel")
 
@@ -88,7 +92,7 @@ class SignInViewModel(
             viewModelScope.launch {
                 handleErrorUiMessage(
                     throwable = null,
-                    defaultErrorRes = R.string.auth_invalid_email_username,
+                    defaultErrorMessage = resourceManager.getString(R.string.auth_invalid_email_username),
                 )
             }
             return
@@ -97,7 +101,7 @@ class SignInViewModel(
             viewModelScope.launch {
                 handleErrorUiMessage(
                     throwable = null,
-                    defaultErrorRes = R.string.auth_invalid_password,
+                    defaultErrorMessage = resourceManager.getString(R.string.auth_invalid_password),
                 )
             }
             return
@@ -127,7 +131,7 @@ class SignInViewModel(
                 when (e) {
                     is EdxError.InvalidGrantException -> handleErrorUiMessage(
                         throwable = null,
-                        defaultErrorRes = CoreRes.string.core_error_invalid_grant,
+                        defaultErrorMessage = resourceManager.getString(CoreRes.string.core_error_invalid_grant),
                     )
 
                     else -> handleErrorUiMessage(

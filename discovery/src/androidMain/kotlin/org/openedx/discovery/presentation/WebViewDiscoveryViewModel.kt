@@ -26,7 +26,7 @@ class WebViewDiscoveryViewModel(
     private val corePreferences: CorePreferences,
     private val analytics: DiscoveryAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow<WebViewUIState>(WebViewUIState.Loading)
     val uiState: StateFlow<WebViewUIState> = _uiState.asStateFlow()

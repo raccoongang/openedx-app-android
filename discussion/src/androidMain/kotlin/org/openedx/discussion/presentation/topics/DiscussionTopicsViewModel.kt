@@ -12,6 +12,7 @@ import org.openedx.discussion.presentation.DiscussionAnalytics
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class DiscussionTopicsViewModel(
     val courseId: String,
@@ -20,7 +21,10 @@ class DiscussionTopicsViewModel(
     private val resourceManager: ResourceManager,
     private val analytics: DiscussionAnalytics,
     private val courseNotifier: CourseNotifier,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableLiveData<DiscussionTopicsUIState>()
     val uiState: LiveData<DiscussionTopicsUIState>

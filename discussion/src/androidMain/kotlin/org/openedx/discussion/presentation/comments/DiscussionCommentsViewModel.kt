@@ -15,13 +15,17 @@ import org.openedx.discussion.system.notifier.DiscussionThreadDataChanged
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class DiscussionCommentsViewModel(
     private val interactor: DiscussionInteractor,
     private val resourceManager: ResourceManager,
     private val notifier: DiscussionNotifier,
     thread: org.openedx.discussion.domain.model.Thread,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     val title = resourceManager.getString(thread.type.resId)
 

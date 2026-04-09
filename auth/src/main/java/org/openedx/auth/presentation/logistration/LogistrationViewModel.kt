@@ -18,7 +18,7 @@ class LogistrationViewModel(
     private val analytics: AuthAnalytics,
     private val browserAuthHelper: BrowserAuthHelper,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val logger = Logger("LogistrationViewModel")
 

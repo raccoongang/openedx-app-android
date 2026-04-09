@@ -20,7 +20,7 @@ class VideoQualityViewModel(
     private val notifier: VideoNotifier,
     private val analytics: CoreAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _videoQuality = MutableLiveData<VideoQuality>()
     val videoQuality: LiveData<VideoQuality>

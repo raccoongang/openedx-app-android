@@ -33,7 +33,7 @@ class CalendarViewModel(
     private val corePreferences: CorePreferences,
     private val networkConnection: NetworkConnection,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val calendarInitState: CalendarUIState
         get() = CalendarUIState(

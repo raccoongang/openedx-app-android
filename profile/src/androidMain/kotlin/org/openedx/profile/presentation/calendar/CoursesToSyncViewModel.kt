@@ -11,13 +11,17 @@ import org.openedx.core.domain.interactor.CalendarInteractor
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class CoursesToSyncViewModel(
     private val calendarInteractor: CalendarInteractor,
     private val calendarPreferences: CalendarPreferences,
     private val calendarSyncScheduler: CalendarSyncScheduler,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableStateFlow(
         CoursesToSyncUIState(

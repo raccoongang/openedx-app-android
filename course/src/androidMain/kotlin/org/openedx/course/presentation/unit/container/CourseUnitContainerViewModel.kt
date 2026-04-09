@@ -42,7 +42,7 @@ class CourseUnitContainerViewModel(
     private val networkConnection: NetworkConnection,
     private val videoPreviewHelper: VideoPreviewHelper,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val blocks = ArrayList<Block>()
 

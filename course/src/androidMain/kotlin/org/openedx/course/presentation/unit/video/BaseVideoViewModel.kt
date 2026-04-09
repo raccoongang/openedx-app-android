@@ -10,7 +10,7 @@ open class BaseVideoViewModel(
     private val courseId: String,
     private val courseAnalytics: CourseAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     fun logVideoSpeedEvent(videoUrl: String, speed: Float, currentVideoTime: Long, medium: String) {
         logVideoEvent(

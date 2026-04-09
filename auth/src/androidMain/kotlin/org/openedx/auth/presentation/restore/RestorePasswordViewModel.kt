@@ -16,13 +16,17 @@ import org.openedx.foundation.extension.isEmailValid
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class RestorePasswordViewModel(
     private val interactor: AuthInteractor,
     private val resourceManager: ResourceManager,
     private val analytics: AuthAnalytics,
     private val appNotifier: AppNotifier
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableLiveData<RestorePasswordUIState>()
     val uiState: LiveData<RestorePasswordUIState>
@@ -56,7 +60,7 @@ class RestorePasswordViewModel(
                     _uiState.value = RestorePasswordUIState.Initial
                     handleErrorUiMessage(
                         throwable = null,
-                        defaultErrorRes = R.string.auth_invalid_email,
+                        defaultErrorMessage = resourceManager.getString(R.string.auth_invalid_email),
                     )
                     logResetPasswordEvent(false)
                 }

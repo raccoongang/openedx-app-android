@@ -25,6 +25,7 @@ import org.openedx.dates.presentation.DatesAnalyticsKey
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import java.util.Calendar
+import org.openedx.foundation.R as foundationR
 
 class DatesViewModel(
     private val networkConnection: NetworkConnection,
@@ -33,7 +34,10 @@ class DatesViewModel(
     private val analytics: DatesAnalytics,
     private val calendarSyncScheduler: CalendarSyncScheduler,
     corePreferences: CorePreferences,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableStateFlow(DatesUIState())
     val uiState: StateFlow<DatesUIState>

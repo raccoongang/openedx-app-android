@@ -31,6 +31,7 @@ import org.openedx.course.presentation.CourseAnalyticsKey
 import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class CourseDatesViewModel(
     val courseId: String,
@@ -42,8 +43,11 @@ class CourseDatesViewModel(
     private val calendarInteractor: CalendarInteractor,
     private val calendarNotifier: CalendarNotifier,
     private val corePreferences: CorePreferences,
-    resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+    private val resourceManager: ResourceManager,
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     var isSelfPaced = true
     var useRelativeDates = corePreferences.isRelativeDatesEnabled
@@ -127,7 +131,7 @@ class CourseDatesViewModel(
             } catch (e: Exception) {
                 handleErrorUiMessage(
                     throwable = e,
-                    defaultErrorRes = R.string.core_dates_shift_dates_unsuccessful_msg,
+                    defaultErrorMessage = resourceManager.getString(R.string.core_dates_shift_dates_unsuccessful_msg),
                 )
                 onResetDates(false)
             }

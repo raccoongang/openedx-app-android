@@ -21,6 +21,7 @@ import org.openedx.foundation.extension.isInternetError
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class ProgramViewModel(
     private val appData: AppData,
@@ -30,7 +31,10 @@ class ProgramViewModel(
     private val edxCookieManager: AppCookieManager,
     private val resourceManager: ResourceManager,
     private val interactor: DiscoveryInteractor,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
     val uriScheme: String get() = config.getUriScheme()
 
     val programConfig get() = config.getProgramConfig().webViewConfig

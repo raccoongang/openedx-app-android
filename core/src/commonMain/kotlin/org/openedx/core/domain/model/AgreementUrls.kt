@@ -11,7 +11,7 @@ internal data class Agreement(
     private val defaultAgreementUrls: AgreementUrls
 ) {
     fun getAgreementForLocale(locale: String): AgreementUrls {
-        return agreementUrls.getOrDefault(locale, defaultAgreementUrls)
+        return agreementUrls[locale] ?: defaultAgreementUrls
     }
 }
 

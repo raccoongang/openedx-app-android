@@ -16,6 +16,7 @@ import org.openedx.profile.presentation.ProfileAnalyticsKey
 import org.openedx.profile.system.notifier.account.AccountUpdated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 import java.io.File
+import org.openedx.foundation.R as foundationR
 
 class EditProfileViewModel(
     private val interactor: ProfileInteractor,
@@ -24,7 +25,10 @@ class EditProfileViewModel(
     private val analytics: ProfileAnalytics,
     val config: Config,
     account: Account,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableLiveData<EditProfileUIState>()
     val uiState: LiveData<EditProfileUIState>

@@ -29,6 +29,7 @@ import org.openedx.profile.presentation.ProfileAnalyticsEvent
 import org.openedx.profile.presentation.ProfileAnalyticsKey
 import org.openedx.profile.system.notifier.account.AccountDeactivated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
+import org.openedx.foundation.R as foundationR
 
 class SettingsViewModel(
     private val appData: AppData,
@@ -40,7 +41,10 @@ class SettingsViewModel(
     private val analytics: ProfileAnalytics,
     private val appNotifier: AppNotifier,
     private val profileNotifier: ProfileNotifier,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState: MutableStateFlow<SettingsUIState> = MutableStateFlow(SettingsUIState.Data(configuration))
     val uiState: StateFlow<SettingsUIState> = _uiState.asStateFlow()

@@ -23,6 +23,7 @@ import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
+import org.openedx.foundation.R as foundationR
 
 class NewCalendarDialogViewModel(
     private val calendarManager: CalendarManager,
@@ -31,7 +32,10 @@ class NewCalendarDialogViewModel(
     private val calendarInteractor: CalendarInteractor,
     private val networkConnection: NetworkConnection,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
     private val _isSuccess = MutableSharedFlow<Boolean>()
     val isSuccess: SharedFlow<Boolean>
         get() = _isSuccess.asSharedFlow()

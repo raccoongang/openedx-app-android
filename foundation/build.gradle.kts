@@ -13,6 +13,10 @@ kotlin {
         }
     }
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         commonMain.dependencies {
             // Compose Multiplatform
@@ -36,6 +40,10 @@ kotlin {
 
             // Compose Multiplatform Resources
             api(compose.components.resources)
+
+            // Lifecycle (KMP since 2.8.0)
+            api("androidx.lifecycle:lifecycle-viewmodel:2.9.0")
+            api("androidx.lifecycle:lifecycle-common:2.9.0")
 
             // Ktor
             api(libs.ktor.client.core)

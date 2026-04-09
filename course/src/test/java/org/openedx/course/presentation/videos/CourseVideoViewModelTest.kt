@@ -48,6 +48,7 @@ import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
+import org.openedx.foundation.R as foundationR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CourseVideoViewModelTest {
@@ -78,6 +79,8 @@ class CourseVideoViewModelTest {
 
     @Before
     fun setUp() {
+        every { resourceManager.getString(foundationR.string.foundation_error_no_connection) } returns "Slow or no internet connection"
+        every { resourceManager.getString(foundationR.string.foundation_error_unknown_error) } returns "Something went wrong"
         every { resourceManager.getString(R.string.course_can_download_only_with_wifi) } returns cantDownload
         Dispatchers.setMain(dispatcher)
         every { config.getApiHostURL() } returns "http://localhost:8000"

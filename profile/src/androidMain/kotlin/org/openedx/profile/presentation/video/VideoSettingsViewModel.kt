@@ -21,7 +21,7 @@ class VideoSettingsViewModel(
     private val notifier: VideoNotifier,
     private val analytics: ProfileAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _videoSettings = MutableLiveData<VideoSettings>()
     val videoSettings: LiveData<VideoSettings>

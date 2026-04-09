@@ -29,6 +29,7 @@ import org.openedx.core.system.notifier.app.SignInEvent
 import org.openedx.core.utils.Logger
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class SignUpViewModel(
     private val interactor: AuthInteractor,
@@ -41,7 +42,10 @@ class SignUpViewModel(
     private val config: Config,
     val courseId: String?,
     val infoType: String?,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val logger = Logger("SignUpViewModel")
 

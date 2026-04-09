@@ -22,7 +22,7 @@ class DisableCalendarSyncDialogViewModel(
     private val calendarPreferences: CalendarPreferences,
     private val calendarInteractor: CalendarInteractor,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _deletionState = MutableStateFlow<DeletionState?>(null)
     val deletionState: StateFlow<DeletionState?> = _deletionState.asStateFlow()

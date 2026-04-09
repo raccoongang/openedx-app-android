@@ -12,7 +12,7 @@ class ContentTabViewModel(
     private val courseTitle: String,
     private val analytics: CourseAnalytics,
     resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     fun logTabClickEvent(contentTab: CourseContentTab) {
         analytics.logEvent(

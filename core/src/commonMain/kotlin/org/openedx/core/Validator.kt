@@ -1,16 +1,14 @@
 package org.openedx.core
 
-import java.util.regex.Pattern
-
 class Validator {
 
     fun isEmailOrUserNameValid(input: String): Boolean {
         return if (input.contains("@")) {
-            val validEmailAddressRegex = Pattern.compile(
+            val validEmailAddressRegex = Regex(
                 "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-                Pattern.CASE_INSENSITIVE
+                RegexOption.IGNORE_CASE
             )
-            validEmailAddressRegex.matcher(input).find()
+            validEmailAddressRegex.containsMatchIn(input)
         } else {
             input.isNotBlank() && input.contains(" ").not()
         }

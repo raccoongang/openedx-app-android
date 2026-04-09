@@ -31,6 +31,7 @@ import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.util.concurrent.atomic.AtomicReference
+import org.openedx.foundation.R as foundationR
 
 class CourseInfoViewModel(
     val pathId: String,
@@ -43,7 +44,10 @@ class CourseInfoViewModel(
     private val resourceManager: ResourceManager,
     private val analytics: DiscoveryAnalytics,
     corePreferences: CorePreferences,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState =
         MutableStateFlow(

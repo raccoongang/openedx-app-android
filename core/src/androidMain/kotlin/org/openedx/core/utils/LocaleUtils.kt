@@ -1,10 +1,11 @@
 package org.openedx.core.utils
 
 import org.openedx.core.AppDataConstants.USER_MAX_YEAR
-import org.openedx.core.AppDataConstants.defaultLocale
 import org.openedx.core.domain.model.RegistrationField
 import java.util.Calendar
 import java.util.Locale
+
+private val defaultLocale: Locale = Locale.Builder().setLanguage("en").build()
 
 object LocaleUtils {
 

@@ -20,7 +20,7 @@ class WhatsNewViewModel(
     private val preferencesManager: WhatsNewPreferences,
     private val appData: AppData,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _whatsNewItem = mutableStateOf<WhatsNewItem?>(null)
     val whatsNewItem: State<WhatsNewItem?>

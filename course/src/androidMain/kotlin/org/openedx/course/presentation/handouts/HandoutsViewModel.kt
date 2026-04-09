@@ -22,7 +22,7 @@ class HandoutsViewModel(
     private val interactor: CourseInteractor,
     private val courseAnalytics: CourseAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     val apiHostUrl get() = config.getApiHostURL()
 

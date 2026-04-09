@@ -17,6 +17,7 @@ import org.openedx.profile.presentation.ProfileAnalyticsEvent
 import org.openedx.profile.presentation.ProfileAnalyticsKey
 import org.openedx.profile.system.notifier.account.AccountDeactivated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
+import org.openedx.foundation.R as foundationR
 
 class DeleteProfileViewModel(
     private val resourceManager: ResourceManager,
@@ -24,7 +25,10 @@ class DeleteProfileViewModel(
     private val notifier: ProfileNotifier,
     private val validator: Validator,
     private val analytics: ProfileAnalytics,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableLiveData<DeleteProfileFragmentUIState>()
     val uiState: LiveData<DeleteProfileFragmentUIState>

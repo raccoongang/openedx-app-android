@@ -28,7 +28,7 @@ class HtmlUnitViewModel(
     private val courseInteractor: CourseInteractor,
     private val offlineProgressSyncScheduler: OfflineProgressSyncScheduler,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow<HtmlUnitUIState>(HtmlUnitUIState.Initialization)
     val uiState = _uiState.asStateFlow()

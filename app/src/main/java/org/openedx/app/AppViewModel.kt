@@ -44,7 +44,7 @@ class AppViewModel(
     private val downloadNotifier: DownloadNotifier,
     private val context: Context,
     resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _logoutUser = SingleEventLiveData<Unit>()
     val logoutUser: LiveData<Unit>

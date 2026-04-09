@@ -19,7 +19,7 @@ class LearnViewModel(
     private val config: Config,
     private val analytics: DashboardAnalytics,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
     private val _uiState = MutableStateFlow(
         LearnUIState(
             if (openTab == LearnTab.PROGRAMS.name) {

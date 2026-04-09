@@ -53,6 +53,7 @@ import org.openedx.foundation.presentation.SingleEventLiveData
 import org.openedx.foundation.system.ResourceManager
 import java.util.concurrent.atomic.AtomicReference
 import org.openedx.core.R as CoreR
+import org.openedx.foundation.R as foundationR
 
 class CourseContainerViewModel(
     val courseId: String,
@@ -67,7 +68,10 @@ class CourseContainerViewModel(
     private val courseAnalytics: CourseAnalytics,
     private val imageProcessor: ImageProcessor,
     private val calendarSyncScheduler: CalendarSyncScheduler,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _dataReady = MutableLiveData<Boolean?>()
     val dataReady: LiveData<Boolean?>

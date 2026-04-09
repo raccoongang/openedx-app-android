@@ -11,7 +11,7 @@ import org.openedx.foundation.system.ResourceManager
 class SelectDialogViewModel(
     private val notifier: CourseNotifier,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     var values = mutableListOf<RegistrationField.Option>()
 

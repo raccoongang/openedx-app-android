@@ -16,6 +16,7 @@ import org.openedx.course.presentation.CourseAnalyticsKey
 import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.R as foundationR
 
 class CourseSectionViewModel(
     val courseId: String,
@@ -23,7 +24,10 @@ class CourseSectionViewModel(
     private val resourceManager: ResourceManager,
     private val notifier: CourseNotifier,
     private val analytics: CourseAnalytics,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = MutableLiveData<CourseSectionUIState>(CourseSectionUIState.Loading)
     val uiState: LiveData<CourseSectionUIState>

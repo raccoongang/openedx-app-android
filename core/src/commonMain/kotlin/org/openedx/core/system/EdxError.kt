@@ -1,8 +1,6 @@
 package org.openedx.core.system
 
-import java.io.IOException
-
-sealed class EdxError : IOException() {
+sealed class EdxError : Exception() {
     class InvalidGrantException : EdxError()
     class UserNotActiveException : EdxError()
     class ValidationException(val error: String) : EdxError()

@@ -21,7 +21,7 @@ class CourseProgressViewModel(
     private val interactor: CourseInteractor,
     private val courseNotifier: CourseNotifier,
     private val resourceManager: ResourceManager,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow<CourseProgressUIState>(CourseProgressUIState.Loading)
     val uiState: StateFlow<CourseProgressUIState>

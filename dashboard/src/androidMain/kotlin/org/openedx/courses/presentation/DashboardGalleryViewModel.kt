@@ -17,6 +17,7 @@ import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
+import org.openedx.foundation.R as foundationR
 
 class DashboardGalleryViewModel(
     private val config: Config,
@@ -27,7 +28,10 @@ class DashboardGalleryViewModel(
     private val fileUtil: FileUtil,
     private val corePreferences: CorePreferences,
     private val windowSize: WindowSize,
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     val apiHostUrl get() = config.getApiHostURL()
 

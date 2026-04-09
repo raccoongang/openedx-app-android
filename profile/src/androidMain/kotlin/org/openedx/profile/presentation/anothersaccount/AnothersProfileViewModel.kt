@@ -7,12 +7,16 @@ import kotlinx.coroutines.launch
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.profile.domain.interactor.ProfileInteractor
+import org.openedx.foundation.R as foundationR
 
 class AnothersProfileViewModel(
     private val interactor: ProfileInteractor,
     private val resourceManager: ResourceManager,
     val username: String
-) : BaseViewModel(resourceManager) {
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationR.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationR.string.foundation_error_unknown_error),
+) {
 
     private val _uiState = mutableStateOf<AnothersProfileUIState>(AnothersProfileUIState.Loading)
     val uiState: State<AnothersProfileUIState>

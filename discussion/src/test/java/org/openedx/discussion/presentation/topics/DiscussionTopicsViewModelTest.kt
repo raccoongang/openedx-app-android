@@ -47,6 +47,7 @@ class DiscussionTopicsViewModelTest {
     private val courseNotifier = mockk<CourseNotifier>()
 
     private val noInternet = "Slow or no internet connection"
+    private val somethingWrong = "Something went wrong"
 
     @Before
     fun setUp() {
@@ -54,6 +55,9 @@ class DiscussionTopicsViewModelTest {
         every {
             resourceManager.getString(foundationR.string.foundation_error_no_connection)
         } returns noInternet
+        every {
+            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+        } returns somethingWrong
         every { courseNotifier.notifier } returns flowOf(CourseLoading(false))
         coEvery { courseNotifier.send(any<CourseLoading>()) } returns Unit
     }
