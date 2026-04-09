@@ -1,6 +1,5 @@
 package org.openedx.core.domain.model
 
-import org.openedx.core.data.model.room.CourseInfoOverviewDb
 import java.util.Date
 
 data class CourseInfoOverview(
@@ -18,18 +17,4 @@ data class CourseInfoOverview(
 ) {
     val isStarted: Boolean
         get() = start?.before(Date()) ?: false
-
-    fun mapToEntity() = CourseInfoOverviewDb(
-        name = name,
-        number = number,
-        org = org,
-        start = start,
-        startDisplay = startDisplay ?: "",
-        startType = startType,
-        end = end,
-        isSelfPaced = isSelfPaced,
-        media = media?.mapToEntity(),
-        courseSharingUtmParameters = courseSharingUtmParameters.mapToEntity(),
-        courseAbout = courseAbout
-    )
 }

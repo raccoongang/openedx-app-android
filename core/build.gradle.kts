@@ -34,18 +34,17 @@ kotlin {
     }
 
     sourceSets {
-        // Core's "commonMain" files still reference Android APIs through foundation.
-        // Disable KMP commonMain; include those files via android.sourceSets instead.
-        commonMain {
-            kotlin.setSrcDirs(emptyList<String>())
+        commonMain.dependencies {
+            api(project(":foundation"))
+        }
+        androidMain {
+            kotlin.srcDir("src/main/java")
         }
         androidMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
-
-            api(project(":foundation"))
 
             // jsoup
             api(libs.jsoup)
@@ -98,7 +97,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+            java.srcDirs(emptyList<String>())
         }
         getByName("prod") {
             java.srcDirs("src/$themeDirectory")

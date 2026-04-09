@@ -15,12 +15,10 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            kotlin.setSrcDirs(emptyList<String>())
+        commonMain.dependencies {
+            implementation(project(":core"))
         }
         androidMain.dependencies {
-            implementation(project(":core"))
-
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -54,7 +52,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("src/main/java", "src/commonMain/kotlin")
+            java.srcDirs(emptyList<String>())
         }
     }
 

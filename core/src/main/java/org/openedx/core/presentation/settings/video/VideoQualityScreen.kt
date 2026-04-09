@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.openedx.core.domain.model.VideoQuality
 import org.openedx.core.ui.Toolbar
+import org.openedx.core.domain.model.desResId
+import org.openedx.core.domain.model.titleResId
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.OpenEdXTheme
