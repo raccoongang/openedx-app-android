@@ -20,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -46,7 +49,7 @@ fun ProfileTopic(image: String, title: String, subtitle: String) {
                 .error(R.drawable.core_ic_default_profile_picture)
                 .placeholder(R.drawable.core_ic_default_profile_picture)
                 .build(),
-            contentDescription = stringResource(
+            contentDescription = androidStringResource(
                 id = R.string.core_accessibility_user_profile_image,
                 title
             ),
@@ -100,7 +103,7 @@ fun ProfileInfoSection(account: Account) {
                     if (account.bio.isNotEmpty()) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = ProfileR.string.profile_about_me),
+                            text = stringResource(profileRes.string.profile_about_me),
                             style = MaterialTheme.appTypography.titleSmall,
                             color = MaterialTheme.appColors.textPrimary
                         )

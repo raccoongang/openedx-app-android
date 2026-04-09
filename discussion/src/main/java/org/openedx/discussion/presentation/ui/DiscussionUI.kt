@@ -38,7 +38,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -54,7 +55,9 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.discussion.DiscussionMocks
+import org.openedx.discussion.*
 import org.openedx.discussion.R
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.domain.model.DiscussionComment
 import org.openedx.discussion.domain.model.DiscussionType
 import org.openedx.discussion.domain.model.Topic
@@ -85,9 +88,9 @@ fun ThreadMainItem(
         MaterialTheme.appColors.textPrimaryVariant
     }
     val reportText = if (thread.abuseFlagged) {
-        stringResource(id = R.string.discussion_unreport)
+        stringResource(discussionRes.string.discussion_unreport)
     } else {
-        stringResource(id = R.string.discussion_report)
+        stringResource(discussionRes.string.discussion_report)
     }
     val reportColor = if (thread.abuseFlagged) {
         MaterialTheme.appColors.error
@@ -107,7 +110,7 @@ fun ThreadMainItem(
                     .error(CoreR.drawable.core_ic_default_profile_picture)
                     .placeholder(CoreR.drawable.core_ic_default_profile_picture)
                     .build(),
-                contentDescription = stringResource(
+                contentDescription = androidStringResource(
                     id = CoreR.string.core_accessibility_user_profile_image,
                     thread.author
                 ),
@@ -132,7 +135,7 @@ fun ThreadMainItem(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = thread.author.ifEmpty { stringResource(id = R.string.discussion_anonymous) },
+                    text = thread.author.ifEmpty { stringResource(discussionRes.string.discussion_anonymous) },
                     color = MaterialTheme.appColors.textPrimary,
                     style = MaterialTheme.appTypography.titleMedium
                 )
@@ -143,7 +146,7 @@ fun ThreadMainItem(
                 )
             }
             IconText(
-                text = stringResource(id = R.string.discussion_follow),
+                text = stringResource(discussionRes.string.discussion_follow),
                 painter = painterResource(
                     if (thread.following) {
                         R.drawable.discussion_star_filled
@@ -215,9 +218,9 @@ fun CommentItem(
     }
 
     val reportText = if (comment.abuseFlagged) {
-        stringResource(id = R.string.discussion_unreport)
+        stringResource(discussionRes.string.discussion_unreport)
     } else {
-        stringResource(id = R.string.discussion_report)
+        stringResource(discussionRes.string.discussion_report)
     }
 
     val reportColor = if (comment.abuseFlagged) {
@@ -265,7 +268,7 @@ fun CommentItem(
                         .error(CoreR.drawable.core_ic_default_profile_picture)
                         .placeholder(CoreR.drawable.core_ic_default_profile_picture)
                         .build(),
-                    contentDescription = stringResource(
+                    contentDescription = androidStringResource(
                         id = CoreR.string.core_accessibility_user_profile_image,
                         comment.author
                     ),
@@ -374,9 +377,9 @@ fun CommentMainItem(
     }
 
     val reportText = if (comment.abuseFlagged) {
-        stringResource(id = R.string.discussion_unreport)
+        stringResource(discussionRes.string.discussion_unreport)
     } else {
-        stringResource(id = R.string.discussion_report)
+        stringResource(discussionRes.string.discussion_report)
     }
     val reportColor = if (comment.abuseFlagged) {
         MaterialTheme.appColors.error
@@ -416,7 +419,7 @@ fun CommentMainItem(
                         .error(CoreR.drawable.core_ic_default_profile_picture)
                         .placeholder(CoreR.drawable.core_ic_default_profile_picture)
                         .build(),
-                    contentDescription = stringResource(
+                    contentDescription = androidStringResource(
                         id = CoreR.string.core_accessibility_user_profile_image,
                         comment.author
                     ),
@@ -504,8 +507,8 @@ fun ThreadItem(
         DiscussionType.QUESTION -> rememberVectorPainter(image = Icons.AutoMirrored.Outlined.HelpOutline)
     }
     val textType = when (thread.type) {
-        DiscussionType.DISCUSSION -> stringResource(id = R.string.discussion_discussion)
-        DiscussionType.QUESTION -> stringResource(id = R.string.discussion_question)
+        DiscussionType.DISCUSSION -> stringResource(discussionRes.string.discussion_discussion)
+        DiscussionType.QUESTION -> stringResource(discussionRes.string.discussion_question)
     }
 
     val context = LocalContext.current
@@ -571,7 +574,7 @@ fun ThreadItem(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(
-                id = R.string.discussion_last_post,
+                discussionRes.string.discussion_last_post,
                 TimeUtils.iso8601ToDateWithTime(context, thread.updatedAt)
             ),
             style = MaterialTheme.appTypography.labelSmall,

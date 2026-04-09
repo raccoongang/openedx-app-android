@@ -26,7 +26,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +45,7 @@ import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
-import org.openedx.discovery.R
+import org.openedx.discovery.*
 import org.openedx.discovery.presentation.catalog.CatalogWebViewScreen
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
@@ -118,7 +118,7 @@ fun ProgramInfoScreen(
         ) {
             if (!isNestedFragment) {
                 Toolbar(
-                    label = stringResource(id = R.string.discovery_programs),
+                    label = stringResource(Res.string.discovery_programs),
                     canShowBackBtn = canShowBackBtn,
                     canShowSettingsIcon = !canShowBackBtn,
                     onBackClick = onBackClick,

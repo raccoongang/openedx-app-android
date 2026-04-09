@@ -31,7 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -118,9 +118,9 @@ fun VideoQualityScreen(
                 ) {
                     VideoQuality.entries.forEach { videoQuality ->
                         QualityOption(
-                            title = stringResource(id = videoQuality.titleResId),
+                            title = androidStringResource(id = videoQuality.titleResId),
                             description = videoQuality.desResId.nonZero()
-                                ?.let { stringResource(id = videoQuality.desResId) } ?: "",
+                                ?.let { androidStringResource(id = videoQuality.desResId) } ?: "",
                             selected = selectedVideoQuality == videoQuality,
                             onClick = {
                                 onQualityChanged(videoQuality)

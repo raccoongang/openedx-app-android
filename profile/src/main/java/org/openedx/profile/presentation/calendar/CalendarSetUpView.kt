@@ -31,7 +31,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
@@ -108,7 +111,7 @@ fun CalendarSetUpView(
                 Toolbar(
                     modifier = topBarWidth
                         .displayCutoutForLandscape(),
-                    label = stringResource(id = R.string.profile_dates_and_calendar),
+                    label = stringResource(profileRes.string.profile_dates_and_calendar),
                     canShowBackBtn = true,
                     labelTint = MaterialTheme.appColors.settingsTitleContent,
                     iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -130,7 +133,7 @@ fun CalendarSetUpView(
                     ) {
                         Text(
                             modifier = Modifier.testTag("txt_calendar_sync"),
-                            text = stringResource(id = R.string.profile_calendar_sync),
+                            text = stringResource(profileRes.string.profile_calendar_sync),
                             style = MaterialTheme.appTypography.labelLarge,
                             color = MaterialTheme.appColors.textSecondary
                         )
@@ -173,7 +176,7 @@ fun CalendarSetUpView(
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
-                                    text = stringResource(id = R.string.profile_calendar_sync),
+                                    text = stringResource(profileRes.string.profile_calendar_sync),
                                     style = MaterialTheme.appTypography.titleMedium,
                                     color = MaterialTheme.appColors.textDark
                                 )
@@ -181,14 +184,14 @@ fun CalendarSetUpView(
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
-                                    text = stringResource(id = R.string.profile_calendar_sync_description),
+                                    text = stringResource(profileRes.string.profile_calendar_sync_description),
                                     style = MaterialTheme.appTypography.labelLarge,
                                     color = MaterialTheme.appColors.textDark
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 OpenEdXButton(
                                     modifier = Modifier.fillMaxWidth(fraction = 0.75f),
-                                    text = stringResource(id = R.string.profile_set_up_calendar_sync),
+                                    text = stringResource(profileRes.string.profile_set_up_calendar_sync),
                                     onClick = {
                                         setUpCalendarSync()
                                     }

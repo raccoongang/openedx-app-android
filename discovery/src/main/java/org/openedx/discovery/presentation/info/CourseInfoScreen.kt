@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,7 +42,7 @@ import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
-import org.openedx.discovery.R
+import org.openedx.discovery.*
 import org.openedx.discovery.presentation.catalog.CatalogWebViewScreen
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
@@ -117,7 +117,7 @@ fun CourseInfoScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Toolbar(
-                label = stringResource(id = R.string.discovery_Discovery),
+                label = stringResource(Res.string.discovery_Discovery),
                 canShowBackBtn = true,
                 onBackClick = onBackClick
             )

@@ -54,7 +54,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -81,6 +82,8 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.discussion.*
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.R as discussionR
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -179,9 +182,9 @@ fun DiscussionAddThreadScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 48.dp),
                             text = if (currentPage == 0) {
-                                stringResource(id = discussionR.string.discussion_create_post)
+                                stringResource(discussionRes.string.discussion_create_post)
                             } else {
-                                stringResource(id = discussionR.string.discussion_create_question)
+                                stringResource(discussionRes.string.discussion_create_question)
                             },
                             color = MaterialTheme.appColors.textPrimary,
                             textAlign = TextAlign.Center,
@@ -208,15 +211,15 @@ fun DiscussionAddThreadScreen(
                         ) {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
-                                text = stringResource(id = discussionR.string.discussion_select_post_type),
+                                text = stringResource(discussionRes.string.discussion_select_post_type),
                                 style = MaterialTheme.appTypography.titleMedium,
                                 color = MaterialTheme.appColors.textPrimary
                             )
                             Spacer(Modifier.height(16.dp))
                             Tabs(
                                 tabs = listOf(
-                                    stringResource(id = discussionR.string.discussion_discussion),
-                                    stringResource(id = discussionR.string.discussion_question)
+                                    stringResource(discussionRes.string.discussion_discussion),
+                                    stringResource(discussionRes.string.discussion_question)
                                 ),
                                 currentPage = currentPage,
                                 onItemClick = { bool ->
@@ -237,7 +240,7 @@ fun DiscussionAddThreadScreen(
                             Spacer(Modifier.height(24.dp))
                             OpenEdXOutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                stringResource(id = discussionR.string.discussion_title),
+                                stringResource(discussionRes.string.discussion_title),
                                 isSingleLine = true,
                                 withRequiredMark = true,
                                 imeAction = ImeAction.Next,
@@ -250,9 +253,9 @@ fun DiscussionAddThreadScreen(
                                     .fillMaxWidth()
                                     .height(150.dp),
                                 title = if (currentPage == 0) {
-                                    stringResource(id = discussionR.string.discussion_discussion)
+                                    stringResource(discussionRes.string.discussion_discussion)
                                 } else {
-                                    stringResource(id = discussionR.string.discussion_question)
+                                    stringResource(discussionRes.string.discussion_question)
                                 },
                                 isSingleLine = false,
                                 withRequiredMark = true,
@@ -280,9 +283,9 @@ fun DiscussionAddThreadScreen(
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     text = if (currentPage == 0) {
-                                        stringResource(id = discussionR.string.discussion_follow_discussion)
+                                        stringResource(discussionRes.string.discussion_follow_discussion)
                                     } else {
-                                        stringResource(id = discussionR.string.discussion_follow_question)
+                                        stringResource(discussionRes.string.discussion_follow_question)
                                     },
                                     color = MaterialTheme.appColors.textFieldText,
                                     style = MaterialTheme.appTypography.labelLarge,
@@ -298,9 +301,9 @@ fun DiscussionAddThreadScreen(
                                 OpenEdXButton(
                                     modifier = buttonWidth,
                                     text = if (currentPage == 0) {
-                                        stringResource(id = discussionR.string.discussion_create_post)
+                                        stringResource(discussionRes.string.discussion_create_post)
                                     } else {
-                                        stringResource(id = discussionR.string.discussion_create_question)
+                                        stringResource(discussionRes.string.discussion_create_question)
                                     },
                                     onClick = {
                                         onPostDiscussionClick(
@@ -329,7 +332,7 @@ fun DiscussionAddThreadScreen(
                 scrimColor = Color.Black.copy(alpha = 0.4f),
             ) {
                 SheetContent(
-                    title = stringResource(id = discussionR.string.discussion_topic),
+                    title = stringResource(discussionRes.string.discussion_topic),
                     searchValue = searchValue,
                     expandedList = expandedList,
                     onItemClick = { item ->
@@ -412,7 +415,7 @@ fun SelectableField(
     Column {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = discussionR.string.discussion_topic),
+            text = stringResource(discussionRes.string.discussion_topic),
             style = MaterialTheme.appTypography.labelLarge,
             color = MaterialTheme.appColors.textPrimary
         )

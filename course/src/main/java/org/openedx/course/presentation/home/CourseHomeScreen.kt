@@ -42,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -60,6 +60,8 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 import org.openedx.course.presentation.container.CourseContentTab
 import org.openedx.course.presentation.ui.CourseMessage
@@ -251,10 +253,10 @@ private fun CourseHomeUI(
                                         ),
                                     icon = painterResource(R.drawable.course_ic_certificate),
                                     message = stringResource(
-                                        R.string.course_you_earned_certificate,
+                                        Res.string.course_you_earned_certificate,
                                         uiState.courseStructure.name
                                     ),
-                                    action = stringResource(R.string.course_view_certificate),
+                                    action = stringResource(Res.string.course_view_certificate),
                                     onActionClick = {
                                         onCertificateClick(
                                             certificate.certificateURL ?: ""

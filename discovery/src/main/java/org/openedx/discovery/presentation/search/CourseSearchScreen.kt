@@ -41,8 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextRange
@@ -69,7 +70,8 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
-import org.openedx.discovery.R as discoveryR
+import org.openedx.discovery.*
+import org.openedx.discovery.Res as discoveryRes
 
 private const val LOAD_MORE_THRESHOLD = 4
 
@@ -202,7 +204,7 @@ fun CourseSearchScreen(
                                 .testTag("txt_search_title")
                                 .fillMaxWidth()
                                 .padding(horizontal = 56.dp),
-                            text = stringResource(id = org.openedx.core.R.string.core_search),
+                            text = androidStringResource(id = org.openedx.core.R.string.core_search),
                             color = MaterialTheme.appColors.textPrimary,
                             style = MaterialTheme.appTypography.titleMedium,
                             maxLines = 1,
@@ -237,10 +239,10 @@ fun CourseSearchScreen(
                 ) {
                     val typingText =
                         if (textFieldValue.text.isEmpty()) {
-                            stringResource(id = discoveryR.string.discovery_start_typing_to_find)
+                            stringResource(discoveryRes.string.discovery_start_typing_to_find)
                         } else {
                             pluralStringResource(
-                                id = discoveryR.plurals.discovery_found_courses,
+                                discoveryRes.plurals.discovery_found_courses,
                                 (state as? CourseSearchUIState.Courses)?.numCourses ?: 0,
                                 (state as? CourseSearchUIState.Courses)?.numCourses ?: 0
                             )
@@ -260,7 +262,7 @@ fun CourseSearchScreen(
                                 Column {
                                     Text(
                                         modifier = Modifier.testTag("txt_search_results_title"),
-                                        text = stringResource(id = discoveryR.string.discovery_search_results),
+                                        text = stringResource(discoveryRes.string.discovery_search_results),
                                         color = MaterialTheme.appColors.textPrimary,
                                         style = MaterialTheme.appTypography.displaySmall
                                     )

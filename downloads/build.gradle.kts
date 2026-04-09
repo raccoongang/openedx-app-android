@@ -29,6 +29,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.openedx.downloads"
+    generateResClass = always
+}
+
 android {
     namespace = "org.openedx.downloads"
     compileSdk = libs.versions.compileSdk.get().toInt()

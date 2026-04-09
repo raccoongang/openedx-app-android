@@ -78,7 +78,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -115,6 +116,8 @@ import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.core.utils.VideoPreview
 import org.openedx.course.CourseMocks
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 import org.openedx.course.presentation.outline.getUnitBlockIcon
 import org.openedx.foundation.extension.nonZero
@@ -160,9 +163,9 @@ fun CourseSectionCard(
                 MaterialTheme.appColors.onSurface
             }
             val completedIconDescription = if (block.isCompleted()) {
-                stringResource(id = R.string.course_accessibility_section_completed)
+                stringResource(Res.string.course_accessibility_section_completed)
             } else {
-                stringResource(id = R.string.course_accessibility_section_uncompleted)
+                stringResource(Res.string.course_accessibility_section_uncompleted)
             }
             Icon(
                 painter = completedIconPainter,
@@ -185,9 +188,9 @@ fun CourseSectionCard(
                     }
                     val downloadIconDescription =
                         if (downloadedState == DownloadedState.DOWNLOADED) {
-                            stringResource(id = R.string.course_accessibility_remove_course_section)
+                            stringResource(Res.string.course_accessibility_remove_course_section)
                         } else {
-                            stringResource(id = R.string.course_accessibility_download_course_section)
+                            stringResource(Res.string.course_accessibility_download_course_section)
                         }
                     IconButton(
                         modifier = iconModifier,
@@ -218,7 +221,7 @@ fun CourseSectionCard(
                             Icon(
                                 imageVector = Icons.Filled.Close,
                                 contentDescription =
-                                    stringResource(id = R.string.course_accessibility_stop_downloading_course_section),
+                                    stringResource(Res.string.course_accessibility_stop_downloading_course_section),
                                 tint = MaterialTheme.appColors.error
                             )
                         }
@@ -254,7 +257,7 @@ fun OfflineQueueCard(
                 .weight(1f)
         ) {
             Text(
-                text = downloadModel.title.ifEmpty { stringResource(id = coreR.string.core_download_untitled) },
+                text = downloadModel.title.ifEmpty { androidStringResource(id = coreR.string.core_download_untitled) },
                 style = MaterialTheme.appTypography.titleSmall,
                 color = MaterialTheme.appColors.textPrimary,
                 overflow = TextOverflow.Ellipsis,
@@ -298,7 +301,7 @@ fun OfflineQueueCard(
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = stringResource(
-                        id = R.string.course_accessibility_stop_downloading_course_section
+                        Res.string.course_accessibility_stop_downloading_course_section
                     ),
                     tint = MaterialTheme.appColors.error
                 )
@@ -395,7 +398,7 @@ fun NavigationUnitsButtons(
                         Spacer(Modifier.width(8.dp))
                     }
                     Text(
-                        text = stringResource(R.string.course_navigation_prev),
+                        text = stringResource(Res.string.course_navigation_prev),
                         color = MaterialTheme.appColors.textAccent,
                         style = MaterialTheme.appTypography.labelLarge
                     )
@@ -580,7 +583,7 @@ fun VideoSubtitles(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(id = R.string.course_subtitles),
+                        text = stringResource(Res.string.course_subtitles),
                         color = MaterialTheme.appColors.textPrimary,
                         style = MaterialTheme.appTypography.titleMedium
                     )
@@ -745,7 +748,7 @@ fun CourseVideoItem(
                 .error(coreR.drawable.core_no_image_course)
                 .placeholder(coreR.drawable.core_no_image_course)
                 .build(),
-            contentDescription = stringResource(R.string.course_accessibility_video_player),
+            contentDescription = stringResource(Res.string.course_accessibility_video_player),
             contentScale = ContentScale.Crop
         )
 
@@ -817,7 +820,7 @@ fun CourseVideoItem(
                             .size(16.dp)
                             .offset(x = 1.dp),
                         painter = painterResource(id = coreR.drawable.ic_core_check),
-                        contentDescription = stringResource(R.string.course_accessibility_video_watched),
+                        contentDescription = stringResource(Res.string.course_accessibility_video_watched),
                     )
                 } else {
                     Box(
@@ -859,7 +862,7 @@ fun CourseVideoSectionHeader(
             )
             Text(
                 text = stringResource(
-                    R.string.course_video_watched,
+                    Res.string.course_video_watched,
                     videoBlocks?.filter { it.isCompleted() }?.size ?: 0,
                     videoBlocks?.size ?: 0
                 ),
@@ -891,9 +894,9 @@ fun DownloadIcon(
                 Icons.Outlined.CloudDownload
             }
             val downloadIconDescription = if (downloadedState == DownloadedState.DOWNLOADED) {
-                stringResource(id = R.string.course_accessibility_remove_course_section)
+                stringResource(Res.string.course_accessibility_remove_course_section)
             } else {
-                stringResource(id = R.string.course_accessibility_download_course_section)
+                stringResource(Res.string.course_accessibility_download_course_section)
             }
             val downloadIconTint = if (downloadedState == DownloadedState.DOWNLOADED) {
                 MaterialTheme.appColors.successGreen
@@ -923,7 +926,7 @@ fun DownloadIcon(
                     Icon(
                         painter = painterResource(id = coreR.drawable.core_download_waiting),
                         contentDescription = stringResource(
-                            id = R.string.course_accessibility_stop_downloading_course_section
+                            Res.string.course_accessibility_stop_downloading_course_section
                         ),
                         tint = MaterialTheme.appColors.error
                     )
@@ -935,7 +938,7 @@ fun DownloadIcon(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(
-                            id = R.string.course_accessibility_stop_downloading_course_section
+                            Res.string.course_accessibility_stop_downloading_course_section
                         ),
                         tint = MaterialTheme.appColors.error
                     )
@@ -1054,7 +1057,7 @@ fun CourseExpandableChapterCard(
             val completedIconPainter = painterResource(R.drawable.course_ic_task_alt)
             val completedIconColor = MaterialTheme.appColors.successGreen
             val completedIconDescription =
-                stringResource(id = R.string.course_accessibility_section_completed)
+                stringResource(Res.string.course_accessibility_section_completed)
 
             Icon(
                 painter = completedIconPainter,
@@ -1137,7 +1140,7 @@ fun CourseSubSectionItem(
         val strings = listOf(
             block.assignmentProgress?.assignmentType,
             due?.let {
-                stringResource(
+                androidStringResource(
                     id = coreR.string.core_date_format_assignment_due,
                     it
                 )
@@ -1317,7 +1320,7 @@ fun SubSectionUnitsList(
                                     .padding(start = 8.dp, end = 8.dp)
                                     .weight(1f),
                                 text = stringResource(
-                                    id = R.string.course_gated_content_label
+                                    Res.string.course_gated_content_label
                                 ),
                                 color = MaterialTheme.appColors.textPrimaryVariant,
                                 style = MaterialTheme.appTypography.labelSmall,
@@ -1356,7 +1359,7 @@ fun CourseDatesBanner(
         banner.bannerType.headerResId.nonZero()?.let {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = stringResource(id = it),
+                text = androidStringResource(id = it),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textDark
             )
@@ -1365,7 +1368,7 @@ fun CourseDatesBanner(
         banner.bannerType.bodyResId.nonZero()?.let {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = stringResource(id = it),
+                text = androidStringResource(id = it),
                 style = MaterialTheme.appTypography.bodyMedium,
                 color = MaterialTheme.appColors.textDark
             )
@@ -1373,7 +1376,7 @@ fun CourseDatesBanner(
 
         banner.bannerType.buttonResId.nonZero()?.let {
             OpenEdXButton(
-                text = stringResource(id = it),
+                text = androidStringResource(id = it),
                 onClick = resetDates,
             )
         }
@@ -1411,7 +1414,7 @@ fun CourseDatesBannerTablet(
             banner.bannerType.headerResId.nonZero()?.let {
                 Text(
                     modifier = Modifier.padding(bottom = 8.dp),
-                    text = stringResource(id = it),
+                    text = androidStringResource(id = it),
                     style = MaterialTheme.appTypography.titleMedium,
                     color = MaterialTheme.appColors.textDark
                 )
@@ -1419,7 +1422,7 @@ fun CourseDatesBannerTablet(
 
             banner.bannerType.bodyResId.nonZero()?.let {
                 Text(
-                    text = stringResource(id = it),
+                    text = androidStringResource(id = it),
                     style = MaterialTheme.appTypography.bodyMedium,
                     color = MaterialTheme.appColors.textDark
                 )
@@ -1428,7 +1431,7 @@ fun CourseDatesBannerTablet(
         banner.bannerType.buttonResId.nonZero()?.let {
             OpenEdXButton(
                 modifier = Modifier.width(210.dp),
-                text = stringResource(id = it),
+                text = androidStringResource(id = it),
                 onClick = resetDates,
             )
         }
@@ -1451,7 +1454,7 @@ fun DatesShiftedSnackBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterStart),
-                    text = stringResource(id = coreR.string.core_dates_shift_dates_successfully_title),
+                    text = androidStringResource(id = coreR.string.core_dates_shift_dates_successfully_title),
                     color = MaterialTheme.appColors.textFieldText,
                     style = MaterialTheme.appTypography.titleMedium
                 )
@@ -1467,7 +1470,7 @@ fun DatesShiftedSnackBar(
                 modifier = Modifier
                     .padding(top = 4.dp)
                     .fillMaxWidth(),
-                text = stringResource(id = coreR.string.core_dates_shift_dates_successfully_msg),
+                text = androidStringResource(id = coreR.string.core_dates_shift_dates_successfully_msg),
                 color = MaterialTheme.appColors.textFieldText,
                 style = MaterialTheme.appTypography.titleSmall,
             )
@@ -1476,7 +1479,7 @@ fun DatesShiftedSnackBar(
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .fillMaxWidth(),
-                    text = stringResource(id = coreR.string.core_dates_view_all_dates),
+                    text = androidStringResource(id = coreR.string.core_dates_view_all_dates),
                     backgroundColor = MaterialTheme.appColors.background,
                     textColor = MaterialTheme.appColors.primary,
                     borderColor = MaterialTheme.appColors.primary,
@@ -1548,9 +1551,9 @@ fun CourseProgress(
         label = ""
     )
     val buttonText = if (isCompletedShown) {
-        stringResource(R.string.course_hide_completed)
+        stringResource(Res.string.course_hide_completed)
     } else {
-        stringResource(R.string.course_view_completed)
+        stringResource(Res.string.course_view_completed)
     }
     Column(
         modifier = modifier,
@@ -1630,7 +1633,7 @@ fun ResumeCourseButton(
                     fontWeight = FontWeight.W600
                 )
                 TextIcon(
-                    text = stringResource(id = R.string.course_continue),
+                    text = stringResource(Res.string.course_continue),
                     icon = Icons.AutoMirrored.Filled.ArrowForward,
                     color = MaterialTheme.appColors.primaryButtonText,
                     textStyle = MaterialTheme.appTypography.labelLarge
@@ -1779,10 +1782,10 @@ private fun CourseMessagePreview() {
                     .padding(horizontal = 24.dp, vertical = 12.dp),
                 icon = painterResource(R.drawable.course_ic_certificate),
                 message = stringResource(
-                    R.string.course_you_earned_certificate,
+                    Res.string.course_you_earned_certificate,
                     "Demo Course"
                 ),
-                action = stringResource(R.string.course_view_certificate),
+                action = stringResource(Res.string.course_view_certificate),
             )
         }
     }

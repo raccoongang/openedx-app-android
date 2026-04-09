@@ -30,6 +30,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.openedx.dashboard"
+    generateResClass = always
+}
+
 android {
     namespace = "org.openedx.dashboard"
     compileSdk = libs.versions.compileSdk.get().toInt()

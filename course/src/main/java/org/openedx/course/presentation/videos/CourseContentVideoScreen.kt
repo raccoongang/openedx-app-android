@@ -24,7 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -37,7 +37,8 @@ import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseContentVideoEmptyState
 import org.openedx.course.presentation.ui.CourseProgress
 import org.openedx.course.presentation.ui.CourseVideoSection
@@ -191,7 +192,7 @@ private fun CourseVideosUI(
                                                 null
                                             },
                                             description = stringResource(
-                                                R.string.course_completed_of,
+                                                Res.string.course_completed_of,
                                                 progress.completed,
                                                 progress.total
                                             )

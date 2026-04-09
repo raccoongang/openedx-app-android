@@ -36,7 +36,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,7 +120,7 @@ fun VideoSettingsScreen(
                 Toolbar(
                     modifier = topBarWidth
                         .displayCutoutForLandscape(),
-                    label = stringResource(id = R.string.profile_video),
+                    label = stringResource(profileRes.string.profile_video),
                     canShowBackBtn = true,
                     labelTint = MaterialTheme.appColors.settingsTitleContent,
                     iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -151,14 +154,14 @@ fun VideoSettingsScreen(
                             Column(Modifier.weight(1f)) {
                                 Text(
                                     modifier = Modifier.testTag("txt_wifi_only_label"),
-                                    text = stringResource(id = R.string.profile_wifi_only_download),
+                                    text = stringResource(profileRes.string.profile_wifi_only_download),
                                     color = MaterialTheme.appColors.textPrimary,
                                     style = MaterialTheme.appTypography.titleMedium
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
                                     modifier = Modifier.testTag("txt_wifi_only_description"),
-                                    text = stringResource(id = R.string.profile_only_download_when_wifi_turned_on),
+                                    text = stringResource(profileRes.string.profile_only_download_when_wifi_turned_on),
                                     color = MaterialTheme.appColors.textSecondary,
                                     style = MaterialTheme.appTypography.labelMedium
                                 )
@@ -185,13 +188,13 @@ fun VideoSettingsScreen(
                         ) {
                             Column(Modifier.weight(1f)) {
                                 Text(
-                                    text = stringResource(id = CoreR.string.core_video_streaming_quality),
+                                    text = androidStringResource(id = CoreR.string.core_video_streaming_quality),
                                     color = MaterialTheme.appColors.textPrimary,
                                     style = MaterialTheme.appTypography.titleMedium
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    text = stringResource(id = videoSettings.videoStreamingQuality.titleResId),
+                                    text = androidStringResource(id = videoSettings.videoStreamingQuality.titleResId),
                                     color = MaterialTheme.appColors.textSecondary,
                                     style = MaterialTheme.appTypography.labelMedium
                                 )
@@ -199,7 +202,7 @@ fun VideoSettingsScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 tint = MaterialTheme.appColors.onSurface,
-                                contentDescription = stringResource(CoreR.string.core_accessibility_expandable_arrow)
+                                contentDescription = androidStringResource(CoreR.string.core_accessibility_expandable_arrow)
                             )
                         }
                         HorizontalDivider()
@@ -216,13 +219,13 @@ fun VideoSettingsScreen(
                         ) {
                             Column(Modifier.weight(1f)) {
                                 Text(
-                                    text = stringResource(id = CoreR.string.core_video_download_quality),
+                                    text = androidStringResource(id = CoreR.string.core_video_download_quality),
                                     color = MaterialTheme.appColors.textPrimary,
                                     style = MaterialTheme.appTypography.titleMedium
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    text = stringResource(id = videoSettings.videoDownloadQuality.titleResId),
+                                    text = androidStringResource(id = videoSettings.videoDownloadQuality.titleResId),
                                     color = MaterialTheme.appColors.textSecondary,
                                     style = MaterialTheme.appTypography.labelMedium
                                 )
@@ -230,7 +233,7 @@ fun VideoSettingsScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 tint = MaterialTheme.appColors.onSurface,
-                                contentDescription = stringResource(CoreR.string.core_accessibility_expandable_arrow)
+                                contentDescription = androidStringResource(CoreR.string.core_accessibility_expandable_arrow)
                             )
                         }
                         HorizontalDivider()

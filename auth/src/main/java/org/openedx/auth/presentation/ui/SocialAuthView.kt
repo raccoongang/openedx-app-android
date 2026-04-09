@@ -14,9 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.openedx.auth.*
 import org.openedx.auth.R
 import org.openedx.auth.data.model.AuthType
 import org.openedx.core.ui.OpenEdXButton
@@ -36,9 +37,9 @@ fun SocialAuthView(
     Column(modifier = modifier) {
         if (isGoogleAuthEnabled) {
             val stringRes = if (isSignIn) {
-                R.string.auth_google
+                Res.string.auth_google
             } else {
-                R.string.auth_continue_google
+                Res.string.auth_continue_google
             }
             OpenEdXOutlinedButton(
                 modifier = Modifier
@@ -62,7 +63,7 @@ fun SocialAuthView(
                         modifier = Modifier
                             .testTag("txt_google_auth")
                             .padding(start = 10.dp),
-                        text = stringResource(id = stringRes),
+                        text = stringResource(stringRes),
                         color = MaterialTheme.appColors.primaryButtonBorderedText,
                     )
                 }
@@ -70,9 +71,9 @@ fun SocialAuthView(
         }
         if (isFacebookAuthEnabled) {
             val stringRes = if (isSignIn) {
-                R.string.auth_facebook
+                Res.string.auth_facebook
             } else {
-                R.string.auth_continue_facebook
+                Res.string.auth_continue_facebook
             }
             OpenEdXButton(
                 modifier = Modifier
@@ -95,16 +96,16 @@ fun SocialAuthView(
                             .testTag("txt_facebook_auth")
                             .padding(start = 10.dp),
                         color = MaterialTheme.appColors.primaryButtonText,
-                        text = stringResource(id = stringRes)
+                        text = stringResource(stringRes)
                     )
                 }
             }
         }
         if (isMicrosoftAuthEnabled) {
             val stringRes = if (isSignIn) {
-                R.string.auth_microsoft
+                Res.string.auth_microsoft
             } else {
-                R.string.auth_continue_microsoft
+                Res.string.auth_continue_microsoft
             }
             OpenEdXButton(
                 modifier = Modifier
@@ -127,7 +128,7 @@ fun SocialAuthView(
                             .testTag("txt_microsoft_auth")
                             .padding(start = 10.dp),
                         color = MaterialTheme.appColors.primaryButtonText,
-                        text = stringResource(id = stringRes)
+                        text = stringResource(stringRes)
                     )
                 }
             }

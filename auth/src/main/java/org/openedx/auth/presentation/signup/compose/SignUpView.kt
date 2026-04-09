@@ -51,7 +51,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +63,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.openedx.auth.R
+import org.openedx.auth.*
 import org.openedx.auth.data.model.AuthType
 import org.openedx.auth.presentation.signup.SignUpUIState
 import org.openedx.auth.presentation.ui.ExpandableText
@@ -259,7 +260,7 @@ fun SignUpView(
                         modifier = Modifier
                             .testTag("txt_screen_title")
                             .fillMaxWidth(),
-                        text = stringResource(id = coreR.string.core_register),
+                        text = androidStringResource(id = coreR.string.core_register),
                         color = Color.White,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.appTypography.titleMedium
@@ -307,7 +308,7 @@ fun SignUpView(
                                                 .fillMaxWidth()
                                                 .padding(top = 8.dp),
                                             text = stringResource(
-                                                id = R.string.auth_compete_registration
+                                                Res.string.auth_compete_registration
                                             ),
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.appColors.textPrimary,
@@ -318,7 +319,7 @@ fun SignUpView(
                                             modifier = Modifier
                                                 .testTag("txt_sign_up_title")
                                                 .fillMaxWidth(),
-                                            text = stringResource(id = coreR.string.core_register),
+                                            text = androidStringResource(id = coreR.string.core_register),
                                             color = MaterialTheme.appColors.textPrimary,
                                             style = MaterialTheme.appTypography.displaySmall
                                         )
@@ -328,7 +329,7 @@ fun SignUpView(
                                                 .fillMaxWidth()
                                                 .padding(top = 4.dp),
                                             text = stringResource(
-                                                id = R.string.auth_create_new_account
+                                                Res.string.auth_create_new_account
                                             ),
                                             color = MaterialTheme.appColors.textPrimary,
                                             style = MaterialTheme.appTypography.titleSmall
@@ -428,7 +429,7 @@ fun SignUpView(
                                 } else {
                                     OpenEdXButton(
                                         modifier = buttonWidth.testTag("btn_create_account"),
-                                        text = stringResource(id = R.string.auth_create_account),
+                                        text = stringResource(Res.string.auth_create_account),
                                         textColor = MaterialTheme.appColors.primaryButtonText,
                                         backgroundColor = MaterialTheme.appColors.secondaryButtonBackground,
                                         onClick = {

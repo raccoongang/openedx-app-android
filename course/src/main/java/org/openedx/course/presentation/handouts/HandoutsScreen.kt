@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -42,6 +42,8 @@ import org.openedx.course.presentation.ui.CardArrow
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R as courseR
 
 @Composable
@@ -82,16 +84,16 @@ fun HandoutsScreen(
                 ) {
                     item {
                         HandoutsItem(
-                            title = stringResource(id = courseR.string.course_handouts),
-                            description = stringResource(id = courseR.string.course_find_important_info),
+                            title = stringResource(Res.string.course_handouts),
+                            description = stringResource(Res.string.course_find_important_info),
                             painter = painterResource(id = courseR.drawable.course_ic_handouts),
                             onClick = onHandoutsClick
                         )
                     }
                     item {
                         HandoutsItem(
-                            title = stringResource(id = courseR.string.course_announcements),
-                            description = stringResource(id = courseR.string.course_latest_news),
+                            title = stringResource(Res.string.course_announcements),
+                            description = stringResource(Res.string.course_latest_news),
                             painter = painterResource(id = courseR.drawable.course_ic_announcements),
                             onClick = onAnnouncementsClick
                         )

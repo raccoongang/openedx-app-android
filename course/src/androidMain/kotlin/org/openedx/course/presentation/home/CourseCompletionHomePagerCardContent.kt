@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +22,8 @@ import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.progress.CourseCompletionCircularProgress
 import org.openedx.course.presentation.ui.CourseSection
 
@@ -44,7 +45,7 @@ fun CourseCompletionHomePagerCardContent(
     ) {
         // Title
         Text(
-            text = stringResource(R.string.course_completion_title),
+            text = stringResource(Res.string.course_completion_title),
             style = MaterialTheme.appTypography.titleLarge,
             color = MaterialTheme.appColors.textDark
         )
@@ -64,14 +65,14 @@ fun CourseCompletionHomePagerCardContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.course_completion_progress_label),
+                    text = stringResource(Res.string.course_completion_progress_label),
                     style = MaterialTheme.appTypography.labelLarge,
                     color = MaterialTheme.appColors.textDark,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(
-                        R.string.course_completion_progress_description,
+                        Res.string.course_completion_progress_description,
                         courseProgressPercent
                     ),
                     style = MaterialTheme.appTypography.bodyMedium,
@@ -83,7 +84,7 @@ fun CourseCompletionHomePagerCardContent(
             CourseCompletionCircularProgress(
                 progress = courseProgress,
                 progressPercent = courseProgressPercent,
-                completedText = stringResource(R.string.course_completion_completed)
+                completedText = stringResource(Res.string.course_completion_completed)
             )
         }
 
@@ -118,7 +119,7 @@ fun CourseCompletionHomePagerCardContent(
 
         // View All Content Button
         ViewAllButton(
-            text = stringResource(R.string.course_completion_view_all_content),
+            text = stringResource(Res.string.course_completion_view_all_content),
             onClick = onViewAllContentClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )

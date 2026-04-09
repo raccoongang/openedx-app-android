@@ -42,11 +42,23 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.openedx.core.R
+import org.openedx.core.Res
+import org.openedx.core.core_feedback_dialog_description
+import org.openedx.core.core_feedback_dialog_textfield_hint
+import org.openedx.core.core_feedback_dialog_title
+import org.openedx.core.core_not_now
+import org.openedx.core.core_rate_dialog_description
+import org.openedx.core.core_rate_dialog_title
+import org.openedx.core.core_rate_us
+import org.openedx.core.core_share_feedback
+import org.openedx.core.core_submit
+import org.openedx.core.core_thank_you
 import org.openedx.core.presentation.dialog.DefaultDialogBox
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
@@ -87,7 +99,7 @@ fun ThankYouDialog(
                 contentDescription = null
             )
             Text(
-                text = stringResource(R.string.core_thank_you),
+                text = stringResource(Res.string.core_thank_you),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
@@ -103,11 +115,11 @@ fun ThankYouDialog(
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     TransparentTextButton(
-                        text = stringResource(id = R.string.core_not_now),
+                        text = stringResource(Res.string.core_not_now),
                         onClick = onNotNowClick
                     )
                     DefaultTextButton(
-                        text = stringResource(id = R.string.core_rate_us),
+                        text = stringResource(Res.string.core_rate_us),
                         onClick = onRateUsClick
                     )
                 }
@@ -142,12 +154,12 @@ fun FeedbackDialog(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = stringResource(R.string.core_feedback_dialog_title),
+                text = stringResource(Res.string.core_feedback_dialog_title),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
             Text(
-                text = stringResource(id = R.string.core_feedback_dialog_description),
+                text = stringResource(Res.string.core_feedback_dialog_description),
                 color = MaterialTheme.appColors.textPrimary,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.appTypography.bodyMedium
@@ -165,7 +177,7 @@ fun FeedbackDialog(
                 shape = MaterialTheme.appShapes.buttonShape,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.core_feedback_dialog_textfield_hint),
+                        text = stringResource(Res.string.core_feedback_dialog_textfield_hint),
                         color = MaterialTheme.appColors.textFieldHint,
                         style = MaterialTheme.appTypography.labelLarge,
                     )
@@ -183,12 +195,12 @@ fun FeedbackDialog(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 TransparentTextButton(
-                    text = stringResource(id = R.string.core_not_now),
+                    text = stringResource(Res.string.core_not_now),
                     onClick = onNotNowClick
                 )
                 DefaultTextButton(
                     isEnabled = feedback.value.isNotEmpty(),
-                    text = stringResource(id = R.string.core_share_feedback),
+                    text = stringResource(Res.string.core_share_feedback),
                     onClick = onShareClick
                 )
             }
@@ -215,12 +227,12 @@ fun RateDialog(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = stringResource(R.string.core_rate_dialog_title, stringResource(R.string.app_name)),
+                text = stringResource(Res.string.core_rate_dialog_title, androidStringResource(R.string.app_name)),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
             Text(
-                text = stringResource(id = R.string.core_rate_dialog_description),
+                text = stringResource(Res.string.core_rate_dialog_description),
                 color = MaterialTheme.appColors.textPrimary,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.appTypography.bodyMedium
@@ -234,12 +246,12 @@ fun RateDialog(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 TransparentTextButton(
-                    text = stringResource(id = R.string.core_not_now),
+                    text = stringResource(Res.string.core_not_now),
                     onClick = onNotNowClick
                 )
                 DefaultTextButton(
                     isEnabled = rating.intValue > 0,
-                    text = stringResource(id = R.string.core_submit),
+                    text = stringResource(Res.string.core_submit),
                     onClick = onSubmitClick
                 )
             }

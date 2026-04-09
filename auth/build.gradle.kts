@@ -49,6 +49,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.openedx.auth"
+    generateResClass = always
+}
+
 android {
     namespace = "org.openedx.auth"
     compileSdk = libs.versions.compileSdk.get().toInt()

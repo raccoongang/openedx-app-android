@@ -18,7 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,8 @@ import org.openedx.core.ui.OpenEdXButton
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 
 @Composable
@@ -74,7 +77,7 @@ fun ContentTabEmptyState(
                 onClick = onReturnToCourseClick
             ) {
                 IconText(
-                    text = stringResource(id = R.string.course_return_to_course_home),
+                    text = stringResource(Res.string.course_return_to_course_home),
                     icon = Icons.AutoMirrored.Filled.ArrowBack,
                     color = MaterialTheme.appColors.secondaryButtonText,
                     textStyle = MaterialTheme.appTypography.labelLarge
@@ -92,7 +95,7 @@ fun CourseContentAllEmptyState(
 ) {
     ContentTabEmptyState(
         modifier = modifier,
-        message = stringResource(id = org.openedx.core.R.string.core_no_course_content),
+        message = androidStringResource(id = org.openedx.core.R.string.core_no_course_content),
         onReturnToCourseClick = onReturnToCourseClick,
         showReturnButton = showReturnButton
     )
@@ -106,7 +109,7 @@ fun CourseContentVideoEmptyState(
 ) {
     ContentTabEmptyState(
         modifier = modifier,
-        message = stringResource(id = org.openedx.core.R.string.core_no_videos),
+        message = androidStringResource(id = org.openedx.core.R.string.core_no_videos),
         onReturnToCourseClick = onReturnToCourseClick,
         showReturnButton = showReturnButton
     )
@@ -120,7 +123,7 @@ fun CourseContentAssignmentEmptyState(
 ) {
     ContentTabEmptyState(
         modifier = modifier,
-        message = stringResource(id = org.openedx.core.R.string.core_no_assignments),
+        message = androidStringResource(id = org.openedx.core.R.string.core_no_assignments),
         onReturnToCourseClick = onReturnToCourseClick,
         showReturnButton = showReturnButton
     )
@@ -132,7 +135,7 @@ fun CourseHomeGradesEmptyState(
 ) {
     ContentTabEmptyState(
         modifier = modifier,
-        message = stringResource(id = R.string.course_progress_no_assignments),
+        message = stringResource(Res.string.course_progress_no_assignments),
         onReturnToCourseClick = {},
         showReturnButton = false
     )

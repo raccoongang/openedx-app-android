@@ -60,8 +60,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -88,7 +89,7 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.dashboard.DashboardMocks
-import org.openedx.dashboard.R
+import org.openedx.dashboard.*
 import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
@@ -351,7 +352,7 @@ private fun SecondaryCourses(
     ) {
         TextIcon(
             modifier = Modifier.padding(contentPadding),
-            text = stringResource(R.string.dashboard_view_all_with_count, courses.size + 1),
+            text = stringResource(Res.string.dashboard_view_all_with_count, courses.size + 1),
             textStyle = MaterialTheme.appTypography.titleSmall,
             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             color = MaterialTheme.appColors.textDark,
@@ -394,7 +395,7 @@ private fun ViewAllItem(
             .height(152.dp)
             .padding(4.dp)
             .clickable(
-                onClickLabel = stringResource(id = R.string.dashboard_view_all),
+                onClickLabel = stringResource(Res.string.dashboard_view_all),
                 onClick = {
                     onViewAllClick()
                 }
@@ -416,7 +417,7 @@ private fun ViewAllItem(
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = stringResource(id = R.string.dashboard_view_all),
+                text = stringResource(Res.string.dashboard_view_all),
                 style = MaterialTheme.appTypography.titleSmall,
                 color = MaterialTheme.appColors.textDark
             )
@@ -634,7 +635,7 @@ private fun PrimaryCourseButtons(
                 painter = rememberVectorPainter(Icons.Default.Warning),
                 title = title,
                 info = pluralStringResource(
-                    R.plurals.dashboard_past_due_assignment,
+                    Res.plurals.dashboard_past_due_assignment,
                     pastAssignments.size,
                     pastAssignments.size
                 )
@@ -656,9 +657,9 @@ private fun PrimaryCourseButtons(
                 painter = painterResource(id = CoreR.drawable.core_ic_chapter_icon),
                 title = title,
                 info = stringResource(
-                    R.string.dashboard_assignment_due,
+                    Res.string.dashboard_assignment_due,
                     nearestAssignment.assignmentType ?: "",
-                    stringResource(
+                    androidStringResource(
                         id = CoreR.string.core_date_format_assignment_due,
                         TimeUtils.formatToString(context, nearestAssignment.date, useRelativeDates),
                     )
@@ -747,7 +748,7 @@ private fun ResumeButton(
             )
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(R.string.dashboard_start_course),
+                text = stringResource(Res.string.dashboard_start_course),
                 color = MaterialTheme.appColors.primaryButtonText,
                 style = MaterialTheme.appTypography.titleSmall
             )
@@ -762,7 +763,7 @@ private fun ResumeButton(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.dashboard_resume_course),
+                    text = stringResource(Res.string.dashboard_resume_course),
                     color = MaterialTheme.appColors.primaryButtonText,
                     style = MaterialTheme.appTypography.labelSmall
                 )
@@ -841,7 +842,7 @@ private fun FindACourseButton(
     ) {
         Text(
             color = MaterialTheme.appColors.primaryButtonText,
-            text = stringResource(id = R.string.dashboard_find_a_course)
+            text = stringResource(Res.string.dashboard_find_a_course)
         )
     }
 }
@@ -868,7 +869,7 @@ private fun NoCoursesInfo(
                 modifier = Modifier
                     .testTag("txt_empty_state_title")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.dashboard_all_courses_empty_title),
+                text = stringResource(Res.string.dashboard_all_courses_empty_title),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,
                 textAlign = TextAlign.Center
@@ -878,7 +879,7 @@ private fun NoCoursesInfo(
                 modifier = Modifier
                     .testTag("txt_empty_state_description")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.dashboard_all_courses_empty_description),
+                text = stringResource(Res.string.dashboard_all_courses_empty_description),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.labelMedium,
                 textAlign = TextAlign.Center

@@ -12,13 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.openedx.auth.R
+import org.openedx.auth.*
 import org.openedx.auth.data.model.AuthType
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
@@ -50,7 +51,7 @@ fun SocialSignedView(authType: AuthType) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.appColors.primary,
                 text = stringResource(
-                    id = R.string.auth_social_signed_title,
+                    Res.string.auth_social_signed_title,
                     authType.methodName
                 )
             )
@@ -61,8 +62,8 @@ fun SocialSignedView(authType: AuthType) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             text = stringResource(
-                id = R.string.auth_social_signed_desc,
-                stringResource(id = coreR.string.app_name)
+                Res.string.auth_social_signed_desc,
+                androidStringResource(id = coreR.string.app_name)
             )
         )
     }

@@ -42,7 +42,7 @@ import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -51,7 +51,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.openedx.auth.R
+import org.openedx.auth.*
 import org.openedx.core.domain.model.RegistrationField
 import org.openedx.core.domain.model.RegistrationFieldType
 import org.openedx.core.extension.TextConverter
@@ -526,9 +526,9 @@ fun ExpandableText(
         if (!isExpanded) 0f else 90f
     }
     val text = if (isExpanded) {
-        stringResource(id = R.string.auth_hide_optional_fields)
+        stringResource(Res.string.auth_hide_optional_fields)
     } else {
-        stringResource(id = R.string.auth_show_optional_fields)
+        stringResource(Res.string.auth_show_optional_fields)
     }
     val icon = Icons.AutoMirrored.Filled.KeyboardArrowRight
 
@@ -561,9 +561,9 @@ internal fun PasswordVisibilityIcon(
     onClick: () -> Unit,
 ) {
     val (image, description) = if (isPasswordVisible) {
-        Icons.Filled.VisibilityOff to stringResource(R.string.auth_accessibility_hide_password)
+        Icons.Filled.VisibilityOff to stringResource(Res.string.auth_accessibility_hide_password)
     } else {
-        Icons.Filled.Visibility to stringResource(R.string.auth_accessibility_show_password)
+        Icons.Filled.Visibility to stringResource(Res.string.auth_accessibility_show_password)
     }
 
     IconButton(onClick = onClick) {

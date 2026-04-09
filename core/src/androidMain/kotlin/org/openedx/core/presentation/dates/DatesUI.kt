@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.openedx.core.R
@@ -49,7 +49,7 @@ private fun CourseDateBlockSectionGeneric(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 4.dp),
-                text = stringResource(id = sectionKey.stringResId),
+                text = androidStringResource(id = sectionKey.stringResId),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,
             )

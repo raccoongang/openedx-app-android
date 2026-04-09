@@ -34,7 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -52,6 +52,8 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 import org.openedx.course.presentation.ui.CardArrow
 import org.openedx.foundation.presentation.UIMessage
@@ -187,9 +189,9 @@ fun CourseSubsectionItem(
     val completedIconColor =
         if (block.isCompleted()) MaterialTheme.appColors.primary else MaterialTheme.appColors.onSurface
     val completedIconDescription = if (block.isCompleted()) {
-        stringResource(id = R.string.course_accessibility_section_completed)
+        stringResource(Res.string.course_accessibility_section_completed)
     } else {
-        stringResource(id = R.string.course_accessibility_section_uncompleted)
+        stringResource(Res.string.course_accessibility_section_uncompleted)
     }
 
     Column(Modifier.clickable { onClick(block) }) {

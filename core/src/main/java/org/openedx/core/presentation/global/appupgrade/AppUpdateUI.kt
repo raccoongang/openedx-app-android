@@ -33,13 +33,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.openedx.core.R
+import org.openedx.core.Res
+import org.openedx.core.core_account_settings
+import org.openedx.core.core_app_update_required_description
+import org.openedx.core.core_app_update_required_title
+import org.openedx.core.core_app_upgrade_box_description
+import org.openedx.core.core_app_upgrade_dialog_description
+import org.openedx.core.core_app_upgrade_title
+import org.openedx.core.core_deprecated_app_version
+import org.openedx.core.core_not_now
+import org.openedx.core.core_update
 import org.openedx.core.ui.noRippleClickable
 import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.OpenEdXTheme
@@ -81,7 +91,7 @@ fun AppUpgradeRequiredScreen(
                 .testTag("txt_app_upgrade_deprecated")
                 .fillMaxWidth()
                 .padding(top = 10.dp, bottom = 12.dp),
-            text = stringResource(id = R.string.core_deprecated_app_version),
+            text = stringResource(Res.string.core_deprecated_app_version),
             color = MaterialTheme.appColors.textPrimary,
             style = MaterialTheme.appTypography.titleMedium,
             textAlign = TextAlign.Center
@@ -153,13 +163,13 @@ fun AppUpgradeRecommendDialog(
                     )
                     Text(
                         modifier = Modifier.testTag("txt_app_upgrade_title"),
-                        text = stringResource(id = R.string.core_app_upgrade_title),
+                        text = stringResource(Res.string.core_app_upgrade_title),
                         color = MaterialTheme.appColors.textPrimary,
                         style = MaterialTheme.appTypography.titleMedium
                     )
                     Text(
                         modifier = Modifier.testTag("txt_app_upgrade_description"),
-                        text = stringResource(id = R.string.core_app_upgrade_dialog_description),
+                        text = stringResource(Res.string.core_app_upgrade_dialog_description),
                         color = MaterialTheme.appColors.textPrimary,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.appTypography.bodyMedium
@@ -197,13 +207,13 @@ fun AppUpgradeRequiredContent(
         ) {
             Text(
                 modifier = Modifier.testTag("txt_app_upgrade_required_title"),
-                text = stringResource(id = R.string.core_app_update_required_title),
+                text = stringResource(Res.string.core_app_update_required_title),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
             Text(
                 modifier = Modifier.testTag("txt_app_upgrade_required_description"),
-                text = stringResource(id = R.string.core_app_update_required_description),
+                text = stringResource(Res.string.core_app_update_required_description),
                 color = MaterialTheme.appColors.textPrimary,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.appTypography.bodyMedium
@@ -228,12 +238,12 @@ fun AppUpgradeRequiredButtons(
     ) {
         if (showAccountSettingsButton) {
             TransparentTextButton(
-                text = stringResource(id = R.string.core_account_settings),
+                text = stringResource(Res.string.core_account_settings),
                 onClick = onAccountSettingsClick
             )
         }
         DefaultTextButton(
-            text = stringResource(id = R.string.core_update),
+            text = stringResource(Res.string.core_update),
             onClick = onUpdateClick
         )
     }
@@ -248,11 +258,11 @@ fun AppUpgradeDialogButtons(
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         TransparentTextButton(
-            text = stringResource(id = R.string.core_not_now),
+            text = stringResource(Res.string.core_not_now),
             onClick = onNotNowClick
         )
         DefaultTextButton(
-            text = stringResource(id = R.string.core_update),
+            text = stringResource(Res.string.core_update),
             onClick = onUpdateClick
         )
     }
@@ -343,13 +353,13 @@ fun AppUpgradeRecommendedBox(
             Column {
                 Text(
                     modifier = Modifier.testTag("txt_app_upgrade_title"),
-                    text = stringResource(id = R.string.core_app_upgrade_title),
+                    text = stringResource(Res.string.core_app_upgrade_title),
                     color = Color.White,
                     style = MaterialTheme.appTypography.titleMedium
                 )
                 Text(
                     modifier = Modifier.testTag("txt_app_upgrade_description"),
-                    text = stringResource(id = R.string.core_app_upgrade_box_description),
+                    text = stringResource(Res.string.core_app_upgrade_box_description),
                     color = Color.White,
                     style = MaterialTheme.appTypography.bodyMedium
                 )

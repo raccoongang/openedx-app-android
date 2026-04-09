@@ -38,7 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -119,7 +122,7 @@ fun CalendarSettingsView(
                 Toolbar(
                     modifier = topBarWidth
                         .displayCutoutForLandscape(),
-                    label = stringResource(id = R.string.profile_dates_and_calendar),
+                    label = stringResource(profileRes.string.profile_dates_and_calendar),
                     canShowBackBtn = true,
                     labelTint = MaterialTheme.appColors.settingsTitleContent,
                     iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -177,7 +180,7 @@ fun CalendarSyncSection(
     onChangeSyncOptionClick: () -> Unit
 ) {
     Column {
-        SectionTitle(stringResource(id = R.string.profile_calendar_sync))
+        SectionTitle(stringResource(profileRes.string.profile_calendar_sync))
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -204,7 +207,7 @@ fun CalendarSyncSection(
                     color = MaterialTheme.appColors.textDark
                 )
                 Text(
-                    text = stringResource(id = calendarSyncState.title),
+                    text = androidStringResource(id = calendarSyncState.title),
                     style = MaterialTheme.appTypography.labelSmall,
                     color = MaterialTheme.appColors.textFieldHint
                 )
@@ -229,7 +232,7 @@ fun CalendarSyncSection(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(R.string.profile_course_calendar_sync),
+                text = stringResource(profileRes.string.profile_course_calendar_sync),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textDark
             )
@@ -244,7 +247,7 @@ fun CalendarSyncSection(
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = stringResource(R.string.profile_currently_syncing_events),
+            text = stringResource(profileRes.string.profile_currently_syncing_events),
             style = MaterialTheme.appTypography.labelMedium,
             color = MaterialTheme.appColors.textPrimaryVariant
         )
@@ -261,7 +264,7 @@ fun SyncOptionsButton(
 ) {
     OpenEdXOutlinedButton(
         modifier = Modifier.fillMaxWidth(),
-        text = stringResource(R.string.profile_change_sync_options),
+        text = stringResource(profileRes.string.profile_change_sync_options),
         backgroundColor = MaterialTheme.appColors.background,
         borderColor = MaterialTheme.appColors.primaryButtonBackground,
         textColor = MaterialTheme.appColors.primaryButtonBackground,
@@ -277,7 +280,7 @@ fun CoursesToSyncSection(
     onCourseToSyncClick: () -> Unit
 ) {
     Column {
-        SectionTitle(stringResource(R.string.profile_courses_to_sync))
+        SectionTitle(stringResource(profileRes.string.profile_courses_to_sync))
         Spacer(modifier = Modifier.height(8.dp))
         Card(
             modifier = Modifier,
@@ -286,7 +289,7 @@ fun CoursesToSyncSection(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.cardViewBackground)
         ) {
             SettingsItem(
-                text = stringResource(R.string.profile_syncing_courses, coursesSynced),
+                text = stringResource(profileRes.string.profile_syncing_courses, coursesSynced),
                 onClick = onCourseToSyncClick
             )
         }

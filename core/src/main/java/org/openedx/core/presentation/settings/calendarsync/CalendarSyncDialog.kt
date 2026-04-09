@@ -16,7 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -24,6 +25,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.openedx.core.R
+import org.openedx.core.Res
+import org.openedx.core.core_title_syncing_calendar
 import org.openedx.core.presentation.global.appupgrade.TransparentTextButton
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
@@ -47,10 +50,10 @@ fun CalendarSyncDialog(
         -> {
             CalendarAlertDialog(
                 dialogProperties = DialogProperties(
-                    title = stringResource(syncDialogType.titleResId),
-                    message = stringResource(syncDialogType.messageResId, calendarTitle),
-                    positiveButton = stringResource(syncDialogType.positiveButtonResId),
-                    negativeButton = stringResource(syncDialogType.negativeButtonResId),
+                    title = androidStringResource(syncDialogType.titleResId),
+                    message = androidStringResource(syncDialogType.messageResId, calendarTitle),
+                    positiveButton = androidStringResource(syncDialogType.positiveButtonResId),
+                    negativeButton = androidStringResource(syncDialogType.negativeButtonResId),
                     positiveAction = { syncDialogPosAction(syncDialogType) },
                     negativeAction = { syncDialogNegAction(syncDialogType) },
                 ),
@@ -61,17 +64,17 @@ fun CalendarSyncDialog(
         CalendarSyncDialogType.PERMISSION_DIALOG -> {
             CalendarAlertDialog(
                 dialogProperties = DialogProperties(
-                    title = stringResource(
+                    title = androidStringResource(
                         syncDialogType.titleResId,
-                        stringResource(CoreR.string.platform_name)
+                        androidStringResource(CoreR.string.platform_name)
                     ),
-                    message = stringResource(
+                    message = androidStringResource(
                         syncDialogType.messageResId,
-                        stringResource(CoreR.string.platform_name),
-                        stringResource(CoreR.string.platform_name)
+                        androidStringResource(CoreR.string.platform_name),
+                        androidStringResource(CoreR.string.platform_name)
                     ),
-                    positiveButton = stringResource(syncDialogType.positiveButtonResId),
-                    negativeButton = stringResource(syncDialogType.negativeButtonResId),
+                    positiveButton = androidStringResource(syncDialogType.positiveButtonResId),
+                    negativeButton = androidStringResource(syncDialogType.negativeButtonResId),
                     positiveAction = { syncDialogPosAction(syncDialogType) },
                     negativeAction = { syncDialogNegAction(syncDialogType) },
                 ),
@@ -83,9 +86,9 @@ fun CalendarSyncDialog(
             CalendarAlertDialog(
                 dialogProperties = DialogProperties(
                     title = "",
-                    message = stringResource(syncDialogType.messageResId, calendarTitle),
-                    positiveButton = stringResource(syncDialogType.positiveButtonResId),
-                    negativeButton = stringResource(syncDialogType.negativeButtonResId),
+                    message = androidStringResource(syncDialogType.messageResId, calendarTitle),
+                    positiveButton = androidStringResource(syncDialogType.positiveButtonResId),
+                    negativeButton = androidStringResource(syncDialogType.negativeButtonResId),
                     positiveAction = { syncDialogPosAction(syncDialogType) },
                     negativeAction = { syncDialogNegAction(syncDialogType) },
                 ),
@@ -96,10 +99,10 @@ fun CalendarSyncDialog(
         CalendarSyncDialogType.OUT_OF_SYNC_DIALOG -> {
             CalendarAlertDialog(
                 dialogProperties = DialogProperties(
-                    title = stringResource(syncDialogType.titleResId, calendarTitle),
-                    message = stringResource(syncDialogType.messageResId),
-                    positiveButton = stringResource(syncDialogType.positiveButtonResId),
-                    negativeButton = stringResource(syncDialogType.negativeButtonResId),
+                    title = androidStringResource(syncDialogType.titleResId, calendarTitle),
+                    message = androidStringResource(syncDialogType.messageResId),
+                    positiveButton = androidStringResource(syncDialogType.positiveButtonResId),
+                    negativeButton = androidStringResource(syncDialogType.negativeButtonResId),
                     positiveAction = { syncDialogPosAction(syncDialogType) },
                     negativeAction = { syncDialogNegAction(syncDialogType) },
                 ),
@@ -192,7 +195,7 @@ private fun SyncDialog() {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = stringResource(id = R.string.core_title_syncing_calendar),
+                        text = stringResource(Res.string.core_title_syncing_calendar),
                         color = MaterialTheme.appColors.textPrimary,
                         style = MaterialTheme.appTypography.titleMedium,
                         maxLines = 2,

@@ -34,6 +34,9 @@ kotlin {
             // kotlinx.datetime
             api(libs.kotlinx.datetime)
 
+            // Compose Multiplatform Resources
+            api(compose.components.resources)
+
             // Ktor
             api(libs.ktor.client.core)
             api(libs.ktor.client.content.negotiation)
@@ -93,6 +96,12 @@ kotlin {
             implementation(libs.junit)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.openedx.foundation"
+    generateResClass = always
 }
 
 android {

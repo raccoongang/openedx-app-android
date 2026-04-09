@@ -58,7 +58,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -75,7 +76,9 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.discussion.DiscussionMocks
+import org.openedx.discussion.*
 import org.openedx.discussion.R
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.presentation.ui.CommentMainItem
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
@@ -190,7 +193,7 @@ fun DiscussionResponsesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 48.dp),
-                        text = stringResource(id = discussionR.string.discussion_comments_title),
+                        text = stringResource(discussionRes.string.discussion_comments_title),
                         color = MaterialTheme.appColors.textPrimary,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.appTypography.titleMedium,
@@ -352,7 +355,7 @@ fun DiscussionResponsesScreen(
                                             placeholder = {
                                                 Text(
                                                     text = stringResource(
-                                                        id = R.string.discussion_add_comment
+                                                        discussionRes.string.discussion_add_comment
                                                     ),
                                                     color = MaterialTheme.appColors.textFieldHint,
                                                     style = MaterialTheme.appTypography.labelLarge,

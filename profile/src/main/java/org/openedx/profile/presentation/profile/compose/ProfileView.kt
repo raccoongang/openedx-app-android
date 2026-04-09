@@ -30,7 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Devices
@@ -98,7 +101,7 @@ fun ProfileView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Toolbar(
-                label = stringResource(id = R.string.core_profile),
+                label = androidStringResource(id = R.string.core_profile),
                 canShowSettingsIcon = true,
                 onSettingsClick = onSettingsClick
             )
@@ -146,7 +149,7 @@ fun ProfileView(
                                     OpenEdXOutlinedButton(
                                         modifier = Modifier
                                             .fillMaxWidth(),
-                                        text = stringResource(id = org.openedx.profile.R.string.profile_edit_profile),
+                                        text = stringResource(profileRes.string.profile_edit_profile),
                                         onClick = {
                                             onAction(ProfileViewAction.EditAccountClick)
                                         },

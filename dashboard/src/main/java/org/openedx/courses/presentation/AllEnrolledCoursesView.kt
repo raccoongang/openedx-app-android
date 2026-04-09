@@ -59,7 +59,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
@@ -72,6 +73,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.koin.androidx.compose.koinViewModel
 import org.openedx.Lock
+import org.openedx.dashboard.*
 import org.openedx.core.R
 import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.ui.BackBtn
@@ -471,7 +473,7 @@ fun Header(
     ) {
         Text(
             modifier = Modifier.align(Alignment.CenterStart),
-            text = stringResource(id = org.openedx.dashboard.R.string.dashboard_all_courses),
+            text = stringResource(Res.string.dashboard_all_courses),
             color = MaterialTheme.appColors.textDark,
             style = MaterialTheme.appTypography.headlineBold
         )
@@ -515,8 +517,8 @@ fun EmptyState(
                     .testTag("txt_empty_state_title")
                     .fillMaxWidth(),
                 text = stringResource(
-                    id = org.openedx.dashboard.R.string.dashboard_no_status_courses,
-                    stringResource(currentCourseStatus.labelResId)
+                    Res.string.dashboard_no_status_courses,
+                    androidStringResource(currentCourseStatus.labelResId)
                 ),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,

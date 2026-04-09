@@ -33,7 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -49,7 +50,9 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.discussion.DiscussionMocks
+import org.openedx.discussion.*
 import org.openedx.discussion.R
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.presentation.ui.ThreadItemCategory
 import org.openedx.discussion.presentation.ui.TopicItem
 import org.openedx.foundation.presentation.UIMessage
@@ -161,7 +164,7 @@ private fun DiscussionTopicsUI(
                             .then(searchTabWidth)
                             .padding(horizontal = contentPaddings)
                             .fillMaxWidth(),
-                        text = stringResource(id = R.string.discussion_search_all_posts),
+                        text = stringResource(discussionRes.string.discussion_search_all_posts),
                         onClick = onSearchClick
                     )
                 }
@@ -187,7 +190,7 @@ private fun DiscussionTopicsUI(
                                         item {
                                             Text(
                                                 modifier = Modifier,
-                                                text = stringResource(id = R.string.discussion_main_categories),
+                                                text = stringResource(discussionRes.string.discussion_main_categories),
                                                 style = MaterialTheme.appTypography.titleMedium,
                                                 color = MaterialTheme.appColors.textPrimaryVariant
                                             )
@@ -198,7 +201,7 @@ private fun DiscussionTopicsUI(
                                                 horizontalArrangement = Arrangement.spacedBy(14.dp)
                                             ) {
                                                 ThreadItemCategory(
-                                                    name = stringResource(id = R.string.discussion_all_posts),
+                                                    name = stringResource(discussionRes.string.discussion_all_posts),
                                                     painterResource = painterResource(
                                                         id = R.drawable.discussion_all_posts
                                                     ),
@@ -214,7 +217,7 @@ private fun DiscussionTopicsUI(
                                                     }
                                                 )
                                                 ThreadItemCategory(
-                                                    name = stringResource(id = R.string.discussion_posts_following),
+                                                    name = stringResource(discussionRes.string.discussion_posts_following),
                                                     painterResource = painterResource(id = R.drawable.discussion_star),
                                                     modifier = Modifier
                                                         .weight(1f)

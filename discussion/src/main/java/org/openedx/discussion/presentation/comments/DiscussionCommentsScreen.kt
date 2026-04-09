@@ -54,7 +54,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -71,7 +72,9 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.discussion.DiscussionMocks
+import org.openedx.discussion.*
 import org.openedx.discussion.R
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.domain.model.DiscussionComment
 import org.openedx.discussion.presentation.ui.CommentItem
 import org.openedx.discussion.presentation.ui.ThreadMainItem
@@ -318,7 +321,7 @@ fun DiscussionCommentsScreen(
                                             maxLines = 3,
                                             placeholder = {
                                                 Text(
-                                                    text = stringResource(id = R.string.discussion_add_response),
+                                                    text = stringResource(discussionRes.string.discussion_add_response),
                                                     color = MaterialTheme.appColors.textFieldHint,
                                                     style = MaterialTheme.appTypography.labelLarge,
                                                 )
@@ -353,7 +356,7 @@ fun DiscussionCommentsScreen(
                                                 modifier = Modifier.padding(7.dp),
                                                 painter = painterResource(id = R.drawable.discussion_ic_send),
                                                 contentDescription = stringResource(
-                                                    id = R.string.discussion_add_response
+                                                    discussionRes.string.discussion_add_response
                                                 ),
                                                 tint = iconButtonColor
                                             )

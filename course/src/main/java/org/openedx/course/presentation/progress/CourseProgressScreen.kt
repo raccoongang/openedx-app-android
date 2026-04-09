@@ -44,7 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
@@ -67,6 +67,8 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
@@ -203,7 +205,7 @@ private fun NoGradesView() {
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = stringResource(R.string.course_progress_no_assignments),
+            text = stringResource(Res.string.course_progress_no_assignments),
             style = MaterialTheme.appTypography.titleMedium,
             color = MaterialTheme.appColors.textDark,
             textAlign = TextAlign.Center
@@ -217,7 +219,7 @@ private fun GradeDetailsHeaderView() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = stringResource(R.string.course_progress_grade_details),
+            text = stringResource(Res.string.course_progress_grade_details),
             style = MaterialTheme.appTypography.titleMedium,
             color = MaterialTheme.appColors.textDark,
         )
@@ -226,12 +228,12 @@ private fun GradeDetailsHeaderView() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(R.string.course_progress_assignment_type),
+                text = stringResource(Res.string.course_progress_assignment_type),
                 style = MaterialTheme.appTypography.bodySmall,
                 color = MaterialTheme.appColors.textPrimaryVariant,
             )
             Text(
-                text = stringResource(R.string.course_progress_current_max),
+                text = stringResource(Res.string.course_progress_current_max),
                 style = MaterialTheme.appTypography.bodySmall,
                 color = MaterialTheme.appColors.textPrimaryVariant,
             )
@@ -249,7 +251,7 @@ fun GradeDetailsFooterView(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(R.string.course_progress_current_overall),
+            text = stringResource(Res.string.course_progress_current_overall),
             style = MaterialTheme.appTypography.labelLarge,
             color = MaterialTheme.appColors.textDark,
         )
@@ -273,12 +275,12 @@ private fun OverallGradeView(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = stringResource(R.string.course_progress_overall_title),
+            text = stringResource(Res.string.course_progress_overall_title),
             style = MaterialTheme.appTypography.titleMedium,
             color = MaterialTheme.appColors.textDark,
         )
         Text(
-            text = stringResource(R.string.course_progress_overall_description),
+            text = stringResource(Res.string.course_progress_overall_description),
             style = MaterialTheme.appTypography.labelMedium,
             color = MaterialTheme.appColors.textDark,
         )
@@ -313,7 +315,7 @@ private fun OverallGradeView(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(
-                        R.string.course_progress_required_grade_percent,
+                        Res.string.course_progress_required_grade_percent,
                         progress.requiredGradePercent.toString()
                     ),
                     style = MaterialTheme.appTypography.labelLarge,
@@ -336,12 +338,12 @@ private fun CourseCompletionView(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.course_progress_completion_title),
+                text = stringResource(Res.string.course_progress_completion_title),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textDark,
             )
             Text(
-                text = stringResource(R.string.course_progress_completion_description),
+                text = stringResource(Res.string.course_progress_completion_description),
                 style = MaterialTheme.appTypography.labelMedium,
                 color = MaterialTheme.appColors.textDark,
             )
@@ -349,7 +351,7 @@ private fun CourseCompletionView(
         CourseCompletionCircularProgress(
             progress = progress.completion,
             progressPercent = progress.completionPercent,
-            completedText = stringResource(R.string.course_completed)
+            completedText = stringResource(Res.string.course_completed)
         )
     }
 }
@@ -395,7 +397,7 @@ private fun AssignmentTypeRow(
             ) {
                 Text(
                     text = stringResource(
-                        R.string.course_progress_earned_possible_assignment_problems,
+                        Res.string.course_progress_earned_possible_assignment_problems,
                         earned,
                         possible
                     ),
@@ -408,7 +410,7 @@ private fun AssignmentTypeRow(
                             append("${(policy.weight * 100).toInt()}%")
                         }
                         append(" ")
-                        append(stringResource(R.string.course_progress_of_grade))
+                        append(stringResource(Res.string.course_progress_of_grade))
                     },
                     style = MaterialTheme.appTypography.bodySmall,
                     color = MaterialTheme.appColors.textDark,
@@ -416,7 +418,7 @@ private fun AssignmentTypeRow(
             }
             Text(
                 stringResource(
-                    R.string.course_progress_current_and_max_weighted_graded_percent,
+                    Res.string.course_progress_current_and_max_weighted_graded_percent,
                     uiState.progress.getAssignmentWeightedGradedPercent(policy).toInt(),
                     (policy.weight * 100).toInt()
                 ),
@@ -576,7 +578,7 @@ fun CurrentOverallGradeText(
                     fontWeight = MaterialTheme.appTypography.labelMedium.fontWeight
                 )
             ) {
-                append(stringResource(R.string.course_progress_current_overall) + " ")
+                append(stringResource(Res.string.course_progress_current_overall) + " ")
             }
             withStyle(
                 style = SpanStyle(

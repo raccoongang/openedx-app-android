@@ -31,6 +31,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.openedx.discussion"
+    generateResClass = always
+}
+
 android {
     namespace = "org.openedx.discussion"
     compileSdk = libs.versions.compileSdk.get().toInt()

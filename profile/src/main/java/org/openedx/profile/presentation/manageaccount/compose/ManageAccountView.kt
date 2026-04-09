@@ -31,7 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Devices
@@ -57,6 +58,8 @@ import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.profile.ProfileMocks
 import org.openedx.profile.presentation.manageaccount.ManageAccountUIState
 import org.openedx.profile.presentation.ui.ProfileTopic
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import org.openedx.profile.R as ProfileR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -117,7 +120,7 @@ fun ManageAccountView(
                 Toolbar(
                     modifier = topBarWidth
                         .displayCutoutForLandscape(),
-                    label = stringResource(id = R.string.core_manage_account),
+                    label = androidStringResource(id = R.string.core_manage_account),
                     canShowBackBtn = true,
                     labelTint = MaterialTheme.appColors.settingsTitleContent,
                     iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -170,7 +173,7 @@ fun ManageAccountView(
                                     OpenEdXOutlinedButton(
                                         modifier = Modifier
                                             .fillMaxWidth(),
-                                        text = stringResource(id = ProfileR.string.profile_edit_profile),
+                                        text = stringResource(profileRes.string.profile_edit_profile),
                                         onClick = {
                                             onAction(ManageAccountViewAction.EditAccountClick)
                                         },
@@ -179,7 +182,7 @@ fun ManageAccountView(
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     IconText(
-                                        text = stringResource(id = ProfileR.string.profile_delete_profile),
+                                        text = stringResource(profileRes.string.profile_delete_profile),
                                         painter = painterResource(id = ProfileR.drawable.profile_ic_trash),
                                         textStyle = MaterialTheme.appTypography.labelLarge,
                                         color = MaterialTheme.appColors.error,

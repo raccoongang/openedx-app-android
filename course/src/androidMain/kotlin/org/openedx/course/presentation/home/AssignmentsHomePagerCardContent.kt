@@ -28,7 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,8 @@ import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseContentAssignmentEmptyState
 import kotlinx.datetime.Clock
 import org.openedx.core.R as coreR
@@ -75,7 +77,7 @@ fun AssignmentsHomePagerCardContent(
     ) {
         // Header with progress
         Text(
-            text = stringResource(R.string.course_container_content_tab_assignment),
+            text = stringResource(Res.string.course_container_content_tab_assignment),
             style = MaterialTheme.appTypography.titleLarge,
             color = MaterialTheme.appColors.textPrimary,
             fontWeight = FontWeight.SemiBold
@@ -104,7 +106,7 @@ fun AssignmentsHomePagerCardContent(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.course_assignments_completed),
+                text = stringResource(Res.string.course_assignments_completed),
                 style = MaterialTheme.appTypography.labelLarge,
                 color = MaterialTheme.appColors.textPrimaryVariant,
                 fontWeight = FontWeight.Medium
@@ -139,7 +141,7 @@ fun AssignmentsHomePagerCardContent(
             )
         } else {
             CaughtUpMessage(
-                message = stringResource(R.string.course_assignments_caught_up)
+                message = stringResource(Res.string.course_assignments_caught_up)
             )
         }
 
@@ -147,7 +149,7 @@ fun AssignmentsHomePagerCardContent(
 
         // View All Assignments button
         ViewAllButton(
-            text = stringResource(R.string.course_view_all_assignments),
+            text = stringResource(Res.string.course_view_all_assignments),
             onClick = onViewAllAssignmentsClick
         )
     }
@@ -164,9 +166,9 @@ private fun AssignmentCard(
 
     // Header text - "Past Due" or "Due Soon"
     val headerText = if (isDuePast) {
-        stringResource(coreR.string.core_date_type_past_due)
+        androidStringResource(coreR.string.core_date_type_past_due)
     } else {
-        stringResource(R.string.course_next_assignment)
+        stringResource(Res.string.course_next_assignment)
     }
 
     // Due date status text
@@ -178,7 +180,7 @@ private fun AssignmentCard(
                 // Past due
                 val daysPastDue = -daysDifference
                 stringResource(
-                    R.string.course_days_past_due,
+                    Res.string.course_days_past_due,
                     daysPastDue,
                     formattedDate
                 )
@@ -187,7 +189,7 @@ private fun AssignmentCard(
             daysDifference == 0 -> {
                 // Due today
                 stringResource(
-                    R.string.course_due_today,
+                    Res.string.course_due_today,
                     formattedDate
                 )
             }
@@ -195,7 +197,7 @@ private fun AssignmentCard(
             else -> {
                 // Due in the future
                 stringResource(
-                    R.string.course_due_in_days,
+                    Res.string.course_due_in_days,
                     daysDifference,
                     formattedDate
                 )

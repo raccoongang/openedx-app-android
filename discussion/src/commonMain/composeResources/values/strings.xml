@@ -1,0 +1,34 @@
+<resources>
+    <string name="discussion_all_posts">All Posts</string>
+    <string name="discussion_unread">Unread</string>
+    <string name="discussion_unanswered">Unanswered</string>
+    <string name="discussion_posts_following">Posts I\'m following</string>
+    <string name="discussion_recent_activity">Recent activity</string>
+    <string name="discussion_most_activity">Most activity</string>
+    <string name="discussion_most_votes">Most votes</string>
+    <string name="discussion_create_post">Create discussion</string>
+    <string name="discussion_create_question">Create question</string>
+    <string name="discussion_add_response">Add a response</string>
+    <string name="discussion_last_post">Last post: %1$s</string>
+    <string name="discussion_follow">Follow</string>
+    <string name="discussion_report">Report</string>
+    <string name="discussion_unreport">Unreport</string>
+    <string name="discussion_add_comment">Add a comment</string>
+    <string name="discussion_comments_title">Comment</string>
+    <string name="discussion_comment_added">Comment Successfully added</string>
+    <string name="discussion_discussion">Discussion</string>
+    <string name="discussion_question">Question</string>
+    <string name="discussion_title">Title</string>
+    <string name="discussion_follow_discussion">Follow this discussion</string>
+    <string name="discussion_follow_question">Follow this question</string>
+    <string name="discussion_search_all_posts">Search all posts</string>
+    <string name="discussion_main_categories">Main categories</string>
+    <string name="discussion_select_post_type">Select post type</string>
+    <string name="discussion_topic">Topic</string>
+    <string name="discussion_search_results">Search results</string>
+    <string name="discussion_start_typing_to_find">Start typing to find the thread</string>
+    <string name="discussion_anonymous">anonymous</string>
+    <string name="discussion_no_yet">No discussions yet</string>
+    <string name="discussion_click_button_create_discussion">Click the button below to create your first discussion.</string>
+    <string name="discussion_unnamed_subcategory">Unnamed subcategory</string>
+</resources>

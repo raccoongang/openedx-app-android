@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +32,8 @@ import org.openedx.core.domain.model.CourseStructure
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseHomeGradesEmptyState
 import org.openedx.course.presentation.progress.CurrentOverallGradeText
 import org.openedx.course.presentation.progress.GradeProgressBar
@@ -47,7 +48,7 @@ fun GradesHomePagerCardContent(
     val gradingPolicy = courseProgress?.gradingPolicy
     val assignmentPolicies = courseProgress?.getNotEmptyGradingPolicies()
     val requiredGradeString = stringResource(
-        R.string.course_progress_required_grade_percent,
+        Res.string.course_progress_required_grade_percent,
         courseProgress?.requiredGradePercent.toString()
     )
 
@@ -62,14 +63,14 @@ fun GradesHomePagerCardContent(
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.course_grades_title),
+            text = stringResource(Res.string.course_grades_title),
             style = MaterialTheme.appTypography.titleLarge,
             color = MaterialTheme.appColors.textPrimary,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(R.string.course_grades_description),
+            text = stringResource(Res.string.course_grades_description),
             style = MaterialTheme.appTypography.labelMedium,
             color = MaterialTheme.appColors.textPrimaryVariant,
         )
@@ -98,7 +99,7 @@ fun GradesHomePagerCardContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
         ViewAllButton(
-            text = stringResource(R.string.course_view_progress),
+            text = stringResource(Res.string.course_view_progress),
             onClick = onViewProgressClick,
         )
     }
@@ -171,7 +172,7 @@ private fun GradeCard(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = stringResource(
-                            R.string.course_progress_earned_possible_assignment_problems,
+                            Res.string.course_progress_earned_possible_assignment_problems,
                             earned,
                             possible
                         ),

@@ -52,7 +52,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,6 +80,8 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.discussion.*
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.R as discussionR
 
 private const val LOAD_MORE_THRESHOLD = 4
@@ -358,7 +361,7 @@ fun DiscussionThreadsScreen(
                                                                     discussionR.drawable.discussion_ic_add_comment
                                                                 ),
                                                                 contentDescription = stringResource(
-                                                                    discussionR.string.discussion_add_comment
+                                                                    discussionRes.string.discussion_add_comment
                                                                 ),
                                                                 tint = MaterialTheme.appColors.primaryButtonText
                                                             )
@@ -422,7 +425,7 @@ fun DiscussionThreadsScreen(
                                                 Spacer(Modifier.height(36.dp))
                                                 Text(
                                                     modifier = Modifier.fillMaxWidth(),
-                                                    text = stringResource(discussionR.string.discussion_no_yet),
+                                                    text = stringResource(discussionRes.string.discussion_no_yet),
                                                     style = MaterialTheme.appTypography.titleLarge,
                                                     color = MaterialTheme.appColors.textPrimary,
                                                     textAlign = TextAlign.Center
@@ -431,7 +434,7 @@ fun DiscussionThreadsScreen(
                                                 Text(
                                                     modifier = Modifier.fillMaxWidth(),
                                                     text = stringResource(
-                                                        discussionR.string.discussion_click_button_create_discussion
+                                                        discussionRes.string.discussion_click_button_create_discussion
                                                     ),
                                                     style = MaterialTheme.appTypography.bodyLarge,
                                                     color = MaterialTheme.appColors.textPrimary,
@@ -442,7 +445,7 @@ fun DiscussionThreadsScreen(
                                                     modifier = Modifier
                                                         .widthIn(184.dp, Dp.Unspecified),
                                                     text = stringResource(
-                                                        id = discussionR.string.discussion_create_post
+                                                        discussionRes.string.discussion_create_post
                                                     ),
                                                     onClick = {
                                                         onCreatePostClick()
@@ -458,7 +461,7 @@ fun DiscussionThreadsScreen(
                                                         Spacer(modifier = Modifier.width(6.dp))
                                                         Text(
                                                             text = stringResource(
-                                                                id = discussionR.string.discussion_create_post
+                                                                discussionRes.string.discussion_create_post
                                                             ),
                                                             color = MaterialTheme.appColors.primary,
                                                             style = MaterialTheme.appTypography.labelLarge

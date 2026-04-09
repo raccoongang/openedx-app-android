@@ -61,7 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Devices
@@ -83,6 +83,7 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.EmailUtil
 import org.openedx.discovery.DiscoveryMocks
+import org.openedx.discovery.*
 import org.openedx.discovery.R
 import org.openedx.discovery.domain.model.Course
 import org.openedx.discovery.presentation.ui.ImageHeader
@@ -182,7 +183,7 @@ fun CourseDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .zIndex(1f),
-                    label = stringResource(id = R.string.discovery_course_details),
+                    label = stringResource(Res.string.discovery_course_details),
                     canShowBackBtn = true,
                     onBackClick = onBackClick
                 )
@@ -318,9 +319,9 @@ fun CourseDetailNativeContent(
     }
 
     val buttonText = if (course.isEnrolled) {
-        stringResource(id = R.string.discovery_view_course)
+        stringResource(Res.string.discovery_view_course)
     } else {
-        stringResource(id = R.string.discovery_enroll_now)
+        stringResource(Res.string.discovery_enroll_now)
     }
 
     Column {
@@ -343,7 +344,7 @@ fun CourseDetailNativeContent(
                     Icon(
                         modifier = Modifier.size(40.dp),
                         painter = painterResource(R.drawable.discovery_ic_play),
-                        contentDescription = stringResource(id = R.string.discovery_accessibility_play_video),
+                        contentDescription = stringResource(Res.string.discovery_accessibility_play_video),
                         tint = Color.LightGray
                     )
                 }
@@ -416,9 +417,9 @@ fun CourseDetailNativeContentLandscape(
     }
 
     val buttonText = if (course.isEnrolled) {
-        stringResource(id = R.string.discovery_view_course)
+        stringResource(Res.string.discovery_view_course)
     } else {
-        stringResource(id = R.string.discovery_enroll_now)
+        stringResource(Res.string.discovery_enroll_now)
     }
 
     Row(
@@ -503,7 +504,7 @@ fun CourseDetailNativeContentLandscape(
 fun EnrollOverLabel() {
     WarningLabel(
         painter = rememberVectorPainter(Icons.Outlined.Report),
-        text = stringResource(id = R.string.discovery_you_cant_enroll)
+        text = stringResource(Res.string.discovery_you_cant_enroll)
     )
 }
 
@@ -511,7 +512,7 @@ fun EnrollOverLabel() {
 fun NoInternetLabel() {
     WarningLabel(
         painter = painterResource(id = CoreR.drawable.core_ic_offline),
-        text = stringResource(id = R.string.discovery_no_internet_label)
+        text = stringResource(Res.string.discovery_no_internet_label)
     )
 }
 

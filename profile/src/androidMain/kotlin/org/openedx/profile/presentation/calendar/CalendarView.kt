@@ -15,7 +15,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.openedx.core.ui.theme.appColors
@@ -32,22 +35,22 @@ fun OptionsSection(
 ) {
     val context = LocalContext.current
     val textDescription = if (isRelativeDatesEnabled) {
-        stringResource(R.string.profile_show_relative_dates)
+        stringResource(profileRes.string.profile_show_relative_dates)
     } else {
         stringResource(
-            R.string.profile_show_full_dates,
+            profileRes.string.profile_show_full_dates,
             TimeUtils.formatToString(context, Clock.System.now(), false)
         )
     }
     Column {
-        SectionTitle(stringResource(R.string.profile_options))
+        SectionTitle(stringResource(profileRes.string.profile_options))
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(R.string.profile_use_relative_dates),
+                text = stringResource(profileRes.string.profile_use_relative_dates),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textDark
             )

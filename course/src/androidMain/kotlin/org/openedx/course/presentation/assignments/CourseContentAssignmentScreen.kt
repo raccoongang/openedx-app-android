@@ -47,7 +47,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +63,8 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
 import org.openedx.course.CourseMocks
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseContentAssignmentEmptyState
 import org.openedx.course.presentation.ui.CourseProgress
 import org.openedx.course.presentation.unit.container.CourseViewMode
@@ -145,7 +147,7 @@ private fun CourseContentAssignmentScreen(
             ) {
                 val progress = uiState.progress
                 val description = stringResource(
-                    id = R.string.course_completed_of,
+                    Res.string.course_completed_of,
                     progress.completed,
                     progress.total
                 )
@@ -209,7 +211,7 @@ private fun AssignmentGroupSection(
         completed = assignments.filter { it.isCompleted() }.size
     )
     val description = stringResource(
-        id = R.string.course_completed_of,
+        Res.string.course_completed_of,
         progress.completed,
         progress.total
     )
@@ -242,7 +244,7 @@ private fun AssignmentGroupSection(
             ) {
                 Text(
                     modifier = Modifier.padding(4.dp),
-                    text = stringResource(R.string.course_of_grade, percentOfGrade),
+                    text = stringResource(Res.string.course_of_grade, percentOfGrade),
                     color = MaterialTheme.appColors.textDark,
                     style = MaterialTheme.appTypography.labelSmall,
                     maxLines = 1
@@ -325,8 +327,8 @@ private fun AssignmentButton(assignment: Block, isSelected: Boolean, onClick: ()
         else -> null
     }
     val iconDescription = when {
-        assignment.isCompleted() -> stringResource(R.string.course_accessibility_assignment_completed)
-        isDuePast -> stringResource(R.string.course_accessibility_assignment_completed)
+        assignment.isCompleted() -> stringResource(Res.string.course_accessibility_assignment_completed)
+        isDuePast -> stringResource(Res.string.course_accessibility_assignment_completed)
         else -> null
     }
     val borderWidth = when {
@@ -428,21 +430,21 @@ private fun AssignmentDetails(
     val description = when {
         assignment.isCompleted() -> {
             "$label " + stringResource(
-                R.string.course_complete_points,
+                Res.string.course_complete_points,
                 assignment.assignmentProgress?.toPointString() ?: ""
             )
         }
 
         isDuePast -> {
             "$label " + stringResource(
-                R.string.course_past_due,
+                Res.string.course_past_due,
                 assignment.assignmentProgress?.toPointString() ?: ""
             )
         }
 
         progress < 1f && assignment.due == null -> {
             "$label " + stringResource(
-                R.string.course_in_progress,
+                Res.string.course_in_progress,
                 assignment.assignmentProgress?.toPointString() ?: ""
             )
         }

@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -44,6 +44,8 @@ import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.R
 import org.openedx.course.presentation.contenttab.CourseContentAllEmptyState
 import org.openedx.course.presentation.ui.CourseMessage
@@ -232,10 +234,10 @@ private fun CourseContentAllUI(
                                                     .then(listPadding),
                                                 icon = painterResource(R.drawable.course_ic_certificate),
                                                 message = stringResource(
-                                                    R.string.course_you_earned_certificate,
+                                                    Res.string.course_you_earned_certificate,
                                                     uiState.courseStructure.name
                                                 ),
-                                                action = stringResource(R.string.course_view_certificate),
+                                                action = stringResource(Res.string.course_view_certificate),
                                                 onActionClick = {
                                                     onCertificateClick(
                                                         certificate.certificateURL ?: ""
@@ -261,7 +263,7 @@ private fun CourseContentAllUI(
                                                 ),
                                             progress = progress,
                                             description = pluralStringResource(
-                                                R.plurals.course_sections_complete,
+                                                Res.plurals.course_sections_complete,
                                                 progress.completed,
                                                 progress.completed,
                                                 progress.total

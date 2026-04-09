@@ -24,7 +24,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.TextFieldValue
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.openedx.auth.R
+import org.openedx.auth.*
 import org.openedx.core.ui.AuthButtonsPanel
 import org.openedx.core.ui.SearchBar
 import org.openedx.core.ui.displayCutoutForLandscape
@@ -80,7 +80,7 @@ fun LogistrationScreen(
             ) {
                 LogistrationLogoView()
                 Text(
-                    text = stringResource(id = R.string.pre_auth_title),
+                    text = stringResource(Res.string.pre_auth_title),
                     style = MaterialTheme.appTypography.headlineSmall,
                     modifier = Modifier
                         .testTag("txt_screen_title")
@@ -93,14 +93,14 @@ fun LogistrationScreen(
                             .testTag("txt_search_label")
                             .padding(bottom = 10.dp),
                         style = MaterialTheme.appTypography.titleMedium,
-                        text = stringResource(id = R.string.pre_auth_search_title),
+                        text = stringResource(Res.string.pre_auth_search_title),
                     )
                     SearchBar(
                         modifier = Modifier
                             .testTag("tf_discovery_search")
                             .fillMaxWidth()
                             .height(48.dp),
-                        label = stringResource(id = R.string.pre_auth_search_hint),
+                        label = stringResource(Res.string.pre_auth_search_hint),
                         requestFocus = false,
                         searchValue = textFieldValue,
                         clearOnSubmit = true,
@@ -124,7 +124,7 @@ fun LogistrationScreen(
                         .noRippleClickable {
                             onSearchClick("")
                         },
-                    text = stringResource(id = R.string.pre_auth_explore_all_courses),
+                    text = stringResource(Res.string.pre_auth_explore_all_courses),
                     color = MaterialTheme.appColors.primary,
                     style = MaterialTheme.appTypography.labelLarge,
                     textDecoration = TextDecoration.Underline

@@ -25,7 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +40,8 @@ import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
-import org.openedx.course.R as courseR
+import org.openedx.course.*
+import org.openedx.course.Res
 
 @Composable
 fun NoAccessCourseContainerScreen(
@@ -110,7 +111,7 @@ fun NoAccessCourseContainerScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = stringResource(id = courseR.string.course_not_started),
+                            text = stringResource(Res.string.course_not_started),
                             color = MaterialTheme.appColors.textPrimary,
                             style = MaterialTheme.appTypography.bodyLarge
                         )

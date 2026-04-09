@@ -38,7 +38,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +56,8 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.whatsnew.Res
+import org.openedx.whatsnew.whats_new_title
 import org.openedx.whatsnew.domain.model.WhatsNewItem
 import org.openedx.whatsnew.domain.model.WhatsNewMessage
 import org.openedx.whatsnew.presentation.ui.NavigationUnitsButtons
@@ -147,7 +150,7 @@ fun WhatsNewTopBar(
                     modifier = Modifier
                         .testTag("txt_screen_title")
                         .fillMaxWidth(),
-                    text = stringResource(id = org.openedx.whatsnew.R.string.whats_new_title),
+                    text = stringResource(Res.string.whats_new_title),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.appColors.textPrimary,
                     style = MaterialTheme.appTypography.titleMedium
@@ -160,7 +163,7 @@ fun WhatsNewTopBar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(id = org.openedx.core.R.string.core_cancel),
+                        contentDescription = androidStringResource(org.openedx.core.R.string.core_cancel),
                         tint = MaterialTheme.appColors.primary
                     )
                 }

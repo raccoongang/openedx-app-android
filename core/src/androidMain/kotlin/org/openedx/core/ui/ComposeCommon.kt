@@ -85,7 +85,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -106,6 +107,14 @@ import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.R
+import org.openedx.core.Res
+import org.openedx.core.core_accessibility_btn_back
+import org.openedx.core.core_accessibility_settings
+import org.openedx.core.core_offline
+import org.openedx.core.core_register
+import org.openedx.core.core_search
+import org.openedx.core.core_select_value
+import org.openedx.core.core_sign_in
 import org.openedx.core.domain.model.RegistrationField
 import org.openedx.core.presentation.global.ErrorType
 import org.openedx.core.ui.theme.OpenEdXTheme
@@ -119,7 +128,7 @@ import org.openedx.foundation.presentation.UIMessage
 @Composable
 fun StaticSearchBar(
     modifier: Modifier,
-    text: String = stringResource(id = R.string.core_search),
+    text: String = stringResource(Res.string.core_search),
     onClick: () -> Unit = {},
 ) {
     Row(
@@ -207,7 +216,7 @@ fun Toolbar(
                 Icon(
                     imageVector = Icons.Default.ManageAccounts,
                     tint = MaterialTheme.appColors.textAccent,
-                    contentDescription = stringResource(id = R.string.core_accessibility_settings)
+                    contentDescription = stringResource(Res.string.core_accessibility_settings)
                 )
             }
         }
@@ -219,7 +228,7 @@ fun SearchBar(
     modifier: Modifier,
     searchValue: TextFieldValue,
     requestFocus: Boolean = false,
-    label: String = stringResource(id = R.string.core_search),
+    label: String = stringResource(Res.string.core_search),
     clearOnSubmit: Boolean = false,
     keyboardActions: () -> Unit,
     onValueChanged: (TextFieldValue) -> Unit = {},
@@ -321,7 +330,7 @@ fun SearchBarStateless(
     modifier: Modifier,
     searchValue: String,
     requestFocus: Boolean = false,
-    label: String = stringResource(id = R.string.core_search),
+    label: String = stringResource(Res.string.core_search),
     keyboardActions: () -> Unit,
     onValueChanged: (String) -> Unit = {},
     onClearValue: () -> Unit,
@@ -501,7 +510,7 @@ fun HyperlinkText(
 @Composable
 fun SheetContent(
     searchValue: TextFieldValue,
-    title: String = stringResource(id = R.string.core_select_value),
+    title: String = stringResource(Res.string.core_select_value),
     expandedList: List<RegistrationField.Option>,
     onItemClick: (RegistrationField.Option) -> Unit,
     listState: LazyListState,
@@ -574,7 +583,7 @@ fun SheetContent(
 @Composable
 fun SheetContent(
     searchValue: TextFieldValue,
-    title: String = stringResource(id = R.string.core_select_value),
+    title: String = stringResource(Res.string.core_select_value),
     expandedList: List<Pair<String, String>>,
     onItemClick: (Pair<String, String>) -> Unit,
     searchValueChanged: (String) -> Unit,
@@ -912,7 +921,7 @@ fun OfflineModeDialog(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconText(
-                text = stringResource(id = R.string.core_offline),
+                text = stringResource(Res.string.core_offline),
                 painter = painterResource(id = R.drawable.core_ic_offline),
                 color = Color.Black,
                 textStyle = MaterialTheme.appTypography.titleSmall
@@ -1034,7 +1043,7 @@ fun BackBtn(
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(id = R.string.core_accessibility_btn_back),
+            contentDescription = stringResource(Res.string.core_accessibility_btn_back),
             tint = tint
         )
     }
@@ -1067,7 +1076,7 @@ fun FullScreenErrorView(
         Spacer(Modifier.height(28.dp))
         Text(
             modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-            text = stringResource(id = errorType.titleResId),
+            text = androidStringResource(id = errorType.titleResId),
             color = MaterialTheme.appColors.textPrimary,
             style = MaterialTheme.appTypography.titleLarge,
             textAlign = TextAlign.Center
@@ -1075,7 +1084,7 @@ fun FullScreenErrorView(
         Spacer(Modifier.height(16.dp))
         Text(
             modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-            text = stringResource(id = errorType.descriptionResId),
+            text = androidStringResource(id = errorType.descriptionResId),
             color = MaterialTheme.appColors.textPrimary,
             style = MaterialTheme.appTypography.bodyLarge,
             textAlign = TextAlign.Center
@@ -1084,7 +1093,7 @@ fun FullScreenErrorView(
         OpenEdXButton(
             modifier = Modifier
                 .widthIn(Dp.Unspecified, 162.dp),
-            text = stringResource(id = errorType.actionResId),
+            text = androidStringResource(id = errorType.actionResId),
             textColor = MaterialTheme.appColors.secondaryButtonText,
             backgroundColor = MaterialTheme.appColors.secondaryButtonBackground,
             onClick = onReloadClick,
@@ -1095,7 +1104,7 @@ fun FullScreenErrorView(
 @Composable
 fun NoContentScreen(noContentScreenType: NoContentScreenType) {
     NoContentScreen(
-        message = stringResource(id = noContentScreenType.messageResId),
+        message = androidStringResource(id = noContentScreenType.messageResId),
         icon = painterResource(id = noContentScreenType.iconResId)
     )
 }
@@ -1152,7 +1161,7 @@ fun AuthButtonsPanel(
                         Modifier.weight(1f)
                     }
                 ),
-            text = stringResource(id = R.string.core_sign_in),
+            text = stringResource(Res.string.core_sign_in),
             onClick = { onSignInClick() },
             textColor = MaterialTheme.appColors.secondaryButtonBorderedText,
             backgroundColor = MaterialTheme.appColors.secondaryButtonBorderedBackground,
@@ -1164,7 +1173,7 @@ fun AuthButtonsPanel(
                     .testTag("btn_register")
                     .width(0.dp)
                     .weight(1f),
-                text = stringResource(id = R.string.core_register),
+                text = stringResource(Res.string.core_register),
                 textColor = MaterialTheme.appColors.primaryButtonText,
                 backgroundColor = MaterialTheme.appColors.secondaryButtonBackground,
                 onClick = { onRegisterClick() }
@@ -1273,7 +1282,7 @@ private fun RoundTab(
             Spacer(modifier = Modifier.width(4.dp))
         }
         Text(
-            text = stringResource(item.labelResId),
+            text = androidStringResource(item.labelResId),
             color = contentColor
         )
     }
@@ -1307,7 +1316,7 @@ fun MainScreenToolbar(
             Icon(
                 imageVector = Icons.Default.ManageAccounts,
                 tint = MaterialTheme.appColors.textAccent,
-                contentDescription = stringResource(id = R.string.core_accessibility_settings)
+                contentDescription = stringResource(Res.string.core_accessibility_settings)
             )
         }
     }
@@ -1417,7 +1426,7 @@ private fun ConnectionErrorViewPreview() {
 }
 
 val mockTab = object : TabItem {
-    override val labelResId: Int = R.string.app_name
+    override val labelResId: Int = R.string.app_name  // Android R.string for TabItem interface
     override val icon: ImageVector = Icons.Default.AccountCircle
 }
 

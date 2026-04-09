@@ -41,7 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -127,7 +130,7 @@ fun CoursesToSyncView(
                 Toolbar(
                     modifier = topBarWidth
                         .displayCutoutForLandscape(),
-                    label = stringResource(id = R.string.profile_courses_to_sync),
+                    label = stringResource(profileRes.string.profile_courses_to_sync),
                     canShowBackBtn = true,
                     labelTint = MaterialTheme.appColors.settingsTitleContent,
                     iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -147,7 +150,7 @@ fun CoursesToSyncView(
                             .padding(vertical = 28.dp),
                     ) {
                         Text(
-                            text = stringResource(R.string.profile_courses_to_sync_title),
+                            text = stringResource(profileRes.string.profile_courses_to_sync_title),
                             style = MaterialTheme.appTypography.labelMedium,
                             color = MaterialTheme.appColors.textPrimaryVariant
                         )
@@ -198,7 +201,7 @@ fun SyncCourseTabRow(
                 Tab(
                     modifier = Modifier
                         .background(backgroundColor),
-                    text = { Text(stringResource(id = tab.title)) },
+                    text = { Text(androidStringResource(id = tab.title)) },
                     selected = selectedTabIndex == index,
                     onClick = { selectedTab = SyncCourseTab.entries[index] },
                     unselectedContentColor = MaterialTheme.appColors.textAccent,
@@ -269,7 +272,7 @@ fun CourseCheckboxList(
                                     color = MaterialTheme.appColors.textFieldHint,
                                 )
                             ) {
-                                append(stringResource(R.string.profile_inactive))
+                                append(stringResource(profileRes.string.profile_inactive))
                             }
                         }
                     }
@@ -310,9 +313,9 @@ fun EmptyListState(
     selectedTab: SyncCourseTab,
 ) {
     val description = if (selectedTab == SyncCourseTab.SYNCED) {
-        stringResource(id = R.string.profile_no_sync_courses)
+        stringResource(profileRes.string.profile_no_sync_courses)
     } else {
-        stringResource(id = R.string.profile_no_courses_with_current_filter)
+        stringResource(profileRes.string.profile_no_courses_with_current_filter)
     }
     Column(
         modifier = modifier
@@ -329,8 +332,8 @@ fun EmptyListState(
         )
         Text(
             text = stringResource(
-                id = R.string.profile_no_courses,
-                stringResource(id = selectedTab.title)
+                profileRes.string.profile_no_courses,
+                androidStringResource(id = selectedTab.title)
             ),
             style = MaterialTheme.appTypography.titleMedium,
             color = MaterialTheme.appColors.textDark
@@ -356,7 +359,7 @@ fun HideInactiveCoursesView(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(R.string.profile_hide_inactive_courses),
+                text = stringResource(profileRes.string.profile_hide_inactive_courses),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textDark
             )
@@ -371,7 +374,7 @@ fun HideInactiveCoursesView(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.profile_automatically_remove_events),
+            text = stringResource(profileRes.string.profile_automatically_remove_events),
             style = MaterialTheme.appTypography.labelMedium,
             color = MaterialTheme.appColors.textPrimaryVariant
         )

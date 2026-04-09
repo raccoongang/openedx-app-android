@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +30,8 @@ import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.course.R
+import org.openedx.course.*
+import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseContentVideoEmptyState
 import org.openedx.course.presentation.ui.CourseVideoItem
 
@@ -65,7 +66,7 @@ fun VideosHomePagerCardContent(
     ) {
         // Header with progress
         Text(
-            text = stringResource(R.string.course_container_content_tab_video),
+            text = stringResource(Res.string.course_container_content_tab_video),
             style = MaterialTheme.appTypography.titleLarge,
             color = MaterialTheme.appColors.textPrimary,
             fontWeight = FontWeight.SemiBold
@@ -92,7 +93,7 @@ fun VideosHomePagerCardContent(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.course_videos_completed),
+                text = stringResource(Res.string.course_videos_completed),
                 style = MaterialTheme.appTypography.labelLarge,
                 color = MaterialTheme.appColors.textPrimaryVariant,
                 fontWeight = FontWeight.Medium
@@ -120,9 +121,9 @@ fun VideosHomePagerCardContent(
         // Continue Watching section
         if (firstIncompleteVideo != null) {
             val title = if (videoProgress > 0) {
-                stringResource(R.string.course_continue_watching)
+                stringResource(Res.string.course_continue_watching)
             } else {
-                stringResource(R.string.course_next_video)
+                stringResource(Res.string.course_next_video)
             }
             Text(
                 text = title,
@@ -151,7 +152,7 @@ fun VideosHomePagerCardContent(
             )
         } else {
             CaughtUpMessage(
-                message = stringResource(R.string.course_videos_caught_up)
+                message = stringResource(Res.string.course_videos_caught_up)
             )
         }
 
@@ -159,7 +160,7 @@ fun VideosHomePagerCardContent(
 
         // View All Videos button
         ViewAllButton(
-            text = stringResource(R.string.course_view_all_videos),
+            text = stringResource(Res.string.course_view_all_videos),
             onClick = onViewAllVideosClick
         )
     }

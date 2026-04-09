@@ -41,7 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -58,7 +58,13 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.dates.R
+import org.openedx.dates.Res
+import org.openedx.dates.dates_empty_state_description
+import org.openedx.dates.dates_empty_state_title
+import org.openedx.dates.dates_shift_due_date
+import org.openedx.dates.dates_shift_due_date_card_description
+import org.openedx.dates.dates_shift_due_date_card_title
+import org.openedx.dates.dates_title
 import org.openedx.foundation.extension.isNotEmptyThenLet
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
@@ -100,7 +106,7 @@ fun DatesScreen(
                 modifier = Modifier
                     .statusBarsInset()
                     .displayCutoutForLandscape(),
-                label = stringResource(id = R.string.dates_title),
+                label = stringResource(Res.string.dates_title),
                 onSettingsClick = {
                     onAction(DatesViewActions.OpenSettings)
                 }
@@ -239,18 +245,18 @@ private fun ShiftDueDatesCard(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.dates_shift_due_date_card_title),
+                text = stringResource(Res.string.dates_shift_due_date_card_title),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.dates_shift_due_date_card_description),
+                text = stringResource(Res.string.dates_shift_due_date_card_description),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.labelLarge,
             )
             OpenEdXButton(
-                text = stringResource(id = R.string.dates_shift_due_date),
+                text = stringResource(Res.string.dates_shift_due_date),
                 enabled = isButtonEnabled,
                 onClick = onClick
             )
@@ -283,7 +289,7 @@ private fun EmptyState(
                 modifier = Modifier
                     .testTag("txt_empty_state_title")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.dates_empty_state_title),
+                text = stringResource(Res.string.dates_empty_state_title),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,
                 textAlign = TextAlign.Center
@@ -293,7 +299,7 @@ private fun EmptyState(
                 modifier = Modifier
                     .testTag("txt_empty_state_description")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.dates_empty_state_description),
+                text = stringResource(Res.string.dates_empty_state_description),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.labelMedium,
                 textAlign = TextAlign.Center

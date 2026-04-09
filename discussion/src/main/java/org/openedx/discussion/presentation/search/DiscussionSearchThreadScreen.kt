@@ -40,7 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,6 +65,8 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.discussion.*
+import org.openedx.discussion.Res as discussionRes
 import org.openedx.discussion.R as discussionR
 
 private const val LOAD_MORE_THRESHOLD = 4
@@ -166,7 +169,7 @@ fun DiscussionSearchThreadScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 56.dp),
-                            text = stringResource(id = R.string.core_search),
+                            text = androidStringResource(id = R.string.core_search),
                             color = MaterialTheme.appColors.textPrimary,
                             style = MaterialTheme.appTypography.titleMedium,
                             maxLines = 1,
@@ -208,7 +211,7 @@ fun DiscussionSearchThreadScreen(
                     ) {
                         val typingText =
                             if (textFieldValue.text.isEmpty()) {
-                                stringResource(id = discussionR.string.discussion_start_typing_to_find)
+                                stringResource(discussionRes.string.discussion_start_typing_to_find)
                             } else {
                                 pluralStringResource(
                                     id = discussionR.plurals.discussion_found_threads,
@@ -224,7 +227,7 @@ fun DiscussionSearchThreadScreen(
                             item {
                                 Column {
                                     Text(
-                                        text = stringResource(id = discussionR.string.discussion_search_results),
+                                        text = stringResource(discussionRes.string.discussion_search_results),
                                         color = MaterialTheme.appColors.textPrimary,
                                         style = MaterialTheme.appTypography.displaySmall
                                     )

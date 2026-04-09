@@ -64,7 +64,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,7 +92,17 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.downloads.R
+import org.openedx.downloads.Res
+import org.openedx.downloads.downloads
+import org.openedx.downloads.downloaded_available_size
+import org.openedx.downloads.downloaded_downloaded_size
+import org.openedx.downloads.downloads_accessibility_stop_downloading_course
+import org.openedx.downloads.downloads_cancel_download
+import org.openedx.downloads.downloads_download_course
+import org.openedx.downloads.downloads_empty_state_description
+import org.openedx.downloads.downloads_empty_state_title
+import org.openedx.downloads.downloads_loading_course_structure
+import org.openedx.downloads.downloads_remove_course_downloads
 import org.openedx.foundation.extension.toFileSize
 import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.UIMessage
@@ -133,7 +144,7 @@ fun DownloadsScreen(
                 modifier = Modifier
                     .statusBarsInset()
                     .displayCutoutForLandscape(),
-                label = stringResource(id = R.string.downloads),
+                label = stringResource(Res.string.downloads),
                 onSettingsClick = {
                     onAction(DownloadsViewActions.OpenSettings)
                 }
@@ -361,7 +372,7 @@ private fun CourseItem(
                             icon = Icons.Filled.CloudDone,
                             color = MaterialTheme.appColors.successGreen,
                             text = stringResource(
-                                R.string.downloaded_downloaded_size,
+                                Res.string.downloaded_downloaded_size,
                                 downloadedSize.toFileSize(space = false, round = 1)
                             )
                         )
@@ -372,7 +383,7 @@ private fun CourseItem(
                             icon = Icons.Outlined.CloudDownload,
                             color = MaterialTheme.appColors.textPrimaryVariant,
                             text = stringResource(
-                                R.string.downloaded_available_size,
+                                Res.string.downloaded_available_size,
                                 availableSizeString
                             )
                         )
@@ -400,7 +411,7 @@ private fun CourseItem(
                                     Icon(
                                         imageVector = Icons.Filled.Close,
                                         contentDescription = stringResource(
-                                            id = R.string.downloads_accessibility_stop_downloading_course
+                                            Res.string.downloads_accessibility_stop_downloading_course
                                         ),
                                         tint = MaterialTheme.appColors.error
                                     )
@@ -408,9 +419,9 @@ private fun CourseItem(
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             val text = if (downloadedState == LOADING_COURSE_STRUCTURE) {
-                                stringResource(R.string.downloads_loading_course_structure)
+                                stringResource(Res.string.downloads_loading_course_structure)
                             } else {
-                                stringResource(org.openedx.core.R.string.core_downloading)
+                                androidStringResource(org.openedx.core.R.string.core_downloading)
                             }
                             Text(
                                 text = text,
@@ -425,7 +436,7 @@ private fun CourseItem(
                             },
                             content = {
                                 IconText(
-                                    text = stringResource(R.string.downloads_download_course),
+                                    text = stringResource(Res.string.downloads_download_course),
                                     icon = Icons.Outlined.CloudDownload,
                                     color = MaterialTheme.appColors.primaryButtonText,
                                     textStyle = MaterialTheme.appTypography.labelLarge
@@ -458,7 +469,7 @@ private fun CourseItem(
                     Column {
                         if (downloadedSize != 0L) {
                             OpenEdXDropdownMenuItem(
-                                text = stringResource(R.string.downloads_remove_course_downloads),
+                                text = stringResource(Res.string.downloads_remove_course_downloads),
                                 onClick = {
                                     isDropdownExpanded = false
                                     onRemoveClick()
@@ -471,7 +482,7 @@ private fun CourseItem(
                         }
                         if (downloadedState.isWaitingOrDownloading) {
                             OpenEdXDropdownMenuItem(
-                                text = stringResource(R.string.downloads_cancel_download),
+                                text = stringResource(Res.string.downloads_cancel_download),
                                 onClick = {
                                     isDropdownExpanded = false
                                     onCancelClick()
@@ -531,7 +542,7 @@ private fun EmptyState(
                 modifier = Modifier
                     .testTag("txt_empty_state_title")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.downloads_empty_state_title),
+                text = stringResource(Res.string.downloads_empty_state_title),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.titleMedium,
                 textAlign = TextAlign.Center
@@ -541,7 +552,7 @@ private fun EmptyState(
                 modifier = Modifier
                     .testTag("txt_empty_state_description")
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.downloads_empty_state_description),
+                text = stringResource(Res.string.downloads_empty_state_description),
                 color = MaterialTheme.appColors.textDark,
                 style = MaterialTheme.appTypography.labelMedium,
                 textAlign = TextAlign.Center

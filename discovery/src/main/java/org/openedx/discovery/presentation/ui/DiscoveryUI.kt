@@ -33,7 +33,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.discovery.*
 import org.openedx.discovery.R
 import org.openedx.discovery.domain.model.Course
 import org.openedx.foundation.extension.toImageLink
@@ -73,7 +75,7 @@ fun ImageHeader(
                 .error(сoreR.drawable.core_no_image_course)
                 .placeholder(сoreR.drawable.core_no_image_course)
                 .build(),
-            contentDescription = stringResource(
+            contentDescription = androidStringResource(
                 id = сoreR.string.core_accessibility_header_image_for,
                 courseName
             ),
@@ -217,7 +219,7 @@ private fun WarningLabelPreview() {
     OpenEdXTheme {
         WarningLabel(
             painter = painterResource(id = сoreR.drawable.core_ic_offline),
-            text = stringResource(id = R.string.discovery_no_internet_label)
+            text = stringResource(Res.string.discovery_no_internet_label)
         )
     }
 }

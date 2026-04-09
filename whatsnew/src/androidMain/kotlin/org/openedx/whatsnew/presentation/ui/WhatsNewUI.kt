@@ -29,14 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.whatsnew.R
+import org.openedx.whatsnew.Res
+import org.openedx.whatsnew.whats_new_navigation_done
+import org.openedx.whatsnew.whats_new_navigation_next
+import org.openedx.whatsnew.whats_new_navigation_previous
 
 @Composable
 fun NavigationUnitsButtons(
@@ -95,7 +98,7 @@ fun PrevButton(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.whats_new_navigation_previous),
+                text = stringResource(Res.string.whats_new_navigation_previous),
                 color = MaterialTheme.appColors.primary,
                 style = MaterialTheme.appTypography.labelLarge
             )
@@ -132,7 +135,7 @@ fun NextFinishButton(
                 ) {
                     Text(
                         modifier = Modifier.testTag("txt_next"),
-                        text = stringResource(id = R.string.whats_new_navigation_next),
+                        text = stringResource(Res.string.whats_new_navigation_next),
                         color = MaterialTheme.appColors.primaryButtonText,
                         style = MaterialTheme.appTypography.labelLarge
                     )
@@ -150,7 +153,7 @@ fun NextFinishButton(
                 ) {
                     Text(
                         modifier = Modifier.testTag("txt_done"),
-                        text = stringResource(id = R.string.whats_new_navigation_done),
+                        text = stringResource(Res.string.whats_new_navigation_done),
                         color = MaterialTheme.appColors.primaryButtonText,
                         style = MaterialTheme.appTypography.labelLarge
                     )

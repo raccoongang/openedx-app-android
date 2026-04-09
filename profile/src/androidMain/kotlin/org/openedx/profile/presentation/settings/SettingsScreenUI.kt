@@ -43,7 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.openedx.profile.*
+import org.openedx.profile.Res as profileRes
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
@@ -111,7 +114,7 @@ fun SettingsScreen(
             modifier = topBarWidth
                 .align(Alignment.CenterHorizontally)
                 .displayCutoutForLandscape(),
-            label = stringResource(id = R.string.core_settings),
+            label = androidStringResource(id = R.string.core_settings),
             canShowBackBtn = true,
             labelTint = MaterialTheme.appColors.settingsTitleContent,
             iconTint = MaterialTheme.appColors.settingsTitleContent,
@@ -215,7 +218,7 @@ private fun SettingsSection(
     Column {
         Text(
             modifier = Modifier.testTag("txt_settings"),
-            text = stringResource(id = R.string.core_settings),
+            text = androidStringResource(id = R.string.core_settings),
             style = MaterialTheme.appTypography.labelLarge,
             color = MaterialTheme.appColors.textSecondary
         )
@@ -228,12 +231,12 @@ private fun SettingsSection(
         ) {
             Column(Modifier.fillMaxWidth()) {
                 SettingsItem(
-                    text = stringResource(id = profileR.string.profile_video),
+                    text = stringResource(profileRes.string.profile_video),
                     onClick = onVideoSettingsClick
                 )
                 SettingsDivider()
                 SettingsItem(
-                    text = stringResource(id = profileR.string.profile_dates_and_calendar),
+                    text = stringResource(profileRes.string.profile_dates_and_calendar),
                     onClick = onCalendarSettingsClick
                 )
             }
@@ -251,7 +254,7 @@ private fun ManageAccountSection(onManageAccountClick: () -> Unit) {
         ) {
             Column(Modifier.fillMaxWidth()) {
                 SettingsItem(
-                    text = stringResource(id = R.string.core_manage_account),
+                    text = androidStringResource(id = R.string.core_manage_account),
                     onClick = onManageAccountClick
                 )
             }
@@ -267,7 +270,7 @@ private fun SupportInfoSection(
     Column {
         Text(
             modifier = Modifier.testTag("txt_support_info"),
-            text = stringResource(id = profileR.string.profile_support_info),
+            text = stringResource(profileRes.string.profile_support_info),
             style = MaterialTheme.appTypography.labelLarge,
             color = MaterialTheme.appColors.textSecondary
         )
@@ -280,31 +283,31 @@ private fun SupportInfoSection(
         ) {
             Column(Modifier.fillMaxWidth()) {
                 if (uiState.configuration.supportEmail.isNotBlank()) {
-                    SettingsItem(text = stringResource(id = profileR.string.profile_contact_support)) {
+                    SettingsItem(text = stringResource(profileRes.string.profile_contact_support)) {
                         onAction(SettingsScreenAction.SupportClick)
                     }
                     SettingsDivider()
                 }
                 if (uiState.configuration.agreementUrls.tosUrl.isNotBlank()) {
-                    SettingsItem(text = stringResource(id = R.string.core_terms_of_use)) {
+                    SettingsItem(text = androidStringResource(id = R.string.core_terms_of_use)) {
                         onAction(SettingsScreenAction.TermsClick)
                     }
                     SettingsDivider()
                 }
                 if (uiState.configuration.agreementUrls.privacyPolicyUrl.isNotBlank()) {
-                    SettingsItem(text = stringResource(id = R.string.core_privacy_policy)) {
+                    SettingsItem(text = androidStringResource(id = R.string.core_privacy_policy)) {
                         onAction(SettingsScreenAction.PrivacyPolicyClick)
                     }
                     SettingsDivider()
                 }
                 if (uiState.configuration.agreementUrls.cookiePolicyUrl.isNotBlank()) {
-                    SettingsItem(text = stringResource(id = R.string.core_cookie_policy)) {
+                    SettingsItem(text = androidStringResource(id = R.string.core_cookie_policy)) {
                         onAction(SettingsScreenAction.CookiePolicyClick)
                     }
                     SettingsDivider()
                 }
                 if (uiState.configuration.agreementUrls.dataSellConsentUrl.isNotBlank()) {
-                    SettingsItem(text = stringResource(id = R.string.core_data_sell)) {
+                    SettingsItem(text = androidStringResource(id = R.string.core_data_sell)) {
                         onAction(SettingsScreenAction.DataSellClick)
                     }
                     SettingsDivider()
@@ -312,7 +315,7 @@ private fun SupportInfoSection(
                 if (uiState.configuration.faqUrl.isNotBlank()) {
                     val uriHandler = LocalUriHandler.current
                     SettingsItem(
-                        text = stringResource(id = R.string.core_faq),
+                        text = androidStringResource(id = R.string.core_faq),
                         external = true,
                     ) {
                         uriHandler.openUri(uiState.configuration.faqUrl)
@@ -352,7 +355,7 @@ private fun LogoutButton(onClick: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier.testTag("txt_logout"),
-                text = stringResource(id = profileR.string.profile_logout),
+                text = stringResource(profileRes.string.profile_logout),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.error
             )
@@ -404,7 +407,7 @@ private fun LogoutDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(id = R.string.core_cancel),
+                            contentDescription = androidStringResource(id = R.string.core_cancel),
                             tint = MaterialTheme.appColors.primary
                         )
                     }
@@ -420,14 +423,14 @@ private fun LogoutDialog(
                 Spacer(Modifier.size(36.dp))
                 Text(
                     modifier = Modifier.testTag("txt_logout_dialog_title"),
-                    text = stringResource(id = profileR.string.profile_logout_dialog_body),
+                    text = stringResource(profileRes.string.profile_logout_dialog_body),
                     color = MaterialTheme.appColors.textPrimary,
                     style = MaterialTheme.appTypography.titleLarge,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.size(36.dp))
                 OpenEdXButton(
-                    text = stringResource(id = profileR.string.profile_logout),
+                    text = stringResource(profileRes.string.profile_logout),
                     backgroundColor = MaterialTheme.appColors.warning,
                     onClick = onLogoutClick,
                     content = {
@@ -441,7 +444,7 @@ private fun LogoutDialog(
                                 modifier = Modifier
                                     .testTag("txt_logout")
                                     .fillMaxWidth(),
-                                text = stringResource(id = profileR.string.profile_logout),
+                                text = stringResource(profileRes.string.profile_logout),
                                 color = MaterialTheme.appColors.textWarning,
                                 style = MaterialTheme.appTypography.labelLarge,
                                 textAlign = TextAlign.Center
@@ -502,7 +505,7 @@ private fun AppVersionItemAppToDate(versionName: String) {
     ) {
         Text(
             modifier = Modifier.testTag("txt_app_version_code"),
-            text = stringResource(id = R.string.core_version, versionName),
+            text = androidStringResource(id = R.string.core_version, versionName),
             style = MaterialTheme.appTypography.titleMedium,
             color = MaterialTheme.appColors.textPrimary
         )
@@ -520,7 +523,7 @@ private fun AppVersionItemAppToDate(versionName: String) {
             )
             Text(
                 modifier = Modifier.testTag("txt_up_to_date"),
-                text = stringResource(id = R.string.core_up_to_date),
+                text = androidStringResource(id = R.string.core_up_to_date),
                 color = MaterialTheme.appColors.textSecondary,
                 style = MaterialTheme.appTypography.labelLarge
             )
@@ -549,13 +552,13 @@ private fun AppVersionItemUpgradeRecommended(
         ) {
             Text(
                 modifier = Modifier.testTag("txt_app_version_code"),
-                text = stringResource(id = R.string.core_version, versionName),
+                text = androidStringResource(id = R.string.core_version, versionName),
                 style = MaterialTheme.appTypography.titleMedium,
                 color = MaterialTheme.appColors.textPrimary
             )
             Text(
                 modifier = Modifier.testTag("txt_upgrade_recommended"),
-                text = stringResource(
+                text = androidStringResource(
                     id = R.string.core_tap_to_update_to_version,
                     appUpgradeEvent.newVersionName
                 ),
@@ -601,14 +604,14 @@ fun AppVersionItemUpgradeRequired(
                 )
                 Text(
                     modifier = Modifier.testTag("txt_app_version_code"),
-                    text = stringResource(id = R.string.core_version, versionName),
+                    text = androidStringResource(id = R.string.core_version, versionName),
                     style = MaterialTheme.appTypography.titleMedium,
                     color = MaterialTheme.appColors.textPrimary
                 )
             }
             Text(
                 modifier = Modifier.testTag("txt_upgrade_required"),
-                text = stringResource(id = R.string.core_tap_to_install_required_app_update),
+                text = androidStringResource(id = R.string.core_tap_to_install_required_app_update),
                 color = MaterialTheme.appColors.textAccent,
                 style = MaterialTheme.appTypography.labelLarge
             )

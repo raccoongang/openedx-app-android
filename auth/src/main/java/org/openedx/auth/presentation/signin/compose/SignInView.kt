@@ -45,7 +45,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.ImeAction
@@ -58,7 +59,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.openedx.auth.R
+import org.openedx.auth.*
 import org.openedx.auth.presentation.signin.AuthEvent
 import org.openedx.auth.presentation.signin.SignInUIState
 import org.openedx.auth.presentation.ui.LoginTextField
@@ -173,7 +174,7 @@ fun LoginScreen(
                     ) {
                         Text(
                             modifier = Modifier.testTag("txt_sign_in_title"),
-                            text = stringResource(id = coreR.string.core_sign_in),
+                            text = androidStringResource(id = coreR.string.core_sign_in),
                             color = MaterialTheme.appColors.textPrimary,
                             style = MaterialTheme.appTypography.displaySmall
                         )
@@ -181,7 +182,7 @@ fun LoginScreen(
                             modifier = Modifier
                                 .testTag("txt_sign_in_description")
                                 .padding(top = 4.dp),
-                            text = stringResource(id = R.string.auth_welcome_back),
+                            text = stringResource(Res.string.auth_welcome_back),
                             color = MaterialTheme.appColors.textPrimary,
                             style = MaterialTheme.appTypography.titleSmall
                         )
@@ -230,14 +231,14 @@ private fun AuthForm(
             LoginTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
-                title = stringResource(id = R.string.auth_email_username),
-                description = stringResource(id = R.string.auth_enter_email_username),
+                title = stringResource(Res.string.auth_email_username),
+                description = stringResource(Res.string.auth_enter_email_username),
                 onValueChanged = {
                     login = it
                     isEmailError = false
                 },
                 isError = isEmailError,
-                errorMessages = stringResource(id = R.string.auth_error_empty_username_email)
+                errorMessages = stringResource(Res.string.auth_error_empty_username_email)
             )
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -276,7 +277,7 @@ private fun AuthForm(
                             .noRippleClickable {
                                 onEvent(AuthEvent.RegisterClick)
                             },
-                        text = stringResource(id = coreR.string.core_register),
+                        text = androidStringResource(id = coreR.string.core_register),
                         color = MaterialTheme.appColors.primary,
                         style = MaterialTheme.appTypography.labelLarge
                     )
@@ -288,7 +289,7 @@ private fun AuthForm(
                         .noRippleClickable {
                             onEvent(AuthEvent.ForgotPasswordClick)
                         },
-                    text = stringResource(id = R.string.auth_forgot_password),
+                    text = stringResource(Res.string.auth_forgot_password),
                     color = MaterialTheme.appColors.infoVariant,
                     style = MaterialTheme.appTypography.labelLarge
                 )
@@ -300,7 +301,7 @@ private fun AuthForm(
         } else {
             OpenEdXButton(
                 modifier = buttonWidth.testTag("btn_sign_in"),
-                text = stringResource(id = coreR.string.core_sign_in),
+                text = androidStringResource(id = coreR.string.core_sign_in),
                 textColor = MaterialTheme.appColors.primaryButtonText,
                 backgroundColor = MaterialTheme.appColors.secondaryButtonBackground,
                 onClick = {
@@ -350,7 +351,7 @@ private fun PasswordTextField(
         modifier = Modifier
             .testTag("txt_password_label")
             .fillMaxWidth(),
-        text = stringResource(id = coreR.string.core_password),
+        text = androidStringResource(id = coreR.string.core_password),
         color = MaterialTheme.appColors.textPrimary,
         style = MaterialTheme.appTypography.labelLarge
     )
@@ -376,7 +377,7 @@ private fun PasswordTextField(
         placeholder = {
             Text(
                 modifier = Modifier.testTag("txt_password_placeholder"),
-                text = stringResource(id = R.string.auth_enter_password),
+                text = stringResource(Res.string.auth_enter_password),
                 color = MaterialTheme.appColors.textFieldHint,
                 style = MaterialTheme.appTypography.bodyMedium
             )
@@ -410,7 +411,7 @@ private fun PasswordTextField(
                 .testTag("txt_password_error")
                 .fillMaxWidth()
                 .padding(top = 4.dp),
-            text = stringResource(id = R.string.auth_error_empty_password),
+            text = stringResource(Res.string.auth_error_empty_password),
             style = MaterialTheme.appTypography.bodySmall,
             color = MaterialTheme.appColors.error,
         )

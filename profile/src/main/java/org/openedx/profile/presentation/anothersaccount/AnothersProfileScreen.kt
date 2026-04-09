@@ -27,7 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -96,7 +96,7 @@ fun AnothersProfileScreen(
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.core_profile),
+                        text = androidStringResource(id = R.string.core_profile),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.appTypography.titleMedium
                     )
