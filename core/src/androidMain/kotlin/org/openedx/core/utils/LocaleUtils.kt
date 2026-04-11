@@ -7,18 +7,18 @@ import java.util.Locale
 
 private val defaultLocale: Locale = Locale.Builder().setLanguage("en").build()
 
-object LocaleUtils {
+actual object LocaleUtils {
 
     private const val MIN_USER_AGE = 13
 
-    fun getBirthYearsRange(): List<RegistrationField.Option> {
+    actual fun getBirthYearsRange(): List<RegistrationField.Option> {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         return (currentYear - USER_MAX_YEAR..currentYear - 0).reversed().map {
             RegistrationField.Option(it.toString(), it.toString(), "")
         }.toList()
     }
 
-    fun isProfileLimited(inputYear: String?): Boolean {
+    actual fun isProfileLimited(inputYear: String?): Boolean {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         return if (!inputYear.isNullOrEmpty()) {
             currentYear - inputYear.toInt() < MIN_USER_AGE
@@ -27,22 +27,22 @@ object LocaleUtils {
         }
     }
 
-    fun getCountries() = getAvailableCountries()
+    actual fun getCountries() = getAvailableCountries()
 
-    fun getLanguages() = getAvailableLanguages()
+    actual fun getLanguages() = getAvailableLanguages()
 
-    fun getLanguages(languages: List<String>) = getAvailableLanguages().filter {
+    actual fun getLanguages(languages: List<String>) = getAvailableLanguages().filter {
         languages.contains(it.value)
     }
 
-    fun getCountryByCountryCode(code: String): String? {
+    actual fun getCountryByCountryCode(code: String): String? {
         val countryISO = Locale.getISOCountries().firstOrNull { it == code }
         return countryISO?.let {
             Locale.Builder().setRegion(it).build().getDisplayCountry(defaultLocale)
         }
     }
 
-    fun getLanguageByLanguageCode(code: String): String? {
+    actual fun getLanguageByLanguageCode(code: String): String? {
         val countryISO = Locale.getISOLanguages().firstOrNull { it == code }
         return countryISO?.let {
             Locale.Builder().setLanguage(it).build().getDisplayLanguage(defaultLocale)
@@ -74,7 +74,7 @@ object LocaleUtils {
         .sortedBy { it.name }
         .toList()
 
-    fun getDisplayLanguage(languageCode: String): String {
+    actual fun getDisplayLanguage(languageCode: String): String {
         return Locale.Builder().setLanguage(languageCode).build().getDisplayLanguage(defaultLocale)
     }
 }

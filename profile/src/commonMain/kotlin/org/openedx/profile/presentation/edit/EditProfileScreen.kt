@@ -1,10 +1,5 @@
-@file:OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeUiApi::class)
-
 package org.openedx.profile.presentation.edit
 
-import android.content.res.Configuration
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.view.Gravity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -59,33 +54,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import org.openedx.core.domain.model.LanguageProficiency
@@ -101,7 +87,6 @@ import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.noRippleClickable
 import org.openedx.core.ui.rememberSaveableMap
 import org.openedx.core.ui.statusBarsInset
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
@@ -109,9 +94,7 @@ import org.openedx.core.utils.LocaleUtils
 import org.openedx.foundation.extension.tagId
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
-import org.openedx.profile.ProfileMocks
 import org.openedx.profile.*
 import org.openedx.profile.Res as profileRes
 import org.openedx.profile.domain.model.Account
@@ -123,7 +106,7 @@ import org.openedx.core.core_ic_default_profile_picture
 private const val BIO_TEXT_FIELD_LIMIT = 300
 private const val LEAVE_PROFILE_WIDTH_FACTOR = 0.7f
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     windowSize: WindowSize,
@@ -212,10 +195,7 @@ fun EditProfileScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .semantics {
-                testTagsAsResourceId = true
-            },
+            .navigationBarsPadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
@@ -276,8 +256,7 @@ fun EditProfileScreen(
         }
 
         if (leaveDialog) {
-            val configuration = LocalConfiguration.current
-            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT || windowSize.isTablet) {
+            if (!windowSize.isLandscape || windowSize.isTablet) {
                 LeaveProfile(
                     onDismissRequest = { onKeepEdit() },
                     onLeaveClick = { onBackClick(false) }
@@ -586,82 +565,86 @@ fun ChangeImageDialog(
     onRemoveImageClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
-    Dialog(onDismissRequest = {
-        onCancelClick()
-    }) {
-        val dialogWindowProvider = LocalView.current.parent as DialogWindowProvider
-        dialogWindowProvider.window.setGravity(Gravity.BOTTOM)
+    Dialog(
+        onDismissRequest = { onCancelClick() },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Box(
-            Modifier
-                .padding(bottom = 24.dp)
-                .semantics { testTagsAsResourceId = true }
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Column(
+            Box(
                 Modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.appColors.cardViewBackground,
-                        MaterialTheme.appShapes.cardShape
-                    )
-                    .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 24.dp)
             ) {
-                Spacer(Modifier.height(4.dp))
-                HorizontalDivider(
-                    modifier = Modifier
-                        .width(32.dp)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
                         .background(
-                            MaterialTheme.appColors.bottomSheetToggle,
-                            MaterialTheme.appShapes.material3.small
+                            MaterialTheme.appColors.cardViewBackground,
+                            MaterialTheme.appShapes.cardShape
                         )
-                        .clip(MaterialTheme.appShapes.material3.small),
-                    thickness = 4.dp
-                )
-                Spacer(Modifier.height(14.dp))
-                Text(
-                    modifier = Modifier.testTag("txt_edit_profile_change_image_title"),
-                    text = stringResource(profileRes.string.profile_change_image),
-                    style = MaterialTheme.appTypography.titleLarge,
-                    color = MaterialTheme.appColors.textPrimary
-                )
-                Spacer(Modifier.height(20.dp))
-                OpenEdXButton(
-                    text = stringResource(profileRes.string.profile_select_from_gallery),
-                    onClick = onSelectFromGalleryClick,
-                    content = {
-                        IconText(
-                            modifier = Modifier.testTag("it_select_from_gallery"),
-                            text = stringResource(profileRes.string.profile_select_from_gallery),
-                            painter = painterResource(profileRes.drawable.profile_ic_gallery),
-                            color = Color.White,
-                            textStyle = MaterialTheme.appTypography.labelLarge
-                        )
-                    }
-                )
-                Spacer(Modifier.height(16.dp))
-                OpenEdXOutlinedButton(
-                    borderColor = MaterialTheme.appColors.error,
-                    textColor = MaterialTheme.appColors.textPrimary,
-                    text = stringResource(profileRes.string.profile_remove_photo),
-                    onClick = onRemoveImageClick,
-                    content = {
-                        IconText(
-                            modifier = Modifier.testTag("it_remove_photo"),
-                            text = stringResource(profileRes.string.profile_remove_photo),
-                            painter = painterResource(profileRes.drawable.profile_ic_remove_image),
-                            color = MaterialTheme.appColors.error,
-                            textStyle = MaterialTheme.appTypography.labelLarge
-                        )
-                    }
-                )
-                Spacer(Modifier.height(40.dp))
-                OpenEdXOutlinedButton(
-                    borderColor = MaterialTheme.appColors.textPrimaryVariant,
-                    textColor = MaterialTheme.appColors.textPrimary,
-                    text = stringResource(coreRes.string.core_cancel),
-                    onClick = onCancelClick
-                )
-                Spacer(Modifier.height(20.dp))
+                        .padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(Modifier.height(4.dp))
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .width(32.dp)
+                            .background(
+                                MaterialTheme.appColors.bottomSheetToggle,
+                                MaterialTheme.appShapes.material3.small
+                            )
+                            .clip(MaterialTheme.appShapes.material3.small),
+                        thickness = 4.dp
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    Text(
+                        modifier = Modifier.testTag("txt_edit_profile_change_image_title"),
+                        text = stringResource(profileRes.string.profile_change_image),
+                        style = MaterialTheme.appTypography.titleLarge,
+                        color = MaterialTheme.appColors.textPrimary
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    OpenEdXButton(
+                        text = stringResource(profileRes.string.profile_select_from_gallery),
+                        onClick = onSelectFromGalleryClick,
+                        content = {
+                            IconText(
+                                modifier = Modifier.testTag("it_select_from_gallery"),
+                                text = stringResource(profileRes.string.profile_select_from_gallery),
+                                painter = painterResource(profileRes.drawable.profile_ic_gallery),
+                                color = Color.White,
+                                textStyle = MaterialTheme.appTypography.labelLarge
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    OpenEdXOutlinedButton(
+                        borderColor = MaterialTheme.appColors.error,
+                        textColor = MaterialTheme.appColors.textPrimary,
+                        text = stringResource(profileRes.string.profile_remove_photo),
+                        onClick = onRemoveImageClick,
+                        content = {
+                            IconText(
+                                modifier = Modifier.testTag("it_remove_photo"),
+                                text = stringResource(profileRes.string.profile_remove_photo),
+                                painter = painterResource(profileRes.drawable.profile_ic_remove_image),
+                                color = MaterialTheme.appColors.error,
+                                textStyle = MaterialTheme.appTypography.labelLarge
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(40.dp))
+                    OpenEdXOutlinedButton(
+                        borderColor = MaterialTheme.appColors.textPrimaryVariant,
+                        textColor = MaterialTheme.appColors.textPrimary,
+                        text = stringResource(coreRes.string.core_cancel),
+                        onClick = onCancelClick
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
             }
         }
     }
@@ -881,10 +864,7 @@ fun LeaveProfile(
                         MaterialTheme.appShapes.cardShape
                     )
                     .padding(horizontal = 40.dp)
-                    .padding(top = 48.dp, bottom = 36.dp)
-                    .semantics {
-                        testTagsAsResourceId = true
-                    },
+                    .padding(top = 48.dp, bottom = 36.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
@@ -946,8 +926,6 @@ fun LeaveProfileLandscape(
     onDismissRequest: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
@@ -958,9 +936,8 @@ fun LeaveProfileLandscape(
         content = {
             Card(
                 modifier = Modifier
-                    .width(screenWidth * LEAVE_PROFILE_WIDTH_FACTOR)
-                    .clip(MaterialTheme.appShapes.courseImageShape)
-                    .semantics { testTagsAsResourceId = true },
+                    .fillMaxWidth(LEAVE_PROFILE_WIDTH_FACTOR)
+                    .clip(MaterialTheme.appShapes.courseImageShape),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.background),
                 shape = MaterialTheme.appShapes.courseImageShape
             ) {
@@ -1041,89 +1018,4 @@ fun LeaveProfileLandscape(
             }
         }
     )
-}
-
-@Preview
-@Composable
-fun LeaveProfilePreview() {
-    LeaveProfile(
-        onDismissRequest = {},
-        onLeaveClick = {}
-    )
-}
-
-@Preview
-@Composable
-fun LeaveProfileLandscapePreview() {
-    LeaveProfileLandscape(
-        onDismissRequest = {},
-        onLeaveClick = {}
-    )
-}
-
-@Preview
-@Composable
-fun ChangeProfileImagePreview() {
-    ChangeImageDialog(
-        onSelectFromGalleryClick = {},
-        onRemoveImageClick = {},
-        onCancelClick = {}
-    )
-}
-
-@Preview
-@Composable
-fun LimitedProfilePreview() {
-    LimitedProfileDialog(
-        modifier = Modifier,
-        onCloseClick = {}
-    )
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Preview(name = "NEXUS_5_Light", device = Devices.NEXUS_5, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "NEXUS_5_Dark", device = Devices.NEXUS_5, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun EditProfileScreenPreview() {
-    OpenEdXTheme {
-        EditProfileScreen(
-            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
-            uiState = EditProfileUIState(account = ProfileMocks.account, isUpdating = false, false),
-            selectedImageUri = null,
-            uiMessage = null,
-            isImageDeleted = true,
-            leaveDialog = false,
-            onBackClick = {},
-            onSaveClick = {},
-            onSelectImageClick = {},
-            onDeleteImageClick = {},
-            onDataChanged = {},
-            onKeepEdit = {},
-            onLimitedProfileChange = {}
-        )
-    }
-}
-
-@Preview(name = "NEXUS_9_Light", device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "NEXUS_9_Dark", device = Devices.NEXUS_9, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun EditProfileScreenTabletPreview() {
-    OpenEdXTheme {
-        EditProfileScreen(
-            windowSize = WindowSize(WindowType.Medium, WindowType.Medium),
-            uiState = EditProfileUIState(account = ProfileMocks.account, isUpdating = false, false),
-            selectedImageUri = null,
-            uiMessage = null,
-            isImageDeleted = true,
-            leaveDialog = false,
-            onBackClick = {},
-            onSaveClick = {},
-            onSelectImageClick = {},
-            onDeleteImageClick = {},
-            onDataChanged = {},
-            onKeepEdit = {},
-            onLimitedProfileChange = {}
-        )
-    }
 }
