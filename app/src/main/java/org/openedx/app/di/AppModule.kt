@@ -57,6 +57,8 @@ import org.openedx.core.system.AppCookieManager
 import org.openedx.core.system.AppCookieManagerImpl
 import org.openedx.core.system.CalendarManager
 import org.openedx.core.system.CalendarManagerImpl
+import org.openedx.core.system.StorageManager
+import org.openedx.core.system.StorageManagerImpl
 import org.openedx.core.system.PlatformActions
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.connection.NetworkConnectionImpl
@@ -108,7 +110,8 @@ val appModule = module {
     single<AppCookieManager> { AppCookieManagerImpl(get(), get()) }
     single { ReviewManagerFactory.create(get()) }
     single<CalendarManager> { CalendarManagerImpl(get(), get()) }
-    single<DownloadDialogManager> { DownloadDialogManagerImpl(get(), get(), get(), get()) }
+    single<StorageManager> { StorageManagerImpl() }
+    single<DownloadDialogManager> { DownloadDialogManagerImpl(get(), get(), get(), get(), get()) }
     single { DatabaseManager(get(), get(), get(), get()) }
     single<IDatabaseManager> { get<DatabaseManager>() }
 
