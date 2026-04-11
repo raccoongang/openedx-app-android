@@ -1,6 +1,5 @@
 package org.openedx.course.presentation.container
 
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.compose.animation.core.Animatable
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -50,13 +47,10 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import org.jetbrains.compose.resources.stringResource
 import org.openedx.core.Res as coreRes
 import org.openedx.core.core_accessibility_btn_back
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -66,10 +60,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.openedx.core.ui.RoundTabsBar
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.statusBarsInset
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.foundation.presentation.rememberWindowSize
 import kotlin.math.roundToInt
@@ -108,7 +100,6 @@ internal fun CollapsingLayout(
     }
     val windowSize = rememberWindowSize()
     val coroutineScope = rememberCoroutineScope()
-    val configuration = LocalConfiguration.current
     val rawFactor = (-imageHeight - offset.value) / -imageHeight
     val factor = if (rawFactor.isNaN() || rawFactor < 0) 0f else rawFactor
     val blurImagePadding = 40.dp
@@ -242,7 +233,7 @@ internal fun CollapsingLayout(
             )
         } else {
             CollapsingLayoutMobile(
-                configuration = configuration,
+                isLandscape = windowSize.isLandscape,
                 localDensity = localDensity,
                 collapsedTopHeight = collapsedTopHeight,
                 navigationHeight = navigationHeight,
@@ -457,7 +448,7 @@ private fun CollapsingLayoutTablet(
 
 @Composable
 private fun CollapsingLayoutMobile(
-    configuration: Configuration,
+    isLandscape: Boolean,
     localDensity: Density,
     collapsedTopHeight: MutableState<Float>,
     navigationHeight: MutableState<Float>,
@@ -480,7 +471,7 @@ private fun CollapsingLayoutMobile(
     navigation: @Composable BoxScope.() -> Unit,
     bodyContent: @Composable BoxScope.() -> Unit,
 ) {
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    if (isLandscape) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Box(
                 modifier = Modifier
@@ -787,50 +778,6 @@ private fun CollapsingLayoutMobile(
         Box(
             modifier = bodyModifier,
             content = bodyContent,
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = "spec:parent=pixel_5,orientation=landscape"
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:parent=pixel_5,orientation=landscape"
-)
-@Preview(device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(device = Devices.NEXUS_9, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun CollapsingLayoutPreview() {
-    OpenEdXTheme {
-        CollapsingLayout(
-            modifier = Modifier,
-            courseImage = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
-            imageHeight = 200,
-            expandedTop = {
-                ExpandedHeaderContent(
-                    courseTitle = "courseName",
-                    org = "organization"
-                )
-            },
-            collapsedTop = {
-                CollapsedHeaderContent(
-                    courseTitle = "courseName"
-                )
-            },
-            navigation = {
-                RoundTabsBar(
-                    items = CourseContainerTab.entries,
-                    rowState = rememberLazyListState(),
-                    pagerState = rememberPagerState(pageCount = { CourseContainerTab.entries.size })
-                )
-            },
-            isEnabled = true,
-            onBackClick = {},
-            bodyContent = {}
         )
     }
 }

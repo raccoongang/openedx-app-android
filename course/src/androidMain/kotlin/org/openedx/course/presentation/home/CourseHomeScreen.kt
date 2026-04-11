@@ -374,59 +374,6 @@ fun <T> CourseHomePager(
     }
 }
 
-@Composable
-fun ViewAllButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    TextButton(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.List,
-            contentDescription = null,
-            tint = MaterialTheme.appColors.textAccent,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.appTypography.labelLarge,
-            color = MaterialTheme.appColors.textAccent
-        )
-    }
-}
-
-@Composable
-fun CaughtUpMessage(
-    modifier: Modifier = Modifier,
-    message: String,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Icon(
-            modifier = Modifier.size(48.dp),
-            painter = painterResource(coreRes.drawable.core_ic_check),
-            contentDescription = null,
-            tint = MaterialTheme.appColors.successGreen
-        )
-        Text(
-            modifier = modifier
-                .fillMaxWidth(),
-            text = message,
-            color = MaterialTheme.appColors.textPrimary,
-            style = MaterialTheme.appTypography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun CourseHomeScreenPreview() {

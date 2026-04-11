@@ -29,8 +29,10 @@ kotlin {
             // Coroutines
             api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
-            // Koin core
+            // Koin core + compose
             api("io.insert-koin:koin-core:4.1.0")
+            api("io.insert-koin:koin-compose:4.1.0")
+            api("io.insert-koin:koin-compose-viewmodel:4.1.0")
 
             // kotlinx.serialization
             api(libs.kotlinx.serialization.json)
@@ -57,6 +59,10 @@ kotlin {
             api(libs.coil.compose)
             api(libs.coil.network.ktor)
 
+            // Room (KMP)
+            api(libs.androidx.room.runtime)
+            api(libs.androidx.sqlite.bundled)
+
         }
 
         androidMain.dependencies {
@@ -77,8 +83,7 @@ kotlin {
             api("androidx.fragment:fragment-ktx:1.8.6")
             api("androidx.appcompat:appcompat:1.7.0")
             api("androidx.viewpager2:viewpager2:1.1.0")
-            api("androidx.room:room-runtime:2.7.2")
-            api("androidx.room:room-ktx:2.7.2")
+            api(libs.androidx.room.ktx)
             api("androidx.work:work-runtime-ktx:2.10.0")
             api("androidx.window:window:1.3.0")
             api("androidx.constraintlayout:constraintlayout-compose:1.1.0")

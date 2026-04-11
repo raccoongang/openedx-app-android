@@ -14,6 +14,7 @@ detekt = "1.23.8"
 
 # AndroidX
 room = "2.7.2"
+sqliteBundled = "2.5.0"
 coreSplashscreen = "1.0.1"
 activityCompose = "1.10.1"
 browser = "1.9.0"
@@ -89,6 +90,9 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 
 # Room
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqliteBundled" }
 
 # Compose
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUiTooling" }

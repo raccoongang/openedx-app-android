@@ -25,14 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.openedx.core.BlockType
 import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
 import org.openedx.core.domain.model.Progress
@@ -322,15 +320,6 @@ private fun CourseContentAllUI(
                 }
             }
         }
-    }
-}
-
-fun getUnitBlockIcon(block: Block): DrawableResource {
-    return when (block.type) {
-        BlockType.VIDEO -> Res.drawable.course_ic_video
-        BlockType.PROBLEM -> Res.drawable.course_ic_pen
-        BlockType.DISCUSSION -> Res.drawable.course_ic_discussion
-        else -> Res.drawable.course_ic_block
     }
 }
 
