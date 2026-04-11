@@ -38,7 +38,6 @@ import org.openedx.core.module.DownloadWorkerController
 import org.openedx.core.module.DownloadWorkerControllerImpl
 import org.openedx.core.module.TranscriptManager
 import org.openedx.core.module.TranscriptProvider
-import org.openedx.core.module.TranscriptProviderImpl
 import org.openedx.core.module.download.DownloadHelper
 import org.openedx.core.module.download.DownloadHelperImpl
 import org.openedx.core.module.download.DownloadModelsSource
@@ -199,8 +198,7 @@ val appModule = module {
     }
     factory<AppReviewManager> { (activity: AppCompatActivity) -> AppReviewManagerImpl(activity, get(), get()) }
 
-    single { TranscriptManager(get(), get()) }
-    single<TranscriptProvider> { TranscriptProviderImpl(get()) }
+    single<TranscriptProvider> { TranscriptManager(get(), get()) }
     single { WhatsNewManagerImpl(get(), get(), get(), get()) }
     single<WhatsNewManager> { get<WhatsNewManagerImpl>() }
     single<WhatsNewGlobalManager> { get<WhatsNewManagerImpl>() }

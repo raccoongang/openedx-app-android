@@ -15,6 +15,8 @@ expect class FileUtil {
     fun <T> saveObjectToFileWithSerializer(serializer: SerializationStrategy<T>, obj: T, fileName: String)
     fun deleteOldAppDirectory(oldDirName: String)
     fun deleteFile(path: String): Boolean
+    fun fileSize(path: String): Long
+    fun directorySize(path: String): Long
 }
 
 /**

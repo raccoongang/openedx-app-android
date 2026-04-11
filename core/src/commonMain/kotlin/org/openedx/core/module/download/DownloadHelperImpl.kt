@@ -8,7 +8,6 @@ import org.openedx.core.module.db.FileType
 import org.openedx.core.utils.Sha1Util
 import org.openedx.core.utils.unzipFile
 import org.openedx.foundation.utils.FileUtil
-import java.io.File
 
 class DownloadHelperImpl(
     private val preferencesManager: CorePreferences,
@@ -30,7 +29,7 @@ class DownloadHelperImpl(
                 val url = videoInfo?.url ?: ""
                 val extension = url.split('.').lastOrNull() ?: "mp4"
                 val path =
-                    folder + File.separator + "${Sha1Util.SHA1(url)}.$extension"
+                    folder + "/" + "${Sha1Util.SHA1(url)}.$extension"
                 DownloadModel(
                     block.id,
                     block.displayName,
@@ -53,7 +52,7 @@ class DownloadHelperImpl(
                 val size = block.offlineDownload?.fileSize ?: 0
                 val extension = "zip"
                 val path =
-                    folder + File.separator + "${Sha1Util.SHA1(url)}.$extension"
+                    folder + "/" + "${Sha1Util.SHA1(url)}.$extension"
                 val lastModified = block.offlineDownload?.lastModified
                 DownloadModel(
                     block.id,
@@ -77,7 +76,7 @@ class DownloadHelperImpl(
             FileType.VIDEO -> {
                 downloadModel.copy(
                     downloadedState = DownloadedState.DOWNLOADED,
-                    size = File(downloadModel.path).length()
+                    size = fileUtil.fileSize(downloadModel.path)
                 )
             }
 
@@ -85,22 +84,10 @@ class DownloadHelperImpl(
                 val unzippedFolderPath = fileUtil.unzipFile(downloadModel.path) ?: return null
                 downloadModel.copy(
                     downloadedState = DownloadedState.DOWNLOADED,
-                    size = calculateDirectorySize(File(unzippedFolderPath)),
+                    size = fileUtil.directorySize(unzippedFolderPath),
                     path = unzippedFolderPath
                 )
             }
         }
-    }
-
-    private fun calculateDirectorySize(directory: File): Long {
-        if (!directory.exists()) return 0
-
-        return directory.listFiles()?.sumOf { file ->
-            if (file.isDirectory) {
-                calculateDirectorySize(file)
-            } else {
-                file.length()
-            }
-        } ?: 0
     }
 }

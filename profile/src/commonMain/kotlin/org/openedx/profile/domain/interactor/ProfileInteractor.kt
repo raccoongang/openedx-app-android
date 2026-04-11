@@ -1,5 +1,6 @@
 package org.openedx.profile.domain.interactor
 
+import org.openedx.profile.data.repository.ImageBody
 import org.openedx.profile.data.repository.ProfileRepository
 
 class ProfileInteractor(private val repository: ProfileRepository) {
@@ -12,7 +13,7 @@ class ProfileInteractor(private val repository: ProfileRepository) {
 
     suspend fun updateAccount(fields: Map<String, Any?>) = repository.updateAccount(fields)
 
-    suspend fun setProfileImage(file: Any, mimeType: String) = repository.setProfileImage(file, mimeType)
+    suspend fun setProfileImage(imageBody: ImageBody) = repository.setProfileImage(imageBody)
 
     suspend fun deleteProfileImage() = repository.deleteProfileImage()
 

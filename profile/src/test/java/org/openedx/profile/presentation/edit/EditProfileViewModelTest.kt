@@ -26,9 +26,9 @@ import org.openedx.foundation.system.ResourceManager
 import org.openedx.profile.ProfileMocks
 import org.openedx.profile.domain.interactor.ProfileInteractor
 import org.openedx.profile.presentation.ProfileAnalytics
+import org.openedx.profile.data.repository.ImageBody
 import org.openedx.profile.system.notifier.account.AccountUpdated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
-import java.io.File
 import java.net.UnknownHostException
 import org.openedx.foundation.Res as foundationRes
 import org.openedx.foundation.foundation_error_no_connection
@@ -48,7 +48,7 @@ class EditProfileViewModelTest {
     private val analytics = mockk<ProfileAnalytics>()
     private val config = mockk<Config>()
 
-    private val file = mockk<File>()
+    private val imageBody = ImageBody(bytes = byteArrayOf(), extension = "jpg")
 
     private val noInternet = "Slow or no internet connection"
     private val somethingWrong = "Something went wrong"
@@ -151,15 +151,15 @@ class EditProfileViewModelTest {
                 config,
                 ProfileMocks.account
             )
-        coEvery { interactor.setProfileImage(any(), any()) } throws UnknownHostException()
+        coEvery { interactor.setProfileImage(any()) } throws UnknownHostException()
         coEvery { interactor.updateAccount(any()) } returns ProfileMocks.account
         coEvery { notifier.send(AccountUpdated()) } returns Unit
 
-        viewModel.updateAccountAndImage(emptyMap(), file, "")
+        viewModel.updateAccountAndImage(emptyMap(), imageBody)
         advanceUntilIdle()
 
         coVerify(exactly = 0) { interactor.updateAccount(any()) }
-        coVerify(exactly = 1) { interactor.setProfileImage(any(), any()) }
+        coVerify(exactly = 1) { interactor.setProfileImage(any()) }
 
         val message = captureUiMessage(viewModel)
         assertEquals(noInternet, (message.await() as? UIMessage.SnackBarMessage)?.message)
@@ -178,15 +178,15 @@ class EditProfileViewModelTest {
                 config,
                 ProfileMocks.account
             )
-        coEvery { interactor.setProfileImage(any(), any()) } throws Exception()
+        coEvery { interactor.setProfileImage(any()) } throws Exception()
         coEvery { interactor.updateAccount(any()) } returns ProfileMocks.account
         coEvery { notifier.send(AccountUpdated()) } returns Unit
 
-        viewModel.updateAccountAndImage(emptyMap(), file, "")
+        viewModel.updateAccountAndImage(emptyMap(), imageBody)
         advanceUntilIdle()
 
         coVerify(exactly = 0) { interactor.updateAccount(any()) }
-        coVerify(exactly = 1) { interactor.setProfileImage(any(), any()) }
+        coVerify(exactly = 1) { interactor.setProfileImage(any()) }
 
         val message = captureUiMessage(viewModel)
         assertEquals(somethingWrong, (message.await() as? UIMessage.SnackBarMessage)?.message)
@@ -205,18 +205,18 @@ class EditProfileViewModelTest {
                 config,
                 ProfileMocks.account
             )
-        coEvery { interactor.setProfileImage(any(), any()) } returns Unit
+        coEvery { interactor.setProfileImage(any()) } returns Unit
         coEvery { interactor.updateAccount(any()) } returns ProfileMocks.account
         coEvery { notifier.send(any<AccountUpdated>()) } returns Unit
         every { analytics.logEvent(any(), any()) } returns Unit
 
-        viewModel.updateAccountAndImage(emptyMap(), file, "")
+        viewModel.updateAccountAndImage(emptyMap(), imageBody)
         advanceUntilIdle()
 
         verify(exactly = 1) { analytics.logEvent(any(), any()) }
         verify(exactly = 1) { analytics.logScreenEvent(any(), any()) }
         coVerify(exactly = 1) { interactor.updateAccount(any()) }
-        coVerify(exactly = 1) { interactor.setProfileImage(any(), any()) }
+        coVerify(exactly = 1) { interactor.setProfileImage(any()) }
 
         val message = captureUiMessage(viewModel)
         assertEquals(null, (message.await() as? UIMessage.SnackBarMessage)?.message)

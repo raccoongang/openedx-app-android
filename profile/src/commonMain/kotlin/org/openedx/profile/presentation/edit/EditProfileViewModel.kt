@@ -94,11 +94,11 @@ class EditProfileViewModel(
         }
     }
 
-    fun updateAccountAndImage(fields: Map<String, Any?>, file: Any, mimeType: String) {
+    fun updateAccountAndImage(fields: Map<String, Any?>, imageBody: org.openedx.profile.data.repository.ImageBody) {
         _uiState.value = EditProfileUIState(account, true, isLimitedProfile)
         viewModelScope.launch {
             try {
-                interactor.setProfileImage(file, mimeType)
+                interactor.setProfileImage(imageBody)
                 val updatedAccount = interactor.updateAccount(fields)
                 account = updatedAccount
                 isLimitedProfile = updatedAccount.isLimited()

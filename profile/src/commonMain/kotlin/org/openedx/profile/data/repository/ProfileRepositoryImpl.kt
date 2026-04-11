@@ -7,7 +7,6 @@ import org.openedx.core.data.storage.CorePreferences
 import org.openedx.profile.data.api.ProfileApi
 import org.openedx.profile.data.storage.ProfilePreferences
 import org.openedx.profile.domain.model.Account
-import java.io.File
 
 class ProfileRepositoryImpl(
     private val config: Config,
@@ -36,14 +35,12 @@ class ProfileRepositoryImpl(
         return api.updateAccount(corePreferences.user?.username!!, fields).mapToDomain()
     }
 
-    override suspend fun setProfileImage(file: Any, mimeType: String) {
-        @Suppress("UNCHECKED_CAST")
-        val imageFile = file as File
+    override suspend fun setProfileImage(imageBody: ImageBody) {
         api.setProfileImage(
             corePreferences.user?.username!!,
-            "attachment;filename=filename.${imageFile.extension}",
+            "attachment;filename=filename.${imageBody.extension}",
             true,
-            imageFile.readBytes()
+            imageBody.bytes
         )
     }
 

@@ -5,7 +5,7 @@ import net.lingala.zip4j.exception.ZipException
 import org.openedx.foundation.utils.FileUtil
 import java.io.File
 
-fun FileUtil.unzipFile(filepath: String): String? {
+actual fun FileUtil.unzipFile(filepath: String): String? {
     val archive = File(filepath)
     val destinationFolder = File(
         archive.parentFile.absolutePath + "/" + archive.name + "-unzipped"
@@ -18,8 +18,7 @@ fun FileUtil.unzipFile(filepath: String): String? {
         zip.extractAll(destinationFolder.absolutePath)
         deleteFile(archive.absolutePath)
         return destinationFolder.absolutePath
-    } catch (e: ZipException) {
-        e.printStackTrace()
+    } catch (_: ZipException) {
         deleteFile(destinationFolder.absolutePath)
     }
     return null

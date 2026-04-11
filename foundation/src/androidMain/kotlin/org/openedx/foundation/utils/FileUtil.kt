@@ -74,4 +74,16 @@ actual class FileUtil(
         val file = File(path)
         return if (file.exists()) file.delete() else false
     }
+
+    actual fun fileSize(path: String): Long {
+        val file = File(path)
+        return if (file.exists()) file.length() else 0L
+    }
+
+    actual fun directorySize(path: String): Long {
+        val dir = File(path)
+        if (!dir.exists()) return 0L
+        return dir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
+    }
+
 }

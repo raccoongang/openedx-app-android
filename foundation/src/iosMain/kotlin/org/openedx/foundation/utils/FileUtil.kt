@@ -113,4 +113,24 @@ actual class FileUtil(
             false
         }
     }
+
+    actual fun fileSize(path: String): Long {
+        if (!fileManager.fileExistsAtPath(path)) return 0L
+        val attrs = fileManager.attributesOfItemAtPath(path, null) ?: return 0L
+        return (attrs["NSFileSize"] as? Number)?.toLong() ?: 0L
+    }
+
+    actual fun directorySize(path: String): Long {
+        if (!fileManager.fileExistsAtPath(path)) return 0L
+        val enumerator = fileManager.enumeratorAtPath(path) ?: return 0L
+        var totalSize = 0L
+        while (true) {
+            val file = enumerator.nextObject() as? String ?: break
+            val fullPath = "$path/$file"
+            val attrs = fileManager.attributesOfItemAtPath(fullPath, null) ?: continue
+            totalSize += (attrs["NSFileSize"] as? Number)?.toLong() ?: 0L
+        }
+        return totalSize
+    }
+
 }

@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 class TranscriptManager(
     val context: Context,
     val fileUtil: FileUtil
-) {
+) : TranscriptProvider {
 
     private val logger = Logger(TAG)
 
@@ -79,6 +79,20 @@ class TranscriptManager(
                 }
             }
         }
+    }
+
+    override suspend fun downloadTranscripts(url: String): TranscriptResult? {
+        val timedTextObject = downloadTranscriptsForVideo(url) ?: return null
+        val timeList = timedTextObject.captions?.values?.toList()
+            ?.map { it.start.mseconds.toLong() } ?: emptyList()
+        return TranscriptResult(
+            transcriptObject = timedTextObject,
+            timeList = timeList,
+        )
+    }
+
+    override suspend fun cancelDownloading() {
+        cancelTranscriptDownloading()
     }
 
     suspend fun downloadTranscriptsForVideo(transcriptUrl: String): TimedTextObject? {

@@ -1,22 +1,26 @@
 package org.openedx.core.utils
 
-import java.io.UnsupportedEncodingException
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.usePinned
+import platform.CoreCrypto.CC_SHA1
+import platform.CoreCrypto.CC_SHA1_DIGEST_LENGTH
 
+@OptIn(ExperimentalForeignApi::class)
 actual object Sha1Util {
 
     actual fun SHA1(text: String): String {
         return try {
-            val md = MessageDigest.getInstance("SHA-1")
-            md.update(text.toByteArray(charset("iso-8859-1")), 0, text.length)
-            val sha1hash = md.digest()
-            convertToHex(sha1hash)
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-            text
-        } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
+            val bytes = text.encodeToByteArray()
+            val digest = UByteArray(CC_SHA1_DIGEST_LENGTH)
+            bytes.usePinned { pinned ->
+                digest.usePinned { digestPinned ->
+                    CC_SHA1(pinned.addressOf(0), bytes.size.convert(), digestPinned.addressOf(0))
+                }
+            }
+            convertToHex(digest.toByteArray())
+        } catch (_: Exception) {
             text
         }
     }
