@@ -1,8 +1,5 @@
 package org.openedx.core.presentation.global.appupgrade
 
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,18 +23,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.testTag
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.openedx.core.Res
 import org.openedx.core.core_ic_icon_upgrade
@@ -53,7 +44,7 @@ import org.openedx.core.core_not_now
 import org.openedx.core.core_update
 import org.openedx.core.ui.noRippleClickable
 import org.openedx.core.ui.statusBarsInset
-import org.openedx.core.ui.theme.OpenEdXTheme
+import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
@@ -71,7 +62,6 @@ fun AppUpgradeRequiredScreen(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppUpgradeRequiredScreen(
     modifier: Modifier = Modifier,
@@ -83,13 +73,11 @@ fun AppUpgradeRequiredScreen(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.appColors.background)
-            .statusBarsInset()
-            .semantics { testTagsAsResourceId = true },
+            .statusBarsInset(),
         contentAlignment = Alignment.TopCenter
     ) {
         Text(
             modifier = Modifier
-                .testTag("txt_app_upgrade_deprecated")
                 .fillMaxWidth()
                 .padding(top = 10.dp, bottom = 12.dp),
             text = stringResource(Res.string.core_deprecated_app_version),
@@ -111,27 +99,25 @@ fun AppUpgradeRequiredScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppUpgradeRecommendDialog(
     modifier: Modifier = Modifier,
     onNotNowClick: () -> Unit,
     onUpdateClick: () -> Unit
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    val imageModifier = if (orientation == ORIENTATION_LANDSCAPE) {
+    val windowSize = rememberWindowSize()
+    val imageModifier = if (windowSize.isLandscape) {
         Modifier.size(60.dp)
     } else {
         Modifier
     }
 
     Surface(
-        modifier = modifier.semantics { testTagsAsResourceId = true },
+        modifier = modifier,
         color = Color.Transparent
     ) {
         Box(
             modifier = modifier
-                .testTag("btn_upgrade_dialog_not_now")
                 .fillMaxSize()
                 .padding(horizontal = 4.dp)
                 .noRippleClickable {
@@ -163,13 +149,11 @@ fun AppUpgradeRecommendDialog(
                         contentDescription = null
                     )
                     Text(
-                        modifier = Modifier.testTag("txt_app_upgrade_title"),
                         text = stringResource(Res.string.core_app_upgrade_title),
                         color = MaterialTheme.appColors.textPrimary,
                         style = MaterialTheme.appTypography.titleMedium
                     )
                     Text(
-                        modifier = Modifier.testTag("txt_app_upgrade_description"),
                         text = stringResource(Res.string.core_app_upgrade_dialog_description),
                         color = MaterialTheme.appColors.textPrimary,
                         textAlign = TextAlign.Center,
@@ -185,7 +169,6 @@ fun AppUpgradeRecommendDialog(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppUpgradeRequiredContent(
     modifier: Modifier = Modifier,
@@ -194,7 +177,7 @@ fun AppUpgradeRequiredContent(
     onUpdateClick: () -> Unit
 ) {
     Column(
-        modifier = modifier.semantics { testTagsAsResourceId = true },
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
@@ -207,13 +190,11 @@ fun AppUpgradeRequiredContent(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                modifier = Modifier.testTag("txt_app_upgrade_required_title"),
                 text = stringResource(Res.string.core_app_update_required_title),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
             Text(
-                modifier = Modifier.testTag("txt_app_upgrade_required_description"),
                 text = stringResource(Res.string.core_app_update_required_description),
                 color = MaterialTheme.appColors.textPrimary,
                 textAlign = TextAlign.Center,
@@ -276,7 +257,6 @@ fun TransparentTextButton(
 ) {
     Button(
         modifier = Modifier
-            .testTag("btn_secondary")
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
@@ -286,7 +266,6 @@ fun TransparentTextButton(
         onClick = onClick
     ) {
         Text(
-            modifier = Modifier.testTag("txt_secondary"),
             color = MaterialTheme.appColors.textAccent,
             style = MaterialTheme.appTypography.labelLarge,
             text = text
@@ -301,7 +280,6 @@ fun DefaultTextButton(
 ) {
     Button(
         modifier = Modifier
-            .testTag("btn_primary")
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.appColors.primaryButtonBackground
@@ -315,7 +293,6 @@ fun DefaultTextButton(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.testTag("txt_primary"),
                 text = text,
                 color = MaterialTheme.appColors.primaryButtonText,
                 style = MaterialTheme.appTypography.labelLarge
@@ -331,7 +308,6 @@ fun AppUpgradeRecommendedBox(
 ) {
     Card(
         modifier = modifier
-            .testTag("btn_upgrade_box")
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
@@ -353,64 +329,16 @@ fun AppUpgradeRecommendedBox(
             )
             Column {
                 Text(
-                    modifier = Modifier.testTag("txt_app_upgrade_title"),
                     text = stringResource(Res.string.core_app_upgrade_title),
                     color = Color.White,
                     style = MaterialTheme.appTypography.titleMedium
                 )
                 Text(
-                    modifier = Modifier.testTag("txt_app_upgrade_description"),
                     text = stringResource(Res.string.core_app_upgrade_box_description),
                     color = Color.White,
                     style = MaterialTheme.appTypography.bodyMedium
                 )
             }
         }
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun AppUpgradeRequiredScreenPreview() {
-    OpenEdXTheme {
-        AppUpgradeRequiredScreen(
-            showAccountSettingsButton = true,
-            onAccountSettingsClick = {},
-            onUpdateClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun AppUpgradeRecommendedBoxPreview() {
-    OpenEdXTheme {
-        AppUpgradeRecommendedBox(
-            onClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun AppUpgradeDialogButtonsPreview() {
-    OpenEdXTheme {
-        AppUpgradeDialogButtons(
-            onNotNowClick = {},
-            onUpdateClick = {}
-        )
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun AppUpgradeRecommendDialogPreview() {
-    OpenEdXTheme {
-        AppUpgradeRecommendDialog(
-            onNotNowClick = {},
-            onUpdateClick = {}
-        )
     }
 }

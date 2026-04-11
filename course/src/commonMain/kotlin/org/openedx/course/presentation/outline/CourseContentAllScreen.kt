@@ -23,22 +23,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AndroidUriHandler
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
 import org.openedx.core.domain.model.Progress
 import org.openedx.core.extension.getChapterBlocks
 import org.openedx.core.ui.CircularProgress
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.displayCutoutForLandscape
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.course.*
 import org.openedx.course.Res
@@ -51,7 +47,6 @@ import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.foundation.extension.takeIfNotEmpty
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
 
 @Composable
@@ -66,7 +61,7 @@ fun CourseContentAllScreen(
     val uiState by viewModel.uiState.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState(null)
     val resumeBlockId by viewModel.resumeBlockId.collectAsState("")
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(Unit) {
         viewModel.navigationAction.collect { action ->
@@ -143,7 +138,7 @@ fun CourseContentAllScreen(
         onCertificateClick = {
             viewModel.viewCertificateTappedEvent()
             it.takeIfNotEmpty()
-                ?.let { url -> AndroidUriHandler(context).openUri(url) }
+                ?.let { url -> uriHandler.openUri(url) }
         }
     )
 }
@@ -323,64 +318,3 @@ private fun CourseContentAllUI(
     }
 }
 
-@Preview
-@Composable
-private fun CourseOutlineScreenPreview() {
-    OpenEdXTheme {
-        CourseContentAllUI(
-            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
-            uiState = CourseContentAllUIState.CourseData(
-                CoreMocks.mockCourseStructure,
-                mapOf(),
-                CoreMocks.mockChapterBlock,
-                "Resumed Unit",
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                true
-            ),
-            uiMessage = null,
-            onExpandClick = {},
-            onSubSectionClick = {},
-            onResumeClick = {},
-            onDownloadClick = {},
-            onCertificateClick = {},
-            onNavigateToHome = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun CourseContentAllScreenTabletPreview() {
-    OpenEdXTheme {
-        CourseContentAllUI(
-            windowSize = WindowSize(WindowType.Medium, WindowType.Medium),
-            uiState = CourseContentAllUIState.CourseData(
-                CoreMocks.mockCourseStructure,
-                mapOf(),
-                CoreMocks.mockChapterBlock,
-                "Resumed Unit",
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                true
-            ),
-            uiMessage = null,
-            onExpandClick = {},
-            onSubSectionClick = {},
-            onResumeClick = {},
-            onDownloadClick = {},
-            onCertificateClick = {},
-            onNavigateToHome = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ResumeCoursePreview() {
-    OpenEdXTheme {
-        ResumeCourseButton(block = CoreMocks.mockChapterBlock, displayName = "Resumed Unit") {}
-    }
-}

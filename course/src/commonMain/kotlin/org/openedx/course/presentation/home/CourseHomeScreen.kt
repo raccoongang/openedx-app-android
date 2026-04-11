@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -37,23 +36,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AndroidUriHandler
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.openedx.core.CoreMocks
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.CircularProgress
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.NoContentScreen
 import org.openedx.core.ui.displayCutoutForLandscape
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
@@ -66,7 +61,6 @@ import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.foundation.extension.takeIfNotEmpty
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.core.core_ic_check
 import org.openedx.core.Res as coreRes
@@ -85,7 +79,7 @@ fun CourseHomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState(null)
     val resumeBlockId by viewModel.resumeBlockId.collectAsState("")
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(Unit) {
         viewModel.navigationAction.collect { action ->
@@ -151,7 +145,7 @@ fun CourseHomeScreen(
         onCertificateClick = {
             viewModel.viewCertificateTappedEvent()
             it.takeIfNotEmpty()
-                ?.let { url -> AndroidUriHandler(context).openUri(url) }
+                ?.let { url -> uriHandler.openUri(url) }
         },
         onVideoClick = { videoBlock ->
             val parentId = viewModel.getBlockParent(videoBlock.id)?.id ?: return@CourseHomeUI
@@ -374,90 +368,3 @@ fun <T> CourseHomePager(
     }
 }
 
-@Preview
-@Composable
-private fun CourseHomeScreenPreview() {
-    OpenEdXTheme {
-        val previewPagerState = rememberPagerState(
-            initialPage = 0,
-            pageCount = { CourseHomePagerTab.entries.size }
-        )
-        CourseHomeUI(
-            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
-            uiState = CourseHomeUIState.CourseData(
-                courseStructure = CoreMocks.mockCourseStructure,
-                courseProgress = null, // No course progress for preview
-                next = null, // No next section for preview
-                downloadedState = mapOf(),
-                resumeComponent = CoreMocks.mockChapterBlock,
-                resumeUnitTitle = "Resumed Unit",
-                courseSubSections = mapOf(),
-                subSectionsDownloadsCount = mapOf(),
-                useRelativeDates = true,
-                courseVideos = mapOf(),
-                courseAssignments = emptyList(),
-                videoPreview = null,
-                videoProgress = 0f
-            ),
-            uiMessage = null,
-            homePagerState = previewPagerState,
-            onSubSectionClick = {},
-            onResumeClick = {},
-            onDownloadClick = {},
-            onCertificateClick = {},
-            onVideoClick = {},
-            onAssignmentClick = {},
-            onNavigateToContent = { _ -> },
-            onNavigateToProgress = {},
-            getBlockParent = { null },
-            onViewAllContentClick = {},
-            onViewAllVideosClick = {},
-            onViewAllAssignmentsClick = {},
-            onViewProgressClick = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun CourseHomeScreenTabletPreview() {
-    OpenEdXTheme {
-        val previewPagerState = rememberPagerState(
-            initialPage = 0,
-            pageCount = { CourseHomePagerTab.entries.size }
-        )
-        CourseHomeUI(
-            windowSize = WindowSize(WindowType.Medium, WindowType.Medium),
-            uiState = CourseHomeUIState.CourseData(
-                courseStructure = CoreMocks.mockCourseStructure,
-                courseProgress = null, // No course progress for preview
-                next = null, // No next section for preview
-                downloadedState = mapOf(),
-                resumeComponent = CoreMocks.mockChapterBlock,
-                resumeUnitTitle = "Resumed Unit",
-                courseSubSections = mapOf(),
-                subSectionsDownloadsCount = mapOf(),
-                useRelativeDates = true,
-                courseVideos = mapOf(),
-                courseAssignments = emptyList(),
-                videoPreview = null,
-                videoProgress = 0f
-            ),
-            uiMessage = null,
-            homePagerState = previewPagerState,
-            onSubSectionClick = {},
-            onResumeClick = {},
-            onDownloadClick = {},
-            onCertificateClick = {},
-            onVideoClick = {},
-            onAssignmentClick = {},
-            onNavigateToContent = { _ -> },
-            onNavigateToProgress = { },
-            getBlockParent = { null },
-            onViewAllContentClick = {},
-            onViewAllVideosClick = {},
-            onViewAllAssignmentsClick = {},
-            onViewProgressClick = {},
-        )
-    }
-}

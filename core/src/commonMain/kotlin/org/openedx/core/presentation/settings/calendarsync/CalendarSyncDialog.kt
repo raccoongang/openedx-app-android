@@ -1,6 +1,5 @@
 package org.openedx.core.presentation.settings.calendarsync
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,25 +15,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource as androidStringResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import org.openedx.core.R
 import org.openedx.core.Res
 import org.openedx.core.core_title_syncing_calendar
+import org.openedx.core.config.Config
 import org.openedx.core.presentation.global.appupgrade.TransparentTextButton
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.extension.takeIfNotEmpty
+import org.koin.compose.koinInject
 import androidx.compose.ui.window.DialogProperties as AlertDialogProperties
-import org.openedx.core.R as CoreR
 
 @Composable
 fun CalendarSyncDialog(
@@ -62,7 +56,8 @@ fun CalendarSyncDialog(
         }
 
         CalendarSyncDialogType.PERMISSION_DIALOG -> {
-            val platformName = androidStringResource(CoreR.string.platform_name)
+            val config: Config = koinInject()
+            val platformName = config.getPlatformName()
             CalendarAlertDialog(
                 dialogProperties = DialogProperties(
                     title = stringResource(syncDialogType.titleRes!!, platformName),
@@ -207,25 +202,4 @@ private fun SyncDialog() {
             }
         }
     )
-}
-
-@Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun CalendarSyncDialogsPreview(
-    @PreviewParameter(CalendarSyncDialogTypeProvider::class) dialogType: CalendarSyncDialogType,
-) {
-    OpenEdXTheme {
-        CalendarSyncDialog(
-            syncDialogType = dialogType,
-            calendarTitle = "Hello to OpenEdx",
-            syncDialogPosAction = {},
-            syncDialogNegAction = {},
-            dismissSyncDialog = {},
-        )
-    }
-}
-
-private class CalendarSyncDialogTypeProvider : PreviewParameterProvider<CalendarSyncDialogType> {
-    override val values = CalendarSyncDialogType.entries.dropLast(1).asSequence()
 }

@@ -1,8 +1,5 @@
 package org.openedx.core.presentation.dialog.appreview
 
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -28,7 +25,6 @@ import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,16 +35,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource as androidStringResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import org.openedx.core.R
+import org.koin.compose.koinInject
 import org.openedx.core.Res
+import org.openedx.core.config.Config
 import org.openedx.core.core_ic_heart
 import org.openedx.core.core_feedback_dialog_description
 import org.openedx.core.core_feedback_dialog_textfield_hint
@@ -61,10 +55,10 @@ import org.openedx.core.core_share_feedback
 import org.openedx.core.core_submit
 import org.openedx.core.core_thank_you
 import org.openedx.core.presentation.dialog.DefaultDialogBox
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
+import org.openedx.foundation.presentation.rememberWindowSize
 import kotlin.math.round
 
 @Composable
@@ -75,8 +69,8 @@ fun ThankYouDialog(
     onNotNowClick: () -> Unit,
     onRateUsClick: () -> Unit
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    val imageModifier = if (orientation == ORIENTATION_LANDSCAPE) {
+    val windowSize = rememberWindowSize()
+    val imageModifier = if (windowSize.isLandscape) {
         Modifier.size(40.dp)
     } else {
         Modifier
@@ -136,8 +130,8 @@ fun FeedbackDialog(
     onNotNowClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
-    val orientation = LocalConfiguration.current.orientation
-    val textFieldModifier = if (orientation == ORIENTATION_LANDSCAPE) {
+    val windowSize = rememberWindowSize()
+    val textFieldModifier = if (windowSize.isLandscape) {
         Modifier.height(80.dp)
     } else {
         Modifier.height(162.dp)
@@ -216,6 +210,8 @@ fun RateDialog(
     onNotNowClick: () -> Unit,
     onSubmitClick: () -> Unit
 ) {
+    val config: Config = koinInject()
+    val appName = config.getPlatformName()
     DefaultDialogBox(
         modifier = modifier,
         onDismissClick = onNotNowClick
@@ -228,7 +224,7 @@ fun RateDialog(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = stringResource(Res.string.core_rate_dialog_title, androidStringResource(R.string.app_name)),
+                text = stringResource(Res.string.core_rate_dialog_title, appName),
                 color = MaterialTheme.appColors.textPrimary,
                 style = MaterialTheme.appTypography.titleMedium
             )
@@ -369,68 +365,5 @@ fun RatingBar(
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black
             )
         }
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun RatingBarPreview() {
-    OpenEdXTheme {
-        RatingBar(
-            rating = remember { mutableIntStateOf(2) }
-        )
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun RateDialogPreview() {
-    OpenEdXTheme {
-        RateDialog(
-            rating = remember { mutableIntStateOf(2) },
-            onNotNowClick = {},
-            onSubmitClick = {}
-        )
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun FeedbackDialogPreview() {
-    OpenEdXTheme {
-        FeedbackDialog(
-            feedback = remember { mutableStateOf("Feedback") },
-            onNotNowClick = {},
-            onShareClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ThankYouDialogWithButtonsPreview() {
-    OpenEdXTheme {
-        ThankYouDialog(
-            description = "Description",
-            showButtons = true,
-            onNotNowClick = {},
-            onRateUsClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ThankYouDialogWithoutButtonsPreview() {
-    OpenEdXTheme {
-        ThankYouDialog(
-            description = "Description",
-            showButtons = false,
-            onNotNowClick = {},
-            onRateUsClick = {}
-        )
     }
 }
