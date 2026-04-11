@@ -2,15 +2,17 @@ package org.openedx.shared.di
 
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.openedx.core.config.Config
 import org.openedx.shared.deeplink.DefaultDeepLinkHandler
 import org.openedx.shared.deeplink.DeepLinkHandler
 
 /**
  * Common Koin module for shared dependencies.
- * Platform-specific modules extend this with actual implementations.
+ * Provides core services available to all platforms.
  */
 val sharedModule = module {
     single<DeepLinkHandler> { DefaultDeepLinkHandler() }
+    single { Config() }
 }
 
 /**

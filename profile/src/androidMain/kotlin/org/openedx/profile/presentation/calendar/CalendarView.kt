@@ -15,7 +15,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource as androidStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.openedx.profile.*
 import org.openedx.profile.Res as profileRes
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
-import org.openedx.profile.R
 import kotlinx.datetime.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)

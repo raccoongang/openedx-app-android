@@ -7,7 +7,8 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLException
 
 actual fun Throwable.isInternetError(): Boolean {
-    return this is UnknownHostException ||
+    return this is NoConnectionException ||
+        this is UnknownHostException ||
         this is SocketTimeoutException ||
         this is ConnectException ||
         this is SocketException ||

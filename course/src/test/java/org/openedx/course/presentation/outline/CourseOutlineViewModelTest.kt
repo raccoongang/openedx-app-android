@@ -33,8 +33,7 @@ import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.CourseComponentStatus
 import org.openedx.core.module.DownloadWorkerController
-import org.openedx.core.module.db.DownloadDao
-import org.openedx.core.module.db.DownloadModelEntity
+import org.openedx.core.module.download.DownloadModelsSource
 import org.openedx.core.module.download.DownloadHelper
 import org.openedx.core.presentation.CoreAnalytics
 import org.openedx.core.presentation.CoreAnalyticsEvent
@@ -42,13 +41,17 @@ import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseStructureUpdated
+import org.openedx.course.Res as courseRes
+import org.openedx.course.course_can_download_only_with_wifi
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CourseOutlineViewModelTest {
@@ -64,7 +67,7 @@ class CourseOutlineViewModelTest {
     private val preferencesManager = mockk<CorePreferences>()
     private val networkConnection = mockk<NetworkConnection>()
     private val notifier = spyk<CourseNotifier>()
-    private val downloadDao = mockk<DownloadDao>()
+    private val downloadModelsSource = mockk<DownloadModelsSource>()
     private val workerController = mockk<DownloadWorkerController>()
     private val analytics = mockk<CourseAnalytics>()
     private val coreAnalytics = mockk<CoreAnalytics>()
@@ -80,13 +83,13 @@ class CourseOutlineViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every {
-            resourceManager.getString(org.openedx.course.R.string.course_can_download_only_with_wifi)
+            resourceManager.getString(courseRes.string.course_can_download_only_with_wifi)
         } returns cantDownload
         every { config.getApiHostURL() } returns "http://localhost:8000"
         every { downloadDialogManager.showDownloadFailedPopup(any(), any()) } returns Unit
@@ -113,7 +116,7 @@ class CourseOutlineViewModelTest {
                 CoreMocks.mockCourseStructure
             )
             every { networkConnection.isOnline() } returns true
-            every { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+            every { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
             every {
                 downloadDialogManager.showPopup(
                     any(),
@@ -147,7 +150,7 @@ class CourseOutlineViewModelTest {
                 downloadDialogManager,
                 fileUtil,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper,
             )
@@ -172,7 +175,7 @@ class CourseOutlineViewModelTest {
             CoreMocks.mockCourseStructure
         )
         every { networkConnection.isOnline() } returns true
-        every { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+        every { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
         coEvery { interactor.getCourseStatusFlow(any(), any()) } returns flow { throw Exception() }
         val viewModel = CourseContentAllViewModel(
             "",
@@ -187,7 +190,7 @@ class CourseOutlineViewModelTest {
             downloadDialogManager,
             fileUtil,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper,
         )
@@ -212,10 +215,10 @@ class CourseOutlineViewModelTest {
                 CoreMocks.mockCourseStructure
             )
             every { networkConnection.isOnline() } returns true
-            coEvery { downloadDao.getAllDataFlow() } returns flow {
+            coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow {
                 emit(
                     listOf(
-                        DownloadModelEntity.createFrom(
+                        (
                             CoreMocks.mockDownloadModel
                         )
                     )
@@ -239,7 +242,7 @@ class CourseOutlineViewModelTest {
                 downloadDialogManager,
                 fileUtil,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper,
             )
@@ -267,10 +270,10 @@ class CourseOutlineViewModelTest {
                 CoreMocks.mockCourseStructure
             )
             every { networkConnection.isOnline() } returns false
-            coEvery { downloadDao.getAllDataFlow() } returns flow {
+            coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow {
                 emit(
                     listOf(
-                        DownloadModelEntity.createFrom(
+                        (
                             CoreMocks.mockDownloadModel
                         )
                     )
@@ -294,7 +297,7 @@ class CourseOutlineViewModelTest {
                 downloadDialogManager,
                 fileUtil,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper,
             )
@@ -321,10 +324,10 @@ class CourseOutlineViewModelTest {
                 CoreMocks.mockCourseStructure
             )
             every { networkConnection.isOnline() } returns true
-            coEvery { downloadDao.getAllDataFlow() } returns flow {
+            coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow {
                 emit(
                     listOf(
-                        DownloadModelEntity.createFrom(
+                        (
                             CoreMocks.mockDownloadModel
                         )
                     )
@@ -348,7 +351,7 @@ class CourseOutlineViewModelTest {
                 downloadDialogManager,
                 fileUtil,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper,
             )
@@ -370,7 +373,7 @@ class CourseOutlineViewModelTest {
 
     @Test
     fun `CourseStructureUpdated notifier test`() = runTest(UnconfinedTestDispatcher()) {
-        coEvery { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+        coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
         coEvery { interactor.getCourseStructureFlow(any(), any()) } returns flowOf(
             CoreMocks.mockCourseStructure
         )
@@ -393,7 +396,7 @@ class CourseOutlineViewModelTest {
             downloadDialogManager,
             fileUtil,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper,
         )
@@ -430,7 +433,7 @@ class CourseOutlineViewModelTest {
         coEvery { interactor.getCourseStatusFlow(any(), any()) } returns flowOf(
             CourseComponentStatus("id")
         )
-        coEvery { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+        coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
         every { config.getCourseUIConfig().isCourseDropdownNavigationEnabled } returns false
 
         val viewModel = CourseContentAllViewModel(
@@ -446,7 +449,7 @@ class CourseOutlineViewModelTest {
             downloadDialogManager,
             fileUtil,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper,
         )
@@ -482,7 +485,7 @@ class CourseOutlineViewModelTest {
             every { networkConnection.isWifiConnected() } returns true
             every { networkConnection.isOnline() } returns true
             coEvery { workerController.saveModels(any()) } returns Unit
-            coEvery { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+            coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
             every { config.getCourseUIConfig().isCourseDropdownNavigationEnabled } returns false
             every { coreAnalytics.logEvent(any(), any()) } returns Unit
 
@@ -499,7 +502,7 @@ class CourseOutlineViewModelTest {
                 downloadDialogManager,
                 fileUtil,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper,
             )

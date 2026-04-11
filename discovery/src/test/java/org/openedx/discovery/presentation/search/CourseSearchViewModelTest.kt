@@ -31,7 +31,9 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.captureUiMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CourseSearchViewModelTest {
@@ -53,8 +55,8 @@ class CourseSearchViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        every { resourceManager.getString(foundationR.string.foundation_error_no_connection) } returns noInternet
-        every { resourceManager.getString(foundationR.string.foundation_error_unknown_error) } returns somethingWrong
+        every { resourceManager.getString(foundationRes.string.foundation_error_no_connection) } returns noInternet
+        every { resourceManager.getString(foundationRes.string.foundation_error_unknown_error) } returns somethingWrong
         every { config.getApiHostURL() } returns "http://localhost:8000"
     }
 
@@ -237,6 +239,6 @@ class CourseSearchViewModelTest {
         assert((viewModel.uiState.value as CourseSearchUIState.Courses).courses.isEmpty())
         val message = captureUiMessage(viewModel)
         assertEquals(null, (message.await() as? UIMessage.SnackBarMessage)?.message)
-        assert(viewModel.isUpdating.value == null)
+        assert(viewModel.isUpdating.value == false)
     }
 }

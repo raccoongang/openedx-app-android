@@ -1,12 +1,13 @@
 package org.openedx.app
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,17 +28,15 @@ class MainViewModel(
     private val resourceManager: ResourceManager,
 ) : BaseViewModel() {
 
-    private val _isBottomBarEnabled = MutableLiveData(true)
-    val isBottomBarEnabled: LiveData<Boolean>
-        get() = _isBottomBarEnabled
+    private val _isBottomBarEnabled = MutableStateFlow(true)
+    val isBottomBarEnabled: StateFlow<Boolean> = _isBottomBarEnabled.asStateFlow()
 
     private val _navigateToDiscovery = MutableSharedFlow<Boolean>()
     val navigateToDiscovery: SharedFlow<Boolean>
         get() = _navigateToDiscovery.asSharedFlow()
 
-    private val _appUpgradeEvent = MutableLiveData<AppUpgradeEvent>()
-    val appUpgradeEvent: LiveData<AppUpgradeEvent>
-        get() = _appUpgradeEvent
+    private val _appUpgradeEvent = MutableStateFlow<AppUpgradeEvent?>(null)
+    val appUpgradeEvent: StateFlow<AppUpgradeEvent?> = _appUpgradeEvent.asStateFlow()
 
     val isDiscoveryTypeWebView get() = config.getDiscoveryConfig().isViewTypeWebView()
 

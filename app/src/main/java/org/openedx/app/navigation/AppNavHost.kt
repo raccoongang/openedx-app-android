@@ -3,7 +3,6 @@ package org.openedx.app.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.navigation.NavHostController
@@ -105,7 +104,7 @@ fun AppNavHost(
             composable<AppNavRoutes.RestorePassword> {
                 val viewModel: RestorePasswordViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.observeAsState(RestorePasswordUIState.Initial)
+                val uiState by viewModel.uiState.collectAsState(RestorePasswordUIState.Initial)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 RestorePasswordScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
@@ -207,7 +206,7 @@ fun AppNavHost(
             composable<AppNavRoutes.DeleteProfile> {
                 val viewModel: DeleteProfileViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.observeAsState(org.openedx.profile.presentation.delete.DeleteProfileFragmentUIState.Initial)
+                val uiState by viewModel.uiState.collectAsState(org.openedx.profile.presentation.delete.DeleteProfileFragmentUIState.Initial)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.delete.DeleteProfileScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
@@ -233,7 +232,7 @@ fun AppNavHost(
             composable<AppNavRoutes.VideoSettings> {
                 val viewModel: VideoSettingsViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
-                val videoSettings by viewModel.videoSettings.observeAsState()
+                val videoSettings by viewModel.videoSettings.collectAsState()
                 videoSettings?.let { vs -> org.openedx.profile.presentation.video.VideoSettingsScreen(
                     windowSize = windowSize, videoSettings = vs,
                     wifiDownloadChanged = { viewModel.setWifiDownloadOnly(it) },
@@ -283,7 +282,7 @@ fun AppNavHost(
                     parametersOf(route.videoQualityType)
                 }
                 val windowSize = rememberWindowSize()
-                val quality by viewModel.videoQuality.observeAsState(viewModel.getCurrentVideoQuality())
+                val quality by viewModel.videoQuality.collectAsState(viewModel.getCurrentVideoQuality())
                 val title = if (viewModel.getQualityType() == org.openedx.core.presentation.settings.video.VideoQualityType.Streaming)
                     "Video Streaming Quality" else "Video Download Quality"
                 org.openedx.core.presentation.settings.video.VideoQualityScreen(
@@ -299,11 +298,11 @@ fun AppNavHost(
                     parametersOf(null) // Account passed as null - VM fetches from cache
                 }
                 val windowSize = rememberWindowSize()
-                val uiState by vm.uiState.observeAsState()
+                val uiState by vm.uiState.collectAsState()
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                val selectedImage by vm.selectedImageUri.observeAsState(null)
-                val isDeleted by vm.deleteImage.observeAsState(false)
-                val leaveDialog by vm.showLeaveDialog.observeAsState(false)
+                val selectedImage by vm.selectedImageUri.collectAsState(null)
+                val isDeleted by vm.deleteImage.collectAsState(false)
+                val leaveDialog by vm.showLeaveDialog.collectAsState(false)
                 org.openedx.profile.presentation.edit.EditProfileScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     selectedImageUri = selectedImage, isImageDeleted = isDeleted,
@@ -325,7 +324,7 @@ fun AppNavHost(
                     parametersOf(route.courseId)
                 }
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.observeAsState(org.openedx.discovery.presentation.detail.CourseDetailsUIState.Loading)
+                val uiState by viewModel.uiState.collectAsState(org.openedx.discovery.presentation.detail.CourseDetailsUIState.Loading)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.discovery.presentation.detail.CourseDetailsScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
@@ -345,10 +344,10 @@ fun AppNavHost(
                 val route = entry.toRoute<AppNavRoutes.CourseSearch>()
                 val vm: org.openedx.discovery.presentation.search.CourseSearchViewModel = koinViewModel { parametersOf(route.querySearch) }
                 val windowSize = rememberWindowSize()
-                val uiState by vm.uiState.observeAsState(org.openedx.discovery.presentation.search.CourseSearchUIState.Courses(emptyList(), 0))
+                val uiState by vm.uiState.collectAsState(org.openedx.discovery.presentation.search.CourseSearchUIState.Courses(emptyList(), 0))
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                val canLoad by vm.canLoadMore.observeAsState(false)
-                val updating by vm.isUpdating.observeAsState(false)
+                val canLoad by vm.canLoadMore.collectAsState(false)
+                val updating by vm.isUpdating.collectAsState(false)
                 org.openedx.discovery.presentation.search.CourseSearchScreen(
                     windowSize = windowSize, state = uiState, uiMessage = uiMessage,
                     apiHostUrl = vm.apiHostUrl, canLoadMore = canLoad, refreshing = updating,
@@ -427,7 +426,7 @@ fun AppNavHost(
                     parametersOf(route.courseId, route.subSectionId)
                 }
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.observeAsState(org.openedx.course.presentation.section.CourseSectionUIState.Loading)
+                val uiState by viewModel.uiState.collectAsState(org.openedx.course.presentation.section.CourseSectionUIState.Loading)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.course.presentation.section.CourseSectionScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
@@ -440,8 +439,8 @@ fun AppNavHost(
                 val vm: org.openedx.course.presentation.unit.container.CourseUnitContainerViewModel = koinViewModel {
                     parametersOf(route.courseId, route.unitId, org.openedx.course.presentation.unit.container.CourseViewMode.valueOf(route.mode))
                 }
-                val blockCount by vm.verticalBlockCounts.observeAsState(0)
-                val index by vm.indexInContainer.observeAsState(0)
+                val blockCount by vm.verticalBlockCounts.collectAsState(0)
+                val index by vm.indexInContainer.collectAsState(0)
                 // CourseUnitContainer displays course blocks in a pager
                 // Full implementation requires block-type switching (video/html/discussion)
                 androidx.compose.foundation.layout.Column(
@@ -512,10 +511,10 @@ fun AppNavHost(
                 val route = entry.toRoute<AppNavRoutes.DiscussionThreads>()
                 val vm: org.openedx.discussion.presentation.threads.DiscussionThreadsViewModel = koinViewModel { parametersOf(route.courseId, route.topicId) }
                 val windowSize = rememberWindowSize()
-                val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.threads.DiscussionThreadsUIState.Loading)
+                val uiState by vm.uiState.collectAsState(org.openedx.discussion.presentation.threads.DiscussionThreadsUIState.Loading)
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                val canLoad by vm.canLoadMore.observeAsState(false)
-                val updating by vm.isUpdating.observeAsState(false)
+                val canLoad by vm.canLoadMore.collectAsState(false)
+                val updating by vm.isUpdating.collectAsState(false)
                 org.openedx.discussion.presentation.threads.DiscussionThreadsScreen(
                     windowSize = windowSize, title = route.title,
                     uiState = uiState ?: return@composable, uiMessage = uiMessage, canLoadMore = canLoad,
@@ -540,10 +539,10 @@ fun AppNavHost(
                         parametersOf(thread)
                     }
                     val windowSize = rememberWindowSize()
-                    val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.comments.DiscussionCommentsUIState.Loading)
+                    val uiState by vm.uiState.collectAsState(org.openedx.discussion.presentation.comments.DiscussionCommentsUIState.Loading)
                     val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                    val canLoad by vm.canLoadMore.observeAsState(false)
-                    val updating by vm.isUpdating.observeAsState(false)
+                    val canLoad by vm.canLoadMore.collectAsState(false)
+                    val updating by vm.isUpdating.collectAsState(false)
                     org.openedx.discussion.presentation.comments.DiscussionCommentsScreen(
                         windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                         title = vm.title, canLoadMore = canLoad, refreshing = updating,
@@ -567,10 +566,10 @@ fun AppNavHost(
                         parametersOf(comment, route.isClosed)
                     }
                     val windowSize = rememberWindowSize()
-                    val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.responses.DiscussionResponsesUIState.Loading)
+                    val uiState by vm.uiState.collectAsState(org.openedx.discussion.presentation.responses.DiscussionResponsesUIState.Loading)
                     val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                    val canLoad by vm.canLoadMore.observeAsState(false)
-                    val updating by vm.isUpdating.observeAsState(false)
+                    val canLoad by vm.canLoadMore.collectAsState(false)
+                    val updating by vm.isUpdating.collectAsState(false)
                     org.openedx.discussion.presentation.responses.DiscussionResponsesScreen(
                         windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                         canLoadMore = canLoad, refreshing = updating,
@@ -589,7 +588,7 @@ fun AppNavHost(
                 val vm: org.openedx.discussion.presentation.threads.DiscussionAddThreadViewModel = koinViewModel { parametersOf(route.courseId, route.topicId) }
                 val windowSize = rememberWindowSize()
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                val isLoading by vm.isLoading.observeAsState(false)
+                val isLoading by vm.isLoading.collectAsState(false)
                 org.openedx.discussion.presentation.threads.DiscussionAddThreadScreen(
                     windowSize = windowSize,
                     topicData = route.topicId to "",
@@ -604,10 +603,10 @@ fun AppNavHost(
                 val route = entry.toRoute<AppNavRoutes.DiscussionSearchThread>()
                 val vm: org.openedx.discussion.presentation.search.DiscussionSearchThreadViewModel = koinViewModel { parametersOf(route.courseId) }
                 val windowSize = rememberWindowSize()
-                val uiState by vm.uiState.observeAsState(org.openedx.discussion.presentation.search.DiscussionSearchThreadUIState.Threads(emptyList(), 0))
+                val uiState by vm.uiState.collectAsState(org.openedx.discussion.presentation.search.DiscussionSearchThreadUIState.Threads(emptyList(), 0))
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
-                val canLoad by vm.canLoadMore.observeAsState(false)
-                val updating by vm.isUpdating.observeAsState(false)
+                val canLoad by vm.canLoadMore.collectAsState(false)
+                val updating by vm.isUpdating.collectAsState(false)
                 org.openedx.discussion.presentation.search.DiscussionSearchThreadScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     refreshing = updating, canLoadMore = canLoad,

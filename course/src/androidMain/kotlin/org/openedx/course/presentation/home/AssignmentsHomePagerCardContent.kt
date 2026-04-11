@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,11 +36,12 @@ import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_date_type_past_due
 import org.openedx.course.*
 import org.openedx.course.Res
 import org.openedx.course.presentation.contenttab.CourseContentAssignmentEmptyState
 import kotlinx.datetime.Clock
-import org.openedx.core.R as coreR
 
 private const val MILLISECONDS_PER_SECOND = 1000
 private const val SECONDS_PER_MINUTE = 60
@@ -166,7 +166,7 @@ private fun AssignmentCard(
 
     // Header text - "Past Due" or "Due Soon"
     val headerText = if (isDuePast) {
-        androidStringResource(coreR.string.core_date_type_past_due)
+        stringResource(coreRes.string.core_date_type_past_due)
     } else {
         stringResource(Res.string.course_next_assignment)
     }

@@ -15,11 +15,8 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.course.*
@@ -122,36 +119,6 @@ fun CourseCompletionHomePagerCardContent(
             text = stringResource(Res.string.course_completion_view_all_content),
             onClick = onViewAllContentClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun CourseCompletionHomePagerCardContentPreview() {
-    OpenEdXTheme {
-        CourseCompletionHomePagerCardContent(
-            uiState = CourseHomeUIState.CourseData(
-                courseStructure = CoreMocks.mockCourseStructure,
-                courseProgress = null, // No course progress for preview
-                next = Pair(
-                    CoreMocks.mockChapterBlock,
-                    CoreMocks.mockChapterBlock
-                ), // Mock next section
-                downloadedState = mapOf(),
-                resumeComponent = CoreMocks.mockChapterBlock,
-                resumeUnitTitle = "Resumed Unit",
-                courseSubSections = mapOf(),
-                subSectionsDownloadsCount = mapOf(),
-                useRelativeDates = true,
-                courseVideos = mapOf(),
-                courseAssignments = emptyList(),
-                videoPreview = null,
-                videoProgress = 0f
-            ),
-            onViewAllContentClick = {},
-            onDownloadClick = {},
-            onSubSectionClick = {},
         )
     }
 }

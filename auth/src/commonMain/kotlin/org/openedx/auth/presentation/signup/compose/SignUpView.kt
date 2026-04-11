@@ -1,0 +1,451 @@
+package org.openedx.auth.presentation.signup.compose
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import org.openedx.auth.*
+import org.openedx.auth.data.model.AuthType
+import org.openedx.auth.presentation.signup.SignUpUIState
+import org.openedx.auth.presentation.ui.ExpandableText
+import org.openedx.auth.presentation.ui.OptionalFields
+import org.openedx.auth.presentation.ui.RequiredFields
+import org.openedx.auth.presentation.ui.SocialAuthView
+import org.openedx.core.domain.model.RegistrationField
+import org.openedx.core.ui.BackBtn
+import org.openedx.core.ui.HandleUIMessage
+import org.openedx.core.ui.OpenEdXButton
+import org.openedx.core.ui.SheetContent
+import org.openedx.core.ui.displayCutoutForLandscape
+import org.openedx.core.ui.rememberSaveableMap
+import org.openedx.core.ui.statusBarsInset
+import org.openedx.core.ui.theme.appColors
+import org.openedx.core.ui.theme.appShapes
+import org.openedx.core.ui.theme.appTypography
+import org.openedx.foundation.presentation.UIMessage
+import org.openedx.foundation.presentation.WindowSize
+import org.openedx.foundation.presentation.WindowType
+import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_top_header
+import org.openedx.core.core_register
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SignUpView(
+    windowSize: WindowSize,
+    uiState: SignUpUIState,
+    uiMessage: UIMessage?,
+    onBackClick: () -> Unit,
+    onFieldUpdated: (String, String) -> Unit,
+    onRegisterClick: (authType: AuthType) -> Unit,
+    onHyperLinkClick: (Map<String, String>, String) -> Unit,
+) {
+    val focusManager = LocalFocusManager.current
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val coroutine = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var expandedList by rememberSaveable {
+        mutableStateOf(emptyList<RegistrationField.Option>())
+    }
+    val selectableNamesMap = rememberSaveableMap {
+        mutableStateMapOf<String, String?>()
+    }
+    val serverFieldName = rememberSaveable {
+        mutableStateOf("")
+    }
+    var showOptionalFields by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val showErrorMap = rememberSaveableMap {
+        mutableStateMapOf<String, Boolean?>()
+    }
+    val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val haptic = LocalHapticFeedback.current
+
+    val listState = rememberLazyListState()
+
+    var bottomDialogTitle by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var searchValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
+    }
+
+    LaunchedEffect(uiState.validationError) {
+        if (uiState.validationError) {
+            coroutine.launch {
+                scrollState.animateScrollTo(0, tween(durationMillis = 300))
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
+        }
+    }
+
+    LaunchedEffect(uiState.socialAuth) {
+        if (uiState.socialAuth != null) {
+            coroutine.launch {
+                showErrorMap.clear()
+                scrollState.animateScrollTo(0, tween(durationMillis = 300))
+            }
+        }
+    }
+
+    LaunchedEffect(showBottomSheet) {
+        if (!showBottomSheet) {
+            focusManager.clearFocus()
+            searchValue = TextFieldValue("")
+        }
+    }
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(),
+        containerColor = MaterialTheme.appColors.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) {
+        val topBarPadding by remember {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier
+                        .width(560.dp)
+                        .padding(bottom = 24.dp),
+                    compact = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 6.dp)
+                )
+            )
+        }
+        val contentPaddings by remember {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier
+                        .widthIn(Dp.Unspecified, 420.dp)
+                        .padding(
+                            top = 32.dp,
+                            bottom = 40.dp
+                        ),
+                    compact = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 28.dp)
+                )
+            )
+        }
+        val buttonWidth by remember(key1 = windowSize) {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier.widthIn(232.dp, Dp.Unspecified),
+                    compact = Modifier.fillMaxWidth()
+                )
+            )
+        }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = bottomSheetState,
+                shape = MaterialTheme.appShapes.screenBackgroundShape,
+                scrimColor = Color.Black.copy(alpha = 0.4f),
+                containerColor = MaterialTheme.appColors.background,
+            ) {
+                SheetContent(
+                    title = bottomDialogTitle,
+                    searchValue = searchValue,
+                    expandedList = expandedList,
+                    listState = listState,
+                    onItemClick = { item ->
+                        onFieldUpdated(serverFieldName.value, item.value)
+                        selectableNamesMap[serverFieldName.value] = item.name
+                        coroutine.launch {
+                            bottomSheetState.hide()
+                            showBottomSheet = false
+                        }
+                    },
+                    searchValueChanged = {
+                        searchValue = TextFieldValue(it)
+                    }
+                )
+            }
+        }
+
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(fraction = 0.3f),
+            painter = painterResource(coreRes.drawable.core_top_header),
+            contentScale = ContentScale.FillBounds,
+            contentDescription = null
+        )
+        HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
+        Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(it)
+                    .statusBarsInset(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .then(topBarPadding),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .testTag("txt_screen_title")
+                            .fillMaxWidth(),
+                        text = stringResource(coreRes.string.core_register),
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.appTypography.titleMedium
+                    )
+                    BackBtn(
+                        modifier = Modifier.padding(end = 16.dp),
+                        tint = Color.White
+                    ) {
+                        onBackClick()
+                    }
+                }
+                Surface(
+                    color = MaterialTheme.appColors.background,
+                    shape = MaterialTheme.appShapes.screenBackgroundShape,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(MaterialTheme.appColors.background),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (uiState.isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                            }
+                        } else {
+                            Column(
+                                Modifier
+                                    .fillMaxHeight()
+                                    .verticalScroll(scrollState)
+                                    .displayCutoutForLandscape()
+                                    .then(contentPaddings),
+                                verticalArrangement = Arrangement.spacedBy(24.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Column {
+                                    if (uiState.socialAuth != null) {
+                                        SocialSignedView(uiState.socialAuth.authType)
+                                        Text(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 8.dp),
+                                            text = stringResource(
+                                                Res.string.auth_compete_registration
+                                            ),
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.appColors.textPrimary,
+                                            style = MaterialTheme.appTypography.titleSmall
+                                        )
+                                    } else {
+                                        Text(
+                                            modifier = Modifier
+                                                .testTag("txt_sign_up_title")
+                                                .fillMaxWidth(),
+                                            text = stringResource(coreRes.string.core_register),
+                                            color = MaterialTheme.appColors.textPrimary,
+                                            style = MaterialTheme.appTypography.displaySmall
+                                        )
+                                        Text(
+                                            modifier = Modifier
+                                                .testTag("txt_sign_up_description")
+                                                .fillMaxWidth()
+                                                .padding(top = 4.dp),
+                                            text = stringResource(
+                                                Res.string.auth_create_new_account
+                                            ),
+                                            color = MaterialTheme.appColors.textPrimary,
+                                            style = MaterialTheme.appTypography.titleSmall
+                                        )
+                                    }
+                                }
+                                RequiredFields(
+                                    fields = uiState.requiredFields,
+                                    showErrorMap = showErrorMap,
+                                    selectableNamesMap = selectableNamesMap,
+                                    onSelectClick = { serverName, field, list ->
+                                        keyboardController?.hide()
+                                        serverFieldName.value = serverName
+                                        expandedList = list
+                                        coroutine.launch {
+                                            if (showBottomSheet) {
+                                                bottomSheetState.hide()
+                                                showBottomSheet = false
+                                            } else {
+                                                bottomDialogTitle = field.label
+                                                showErrorMap[field.name] = false
+                                                showBottomSheet = true
+                                            }
+                                        }
+                                    },
+                                    onFieldUpdated = onFieldUpdated
+                                )
+                                if (uiState.optionalFields.isNotEmpty()) {
+                                    ExpandableText(
+                                        modifier = Modifier.testTag("txt_optional_field"),
+                                        isExpanded = showOptionalFields,
+                                        onClick = {
+                                            showOptionalFields = !showOptionalFields
+                                        }
+                                    )
+                                    AnimatedVisibility(visible = showOptionalFields) {
+                                        OptionalFields(
+                                            fields = uiState.optionalFields,
+                                            showErrorMap = showErrorMap,
+                                            selectableNamesMap = selectableNamesMap,
+                                            onSelectClick = { serverName, field, list ->
+                                                keyboardController?.hide()
+                                                serverFieldName.value =
+                                                    serverName
+                                                expandedList = list
+                                                coroutine.launch {
+                                                    if (showBottomSheet) {
+                                                        bottomSheetState.hide()
+                                                        showBottomSheet = false
+                                                    } else {
+                                                        bottomDialogTitle = field.label
+                                                        showErrorMap[field.name] = false
+                                                        showBottomSheet = true
+                                                    }
+                                                }
+                                            },
+                                            onFieldUpdated = onFieldUpdated,
+                                        )
+                                    }
+                                }
+                                if (uiState.agreementFields.isNotEmpty()) {
+                                    OptionalFields(
+                                        fields = uiState.agreementFields,
+                                        showErrorMap = showErrorMap,
+                                        selectableNamesMap = selectableNamesMap,
+                                        onSelectClick = { serverName, field, list ->
+                                            keyboardController?.hide()
+                                            serverFieldName.value = serverName
+                                            expandedList = list
+                                            coroutine.launch {
+                                                if (showBottomSheet) {
+                                                    bottomSheetState.hide()
+                                                    showBottomSheet = false
+                                                } else {
+                                                    bottomDialogTitle = field.label
+                                                    showErrorMap[field.name] = false
+                                                    showBottomSheet = true
+                                                }
+                                            }
+                                        },
+                                        onFieldUpdated = onFieldUpdated,
+                                        hyperLinkAction = { links, link ->
+                                            onHyperLinkClick(links, link)
+                                        },
+                                    )
+                                }
+
+                                if (uiState.isButtonLoading) {
+                                    Box(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(42.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                                    }
+                                } else {
+                                    OpenEdXButton(
+                                        modifier = buttonWidth.testTag("btn_create_account"),
+                                        text = stringResource(Res.string.auth_create_account),
+                                        textColor = MaterialTheme.appColors.primaryButtonText,
+                                        backgroundColor = MaterialTheme.appColors.secondaryButtonBackground,
+                                        onClick = {
+                                            keyboardController?.hide()
+                                            showErrorMap.clear()
+                                            onRegisterClick(AuthType.PASSWORD)
+                                        }
+                                    )
+                                }
+                                if (uiState.isSocialAuthEnabled && uiState.socialAuth == null) {
+                                    SocialAuthView(
+                                        modifier = buttonWidth,
+                                        isGoogleAuthEnabled = uiState.isGoogleAuthEnabled,
+                                        isFacebookAuthEnabled = uiState.isFacebookAuthEnabled,
+                                        isMicrosoftAuthEnabled = uiState.isMicrosoftAuthEnabled,
+                                        isSignIn = false,
+                                    ) {
+                                        keyboardController?.hide()
+                                        onRegisterClick(it)
+                                    }
+                                }
+                                Spacer(Modifier.height(70.dp))
+                            }
+                        }
+                    }
+                }
+        }
+    }
+}

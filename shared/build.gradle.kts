@@ -26,6 +26,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            // Feature modules
+            api(project(":core"))
+            implementation(project(":auth"))
+            implementation(project(":course"))
+            implementation(project(":dashboard"))
+            implementation(project(":dates"))
+            implementation(project(":discovery"))
+            implementation(project(":discussion"))
+            implementation(project(":downloads"))
+            implementation(project(":profile"))
+            implementation(project(":whatsnew"))
+
             // Compose Multiplatform
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -68,6 +80,7 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
+        missingDimensionStrategy("env", "develop")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

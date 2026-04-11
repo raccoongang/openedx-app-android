@@ -35,7 +35,9 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
 import kotlinx.datetime.Instant
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DatesViewModelTest {
@@ -58,8 +60,8 @@ class DatesViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        every { resourceManager.getString(foundationR.string.foundation_error_no_connection) } returns noInternet
-        every { resourceManager.getString(foundationR.string.foundation_error_unknown_error) } returns somethingWrong
+        every { resourceManager.getString(foundationRes.string.foundation_error_no_connection) } returns noInternet
+        every { resourceManager.getString(foundationRes.string.foundation_error_unknown_error) } returns somethingWrong
         every { networkConnection.isOnline() } returns true
         every { corePreferences.isRelativeDatesEnabled } returns true
         every { analytics.logEvent(any(), any()) } returns Unit

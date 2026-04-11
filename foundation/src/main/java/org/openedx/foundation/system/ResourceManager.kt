@@ -12,6 +12,8 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.StringResource
 import java.io.InputStream
 
 class AndroidResourceManager(private val context: Context) : ResourceManager {
@@ -19,6 +21,14 @@ class AndroidResourceManager(private val context: Context) : ResourceManager {
     override fun getString(@StringRes id: Int): String = context.getString(id)
 
     override fun getString(@StringRes id: Int, vararg formatArgs: Any): String = context.getString(id, *formatArgs)
+
+    override fun getString(resource: StringResource): String = runBlocking {
+        org.jetbrains.compose.resources.getString(resource)
+    }
+
+    override fun getString(resource: StringResource, vararg formatArgs: Any): String = runBlocking {
+        org.jetbrains.compose.resources.getString(resource, *formatArgs)
+    }
 
     fun getStringArray(@ArrayRes id: Int): Array<String> = context.resources.getStringArray(id)
 

@@ -37,9 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +55,9 @@ import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.windowSizeValue
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_cancel
+import org.openedx.core.core_no_image_course
 import org.openedx.whatsnew.Res
 import org.openedx.whatsnew.whats_new_title
 import org.openedx.whatsnew.domain.model.WhatsNewItem
@@ -163,7 +165,7 @@ fun WhatsNewTopBar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = androidStringResource(org.openedx.core.R.string.core_cancel),
+                        contentDescription = stringResource(coreRes.string.core_cancel),
                         tint = MaterialTheme.appColors.primary
                     )
                 }
@@ -205,7 +207,7 @@ fun WhatsNewScreenPortrait(
                     Image(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        painter = painterResource(id = image),
+                        painter = painterResource(image),
                         contentDescription = null
                     )
                 }
@@ -313,7 +315,7 @@ fun WhatsNewScreenLandscape(
                             .fillMaxHeight()
                             .padding(vertical = 24.dp)
                             .padding(start = 140.dp),
-                        painter = painterResource(id = image),
+                        painter = painterResource(image),
                         contentDescription = null
                     )
                 }
@@ -396,7 +398,7 @@ fun WhatsNewScreenLandscape(
 }
 
 private val whatsNewMessagePreview = WhatsNewMessage(
-    image = org.openedx.core.R.drawable.core_no_image_course,
+    image = coreRes.drawable.core_no_image_course,
     title = "title",
     message = "Message message message"
 )

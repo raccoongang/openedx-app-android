@@ -21,12 +21,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.openedx.auth.R
+import org.openedx.auth.Res
+import org.openedx.auth.auth_invalid_email_username
+import org.openedx.auth.auth_invalid_password
 import org.openedx.auth.domain.interactor.AuthInteractor
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
-import org.openedx.auth.presentation.sso.BrowserAuthHelper
-import org.openedx.auth.presentation.sso.OAuthHelper
+import org.openedx.auth.presentation.sso.SocialAuthProvider
 import org.openedx.core.CoreMocks
 import org.openedx.core.Validator
 import org.openedx.core.config.Config
@@ -45,8 +46,11 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.captureUiMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.core.R as CoreRes
-import org.openedx.foundation.R as foundationR
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_error_invalid_grant
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @ExperimentalCoroutinesApi
 class SignInViewModelTest {
@@ -64,11 +68,10 @@ class SignInViewModelTest {
     private val analytics = mockk<AuthAnalytics>()
     private val appNotifier = mockk<AppNotifier>()
     private val agreementProvider = mockk<AgreementProvider>()
-    private val oAuthHelper = mockk<OAuthHelper>()
+    private val socialAuthProvider = mockk<SocialAuthProvider>()
     private val whatsNewGlobalManager = mockk<WhatsNewGlobalManager>()
     private val calendarInteractor = mockk<CalendarInteractor>()
     private val calendarPreferences = mockk<CalendarPreferences>()
-    private val browserAuthHelper = mockk<BrowserAuthHelper>()
 
     private val invalidCredential = "Invalid credentials"
     private val noInternet = "Slow or no internet connection"
@@ -79,15 +82,15 @@ class SignInViewModelTest {
     @Before
     fun before() {
         Dispatchers.setMain(dispatcher)
-        every { resourceManager.getString(CoreRes.string.core_error_invalid_grant) } returns invalidCredential
+        every { resourceManager.getString(coreRes.string.core_error_invalid_grant) } returns invalidCredential
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
-        every { resourceManager.getString(R.string.auth_invalid_email_username) } returns invalidEmailOrUsername
-        every { resourceManager.getString(R.string.auth_invalid_password) } returns invalidPassword
+        every { resourceManager.getString(Res.string.auth_invalid_email_username) } returns invalidEmailOrUsername
+        every { resourceManager.getString(Res.string.auth_invalid_password) } returns invalidPassword
         every { appNotifier.notifier } returns emptyFlow()
         every { agreementProvider.getAgreement(true) } returns null
         every { config.isPreLoginExperienceEnabled() } returns false
@@ -123,15 +126,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         viewModel.login("", "")
@@ -160,15 +162,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         viewModel.login("acc@test.o", "")
@@ -197,15 +198,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         viewModel.login("acc@test.org", "")
@@ -233,15 +233,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         viewModel.login("acc@test.org", "ed")
@@ -273,15 +272,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         coEvery { interactor.login("acc@test.org", "edx") } returns Unit
@@ -314,15 +312,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         coEvery { interactor.login("acc@test.org", "edx") } throws UnknownHostException()
@@ -356,15 +353,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         coEvery { interactor.login("acc@test.org", "edx") } throws EdxError.InvalidGrantException()
@@ -398,15 +394,14 @@ class SignInViewModelTest {
             validator = validator,
             analytics = analytics,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
+            whatsNewGlobalManager = whatsNewGlobalManager,
+            calendarPreferences = calendarPreferences,
+            calendarInteractor = calendarInteractor,
             agreementProvider = agreementProvider,
             config = config,
-            whatsNewGlobalManager = whatsNewGlobalManager,
-            browserAuthHelper = browserAuthHelper,
             courseId = "",
             infoType = "",
-            calendarInteractor = calendarInteractor,
-            calendarPreferences = calendarPreferences,
             authCode = "",
         )
         coEvery { interactor.login("acc@test.org", "edx") } throws IllegalStateException()

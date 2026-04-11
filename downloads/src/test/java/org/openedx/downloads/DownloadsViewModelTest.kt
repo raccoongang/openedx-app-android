@@ -27,8 +27,7 @@ import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.DownloadCoursePreview
 import org.openedx.core.module.DownloadWorkerController
-import org.openedx.core.module.db.DownloadDao
-import org.openedx.core.module.db.DownloadModelEntity
+import org.openedx.core.module.download.DownloadModelsSource
 import org.openedx.core.module.download.DownloadHelper
 import org.openedx.core.presentation.CoreAnalytics
 import org.openedx.core.presentation.DownloadsAnalytics
@@ -42,7 +41,9 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 class DownloadsViewModelTest {
 
@@ -61,7 +62,7 @@ class DownloadsViewModelTest {
     private val analytics = mockk<DownloadsAnalytics>(relaxed = true)
     private val preferencesManager = mockk<CorePreferences>(relaxed = true)
     private val coreAnalytics = mockk<CoreAnalytics>(relaxed = true)
-    private val downloadDao = mockk<DownloadDao>(relaxed = true)
+    private val downloadModelsSource = mockk<DownloadModelsSource>(relaxed = true)
     private val workerController = mockk<DownloadWorkerController>(relaxed = true)
     private val downloadHelper = mockk<DownloadHelper>(relaxed = true)
     private val discoveryNotifier = mockk<DiscoveryNotifier>(relaxed = true)
@@ -84,10 +85,10 @@ class DownloadsViewModelTest {
         Dispatchers.setMain(dispatcher)
         every { config.getApiHostURL() } returns "http://localhost:8000"
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns unknownError
         every { networkConnection.isOnline() } returns true
 
@@ -97,9 +98,9 @@ class DownloadsViewModelTest {
         coEvery { interactor.getCourseStructureFromCache("course1") } returns CoreMocks.mockCourseStructure
         coEvery { interactor.getCourseStructure("course1") } returns CoreMocks.mockCourseStructure
         coEvery { interactor.getDownloadModelsByCourseIds(any()) } returns emptyList()
-        coEvery { downloadDao.getAllDataFlow() } returns flowOf(
+        coEvery { downloadModelsSource.getDownloadModelsFlow() } returns flowOf(
             listOf(
-                DownloadModelEntity.createFrom(
+                (
                     CoreMocks.mockDownloadModel
                 )
             )
@@ -121,7 +122,7 @@ class DownloadsViewModelTest {
             courseNotifier,
             preferencesManager,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper
         )
@@ -161,7 +162,7 @@ class DownloadsViewModelTest {
                 courseNotifier,
                 preferencesManager,
                 coreAnalytics,
-                downloadDao,
+                downloadModelsSource,
                 workerController,
                 downloadHelper
             )
@@ -194,7 +195,7 @@ class DownloadsViewModelTest {
             courseNotifier,
             preferencesManager,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper
         )
@@ -233,7 +234,7 @@ class DownloadsViewModelTest {
             courseNotifier,
             preferencesManager,
             coreAnalytics,
-            downloadDao,
+            downloadModelsSource,
             workerController,
             downloadHelper
         )

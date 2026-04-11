@@ -1,0 +1,115 @@
+package org.openedx.course.presentation.section
+
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.openedx.core.BlockType
+import org.openedx.core.domain.model.Block
+import org.openedx.core.system.notifier.CourseNotifier
+import org.openedx.core.system.notifier.CourseSectionChanged
+import org.openedx.course.domain.interactor.CourseInteractor
+import org.openedx.course.presentation.CourseAnalytics
+import org.openedx.course.presentation.CourseAnalyticsEvent
+import org.openedx.course.presentation.CourseAnalyticsKey
+import org.openedx.course.presentation.unit.container.CourseViewMode
+import org.openedx.foundation.presentation.BaseViewModel
+import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
+
+class CourseSectionViewModel(
+    val courseId: String,
+    private val interactor: CourseInteractor,
+    private val resourceManager: ResourceManager,
+    private val notifier: CourseNotifier,
+    private val analytics: CourseAnalytics,
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationRes.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationRes.string.foundation_error_unknown_error),
+) {
+
+    private val _uiState = MutableStateFlow<CourseSectionUIState>(CourseSectionUIState.Loading)
+    val uiState: StateFlow<CourseSectionUIState> = _uiState.asStateFlow()
+
+    var mode = CourseViewMode.FULL
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        viewModelScope.launch {
+            notifier.notifier.collect { event ->
+                if (event is CourseSectionChanged) {
+                    getBlocks(event.blockId, mode)
+                }
+            }
+        }
+    }
+
+    fun getBlocks(blockId: String, mode: CourseViewMode) {
+        _uiState.value = CourseSectionUIState.Loading
+        viewModelScope.launch {
+            try {
+                val courseStructure = when (mode) {
+                    CourseViewMode.FULL -> interactor.getCourseStructure(courseId)
+                    CourseViewMode.VIDEOS -> interactor.getCourseStructureForVideos(courseId)
+                }
+                val blocks = courseStructure.blockData
+                val newList = getDescendantBlocks(blocks, blockId)
+                val sequentialBlock = getSequentialBlock(blocks, blockId)
+                _uiState.value =
+                    CourseSectionUIState.Blocks(
+                        blocks = ArrayList(newList),
+                        courseName = courseStructure.name,
+                        sectionName = sequentialBlock.displayName
+                    )
+            } catch (e: Exception) {
+                handleErrorUiMessage(
+                    throwable = e,
+                )
+            }
+        }
+    }
+
+    private fun getDescendantBlocks(blocks: List<Block>, id: String): List<Block> {
+        val resultList = mutableListOf<Block>()
+        if (blocks.isEmpty()) return emptyList()
+        val selectedBlock = getSequentialBlock(blocks, id)
+        for (descendant in selectedBlock.descendants) {
+            val blockDescendant = blocks.find {
+                it.id == descendant
+            }
+            if (blockDescendant != null) {
+                if (blockDescendant.type == BlockType.VERTICAL) {
+                    resultList.add(blockDescendant)
+                }
+            } else {
+                continue
+            }
+        }
+        return resultList
+    }
+
+    private fun getSequentialBlock(blocks: List<Block>, id: String): Block {
+        return blocks.first {
+            it.id == id
+        }
+    }
+
+    fun verticalClickedEvent(blockId: String) {
+        val currentState = uiState.value
+        if (currentState is CourseSectionUIState.Blocks) {
+            analytics.logEvent(
+                event = CourseAnalyticsEvent.UNIT_DETAIL.eventName,
+                params = buildMap {
+                    put(CourseAnalyticsKey.NAME.key, CourseAnalyticsEvent.UNIT_DETAIL.biValue)
+                    put(CourseAnalyticsKey.COURSE_ID.key, courseId)
+                    put(CourseAnalyticsKey.BLOCK_ID.key, blockId)
+                    put(CourseAnalyticsKey.CATEGORY.key, CourseAnalyticsKey.NAVIGATION.key)
+                }
+            )
+        }
+    }
+}

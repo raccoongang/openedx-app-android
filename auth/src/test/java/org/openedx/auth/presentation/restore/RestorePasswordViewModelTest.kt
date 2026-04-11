@@ -20,6 +20,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.openedx.auth.Res as authRes
+import org.openedx.auth.auth_invalid_email
+import org.openedx.auth.auth_invalid_password
 import org.openedx.auth.domain.interactor.AuthInteractor
 import org.openedx.auth.presentation.AuthAnalytics
 import org.openedx.core.system.EdxError
@@ -28,7 +31,9 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.captureUiMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RestorePasswordViewModelTest {
@@ -58,13 +63,13 @@ class RestorePasswordViewModelTest {
     fun before() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
-        every { resourceManager.getString(org.openedx.auth.R.string.auth_invalid_email) } returns invalidEmail
-        every { resourceManager.getString(org.openedx.auth.R.string.auth_invalid_password) } returns invalidPassword
+        every { resourceManager.getString(authRes.string.auth_invalid_email) } returns invalidEmail
+        every { resourceManager.getString(authRes.string.auth_invalid_password) } returns invalidPassword
         every { appNotifier.notifier } returns emptyFlow()
     }
 

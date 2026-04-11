@@ -13,10 +13,12 @@ import org.openedx.auth.presentation.signin.SignInViewModel
 import org.openedx.auth.presentation.signup.SignUpViewModel
 import org.openedx.core.Validator
 import org.openedx.core.domain.interactor.CalendarInteractor
+import org.openedx.core.domain.interactor.CalendarInteractorImpl
 import org.openedx.core.presentation.dialog.selectorbottomsheet.SelectDialogViewModel
 import org.openedx.core.presentation.settings.video.VideoQualityViewModel
 import org.openedx.core.repository.CalendarRepository
 import org.openedx.course.data.repository.CourseRepository
+import org.openedx.course.data.repository.CourseRepositoryImpl
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.assignments.CourseAssignmentViewModel
 import org.openedx.course.presentation.container.CourseContainerViewModel
@@ -40,12 +42,15 @@ import org.openedx.course.settings.download.DownloadQueueViewModel
 import org.openedx.courses.presentation.AllEnrolledCoursesViewModel
 import org.openedx.courses.presentation.DashboardGalleryViewModel
 import org.openedx.dashboard.data.repository.DashboardRepository
+import org.openedx.dashboard.data.repository.DashboardRepositoryImpl
 import org.openedx.dashboard.domain.interactor.DashboardInteractor
 import org.openedx.dashboard.presentation.DashboardListViewModel
 import org.openedx.dates.data.repository.DatesRepository
+import org.openedx.dates.data.repository.DatesRepositoryImpl
 import org.openedx.dates.domain.interactor.DatesInteractor
 import org.openedx.dates.presentation.dates.DatesViewModel
 import org.openedx.discovery.data.repository.DiscoveryRepository
+import org.openedx.discovery.data.repository.DiscoveryRepositoryImpl
 import org.openedx.discovery.domain.interactor.DiscoveryInteractor
 import org.openedx.discovery.presentation.NativeDiscoveryViewModel
 import org.openedx.discovery.presentation.WebViewDiscoveryViewModel
@@ -54,6 +59,7 @@ import org.openedx.discovery.presentation.info.CourseInfoViewModel
 import org.openedx.discovery.presentation.program.ProgramViewModel
 import org.openedx.discovery.presentation.search.CourseSearchViewModel
 import org.openedx.discussion.data.repository.DiscussionRepository
+import org.openedx.discussion.data.repository.DiscussionRepositoryImpl
 import org.openedx.discussion.domain.interactor.DiscussionInteractor
 import org.openedx.discussion.domain.model.DiscussionComment
 import org.openedx.discussion.presentation.comments.DiscussionCommentsViewModel
@@ -63,11 +69,13 @@ import org.openedx.discussion.presentation.threads.DiscussionAddThreadViewModel
 import org.openedx.discussion.presentation.threads.DiscussionThreadsViewModel
 import org.openedx.discussion.presentation.topics.DiscussionTopicsViewModel
 import org.openedx.downloads.data.repository.DownloadRepository
+import org.openedx.downloads.data.repository.DownloadRepositoryImpl
 import org.openedx.downloads.domain.interactor.DownloadInteractor
 import org.openedx.downloads.presentation.download.DownloadsViewModel
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.learn.presentation.LearnViewModel
 import org.openedx.profile.data.repository.ProfileRepository
+import org.openedx.profile.data.repository.ProfileRepositoryImpl
 import org.openedx.profile.domain.interactor.ProfileInteractor
 import org.openedx.profile.domain.model.Account
 import org.openedx.profile.presentation.anothersaccount.AnothersProfileViewModel
@@ -130,7 +138,6 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get(),
             courseId,
             infoType,
             authCode,
@@ -153,7 +160,7 @@ val screenModule = module {
     }
     viewModel { RestorePasswordViewModel(get(), get(), get(), get()) }
 
-    factory { DashboardRepository(get(), get(), get(), get()) }
+    factory<DashboardRepository> { DashboardRepositoryImpl(get(), get(), get(), get()) }
     factory { DashboardInteractor(get()) }
     viewModel { DashboardListViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { (windowSize: WindowSize) ->
@@ -182,7 +189,7 @@ val screenModule = module {
         LearnViewModel(openTab, get(), get(), get())
     }
 
-    factory { DiscoveryRepository(get(), get(), get()) }
+    factory<DiscoveryRepository> { DiscoveryRepositoryImpl(get(), get(), get()) }
     factory { DiscoveryInteractor(get()) }
     viewModel { NativeDiscoveryViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { (querySearch: String) ->
@@ -197,7 +204,7 @@ val screenModule = module {
         )
     }
 
-    factory { ProfileRepository(get(), get(), get(), get(), get()) }
+    factory<ProfileRepository> { ProfileRepositoryImpl(get(), get(), get(), get(), get()) }
     factory { ProfileInteractor(get()) }
     viewModel {
         ProfileViewModel(
@@ -240,6 +247,7 @@ val screenModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     viewModel {
@@ -255,9 +263,10 @@ val screenModule = module {
     viewModel { NewCalendarDialogViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { DisableCalendarSyncDialogViewModel(get(), get(), get(), get(), get()) }
     factory { CalendarRepository(get(), get(), get()) }
-    factory { CalendarInteractor(get()) }
+    factory { CalendarInteractorImpl(get()) }
+    factory<CalendarInteractor> { get<CalendarInteractorImpl>() }
 
-    single { CourseRepository(get(), get(), get(), get(), get()) }
+    single<CourseRepository> { CourseRepositoryImpl(get(), get(), get(), get(), get()) }
     factory { CourseInteractor(get()) }
     single<org.openedx.core.domain.interactor.CourseInteractor> { get<CourseInteractor>() }
 
@@ -388,7 +397,7 @@ val screenModule = module {
             analytics = get(),
             videoPreviewHelper = get(),
             coreAnalytics = get(),
-            downloadDao = get(),
+            downloadModelsSource = get(),
             workerController = get(),
             downloadHelper = get(),
         )
@@ -450,7 +459,7 @@ val screenModule = module {
     viewModel { CourseSearchViewModel(get(), get(), get(), get(), get()) }
     viewModel { SelectDialogViewModel(get(), get()) }
 
-    single { DiscussionRepository(get(), get(), get()) }
+    single<DiscussionRepository> { DiscussionRepositoryImpl(get(), get(), get()) }
     factory { DiscussionInteractor(get()) }
     viewModel { (courseId: String, courseTitle: String) ->
         DiscussionTopicsViewModel(
@@ -532,7 +541,8 @@ val screenModule = module {
             get(),
             get(),
             get(),
-            get()
+            get(),
+            get(),
         )
     }
 
@@ -575,12 +585,12 @@ val screenModule = module {
     }
 
     single {
-        DownloadRepository(
+        DownloadRepositoryImpl(
             api = get(),
             corePreferences = get(),
             dao = get(),
             courseDao = get()
-        )
+        ) as DownloadRepository
     }
     single {
         DownloadInteractor(
@@ -600,7 +610,7 @@ val screenModule = module {
             courseNotifier = get(),
             preferencesManager = get(),
             coreAnalytics = get(),
-            downloadDao = get(),
+            downloadModelsSource = get(),
             workerController = get(),
             downloadHelper = get(),
         )
@@ -615,11 +625,11 @@ val screenModule = module {
     }
 
     factory {
-        DatesRepository(
+        DatesRepositoryImpl(
             api = get(),
             dao = get(),
             preferencesManager = get(),
-        )
+        ) as DatesRepository
     }
     factory {
         DatesInteractor(

@@ -1,6 +1,5 @@
 package org.openedx.course.presentation.container
 
-import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,7 +39,9 @@ import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.course.presentation.CourseAnalyticsEvent
 import org.openedx.course.utils.ImageProcessor
 import org.openedx.foundation.system.ResourceManager
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CourseContainerViewModelTest {
@@ -57,7 +58,6 @@ class CourseContainerViewModelTest {
     private val courseNotifier = spyk<CourseNotifier>()
     private val analytics = mockk<CourseAnalytics>()
     private val corePreferences = mockk<CorePreferences>()
-    private val mockBitmap = mockk<Bitmap>()
     private val imageProcessor = mockk<ImageProcessor>()
     private val courseApi = mockk<CourseApi>()
     private val calendarSyncScheduler = mockk<CalendarSyncScheduler>()
@@ -71,10 +71,10 @@ class CourseContainerViewModelTest {
         Dispatchers.setMain(dispatcher)
         every { resourceManager.getString(id = R.string.platform_name) } returns openEdx
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every { corePreferences.user } returns CoreMocks.mockUser
         every { corePreferences.appConfig } returns CoreMocks.mockAppConfig
@@ -82,8 +82,7 @@ class CourseContainerViewModelTest {
         every { config.getApiHostURL() } returns "baseUrl"
         justRun { interactor.startCourseSession(any()) }
         coEvery { interactor.getEnrollmentDetails(any()) } returns CoreMocks.mockCourseEnrollmentDetails
-        every { imageProcessor.loadImage(any(), any(), any()) } returns Unit
-        every { imageProcessor.applyBlur(any(), any()) } returns mockBitmap
+        every { imageProcessor.loadAndProcessImage(any(), any(), any()) } returns Unit
     }
 
     @After

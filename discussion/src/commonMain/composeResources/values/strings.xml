@@ -31,4 +31,29 @@
     <string name="discussion_no_yet">No discussions yet</string>
     <string name="discussion_click_button_create_discussion">Click the button below to create your first discussion.</string>
     <string name="discussion_unnamed_subcategory">Unnamed subcategory</string>
+
+    <plurals name="discussion_votes">
+        <item quantity="one">%1$d vote</item>
+        <item quantity="other">%1$d votes</item>
+    </plurals>
+    <plurals name="discussion_comments">
+        <item quantity="one">%1$d Comment</item>
+        <item quantity="other">%1$d Comments</item>
+    </plurals>
+    <plurals name="discussion_missed_posts">
+        <item quantity="one">%1$d Missed post</item>
+        <item quantity="other">%1$d Missed posts</item>
+    </plurals>
+    <plurals name="discussion_responses">
+        <item quantity="one">%1$d response</item>
+        <item quantity="other">%1$d responses</item>
+    </plurals>
+    <plurals name="discussion_responses_capitalized">
+        <item quantity="one">%1$d Response</item>
+        <item quantity="other">%1$d Responses</item>
+    </plurals>
+    <plurals name="discussion_found_threads">
+        <item quantity="one">Found %s post</item>
+        <item quantity="other">Found %s posts</item>
+    </plurals>
 </resources>

@@ -16,7 +16,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import androidx.window.layout.WindowMetricsCalculator
 import com.braze.support.toStringMap
 import io.branch.referral.Branch
@@ -197,14 +200,20 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     }
 
     private fun observeLogoutEvent() {
-        viewModel.logoutUser.observe(this) {
-            val dest = if (viewModel.isLogistrationEnabled) {
-                org.openedx.app.navigation.AppNavRoutes.Logistration()
-            } else {
-                org.openedx.app.navigation.AppNavRoutes.SignIn()
-            }
-            navController?.navigate(dest) {
-                popUpTo(0) { inclusive = true }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.logoutUser.collect {
+                    if (it != null) {
+                        val dest = if (viewModel.isLogistrationEnabled) {
+                            org.openedx.app.navigation.AppNavRoutes.Logistration()
+                        } else {
+                            org.openedx.app.navigation.AppNavRoutes.SignIn()
+                        }
+                        navController?.navigate(dest) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
             }
         }
     }

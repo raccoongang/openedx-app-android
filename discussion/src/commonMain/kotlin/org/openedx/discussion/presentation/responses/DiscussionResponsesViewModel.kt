@@ -1,0 +1,166 @@
+package org.openedx.discussion.presentation.responses
+
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.openedx.discussion.Res as discussionRes
+import org.openedx.discussion.discussion_comment_added
+import org.openedx.discussion.domain.interactor.DiscussionInteractor
+import org.openedx.discussion.domain.model.DiscussionComment
+import org.openedx.discussion.system.notifier.DiscussionCommentDataChanged
+import org.openedx.discussion.system.notifier.DiscussionNotifier
+import org.openedx.foundation.presentation.BaseViewModel
+import org.openedx.foundation.presentation.UIMessage
+import org.openedx.foundation.system.ResourceManager
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
+
+class DiscussionResponsesViewModel(
+    private val interactor: DiscussionInteractor,
+    private val resourceManager: ResourceManager,
+    private val notifier: DiscussionNotifier,
+    private var comment: DiscussionComment,
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationRes.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationRes.string.foundation_error_unknown_error),
+) {
+
+    private val _uiState = MutableStateFlow<DiscussionResponsesUIState?>(null)
+    val uiState: StateFlow<DiscussionResponsesUIState?> = _uiState.asStateFlow()
+
+    private val _canLoadMore = MutableStateFlow(false)
+    val canLoadMore: StateFlow<Boolean> = _canLoadMore.asStateFlow()
+
+    private val _isUpdating = MutableStateFlow(false)
+    val isUpdating: StateFlow<Boolean> = _isUpdating.asStateFlow()
+
+    var isThreadClosed: Boolean = false
+
+    private val comments = mutableListOf<DiscussionComment>()
+    private var page = 1
+    private var isLoading = false
+
+    private suspend fun sendUpdatedComment() {
+        notifier.send(DiscussionCommentDataChanged(comment))
+    }
+
+    init {
+        loadCommentResponses()
+    }
+
+    private fun loadCommentResponses() {
+        _uiState.value = DiscussionResponsesUIState.Loading
+        loadCommentsInternal()
+    }
+
+    fun updateCommentResponses() {
+        _isUpdating.value = true
+        page = 1
+        comments.clear()
+        loadCommentsInternal()
+    }
+
+    fun fetchMore() {
+        if (!isLoading && page != -1) {
+            loadCommentsInternal()
+        }
+    }
+
+    private fun loadCommentsInternal() {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val response = interactor.getCommentsResponses(comment.id, page)
+                if (response.pagination.next.isNotEmpty()) {
+                    _canLoadMore.value = true
+                    page++
+                } else {
+                    _canLoadMore.value = false
+                    page = -1
+                }
+                comments.addAll(response.results)
+                _uiState.value = DiscussionResponsesUIState.Success(comment, comments.toList())
+            } catch (e: Exception) {
+                handleErrorUiMessage(
+                    throwable = e,
+                )
+            } finally {
+                isLoading = false
+                _isUpdating.value = false
+            }
+        }
+    }
+
+    fun setCommentUpvoted(commentId: String, vote: Boolean) {
+        viewModelScope.launch {
+            try {
+                val response = interactor.setCommentVoted(commentId, vote)
+                val index = comments.indexOfFirst {
+                    it.id == response.id
+                }
+                if (index != -1) {
+                    comments[index] =
+                        comments[index].copy(voted = response.voted, voteCount = response.voteCount)
+                } else {
+                    comment = comment.copy(voted = response.voted, voteCount = response.voteCount)
+                    sendUpdatedComment()
+                }
+                _uiState.value = DiscussionResponsesUIState.Success(comment, comments.toList())
+            } catch (e: Exception) {
+                handleErrorUiMessage(
+                    throwable = e,
+                )
+            }
+        }
+    }
+
+    fun setCommentReported(commentId: String, vote: Boolean) {
+        viewModelScope.launch {
+            try {
+                val response = interactor.setCommentFlagged(commentId, vote)
+                val index = comments.indexOfFirst {
+                    it.id == response.id
+                }
+                if (index != -1) {
+                    comments[index] = comments[index].copy(abuseFlagged = response.abuseFlagged)
+                } else {
+                    comment = comment.copy(abuseFlagged = response.abuseFlagged)
+                    sendUpdatedComment()
+                }
+                _uiState.value = DiscussionResponsesUIState.Success(comment, comments.toList())
+            } catch (e: Exception) {
+                handleErrorUiMessage(
+                    throwable = e,
+                )
+            }
+        }
+    }
+
+    fun createComment(rawBody: String) {
+        viewModelScope.launch {
+            try {
+                val response = interactor.createComment(comment.threadId, rawBody, comment.id)
+                comment = comment.copy(childCount = comment.childCount + 1)
+                sendUpdatedComment()
+                if (page == -1) {
+                    comments.add(response)
+                } else {
+                    sendMessage(
+                        UIMessage.ToastMessage(
+                            resourceManager.getString(discussionRes.string.discussion_comment_added)
+                        )
+                    )
+                }
+                _uiState.value =
+                    DiscussionResponsesUIState.Success(comment, comments.toList())
+            } catch (e: Exception) {
+                handleErrorUiMessage(
+                    throwable = e,
+                )
+            }
+        }
+    }
+}

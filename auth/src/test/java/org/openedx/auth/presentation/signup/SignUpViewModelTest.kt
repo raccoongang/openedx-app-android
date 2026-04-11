@@ -29,10 +29,12 @@ import org.openedx.auth.data.model.ValidationFields
 import org.openedx.auth.domain.interactor.AuthInteractor
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
-import org.openedx.auth.presentation.sso.OAuthHelper
+import org.openedx.auth.presentation.sso.SocialAuthProvider
 import org.openedx.core.ApiConstants
 import org.openedx.core.CoreMocks
 import org.openedx.core.R
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_error_invalid_grant
 import org.openedx.core.config.Config
 import org.openedx.core.config.FacebookConfig
 import org.openedx.core.config.GoogleConfig
@@ -42,10 +44,12 @@ import org.openedx.core.domain.model.AgreementUrls
 import org.openedx.core.domain.model.RegistrationField
 import org.openedx.core.domain.model.RegistrationFieldType
 import org.openedx.core.system.notifier.app.AppNotifier
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
 
 @ExperimentalCoroutinesApi
 class SignUpViewModelTest {
@@ -61,7 +65,7 @@ class SignUpViewModelTest {
     private val analytics = mockk<AuthAnalytics>()
     private val appNotifier = mockk<AppNotifier>()
     private val agreementProvider = mockk<AgreementProvider>()
-    private val oAuthHelper = mockk<OAuthHelper>()
+    private val socialAuthProvider = mockk<SocialAuthProvider>()
 
     //region parameters
 
@@ -105,12 +109,12 @@ class SignUpViewModelTest {
     @Before
     fun before() {
         Dispatchers.setMain(dispatcher)
-        every { resourceManager.getString(R.string.core_error_invalid_grant) } returns "Invalid credentials"
+        every { resourceManager.getString(coreRes.string.core_error_invalid_grant) } returns "Invalid credentials"
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every { appNotifier.notifier } returns emptyFlow()
         every { agreementProvider.getAgreement(false) } returns null
@@ -136,7 +140,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -179,7 +183,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -228,7 +232,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -266,7 +270,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -315,7 +319,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -341,7 +345,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",
@@ -367,7 +371,7 @@ class SignUpViewModelTest {
             analytics = analytics,
             preferencesManager = preferencesManager,
             appNotifier = appNotifier,
-            oAuthHelper = oAuthHelper,
+            socialAuthProvider = socialAuthProvider,
             agreementProvider = agreementProvider,
             config = config,
             courseId = "",

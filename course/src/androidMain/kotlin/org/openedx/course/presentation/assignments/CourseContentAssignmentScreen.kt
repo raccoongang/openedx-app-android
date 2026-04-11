@@ -46,9 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.res.stringResource as androidStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +71,10 @@ import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
 import kotlinx.datetime.Clock
-import org.openedx.core.R as coreR
+import org.openedx.core.ic_core_check
+import org.openedx.core.ic_core_pointer
+import org.openedx.core.ic_core_watch_later
+import org.openedx.core.Res as coreRes
 
 private const val ICON_SIZE_DP = 20
 private const val POINTER_ICON_SIZE_DP = 10
@@ -322,8 +324,8 @@ private fun AssignmentButton(assignment: Block, isSelected: Boolean, onClick: ()
         else -> MaterialTheme.appColors.textDark
     }
     val icon = when {
-        assignment.isCompleted() -> painterResource(id = coreR.drawable.ic_core_check)
-        isDuePast -> painterResource(id = coreR.drawable.ic_core_watch_later)
+        assignment.isCompleted() -> painterResource(coreRes.drawable.ic_core_check)
+        isDuePast -> painterResource(coreRes.drawable.ic_core_watch_later)
         else -> null
     }
     val iconDescription = when {
@@ -394,7 +396,7 @@ private fun AssignmentButton(assignment: Block, isSelected: Boolean, onClick: ()
                 modifier = Modifier
                     .size(POINTER_ICON_SIZE_DP.dp)
                     .padding(top = POINTER_ICON_PADDING_TOP_DP.dp),
-                painter = painterResource(id = coreR.drawable.ic_core_pointer),
+                painter = painterResource(coreRes.drawable.ic_core_pointer),
                 tint = MaterialTheme.appColors.primary,
                 contentDescription = null
             )

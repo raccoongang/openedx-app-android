@@ -6,11 +6,11 @@ import org.openedx.core.domain.model.CourseCalendarEvent
 import org.openedx.core.domain.model.CourseCalendarState
 import org.openedx.core.repository.CalendarRepository
 
-class CalendarInteractor(
+class CalendarInteractorImpl(
     private val repository: CalendarRepository
-) {
+) : CalendarInteractor {
 
-    suspend fun getEnrollmentsStatus() = repository.getEnrollmentsStatus()
+    override suspend fun getEnrollmentsStatus() = repository.getEnrollmentsStatus()
 
     suspend fun getCourseDates(courseId: String) = repository.getCourseDates(courseId)
 
@@ -18,15 +18,15 @@ class CalendarInteractor(
         repository.insertCourseCalendarEntityToCache(*courseCalendarEntity)
     }
 
-    suspend fun getCourseCalendarEventsByIdFromCache(courseId: String): List<CourseCalendarEvent> {
+    override suspend fun getCourseCalendarEventsByIdFromCache(courseId: String): List<CourseCalendarEvent> {
         return repository.getCourseCalendarEventsByIdFromCache(courseId)
     }
 
-    suspend fun getAllCourseCalendarEventsFromCache(): List<CourseCalendarEvent> {
+    override suspend fun getAllCourseCalendarEventsFromCache(): List<CourseCalendarEvent> {
         return repository.getAllCourseCalendarEventsFromCache()
     }
 
-    suspend fun deleteCourseCalendarEntitiesByIdFromCache(courseId: String) {
+    override suspend fun deleteCourseCalendarEntitiesByIdFromCache(courseId: String) {
         repository.deleteCourseCalendarEntitiesByIdFromCache(courseId)
     }
 
@@ -34,31 +34,31 @@ class CalendarInteractor(
         repository.insertCourseCalendarStateEntityToCache(*courseCalendarStateEntity)
     }
 
-    suspend fun getCourseCalendarStateByIdFromCache(courseId: String): CourseCalendarState? {
+    override suspend fun getCourseCalendarStateByIdFromCache(courseId: String): CourseCalendarState? {
         return repository.getCourseCalendarStateByIdFromCache(courseId)
     }
 
-    suspend fun getAllCourseCalendarStateFromCache(): List<CourseCalendarState> {
+    override suspend fun getAllCourseCalendarStateFromCache(): List<CourseCalendarState> {
         return repository.getAllCourseCalendarStateFromCache()
     }
 
-    suspend fun clearCalendarCachedData() {
+    override suspend fun clearCalendarCachedData() {
         repository.clearCalendarCachedData()
     }
 
-    suspend fun resetChecksums() {
+    override suspend fun resetChecksums() {
         repository.resetChecksums()
     }
 
-    suspend fun updateCourseCalendarStateByIdInCache(
+    override suspend fun updateCourseCalendarStateByIdInCache(
         courseId: String,
-        checksum: Int? = null,
-        isCourseSyncEnabled: Boolean? = null
+        checksum: Int?,
+        isCourseSyncEnabled: Boolean?
     ) {
         repository.updateCourseCalendarStateByIdInCache(courseId, checksum, isCourseSyncEnabled)
     }
 
-    suspend fun deleteCourseCalendarStateByIdFromCache(courseId: String) {
+    override suspend fun deleteCourseCalendarStateByIdFromCache(courseId: String) {
         repository.deleteCourseCalendarStateByIdFromCache(courseId)
     }
 }

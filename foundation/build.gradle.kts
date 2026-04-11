@@ -40,6 +40,7 @@ kotlin {
 
             // Compose Multiplatform Resources
             api(compose.components.resources)
+            api(compose.components.uiToolingPreview)
 
             // Lifecycle (KMP since 2.8.0)
             api("androidx.lifecycle:lifecycle-viewmodel:2.9.0")
@@ -51,6 +52,10 @@ kotlin {
             api(libs.ktor.client.logging)
             api(libs.ktor.client.auth)
             api(libs.ktor.serialization.kotlinx.json)
+
+            // Coil (Compose Multiplatform)
+            api(libs.coil.compose)
+            api(libs.coil.network.ktor)
 
         }
 
@@ -91,11 +96,6 @@ kotlin {
 
             // Ktor OkHttp engine
             api(libs.ktor.client.okhttp)
-
-            // Coil
-            api("io.coil-kt:coil-compose:2.7.0")
-            api("io.coil-kt:coil-gif:2.7.0")
-            api("io.coil-kt:coil:2.7.0")
 
             // Coroutines test
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")

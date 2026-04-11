@@ -22,7 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.openedx.core.module.TranscriptManager
+import org.openedx.core.module.TranscriptProvider
 import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseVideoPositionChanged
@@ -42,7 +42,7 @@ class VideoUnitViewModelTest {
     private val courseRepository = mockk<CourseRepository>()
     private val notifier = mockk<CourseNotifier>()
     private val networkConnection = mockk<NetworkConnection>()
-    private val transcriptManager = mockk<TranscriptManager>()
+    private val transcriptProvider = mockk<TranscriptProvider>()
     private val courseAnalytics = mockk<CourseAnalytics>()
     private val resourceManager = mockk<ResourceManager>()
 
@@ -65,7 +65,7 @@ class VideoUnitViewModelTest {
             courseRepository,
             notifier,
             networkConnection,
-            transcriptManager,
+            transcriptProvider,
             courseAnalytics,
             resourceManager
         )
@@ -107,7 +107,7 @@ class VideoUnitViewModelTest {
             courseRepository,
             notifier,
             networkConnection,
-            transcriptManager,
+            transcriptProvider,
             courseAnalytics,
             resourceManager
         )
@@ -149,7 +149,7 @@ class VideoUnitViewModelTest {
             courseRepository,
             notifier,
             networkConnection,
-            transcriptManager,
+            transcriptProvider,
             courseAnalytics,
             resourceManager
         )

@@ -5,9 +5,13 @@ enum class WindowType { Compact, Medium, Expanded }
 data class WindowSize(
     val width: WindowType,
     val height: WindowType,
+    val screenWidthDp: Int = 0,
+    val screenHeightDp: Int = 0,
 ) {
     val isTablet: Boolean
         get() = width != WindowType.Compact
+    val isLandscape: Boolean
+        get() = screenWidthDp > screenHeightDp
 }
 
 fun <T> WindowSize.windowSizeValue(expanded: T, compact: T): T {

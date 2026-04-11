@@ -4,13 +4,15 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.openedx.app.deeplink.DeepLink
@@ -27,7 +29,6 @@ import org.openedx.core.system.notifier.app.LogoutEvent
 import org.openedx.core.system.notifier.app.SignInEvent
 import org.openedx.core.utils.Directories
 import org.openedx.foundation.presentation.BaseViewModel
-import org.openedx.foundation.presentation.SingleEventLiveData
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 
@@ -46,9 +47,8 @@ class AppViewModel(
     resourceManager: ResourceManager,
 ) : BaseViewModel() {
 
-    private val _logoutUser = SingleEventLiveData<Unit>()
-    val logoutUser: LiveData<Unit>
-        get() = _logoutUser
+    private val _logoutUser = MutableStateFlow<Unit?>(null)
+    val logoutUser: StateFlow<Unit?> = _logoutUser.asStateFlow()
 
     private val _downloadFailedDialog = MutableSharedFlow<DownloadFailed>()
     val downloadFailedDialog: SharedFlow<DownloadFailed>

@@ -27,7 +27,9 @@ import org.openedx.profile.domain.model.Account
 import org.openedx.profile.presentation.anothersaccount.AnothersProfileUIState
 import org.openedx.profile.presentation.anothersaccount.AnothersProfileViewModel
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AnothersProfileViewModelTest {
@@ -48,10 +50,10 @@ class AnothersProfileViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
     }
 

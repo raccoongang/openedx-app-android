@@ -23,11 +23,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.openedx.core.CoreMocks
 import org.openedx.core.domain.model.Block
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.course.*
@@ -162,58 +159,6 @@ fun VideosHomePagerCardContent(
         ViewAllButton(
             text = stringResource(Res.string.course_view_all_videos),
             onClick = onViewAllVideosClick
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun VideosHomePagerCardContentPreview() {
-    OpenEdXTheme {
-        VideosHomePagerCardContent(
-            uiState = CourseHomeUIState.CourseData(
-                courseStructure = CoreMocks.mockCourseStructure,
-                courseProgress = null,
-                next = null,
-                downloadedState = mapOf(),
-                resumeComponent = null,
-                resumeUnitTitle = "",
-                courseSubSections = mapOf(),
-                subSectionsDownloadsCount = mapOf(),
-                useRelativeDates = true,
-                courseVideos = mapOf("section1" to listOf(CoreMocks.mockVideoBlock)),
-                courseAssignments = emptyList(),
-                videoPreview = null,
-                videoProgress = 0.5f
-            ),
-            onVideoClick = {},
-            onViewAllVideosClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun VideosHomePagerCardContentEmptyPreview() {
-    OpenEdXTheme {
-        VideosHomePagerCardContent(
-            uiState = CourseHomeUIState.CourseData(
-                courseStructure = CoreMocks.mockCourseStructure,
-                courseProgress = null,
-                next = null,
-                downloadedState = mapOf(),
-                resumeComponent = null,
-                resumeUnitTitle = "",
-                courseSubSections = mapOf(),
-                subSectionsDownloadsCount = mapOf(),
-                useRelativeDates = true,
-                courseVideos = emptyMap(),
-                courseAssignments = emptyList(),
-                videoPreview = null,
-                videoProgress = null
-            ),
-            onVideoClick = {},
-            onViewAllVideosClick = {}
         )
     }
 }

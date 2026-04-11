@@ -1,0 +1,556 @@
+package org.openedx.downloads.presentation.download
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import org.openedx.core.domain.model.DownloadCoursePreview
+import org.openedx.core.extension.safeDivBy
+import org.openedx.core.module.db.DownloadModel
+import org.openedx.core.module.db.DownloadedState
+import org.openedx.core.module.db.DownloadedState.LOADING_COURSE_STRUCTURE
+import org.openedx.core.ui.HandleUIMessage
+import org.openedx.core.ui.IconText
+import org.openedx.core.ui.MainScreenToolbar
+import org.openedx.core.ui.OfflineModeDialog
+import org.openedx.core.ui.OpenEdXButton
+import org.openedx.core.ui.OpenEdXDropdownMenuItem
+import org.openedx.core.ui.crop
+import org.openedx.core.ui.displayCutoutForLandscape
+import org.openedx.core.ui.statusBarsInset
+import org.openedx.core.ui.theme.OpenEdXTheme
+import org.openedx.core.ui.theme.appColors
+import org.openedx.core.ui.theme.appShapes
+import org.openedx.core.ui.theme.appTypography
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_downloading
+import org.openedx.core.core_ic_book
+import org.openedx.core.core_no_image_course
+import org.openedx.downloads.Res
+import org.openedx.downloads.downloads
+import org.openedx.downloads.downloaded_available_size
+import org.openedx.downloads.downloaded_downloaded_size
+import org.openedx.downloads.downloads_accessibility_stop_downloading_course
+import org.openedx.downloads.downloads_cancel_download
+import org.openedx.downloads.downloads_download_course
+import org.openedx.downloads.downloads_empty_state_description
+import org.openedx.downloads.downloads_empty_state_title
+import org.openedx.downloads.downloads_loading_course_structure
+import org.openedx.downloads.downloads_remove_course_downloads
+import org.openedx.foundation.extension.toFileSize
+import org.openedx.foundation.extension.toImageLink
+import org.openedx.foundation.presentation.UIMessage
+import org.openedx.foundation.presentation.rememberWindowSize
+import org.openedx.foundation.presentation.windowSizeValue
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DownloadsScreen(
+    uiState: DownloadsUIState,
+    uiMessage: UIMessage?,
+    apiHostUrl: String,
+    hasInternetConnection: Boolean,
+    onAction: (DownloadsViewActions) -> Unit,
+) {
+    val windowSize = rememberWindowSize()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val contentWidth by remember(key1 = windowSize) {
+        mutableStateOf(
+            windowSize.windowSizeValue(
+                expanded = Modifier.widthIn(Dp.Unspecified, 560.dp),
+                compact = Modifier.fillMaxWidth(),
+            )
+        )
+    }
+    val pullToRefreshState = rememberPullToRefreshState()
+    var isInternetConnectionShown by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        containerColor = MaterialTheme.appColors.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            MainScreenToolbar(
+                modifier = Modifier
+                    .statusBarsInset()
+                    .displayCutoutForLandscape(),
+                label = stringResource(Res.string.downloads),
+                onSettingsClick = {
+                    onAction(DownloadsViewActions.OpenSettings)
+                }
+            )
+        },
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = { onAction(DownloadsViewActions.SwipeRefresh) },
+                    state = pullToRefreshState,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (uiState.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                        }
+                    } else if (uiState.downloadCoursePreviews.isEmpty()) {
+                        EmptyState(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .displayCutoutForLandscape()
+                                .padding(paddingValues)
+                                .padding(horizontal = 16.dp),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            if (windowSize.isLandscape || windowSize.isTablet) {
+                                LazyVerticalGrid(
+                                    modifier = contentWidth.fillMaxHeight(),
+                                    state = rememberLazyGridState(),
+                                    columns = GridCells.Fixed(2),
+                                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                                    contentPadding = PaddingValues(bottom = 46.dp, top = 12.dp),
+                                    content = {
+                                        items(uiState.downloadCoursePreviews) { item ->
+                                            val downloadModels =
+                                                uiState.downloadModels.filter { it.courseId == item.id }
+                                            val downloadState = uiState.courseDownloadState[item.id]
+                                                ?: DownloadedState.NOT_DOWNLOADED
+                                            CourseItem(
+                                                modifier = Modifier.height(314.dp),
+                                                downloadCoursePreview = item,
+                                                downloadModels = downloadModels,
+                                                downloadedState = downloadState,
+                                                apiHostUrl = apiHostUrl,
+                                                onCourseClick = {
+                                                    onAction(DownloadsViewActions.OpenCourse(item.id))
+                                                },
+                                                onDownloadClick = {
+                                                    onAction(
+                                                        DownloadsViewActions.DownloadCourse(
+                                                            item.id
+                                                        )
+                                                    )
+                                                },
+                                                onCancelClick = {
+                                                    onAction(
+                                                        DownloadsViewActions.CancelDownloading(
+                                                            item.id
+                                                        )
+                                                    )
+                                                },
+                                                onRemoveClick = {
+                                                    onAction(
+                                                        DownloadsViewActions.RemoveDownloads(
+                                                            item.id
+                                                        )
+                                                    )
+                                                }
+                                            )
+                                        }
+                                    }
+                                )
+                            } else {
+                                LazyColumn(
+                                    modifier = contentWidth,
+                                    contentPadding = PaddingValues(bottom = 46.dp, top = 12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                                ) {
+                                    items(uiState.downloadCoursePreviews) { item ->
+                                        val downloadModels =
+                                            uiState.downloadModels.filter { it.courseId == item.id }
+                                        val downloadState = uiState.courseDownloadState[item.id]
+                                            ?: DownloadedState.NOT_DOWNLOADED
+                                        CourseItem(
+                                            downloadCoursePreview = item,
+                                            downloadModels = downloadModels,
+                                            downloadedState = downloadState,
+                                            apiHostUrl = apiHostUrl,
+                                            onCourseClick = {
+                                                onAction(DownloadsViewActions.OpenCourse(item.id))
+                                            },
+                                            onDownloadClick = {
+                                                onAction(DownloadsViewActions.DownloadCourse(item.id))
+                                            },
+                                            onCancelClick = {
+                                                onAction(DownloadsViewActions.CancelDownloading(item.id))
+                                            },
+                                            onRemoveClick = {
+                                                onAction(DownloadsViewActions.RemoveDownloads(item.id))
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
+
+                if (!isInternetConnectionShown && !hasInternetConnection) {
+                    OfflineModeDialog(
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
+                        onDismissCLick = {
+                            isInternetConnectionShown = true
+                        },
+                        onReloadClick = {
+                            isInternetConnectionShown = true
+                            onAction(DownloadsViewActions.SwipeRefresh)
+                        }
+                    )
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CourseItem(
+    modifier: Modifier = Modifier,
+    downloadCoursePreview: DownloadCoursePreview,
+    downloadModels: List<DownloadModel>,
+    downloadedState: DownloadedState,
+    apiHostUrl: String,
+    onCourseClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    onRemoveClick: () -> Unit,
+    onCancelClick: () -> Unit
+) {
+    val windowSize = rememberWindowSize()
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+    val downloadedSize = downloadModels
+        .filter { it.downloadedState == DownloadedState.DOWNLOADED }
+        .sumOf { it.size }
+    val availableSize = downloadCoursePreview.totalSize - downloadedSize
+    val availableSizeString = availableSize.toFileSize(space = false, round = 1)
+    val progress = downloadedSize.toFloat().safeDivBy(downloadCoursePreview.totalSize.toFloat())
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.background),
+        shape = MaterialTheme.appShapes.courseImageShape,
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = onCourseClick
+    ) {
+        Box {
+            Column(
+                modifier = Modifier.animateContentSize()
+            ) {
+                val imageModifier =
+                    if (windowSize.isLandscape || windowSize.isTablet) {
+                        Modifier.weight(1f)
+                    } else {
+                        Modifier.height(120.dp)
+                    }
+                AsyncImage(
+                    modifier = imageModifier.fillMaxWidth(),
+                    model = downloadCoursePreview.image.toImageLink(apiHostUrl),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(coreRes.drawable.core_no_image_course),
+                    error = painterResource(coreRes.drawable.core_no_image_course),
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(top = 8.dp, bottom = 12.dp),
+                ) {
+                    Text(
+                        text = downloadCoursePreview.name,
+                        style = MaterialTheme.appTypography.titleLarge,
+                        color = MaterialTheme.appColors.textDark,
+                        overflow = TextOverflow.Ellipsis,
+                        minLines = 1,
+                        maxLines = 2
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    if (downloadedState != DownloadedState.DOWNLOADED && downloadedSize != 0L) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp)
+                                .clip(CircleShape),
+                            progress = { progress },
+                            color = MaterialTheme.appColors.successGreen,
+                            trackColor = MaterialTheme.appColors.divider,
+                            strokeCap = StrokeCap.Square,
+                            gapSize = 0.dp,
+                            drawStopIndicator = { }
+                        )
+                    }
+                    if (downloadedSize != 0L) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        IconText(
+                            icon = Icons.Filled.CloudDone,
+                            color = MaterialTheme.appColors.successGreen,
+                            text = stringResource(
+                                Res.string.downloaded_downloaded_size,
+                                downloadedSize.toFileSize(space = false, round = 1)
+                            )
+                        )
+                    }
+                    if (downloadedState != DownloadedState.DOWNLOADED) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        IconText(
+                            icon = Icons.Outlined.CloudDownload,
+                            color = MaterialTheme.appColors.textPrimaryVariant,
+                            text = stringResource(
+                                Res.string.downloaded_available_size,
+                                availableSizeString
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    if (downloadedState.isWaitingOrDownloading) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(36.dp),
+                                    trackColor = Color.LightGray,
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.appColors.primary
+                                )
+                                IconButton(
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .padding(2.dp),
+                                    onClick = onCancelClick
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = stringResource(
+                                            Res.string.downloads_accessibility_stop_downloading_course
+                                        ),
+                                        tint = MaterialTheme.appColors.error
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            val text = if (downloadedState == LOADING_COURSE_STRUCTURE) {
+                                stringResource(Res.string.downloads_loading_course_structure)
+                            } else {
+                                stringResource(coreRes.string.core_downloading)
+                            }
+                            Text(
+                                text = text,
+                                style = MaterialTheme.appTypography.titleSmall,
+                                color = MaterialTheme.appColors.textPrimary
+                            )
+                        }
+                    } else if (downloadedState == DownloadedState.NOT_DOWNLOADED) {
+                        OpenEdXButton(
+                            onClick = {
+                                onDownloadClick()
+                            },
+                            content = {
+                                IconText(
+                                    text = stringResource(Res.string.downloads_download_course),
+                                    icon = Icons.Outlined.CloudDownload,
+                                    color = MaterialTheme.appColors.primaryButtonText,
+                                    textStyle = MaterialTheme.appTypography.labelLarge
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopEnd),
+            ) {
+                if (downloadedSize != 0L || downloadedState.isWaitingOrDownloading) {
+                    MoreButton(
+                        onClick = {
+                            isDropdownExpanded = true
+                        }
+                    )
+                }
+                DropdownMenu(
+                    modifier = Modifier
+                        .crop(vertical = 8.dp)
+                        .defaultMinSize(minWidth = 269.dp)
+                        .background(MaterialTheme.appColors.background),
+                    expanded = isDropdownExpanded,
+                    onDismissRequest = { isDropdownExpanded = false },
+                ) {
+                    Column {
+                        if (downloadedSize != 0L) {
+                            OpenEdXDropdownMenuItem(
+                                text = stringResource(Res.string.downloads_remove_course_downloads),
+                                onClick = {
+                                    isDropdownExpanded = false
+                                    onRemoveClick()
+                                }
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.appColors.divider
+                            )
+                        }
+                        if (downloadedState.isWaitingOrDownloading) {
+                            OpenEdXDropdownMenuItem(
+                                text = stringResource(Res.string.downloads_cancel_download),
+                                onClick = {
+                                    isDropdownExpanded = false
+                                    onCancelClick()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MoreButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = onClick
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(30.dp)
+                .background(
+                    color = MaterialTheme.appColors.onPrimary.copy(alpha = 0.5f),
+                    shape = CircleShape
+                )
+                .padding(4.dp),
+            imageVector = Icons.Default.MoreHoriz,
+            contentDescription = null,
+            tint = MaterialTheme.appColors.onSurface
+        )
+    }
+}
+
+@Composable
+private fun EmptyState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.width(200.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(coreRes.drawable.core_ic_book),
+                tint = MaterialTheme.appColors.textFieldBorder,
+                contentDescription = null
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                modifier = Modifier
+                    .testTag("txt_empty_state_title")
+                    .fillMaxWidth(),
+                text = stringResource(Res.string.downloads_empty_state_title),
+                color = MaterialTheme.appColors.textDark,
+                style = MaterialTheme.appTypography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                modifier = Modifier
+                    .testTag("txt_empty_state_description")
+                    .fillMaxWidth(),
+                text = stringResource(Res.string.downloads_empty_state_description),
+                color = MaterialTheme.appColors.textDark,
+                style = MaterialTheme.appTypography.labelMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+

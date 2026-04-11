@@ -29,7 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -123,7 +123,7 @@ fun ContentTabScreen(
                             )
                         }
                         Text(
-                            text = stringResource(tab.labelResId),
+                            text = stringResource(tab.labelRes),
                             color = if (isSelected) {
                                 MaterialTheme.appColors.primaryButtonText
                             } else {

@@ -22,12 +22,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.openedx.core.CoreMocks
-import org.openedx.core.R
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_dates_shift_dates_unsuccessful_msg
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.helper.VideoPreviewHelper
 import org.openedx.core.module.DownloadWorkerController
-import org.openedx.core.module.db.DownloadDao
+import org.openedx.core.module.download.DownloadModelsSource
 import org.openedx.core.module.download.DownloadHelper
 import org.openedx.core.presentation.CoreAnalytics
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
@@ -43,8 +44,11 @@ import org.openedx.course.presentation.CourseAnalyticsKey
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.foundation.utils.FileUtil
 import java.net.UnknownHostException
-import org.openedx.course.R as courseR
-import org.openedx.foundation.R as foundationR
+import org.openedx.course.Res as courseRes
+import org.openedx.course.course_can_download_only_with_wifi
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @Suppress("LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -65,7 +69,7 @@ class CourseHomeViewModelTest {
     private val downloadDialogManager = mockk<DownloadDialogManager>()
     private val fileUtil = mockk<FileUtil>()
     private val coreAnalytics = mockk<CoreAnalytics>()
-    private val downloadDao = mockk<DownloadDao>()
+    private val downloadModelsSource = mockk<DownloadModelsSource>()
     private val workerController = mockk<DownloadWorkerController>()
     private val downloadHelper = mockk<DownloadHelper>()
     private val videoPreviewHelper = mockk<VideoPreviewHelper>()
@@ -77,13 +81,13 @@ class CourseHomeViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        every { resourceManager.getString(foundationR.string.foundation_error_no_connection) } returns noInternet
-        every { resourceManager.getString(foundationR.string.foundation_error_unknown_error) } returns somethingWrong
+        every { resourceManager.getString(foundationRes.string.foundation_error_no_connection) } returns noInternet
+        every { resourceManager.getString(foundationRes.string.foundation_error_unknown_error) } returns somethingWrong
         every {
-            resourceManager.getString(courseR.string.course_can_download_only_with_wifi)
+            resourceManager.getString(courseRes.string.course_can_download_only_with_wifi)
         } returns cantDownload
         every {
-            resourceManager.getString(R.string.core_dates_shift_dates_unsuccessful_msg)
+            resourceManager.getString(coreRes.string.core_dates_shift_dates_unsuccessful_msg)
         } returns "Failed to shift dates"
 
         every { config.getCourseUIConfig().isCourseDropdownNavigationEnabled } returns true
@@ -95,9 +99,9 @@ class CourseHomeViewModelTest {
         every { networkConnection.isWifiConnected() } returns true
         every { networkConnection.isOnline() } returns true
 
-        every { fileUtil.getExternalAppDir().path } returns "/test/path"
+        every { fileUtil.getExternalAppDirPath() } returns "/test/path"
 
-        every { downloadDao.getAllDataFlow() } returns flow { emit(emptyList()) }
+        every { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
 
         every { courseNotifier.notifier } returns flow { }
 
@@ -170,7 +174,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -231,7 +235,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -284,7 +288,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -338,7 +342,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -435,7 +439,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -496,7 +500,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -551,7 +555,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -604,7 +608,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -655,7 +659,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -708,7 +712,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )
@@ -761,7 +765,7 @@ class CourseHomeViewModelTest {
 
             videoPreviewHelper = videoPreviewHelper,
             coreAnalytics = coreAnalytics,
-            downloadDao = downloadDao,
+            downloadModelsSource = downloadModelsSource,
             workerController = workerController,
             downloadHelper = downloadHelper
         )

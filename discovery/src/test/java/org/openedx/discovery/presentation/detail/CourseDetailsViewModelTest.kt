@@ -34,7 +34,9 @@ import org.openedx.discovery.presentation.DiscoveryAnalyticsEvent
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CourseDetailsViewModelTest {
@@ -60,10 +62,10 @@ class CourseDetailsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every { config.getApiHostURL() } returns "http://localhost:8000"
         every { calendarSyncScheduler.requestImmediateSync(any()) } returns Unit

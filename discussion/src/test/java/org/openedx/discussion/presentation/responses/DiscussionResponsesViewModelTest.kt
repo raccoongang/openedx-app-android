@@ -26,13 +26,17 @@ import org.junit.rules.TestRule
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.Pagination
 import org.openedx.discussion.DiscussionMocks
+import org.openedx.discussion.Res as discussionRes
+import org.openedx.discussion.discussion_comment_added
 import org.openedx.discussion.domain.interactor.DiscussionInteractor
 import org.openedx.discussion.domain.model.CommentsData
 import org.openedx.discussion.system.notifier.DiscussionNotifier
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.system.ResourceManager
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiscussionResponsesViewModelTest {
@@ -60,13 +64,13 @@ class DiscussionResponsesViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every {
-            resourceManager.getString(org.openedx.discussion.R.string.discussion_comment_added)
+            resourceManager.getString(discussionRes.string.discussion_comment_added)
         } returns commentAddedSuccessfully
     }
 

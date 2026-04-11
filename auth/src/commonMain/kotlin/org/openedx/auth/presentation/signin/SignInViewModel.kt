@@ -1,0 +1,295 @@
+package org.openedx.auth.presentation.signin
+
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.openedx.auth.Res
+import org.openedx.auth.auth_invalid_email_username
+import org.openedx.auth.auth_invalid_password
+import org.openedx.auth.data.model.AuthType
+import org.openedx.auth.domain.interactor.AuthInteractor
+import org.openedx.auth.domain.model.SocialAuthResponse
+import org.openedx.auth.presentation.AgreementProvider
+import org.openedx.auth.presentation.AuthAnalytics
+import org.openedx.auth.presentation.AuthAnalyticsEvent
+import org.openedx.auth.presentation.AuthAnalyticsKey
+import org.openedx.auth.presentation.sso.SocialAuthProvider
+import org.openedx.core.Validator
+import org.openedx.core.config.Config
+import org.openedx.core.data.storage.CalendarPreferences
+import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.domain.interactor.CalendarInteractor
+import org.openedx.core.domain.model.createHonorCodeField
+import org.openedx.core.presentation.global.WhatsNewGlobalManager
+import org.openedx.core.system.EdxError
+import org.openedx.core.system.notifier.app.AppNotifier
+import org.openedx.core.system.notifier.app.AppUpgradeEvent
+import org.openedx.core.system.notifier.app.SignInEvent
+import org.openedx.core.utils.Logger
+import org.openedx.foundation.presentation.BaseViewModel
+import org.openedx.foundation.system.ResourceManager
+import org.openedx.core.Res as coreRes
+import org.openedx.core.core_error_invalid_grant
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
+
+class SignInViewModel(
+    private val interactor: AuthInteractor,
+    private val resourceManager: ResourceManager,
+    private val preferencesManager: CorePreferences,
+    private val validator: Validator,
+    private val appNotifier: AppNotifier,
+    private val analytics: AuthAnalytics,
+    private val socialAuthProvider: SocialAuthProvider,
+    private val whatsNewGlobalManager: WhatsNewGlobalManager,
+    private val calendarPreferences: CalendarPreferences,
+    private val calendarInteractor: CalendarInteractor,
+    agreementProvider: AgreementProvider,
+    val config: Config,
+    val courseId: String?,
+    val infoType: String?,
+    val authCode: String,
+) : BaseViewModel(
+    noConnectionMessage = resourceManager.getString(foundationRes.string.foundation_error_no_connection),
+    defaultErrorMessage = resourceManager.getString(foundationRes.string.foundation_error_unknown_error),
+) {
+
+    private val logger = Logger("SignInViewModel")
+
+    private val _uiState = MutableStateFlow(
+        SignInUIState(
+            isFacebookAuthEnabled = config.getFacebookConfig().isEnabled(),
+            isGoogleAuthEnabled = config.getGoogleConfig().isEnabled(),
+            isMicrosoftAuthEnabled = config.getMicrosoftConfig().isEnabled(),
+            isBrowserLoginEnabled = config.isBrowserLoginEnabled(),
+            isBrowserRegistrationEnabled = config.isBrowserRegistrationEnabled(),
+            isSocialAuthEnabled = config.isSocialAuthEnabled(),
+            isLogistrationEnabled = config.isPreLoginExperienceEnabled(),
+            isRegistrationEnabled = config.isRegistrationEnabled(),
+            agreement = agreementProvider.getAgreement(isSignIn = true)?.createHonorCodeField(),
+        )
+    )
+    val uiState: StateFlow<SignInUIState> = _uiState
+
+    private val _appUpgradeEvent = MutableStateFlow<AppUpgradeEvent?>(null)
+    val appUpgradeEvent: StateFlow<AppUpgradeEvent?> = _appUpgradeEvent.asStateFlow()
+
+    init {
+        collectAppUpgradeEvent()
+        logSignInScreenEvent()
+    }
+
+    fun login(username: String, password: String) {
+        logEvent(AuthAnalyticsEvent.USER_SIGN_IN_CLICKED)
+        if (!validator.isEmailOrUserNameValid(username)) {
+            viewModelScope.launch {
+                handleErrorUiMessage(
+                    throwable = null,
+                    defaultErrorMessage = resourceManager.getString(Res.string.auth_invalid_email_username),
+                )
+            }
+            return
+        }
+        if (!validator.isPasswordValid(password)) {
+            viewModelScope.launch {
+                handleErrorUiMessage(
+                    throwable = null,
+                    defaultErrorMessage = resourceManager.getString(Res.string.auth_invalid_password),
+                )
+            }
+            return
+        }
+
+        _uiState.update { it.copy(showProgress = true) }
+        viewModelScope.launch {
+            try {
+                interactor.login(username, password)
+                _uiState.update { it.copy(loginSuccess = true) }
+                setUserId()
+                if (calendarPreferences.calendarUser != username) {
+                    calendarPreferences.clearCalendarPreferences()
+                    calendarInteractor.clearCalendarCachedData()
+                }
+                logEvent(
+                    AuthAnalyticsEvent.SIGN_IN_SUCCESS,
+                    buildMap {
+                        put(
+                            AuthAnalyticsKey.METHOD.key,
+                            AuthType.PASSWORD.methodName.lowercase()
+                        )
+                    }
+                )
+                appNotifier.send(SignInEvent())
+            } catch (e: Exception) {
+                when (e) {
+                    is EdxError.InvalidGrantException -> handleErrorUiMessage(
+                        throwable = null,
+                        defaultErrorMessage = resourceManager.getString(coreRes.string.core_error_invalid_grant),
+                    )
+
+                    else -> handleErrorUiMessage(
+                        throwable = e,
+                    )
+                }
+            }
+            _uiState.update { it.copy(showProgress = false) }
+        }
+    }
+
+    private fun collectAppUpgradeEvent() {
+        viewModelScope.launch {
+            appNotifier.notifier.collect { event ->
+                if (event is AppUpgradeEvent) {
+                    _appUpgradeEvent.value = event
+                }
+            }
+        }
+    }
+
+    fun socialAuth(activityContext: Any, authType: AuthType) {
+        _uiState.update { it.copy(showProgress = true) }
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                runCatching {
+                    socialAuthProvider.socialAuth(activityContext, authType)
+                }
+            }
+                .getOrNull()
+                .checkToken()
+        }
+    }
+
+    fun signInBrowser(activityContext: Any) {
+        _uiState.update { it.copy(showProgress = true) }
+        viewModelScope.launch {
+            runCatching {
+                socialAuthProvider.signInWithBrowser(activityContext)
+            }.onFailure {
+                logger.e { "Browser auth error: $it" }
+            }
+        }
+    }
+
+    fun signInAuthCode(authCode: String) {
+        _uiState.update { it.copy(showProgress = true) }
+        viewModelScope.launch {
+            runCatching {
+                interactor.loginAuthCode(authCode)
+            }
+                .onFailure {
+                    logger.e { "OAuth2 code error: $it" }
+                    onUnknownError()
+                    _uiState.update { it.copy(loginFailure = true) }
+                }.onSuccess {
+                    _uiState.update { it.copy(loginSuccess = true) }
+                    setUserId()
+                    appNotifier.send(SignInEvent())
+                    _uiState.update { it.copy(showProgress = false) }
+                }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        socialAuthProvider.clearAuth()
+    }
+
+    private suspend fun exchangeToken(token: String, authType: AuthType) {
+        runCatching {
+            interactor.loginSocial(token, authType)
+        }.onFailure { error ->
+            logger.e { "Social login error: $error" }
+            onUnknownError()
+        }.onSuccess {
+            logger.d { "Social login (${authType.methodName}) success" }
+            _uiState.update { it.copy(loginSuccess = true) }
+            setUserId()
+            _uiState.update { it.copy(showProgress = false) }
+            appNotifier.send(SignInEvent())
+        }
+    }
+
+    private fun onUnknownError(message: (() -> String)? = null) {
+        message?.let {
+            logger.e { it() }
+        }
+        viewModelScope.launch {
+            handleErrorUiMessage(
+                throwable = null,
+            )
+        }
+        _uiState.update { it.copy(showProgress = false) }
+    }
+
+    private fun setUserId() {
+        preferencesManager.user?.let {
+            analytics.setUserIdForSession(it.id)
+        }
+    }
+
+    private suspend fun SocialAuthResponse?.checkToken() {
+        this?.accessToken?.let { token ->
+            if (token.isNotEmpty()) {
+                exchangeToken(token, authType)
+            } else {
+                _uiState.update { it.copy(showProgress = false) }
+            }
+        } ?: onUnknownError()
+    }
+
+    val webContentEvent = MutableSharedFlow<Pair<String, String>>()
+
+    fun openLink(links: Map<String, String>, link: String) {
+        links.forEach { (key, value) ->
+            if (value == link) {
+                viewModelScope.launch {
+                    webContentEvent.emit(key to value)
+                }
+                return
+            }
+        }
+    }
+
+    sealed class PostLoginDestination {
+        data class Main(val courseId: String?, val infoType: String?) : PostLoginDestination()
+        data class WhatsNew(val courseId: String?, val infoType: String?) : PostLoginDestination()
+    }
+
+    fun getPostLoginDestination(): PostLoginDestination {
+        return if (whatsNewGlobalManager.shouldShowWhatsNew()) {
+            PostLoginDestination.WhatsNew(courseId, infoType)
+        } else {
+            PostLoginDestination.Main(courseId, infoType)
+        }
+    }
+
+    private fun logEvent(
+        event: AuthAnalyticsEvent,
+        params: Map<String, Any?> = emptyMap(),
+    ) {
+        analytics.logEvent(
+            event = event.eventName,
+            params = buildMap {
+                put(AuthAnalyticsKey.NAME.key, event.biValue)
+                putAll(params)
+            }
+        )
+    }
+
+    private fun logSignInScreenEvent() {
+        val event = AuthAnalyticsEvent.SIGN_IN
+        analytics.logScreenEvent(
+            screenName = event.eventName,
+            params = buildMap {
+                put(AuthAnalyticsKey.NAME.key, event.biValue)
+            }
+        )
+    }
+}

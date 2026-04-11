@@ -30,7 +30,9 @@ import org.openedx.profile.system.notifier.account.AccountUpdated
 import org.openedx.profile.system.notifier.profile.ProfileNotifier
 import java.io.File
 import java.net.UnknownHostException
-import org.openedx.foundation.R as foundationR
+import org.openedx.foundation.Res as foundationRes
+import org.openedx.foundation.foundation_error_no_connection
+import org.openedx.foundation.foundation_error_unknown_error
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditProfileViewModelTest {
@@ -55,10 +57,10 @@ class EditProfileViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every {
-            resourceManager.getString(foundationR.string.foundation_error_no_connection)
+            resourceManager.getString(foundationRes.string.foundation_error_no_connection)
         } returns noInternet
         every {
-            resourceManager.getString(foundationR.string.foundation_error_unknown_error)
+            resourceManager.getString(foundationRes.string.foundation_error_unknown_error)
         } returns somethingWrong
         every { analytics.logScreenEvent(any(), any()) } returns Unit
     }
@@ -233,7 +235,7 @@ class EditProfileViewModelTest {
                 config,
                 ProfileMocks.account
             )
-        viewModel.setImageUri(mockk())
+        viewModel.setImageUri("content://test/image.jpg")
 
         assert(viewModel.selectedImageUri.value != null)
     }

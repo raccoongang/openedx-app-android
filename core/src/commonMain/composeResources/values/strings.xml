@@ -2,6 +2,7 @@
 <resources>
     <string name="core_error_no_connection">Slow or no internet connection</string>
     <string name="core_error_unknown_error">Something went wrong</string>
+    <string name="core_error_invalid_grant">Invalid credentials</string>
     <string name="core_error_try_again">Try again</string>
     <string name="core_privacy_policy">Privacy Policy</string>
     <string name="core_cookie_policy">Cookie policy</string>
@@ -209,4 +210,9 @@
     <string name="core_explore_other_parts_when_reconnect_or_download">Explore other parts of this course or download this when you reconnect.</string>
     <string name="core_authorization">Authorization</string>
     <string name="core_authorization_request">Please enter the system to continue with course enrollment.</string>
+
+    <plurals name="core_date_items_hidden">
+        <item quantity="one">%d Item Hidden</item>
+        <item quantity="other">%d Items Hidden</item>
+    </plurals>
 </resources>

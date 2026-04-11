@@ -5,7 +5,8 @@ import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 
 actual fun Throwable.isInternetError(): Boolean {
-    return this is HttpRequestTimeoutException ||
+    return this is NoConnectionException ||
+        this is HttpRequestTimeoutException ||
         this is ConnectTimeoutException ||
         this is SocketTimeoutException ||
         this.message?.contains("NSURLErrorDomain") == true ||

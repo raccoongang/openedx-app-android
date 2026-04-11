@@ -75,9 +75,9 @@ class CalendarViewModelTest {
 
     @Test
     fun `setUpCalendarSync launches permission request`() = runTest(dispatcher) {
-        every { permissionLauncher.launch(calendarManager.permissions) } returns Unit
+        every { calendarManager.requestPermissions(any()) } returns Unit
         viewModel.setUpCalendarSync(permissionLauncher)
-        coVerify { permissionLauncher.launch(calendarManager.permissions) }
+        coVerify { calendarManager.requestPermissions(permissionLauncher) }
     }
 
     @Test
