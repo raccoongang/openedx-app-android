@@ -16,16 +16,12 @@ import org.openedx.app.data.networking.AppUpgradeInterceptor
 import org.openedx.app.data.networking.HandleErrorInterceptor
 import org.openedx.app.data.networking.HeadersInterceptor
 import org.openedx.app.data.networking.OauthRefreshTokenAuthenticator
-import org.openedx.auth.data.api.AuthApi
 import org.openedx.core.BuildConfig
 import org.openedx.core.config.Config
-import org.openedx.core.data.api.CookiesApi
-import org.openedx.core.data.api.CourseApi
-import org.openedx.discovery.data.api.DiscoveryApi
-import org.openedx.discussion.data.api.DiscussionApi
-import org.openedx.profile.data.api.ProfileApi
+import org.openedx.shared.network.commonNetworkingModule
 
 val networkingModule = module {
+    includes(commonNetworkingModule)
 
     single { OauthRefreshTokenAuthenticator(get(), get(), get()) }
 
@@ -83,11 +79,6 @@ val networkingModule = module {
         }
     }
 
-    single { AuthApi(get()) }
-    single { CookiesApi(get()) }
-    single { CourseApi(get()) }
-    single { ProfileApi(get()) }
-    single { DiscussionApi(get()) }
-    single { DiscoveryApi(get()) }
+    // Android-only API
     single { NotificationsApi(get()) }
 }
