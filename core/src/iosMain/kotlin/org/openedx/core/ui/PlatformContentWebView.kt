@@ -2,8 +2,13 @@ package org.openedx.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.openedx.shared.ui.PlatformWebView
+import androidx.compose.ui.interop.UIKitView
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSURL
+import platform.Foundation.NSURLRequest
+import platform.WebKit.WKWebView
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun PlatformContentWebView(
     modifier: Modifier,
@@ -14,10 +19,14 @@ actual fun PlatformContentWebView(
 ) {
     val url = contentUrl ?: apiHostUrl ?: ""
     if (url.isNotEmpty()) {
-        PlatformWebView(
-            url = url,
+        UIKitView(
             modifier = modifier,
-            onPageFinished = onWebPageLoaded,
+            factory = {
+                WKWebView().apply {
+                    val request = NSURLRequest(uRL = NSURL(string = url))
+                    loadRequest(request)
+                }
+            },
         )
     }
 }

@@ -2,8 +2,13 @@ package org.openedx.discovery.presentation.detail
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.openedx.shared.ui.PlatformWebView
+import androidx.compose.ui.interop.UIKitView
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSURL
+import platform.Foundation.NSURLRequest
+import platform.WebKit.WKWebView
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun CourseDescription(
     modifier: Modifier,
@@ -11,9 +16,13 @@ actual fun CourseDescription(
     body: String,
     onWebPageLoaded: () -> Unit,
 ) {
-    PlatformWebView(
-        url = apiHostUrl,
+    UIKitView(
         modifier = modifier,
-        onPageFinished = onWebPageLoaded,
+        factory = {
+            WKWebView().apply {
+                val request = NSURLRequest(uRL = NSURL(string = apiHostUrl))
+                loadRequest(request)
+            }
+        },
     )
 }

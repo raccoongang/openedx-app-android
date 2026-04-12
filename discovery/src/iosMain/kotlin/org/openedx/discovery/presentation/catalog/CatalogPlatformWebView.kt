@@ -2,9 +2,14 @@ package org.openedx.discovery.presentation.catalog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.interop.UIKitView
+import kotlinx.cinterop.ExperimentalForeignApi
 import org.openedx.core.system.AppCookieManager
-import org.openedx.shared.ui.PlatformWebView
+import platform.Foundation.NSURL
+import platform.Foundation.NSURLRequest
+import platform.WebKit.WKWebView
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun CatalogPlatformWebView(
     url: String,
@@ -18,9 +23,13 @@ actual fun CatalogPlatformWebView(
     onUriClick: (String, WebViewLink.Authority) -> Unit,
     onWebPageLoadError: () -> Unit,
 ) {
-    PlatformWebView(
-        url = url,
+    UIKitView(
         modifier = modifier,
-        onPageFinished = onWebPageLoaded,
+        factory = {
+            WKWebView().apply {
+                val request = NSURLRequest(uRL = NSURL(string = url))
+                loadRequest(request)
+            }
+        },
     )
 }
