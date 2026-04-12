@@ -63,12 +63,12 @@ kotlin {
             api(libs.androidx.room.runtime)
             api(libs.androidx.sqlite.bundled)
 
+            // Navigation Compose (KMP — JetBrains multiplatform wrapper)
+            api(libs.jetbrains.navigation.compose)
+
         }
 
         androidMain.dependencies {
-            // Navigation (Android)
-            api(libs.androidx.navigation.compose)
-
             // Compose extras
             api("androidx.compose.material:material")
             api("androidx.compose.runtime:runtime-livedata")

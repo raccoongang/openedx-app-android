@@ -87,6 +87,7 @@ androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testin
 
 # Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
+jetbrains-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version = "2.9.0" }
 
 # Room
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
