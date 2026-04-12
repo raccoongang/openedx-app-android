@@ -4,8 +4,10 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.openedx.auth.presentation.sso.SocialAuthProvider
 import org.openedx.core.module.DownloadWorkerController
+import org.openedx.core.system.CalendarManager
 import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.course.worker.OfflineProgressSyncScheduler
+import org.openedx.shared.calendar.IosCalendarManager
 import org.openedx.shared.network.NetworkConnection
 import org.openedx.shared.sso.IosSocialAuthProvider
 import org.openedx.shared.storage.SecureStorage
@@ -20,4 +22,5 @@ actual fun platformModule(): Module = module {
     single<CalendarSyncScheduler> { IosCalendarSyncScheduler() }
     single<OfflineProgressSyncScheduler> { IosOfflineProgressSyncScheduler() }
     factory<SocialAuthProvider> { IosSocialAuthProvider() }
+    single<CalendarManager> { IosCalendarManager() }
 }
