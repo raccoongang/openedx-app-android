@@ -108,6 +108,7 @@ android {
     sourceSets {
         getByName("main") {
             java.srcDirs(emptyList<String>())
+            assets.srcDirs("assets")
         }
         getByName("prod") {
             java.srcDirs("src/$themeDirectory")

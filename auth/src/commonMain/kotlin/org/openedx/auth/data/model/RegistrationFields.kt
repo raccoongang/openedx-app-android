@@ -14,23 +14,23 @@ data class RegistrationFields(
     @Serializable
     data class Field(
         @SerialName("name")
-        val name: String?,
+        val name: String? = null,
         @SerialName("label")
-        val label: String?,
+        val label: String? = null,
         @SerialName("type")
-        val type: String?,
+        val type: String? = null,
         @SerialName("placeholder")
-        val placeholder: String?,
+        val placeholder: String? = null,
         @SerialName("instructions")
-        val instructions: String?,
+        val instructions: String? = null,
         @SerialName("exposed")
-        val exposed: Boolean?,
+        val exposed: Boolean? = null,
         @SerialName("required")
-        val required: Boolean?,
+        val required: Boolean? = null,
         @SerialName("restrictions")
-        val restrictions: Restrictions?,
+        val restrictions: Restrictions? = null,
         @SerialName("options")
-        val options: List<Option>?
+        val options: List<Option>? = null
     ) {
         fun mapToDomain(): RegistrationField {
             return RegistrationField(
@@ -50,9 +50,9 @@ data class RegistrationFields(
     @Serializable
     data class Restrictions(
         @SerialName("max_length")
-        val maxLength: Int?,
+        val maxLength: Int? = null,
         @SerialName("min_length")
-        val minLength: Int?
+        val minLength: Int? = null
     ) {
         fun mapToDomain(): RegistrationField.Restrictions {
             return RegistrationField.Restrictions(
@@ -65,11 +65,11 @@ data class RegistrationFields(
     @Serializable
     data class Option(
         @SerialName("value")
-        val value: String?,
+        val value: String? = null,
         @SerialName("name")
-        val name: String?,
+        val name: String? = null,
         @SerialName("default")
-        val default: String?
+        val default: String? = null
     ) {
         fun mapToDomain(): RegistrationField.Option {
             return RegistrationField.Option(

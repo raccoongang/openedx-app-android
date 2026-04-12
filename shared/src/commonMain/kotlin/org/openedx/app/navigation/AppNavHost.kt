@@ -119,9 +119,22 @@ fun AppNavHost(
                 val viewModel: SignUpViewModel = koinViewModel {
                     parametersOf(route.courseId ?: "", route.infoType ?: "")
                 }
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    viewModel.getRegistrationFields()
+                }
                 val windowSize = rememberWindowSize()
                 val uiState by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+
+                // Navigate to main screen on successful registration + login
+                androidx.compose.runtime.LaunchedEffect(uiState?.successLogin) {
+                    if (uiState?.successLogin == true) {
+                        navController.navigate(AppNavRoutes.Main()) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
+
                 SignUpView(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.popBackStack() },

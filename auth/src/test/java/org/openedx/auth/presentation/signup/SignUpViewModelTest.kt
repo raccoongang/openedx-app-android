@@ -313,6 +313,7 @@ class SignUpViewModelTest {
 
     @Test
     fun `getRegistrationFields no internet error`() = runTest {
+        coEvery { interactor.getRegistrationFields() } throws UnknownHostException()
         val viewModel = SignUpViewModel(
             interactor = interactor,
             resourceManager = resourceManager,
@@ -326,9 +327,6 @@ class SignUpViewModelTest {
             infoType = "",
         )
         val deferred = async { viewModel.uiMessage.first() }
-
-        coEvery { interactor.getRegistrationFields() } throws UnknownHostException()
-        viewModel.getRegistrationFields()
         advanceUntilIdle()
         coVerify(exactly = 1) { interactor.getRegistrationFields() }
         verify(exactly = 1) { appNotifier.notifier }
@@ -339,6 +337,7 @@ class SignUpViewModelTest {
 
     @Test
     fun `getRegistrationFields unknown error`() = runTest {
+        coEvery { interactor.getRegistrationFields() } throws Exception()
         val viewModel = SignUpViewModel(
             interactor = interactor,
             resourceManager = resourceManager,
@@ -352,9 +351,6 @@ class SignUpViewModelTest {
             infoType = "",
         )
         val deferred = async { viewModel.uiMessage.first() }
-
-        coEvery { interactor.getRegistrationFields() } throws Exception()
-        viewModel.getRegistrationFields()
         advanceUntilIdle()
         coVerify(exactly = 1) { interactor.getRegistrationFields() }
         verify(exactly = 1) { appNotifier.notifier }
@@ -365,6 +361,7 @@ class SignUpViewModelTest {
 
     @Test
     fun `getRegistrationFields success`() = runTest {
+        coEvery { interactor.getRegistrationFields() } returns listOfFields
         val viewModel = SignUpViewModel(
             interactor = interactor,
             resourceManager = resourceManager,
@@ -377,13 +374,9 @@ class SignUpViewModelTest {
             courseId = "",
             infoType = "",
         )
-        coEvery { interactor.getRegistrationFields() } returns listOfFields
-        viewModel.getRegistrationFields()
         advanceUntilIdle()
         coVerify(exactly = 1) { interactor.getRegistrationFields() }
         verify(exactly = 1) { appNotifier.notifier }
-
-        // val fields = viewModel.uiState.value as? SignUpUIState.Fields
 
         assertFalse(viewModel.uiState.value.isLoading)
     }

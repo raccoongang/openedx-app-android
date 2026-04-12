@@ -7,17 +7,17 @@ import org.openedx.auth.domain.model.AuthResponse
 @Serializable
 data class AuthResponse(
     @SerialName("access_token")
-    var accessToken: String?,
+    var accessToken: String? = null,
     @SerialName("token_type")
-    var tokenType: String?,
+    var tokenType: String? = null,
     @SerialName("expires_in")
-    var expiresIn: Long?,
+    var expiresIn: Long? = null,
     @SerialName("scope")
-    var scope: String?,
+    var scope: String? = null,
     @SerialName("error")
-    var error: String?,
+    var error: String? = null,
     @SerialName("refresh_token")
-    var refreshToken: String?,
+    var refreshToken: String? = null,
 ) {
     fun mapToDomain(): AuthResponse {
         return AuthResponse(
