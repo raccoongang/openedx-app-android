@@ -199,7 +199,7 @@ val appModule = module {
     factory<AppReviewManager> { (activity: AppCompatActivity) -> AppReviewManagerImpl(activity, get(), get()) }
 
     single<TranscriptProvider> { TranscriptManager(get(), get()) }
-    single { WhatsNewManagerImpl(get(), get(), get(), get()) }
+    single { WhatsNewManagerImpl(get(), get(), get()) }
     single<WhatsNewManager> { get<WhatsNewManagerImpl>() }
     single<WhatsNewGlobalManager> { get<WhatsNewManagerImpl>() }
 
@@ -229,7 +229,7 @@ val appModule = module {
     single<DownloadHelper> { DownloadHelperImpl(get(), get()) }
 
     factory<OfflineProgressSyncScheduler> { OfflineProgressSyncSchedulerImpl(get()) }
-    factory<JsInjectionProvider> { JsInjectionProviderImpl(get()) }
+    factory<JsInjectionProvider> { JsInjectionProviderImpl() }
     single<PlatformActions> { PlatformActionsImpl(get()) }
 
     single<CalendarSyncScheduler> { CalendarSyncSchedulerImpl(get()) }
