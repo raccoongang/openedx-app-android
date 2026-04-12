@@ -10,7 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import org.koin.androidx.compose.koinViewModel
+import io.ktor.http.encodeURLParameter
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.openedx.app.MainScreen
 import org.openedx.auth.presentation.logistration.LogistrationViewModel
@@ -463,7 +464,7 @@ fun AppNavHost(
                     is org.openedx.course.presentation.handouts.HandoutsUIState.HTMLContent -> {
                         org.openedx.shared.ui.PlatformWebView(
                             url = "data:text/html;charset=utf-8," +
-                                java.net.URLEncoder.encode(state.htmlContent, "UTF-8"),
+                                state.htmlContent.encodeURLParameter(),
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
