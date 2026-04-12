@@ -1,7 +1,5 @@
 package org.openedx.discovery.presentation.info
 
-import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import org.openedx.core.presentation.global.webview.WebViewUIAction
 import org.openedx.core.presentation.global.webview.WebViewUIState
@@ -40,13 +35,10 @@ import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.Toolbar
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.statusBarsInset
-import org.openedx.core.ui.theme.OpenEdXTheme
-import org.openedx.core.ui.theme.appColors
 import org.openedx.discovery.*
-import org.openedx.discovery.presentation.catalog.CatalogWebViewScreen
+import org.openedx.discovery.presentation.catalog.CatalogPlatformWebView
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.discovery.presentation.catalog.WebViewLink.Authority as linkAuthority
 
@@ -66,14 +58,13 @@ fun CourseInfoScreen(
     onBackClick: () -> Unit,
     onUriClick: (String, linkAuthority) -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.appColors.background,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
@@ -97,7 +88,7 @@ fun CourseInfoScreen(
         val modifierScreenWidth by remember(key1 = windowSize) {
             mutableStateOf(
                 windowSize.windowSizeValue(
-                    expanded = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    expanded = if (!windowSize.isLandscape) {
                         Modifier.widthIn(Dp.Unspecified, 560.dp)
                     } else {
                         Modifier.widthIn(Dp.Unspecified, 650.dp)
@@ -131,10 +122,11 @@ fun CourseInfoScreen(
                 ) {
                     if ((webViewUIState is WebViewUIState.Error).not()) {
                         if (hasInternetConnection) {
-                            CourseInfoWebView(
-                                contentUrl = (uiState as CourseInfoUIState.CourseInfo).initialUrl,
+                            CatalogPlatformWebView(
+                                url = (uiState as CourseInfoUIState.CourseInfo).initialUrl,
                                 uriScheme = uriScheme,
                                 userAgent = userAgent,
+                                isAllLinksExternal = true,
                                 onWebPageLoaded = { onWebViewUIAction(WebViewUIAction.WEB_PAGE_LOADED) },
                                 onUriClick = onUriClick,
                                 onWebPageLoadError = {
@@ -157,67 +149,11 @@ fun CourseInfoScreen(
                                 .zIndex(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-@SuppressLint("SetJavaScriptEnabled")
-fun CourseInfoWebView(
-    contentUrl: String,
-    uriScheme: String,
-    userAgent: String,
-    onWebPageLoaded: () -> Unit,
-    onUriClick: (String, linkAuthority) -> Unit,
-    onWebPageLoadError: () -> Unit
-) {
-    val webView = CatalogWebViewScreen(
-        url = contentUrl,
-        uriScheme = uriScheme,
-        userAgent = userAgent,
-        isAllLinksExternal = true,
-        onWebPageLoaded = onWebPageLoaded,
-        onUriClick = onUriClick,
-        onWebPageLoadError = onWebPageLoadError
-    )
-
-    AndroidView(
-        modifier = Modifier
-            .background(MaterialTheme.appColors.background),
-        factory = {
-            webView
-        },
-    )
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun CourseInfoScreenPreview() {
-    OpenEdXTheme {
-        CourseInfoScreen(
-            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
-            uiState = CourseInfoUIState.CourseInfo(
-                initialUrl = "https://www.example.com/",
-                isPreLogin = false,
-                enrolledCourseId = ""
-            ),
-            uiMessage = null,
-            uriScheme = "",
-            isRegistrationEnabled = true,
-            userAgent = "",
-            hasInternetConnection = false,
-            onWebViewUIAction = {},
-            onRegisterClick = {},
-            onSignInClick = {},
-            onBackClick = {},
-            onUriClick = { _, _ -> },
-            webViewUIState = WebViewUIState.Loading,
-        )
     }
 }

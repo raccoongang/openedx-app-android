@@ -1,17 +1,6 @@
 package org.openedx.discovery.presentation.detail
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.content.res.Configuration.ORIENTATION_PORTRAIT
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.net.Uri
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,24 +40,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import org.openedx.core.ui.AuthButtonsPanel
 import org.openedx.core.ui.HandleUIMessage
@@ -78,27 +59,19 @@ import org.openedx.core.ui.Toolbar
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.isPreview
 import org.openedx.core.ui.statusBarsInset
-import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.core.utils.EmailUtil
-import org.openedx.discovery.DiscoveryMocks
 import org.openedx.discovery.*
 import org.openedx.discovery.domain.model.Course
 import org.openedx.discovery.presentation.ui.ImageHeader
 import org.openedx.discovery.presentation.ui.WarningLabel
-import org.openedx.foundation.extension.applyDarkModeIfEnabled
-import org.openedx.foundation.extension.isEmailValid
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
 import org.openedx.foundation.presentation.windowSizeValue
-import java.nio.charset.StandardCharsets
 import kotlinx.datetime.Clock
 import org.openedx.core.Res as coreRes
 import org.openedx.core.core_ic_offline
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CourseDetailsScreen(
     windowSize: WindowSize,
@@ -115,7 +88,6 @@ fun CourseDetailsScreen(
     onRegisterClick: () -> Unit,
     onSignInClick: () -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     val isInternetConnectionShown = rememberSaveable {
@@ -125,10 +97,7 @@ fun CourseDetailsScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .semantics {
-                testTagsAsResourceId = true
-            },
+            .navigationBarsPadding(),
         containerColor = MaterialTheme.appColors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -147,7 +116,7 @@ fun CourseDetailsScreen(
         val screenWidth by remember(key1 = windowSize) {
             mutableStateOf(
                 windowSize.windowSizeValue(
-                    expanded = if (configuration.orientation == ORIENTATION_PORTRAIT) {
+                    expanded = if (!windowSize.isLandscape) {
                         Modifier.widthIn(Dp.Unspecified, 560.dp)
                     } else {
                         Modifier.widthIn(Dp.Unspecified, 650.dp)
@@ -208,7 +177,7 @@ fun CourseDetailsScreen(
 
                         is CourseDetailsUIState.CourseData -> {
                             Column(Modifier.verticalScroll(rememberScrollState())) {
-                                if (configuration.orientation == ORIENTATION_LANDSCAPE && windowSize.isTablet) {
+                                if (windowSize.isLandscape && windowSize.isTablet) {
                                     CourseDetailNativeContentLandscape(
                                         windowSize = windowSize,
                                         apiHostUrl = apiHostUrl,
@@ -514,113 +483,4 @@ fun NoInternetLabel() {
         painter = painterResource(coreRes.drawable.core_ic_offline),
         text = stringResource(Res.string.discovery_no_internet_label)
     )
-}
-
-@Composable
-@SuppressLint("SetJavaScriptEnabled")
-fun CourseDescription(
-    modifier: Modifier,
-    apiHostUrl: String,
-    body: String,
-    onWebPageLoaded: () -> Unit
-) {
-    val context = LocalContext.current
-    val isDarkTheme = isSystemInDarkTheme()
-    AndroidView(modifier = Modifier.then(modifier), factory = {
-        WebView(context).apply {
-            webViewClient = object : WebViewClient() {
-                override fun onPageCommitVisible(view: WebView?, url: String?) {
-                    super.onPageCommitVisible(view, url)
-                    onWebPageLoaded()
-                }
-
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    val clickUrl = request?.url?.toString() ?: ""
-                    return if (clickUrl.isNotEmpty() && clickUrl.startsWith("http")) {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse(clickUrl))
-                        )
-                        true
-                    } else if (clickUrl.startsWith("mailto:")) {
-                        val email = clickUrl.replace("mailto:", "")
-                        if (email.isEmailValid()) {
-                            EmailUtil.sendEmailIntent(context, email, "", "")
-                            true
-                        } else {
-                            false
-                        }
-                    } else {
-                        false
-                    }
-                }
-            }
-            with(settings) {
-                javaScriptEnabled = true
-                loadWithOverviewMode = true
-                builtInZoomControls = false
-                setSupportZoom(true)
-                loadsImagesAutomatically = true
-                domStorageEnabled = true
-            }
-            isVerticalScrollBarEnabled = false
-            isHorizontalScrollBarEnabled = false
-            loadDataWithBaseURL(
-                apiHostUrl,
-                body,
-                "text/html",
-                StandardCharsets.UTF_8.name(),
-                null
-            )
-            applyDarkModeIfEnabled(isDarkTheme)
-        }
-    })
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun CourseDetailNativeContentPreview() {
-    OpenEdXTheme {
-        CourseDetailsScreen(
-            windowSize = WindowSize(WindowType.Compact, WindowType.Compact),
-            uiState = CourseDetailsUIState.CourseData(DiscoveryMocks.course),
-            uiMessage = null,
-            apiHostUrl = "http://localhost:8000",
-            hasInternetConnection = false,
-            isUserLoggedIn = true,
-            isRegistrationEnabled = true,
-            htmlBody = "<b>Preview text</b>",
-            onReloadClick = {},
-            onBackClick = {},
-            onButtonClick = {},
-            onRegisterClick = {},
-            onSignInClick = {},
-        )
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO, device = Devices.NEXUS_9)
-@Preview(uiMode = UI_MODE_NIGHT_YES, device = Devices.NEXUS_9)
-@Composable
-fun CourseDetailNativeContentTabletPreview() {
-    OpenEdXTheme {
-        CourseDetailsScreen(
-            windowSize = WindowSize(WindowType.Medium, WindowType.Medium),
-            uiState = CourseDetailsUIState.CourseData(DiscoveryMocks.course),
-            uiMessage = null,
-            apiHostUrl = "http://localhost:8000",
-            hasInternetConnection = false,
-            isUserLoggedIn = true,
-            isRegistrationEnabled = true,
-            htmlBody = "<b>Preview text</b>",
-            onReloadClick = {},
-            onBackClick = {},
-            onButtonClick = {},
-            onRegisterClick = {},
-            onSignInClick = {},
-        )
-    }
 }
