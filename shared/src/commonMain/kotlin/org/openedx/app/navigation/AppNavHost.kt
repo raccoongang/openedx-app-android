@@ -116,10 +116,12 @@ fun AppNavHost(
             composable<AppNavRoutes.RestorePassword> {
                 val viewModel: RestorePasswordViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.collectAsState(RestorePasswordUIState.Initial)
+                val uiState by viewModel.uiState.collectAsState(null)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 RestorePasswordScreen(
-                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                    windowSize = windowSize,
+                    uiState = uiState ?: RestorePasswordUIState.Initial,
+                    uiMessage = uiMessage,
                     onBackClick = { navController.navigateUp() },
                     onRestoreButtonClick = { viewModel.passwordReset(it) },
                 )

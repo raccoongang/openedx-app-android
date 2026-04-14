@@ -59,7 +59,7 @@ data class Account(
             name = name ?: "",
             country = country ?: "",
             isActive = isActive ?: true,
-            profileImage = profileImage!!.mapToDomain(),
+            profileImage = profileImage?.mapToDomain() ?: org.openedx.core.domain.model.ProfileImage("", "", "", "", false),
             yearOfBirth = yearOfBirth,
             levelOfEducation = levelOfEducation ?: "",
             goals = goals ?: "",
