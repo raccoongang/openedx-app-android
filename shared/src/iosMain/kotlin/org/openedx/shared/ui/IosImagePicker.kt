@@ -3,6 +3,9 @@ package org.openedx.shared.ui
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.refTo
 import platform.Foundation.NSData
+import platform.Foundation.NSTemporaryDirectory
+import platform.Foundation.NSUUID
+import platform.Foundation.writeToFile
 import platform.PhotosUI.PHPickerConfiguration
 import platform.PhotosUI.PHPickerFilter
 import platform.PhotosUI.PHPickerResult
@@ -13,20 +16,13 @@ import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 import platform.UniformTypeIdentifiers.UTTypeImage
 import platform.darwin.NSObject
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 import platform.posix.memcpy
 
-/**
- * Strong reference to the current picker delegate — prevents Kotlin/Native GC
- * from collecting it while PHPickerViewController is presented. Cleared in
- * didFinishPicking callback.
- */
 private var currentDelegate: NSObject? = null
 
-/**
- * Shows iOS PHPickerViewController to select an image from the photo library.
- * Returns the selected image as ByteArray (JPEG) via the callback.
- */
-actual fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit) {
+actual fun showImagePicker(onImageSelected: (ByteArray, String, String) -> Unit) {
     val config = PHPickerConfiguration().apply {
         filter = PHPickerFilter.imagesFilter
         selectionLimit = 1
@@ -37,28 +33,39 @@ actual fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit) {
     val delegate = object : NSObject(), PHPickerViewControllerDelegateProtocol {
         override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
             picker.dismissViewControllerAnimated(true, null)
-            currentDelegate = null // Release strong ref
 
             val result = didFinishPicking.firstOrNull() as? PHPickerResult
-            if (result == null) return
+            if (result == null) {
+                currentDelegate = null
+                return
+            }
 
             val provider = result.itemProvider
             provider.loadDataRepresentationForTypeIdentifier(
                 typeIdentifier = UTTypeImage.identifier
             ) { data, error ->
+                currentDelegate = null
                 if (error != null || data == null) return@loadDataRepresentationForTypeIdentifier
                 val image = UIImage.imageWithData(data) ?: return@loadDataRepresentationForTypeIdentifier
                 val jpegData = UIImageJPEGRepresentation(image, 0.85) ?: return@loadDataRepresentationForTypeIdentifier
                 val bytes = jpegData.toByteArray()
-                onImageSelected(bytes, "jpg")
+
+                // Save to temp file for preview display
+                val fileName = "${NSUUID().UUIDString}.jpg"
+                val tempPath = NSTemporaryDirectory() + fileName
+                jpegData.writeToFile(tempPath, true)
+                val previewUri = "file://$tempPath"
+
+                dispatch_async(dispatch_get_main_queue()) {
+                    onImageSelected(bytes, "jpg", previewUri)
+                }
             }
         }
     }
 
-    currentDelegate = delegate // Keep strong reference
+    currentDelegate = delegate
     picker.delegate = delegate
 
-    // Find the topmost presented VC to present from
     var topVC = UIApplication.sharedApplication.keyWindow?.rootViewController
     while (topVC?.presentedViewController != null) {
         topVC = topVC.presentedViewController

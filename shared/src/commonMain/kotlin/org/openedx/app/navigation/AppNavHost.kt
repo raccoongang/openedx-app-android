@@ -400,9 +400,9 @@ fun AppNavHost(
                         }
                     },
                     onSelectImageClick = {
-                        org.openedx.shared.ui.showImagePicker { bytes, ext ->
+                        org.openedx.shared.ui.showImagePicker { bytes, ext, previewUri ->
                             pendingImageBodyState.value = org.openedx.profile.data.repository.ImageBody(bytes, ext)
-                            vm.setImageUri("selected_image.$ext")
+                            vm.setImageUri(previewUri)
                         }
                     },
                     onDeleteImageClick = { vm.deleteImage() },

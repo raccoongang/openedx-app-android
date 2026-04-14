@@ -5,6 +5,6 @@ package org.openedx.shared.ui
  * not through this commonMain interface. This actual exists only to satisfy the
  * expect declaration for compilation.
  */
-actual fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit) {
+actual fun showImagePicker(onImageSelected: (ByteArray, String, String) -> Unit) {
     // Android uses ActivityResult launcher from Fragment/Activity — not called from here
 }

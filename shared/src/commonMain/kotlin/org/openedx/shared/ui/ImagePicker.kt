@@ -5,4 +5,8 @@ package org.openedx.shared.ui
  * Android: launches ActivityResult for gallery
  * iOS: shows PHPickerViewController
  */
-expect fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit)
+/**
+ * @param onImageSelected callback: (bytes, extension, previewUri)
+ *   previewUri is a file:// URL for local display (iOS temp file, Android content URI)
+ */
+expect fun showImagePicker(onImageSelected: (ByteArray, String, String) -> Unit)
