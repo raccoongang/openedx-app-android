@@ -109,6 +109,7 @@ private fun LearnTab(
     onNavigateToDiscovery: () -> Unit,
 ) {
     DashboardGalleryView(
+        onSettingsClick = { navController.navigate(AppNavRoutes.Settings) },
         onViewAll = { navController.navigate(AppNavRoutes.AllEnrolledCourses) },
         onOpenCourse = { enrolled ->
             navController.navigate(
@@ -149,6 +150,9 @@ private fun DiscoverTab(navController: NavHostController) {
         onSearchClick = {
             navController.navigate(AppNavRoutes.CourseSearch())
         },
+        onSettingsClick = {
+            navController.navigate(AppNavRoutes.Settings)
+        },
     )
 }
 
@@ -165,7 +169,7 @@ private fun DownloadsTab(navController: NavHostController) {
         onAction = { action ->
             when (action) {
                 DownloadsViewActions.OpenSettings ->
-                    navController.navigate(AppNavRoutes.VideoSettings)
+                    navController.navigate(AppNavRoutes.Settings)
                 DownloadsViewActions.SwipeRefresh -> {}
                 is DownloadsViewActions.OpenCourse ->
                     navController.navigate(
@@ -192,7 +196,7 @@ private fun DatesTab(navController: NavHostController) {
         onAction = { action ->
             when (action) {
                 DatesViewActions.OpenSettings ->
-                    navController.navigate(AppNavRoutes.CalendarSettings)
+                    navController.navigate(AppNavRoutes.Settings)
                 DatesViewActions.SwipeRefresh -> viewModel.refreshData()
                 DatesViewActions.ShiftDueDate -> {}
                 DatesViewActions.LoadMore -> {}

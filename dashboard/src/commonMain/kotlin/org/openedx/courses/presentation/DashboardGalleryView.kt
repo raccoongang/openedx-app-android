@@ -74,6 +74,7 @@ import org.openedx.core.domain.model.CourseEnrollments
 import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.OfflineModeDialog
+import org.openedx.core.ui.Toolbar
 import org.openedx.core.ui.OpenEdXButton
 import org.openedx.core.ui.TextIcon
 import org.openedx.core.ui.displayCutoutForLandscape
@@ -97,6 +98,7 @@ import org.openedx.core.core_no_image_course
 
 @Composable
 fun DashboardGalleryView(
+    onSettingsClick: () -> Unit = {},
     onViewAll: () -> Unit = {},
     onOpenCourse: (EnrolledCourse) -> Unit = {},
     onNavigateToDiscovery: () -> Unit = {},
@@ -122,6 +124,7 @@ fun DashboardGalleryView(
         updating = updating,
         apiHostUrl = viewModel.apiHostUrl,
         hasInternetConnection = viewModel.hasInternetConnection,
+        onSettingsClick = onSettingsClick,
         onAction = { action ->
             when (action) {
                 DashboardGalleryScreenAction.SwipeRefresh -> viewModel.updateCourses()
@@ -146,6 +149,7 @@ private fun DashboardGalleryView(
     uiState: DashboardGalleryUIState,
     updating: Boolean,
     apiHostUrl: String,
+    onSettingsClick: () -> Unit = {},
     onAction: (DashboardGalleryScreenAction) -> Unit,
     hasInternetConnection: Boolean
 ) {
@@ -176,7 +180,14 @@ private fun DashboardGalleryView(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.appColors.background
+        containerColor = MaterialTheme.appColors.background,
+        topBar = {
+            Toolbar(
+                label = org.jetbrains.compose.resources.stringResource(org.openedx.dashboard.Res.string.dashboard_learn),
+                canShowSettingsIcon = true,
+                onSettingsClick = onSettingsClick,
+            )
+        }
     ) { paddingValues ->
 
         HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
