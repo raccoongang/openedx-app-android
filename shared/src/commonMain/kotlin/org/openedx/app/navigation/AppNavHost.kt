@@ -357,8 +357,10 @@ fun AppNavHost(
             }
             composable<AppNavRoutes.EditProfile> { entry ->
                 val route = entry.toRoute<AppNavRoutes.EditProfile>()
+                val profileInteractor: org.openedx.profile.domain.interactor.ProfileInteractor = org.koin.compose.koinInject()
+                val cachedAccount = profileInteractor.getCachedAccount() ?: return@composable
                 val vm: org.openedx.profile.presentation.edit.EditProfileViewModel = koinViewModel {
-                    parametersOf(null) // Account passed as null - VM fetches from cache
+                    parametersOf(cachedAccount)
                 }
                 val windowSize = rememberWindowSize()
                 val uiState by vm.uiState.collectAsState()
@@ -367,7 +369,11 @@ fun AppNavHost(
                 val isDeleted by vm.deleteImage.collectAsState(false)
                 val leaveDialog by vm.showLeaveDialog.collectAsState(false)
                 org.openedx.profile.presentation.edit.EditProfileScreen(
-                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                    windowSize = windowSize,
+                    uiState = uiState ?: org.openedx.profile.presentation.edit.EditProfileUIState(
+                        account = cachedAccount, isLimited = cachedAccount.isLimited()
+                    ),
+                    uiMessage = uiMessage,
                     selectedImageUri = selectedImage, isImageDeleted = isDeleted,
                     leaveDialog = leaveDialog,
                     onKeepEdit = { vm.setShowLeaveDialog(false) },
