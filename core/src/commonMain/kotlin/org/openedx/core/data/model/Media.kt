@@ -7,13 +7,13 @@ import org.openedx.core.domain.model.Media
 @Serializable
 data class Media(
     @SerialName("banner_image")
-    val bannerImage: BannerImage?,
+    val bannerImage: BannerImage? = null,
     @SerialName("course_image")
-    val courseImage: CourseImage?,
+    val courseImage: CourseImage? = null,
     @SerialName("course_video")
-    val courseVideo: CourseVideo?,
+    val courseVideo: CourseVideo? = null,
     @SerialName("image")
-    val image: Image?,
+    val image: Image? = null,
 ) {
 
     fun mapToDomain(): Media {
@@ -29,11 +29,11 @@ data class Media(
 @Serializable
 data class Image(
     @SerialName("large")
-    val large: String?,
+    val large: String? = null,
     @SerialName("raw")
-    val raw: String?,
+    val raw: String? = null,
     @SerialName("small")
-    val small: String?,
+    val small: String? = null,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.Image {
         return org.openedx.core.domain.model.Image(
@@ -47,7 +47,7 @@ data class Image(
 @Serializable
 data class CourseVideo(
     @SerialName("uri")
-    val uri: String?,
+    val uri: String? = null,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.CourseVideo {
         return org.openedx.core.domain.model.CourseVideo(
@@ -59,9 +59,9 @@ data class CourseVideo(
 @Serializable
 data class CourseImage(
     @SerialName("uri")
-    val uri: String?,
+    val uri: String? = null,
     @SerialName("name")
-    val name: String?
+    val name: String? = null,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.CourseImage {
         return org.openedx.core.domain.model.CourseImage(
@@ -74,9 +74,9 @@ data class CourseImage(
 @Serializable
 data class BannerImage(
     @SerialName("uri")
-    val uri: String?,
+    val uri: String? = null,
     @SerialName("uri_absolute")
-    val uriAbsolute: String?,
+    val uriAbsolute: String? = null,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.BannerImage {
         return org.openedx.core.domain.model.BannerImage(

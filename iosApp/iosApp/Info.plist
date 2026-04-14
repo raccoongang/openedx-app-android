@@ -4,6 +4,10 @@
 <dict>
     <key>CFBundleName</key>
     <string>OpenEdX</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
     <key>CFBundleIdentifier</key>
     <string>org.openedx.app.ios</string>
     <key>CFBundleVersion</key>
@@ -12,5 +16,7 @@
     <string>1.0.0</string>
     <key>UILaunchScreen</key>
     <dict/>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
 </dict>
 </plist>

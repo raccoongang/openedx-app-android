@@ -96,7 +96,13 @@ import kotlinx.datetime.Clock
 import org.openedx.core.core_no_image_course
 
 @Composable
-fun DashboardGalleryView() {
+fun DashboardGalleryView(
+    onViewAll: () -> Unit = {},
+    onOpenCourse: (EnrolledCourse) -> Unit = {},
+    onNavigateToDiscovery: () -> Unit = {},
+    onNavigateToDates: (EnrolledCourse) -> Unit = {},
+    onOpenBlock: (EnrolledCourse, String) -> Unit = { _, _ -> },
+) {
     val windowSize = rememberWindowSize()
     val viewModel: DashboardGalleryViewModel = koinViewModel { parametersOf(windowSize) }
     val updating by viewModel.updating.collectAsState(false)
@@ -118,33 +124,16 @@ fun DashboardGalleryView() {
         hasInternetConnection = viewModel.hasInternetConnection,
         onAction = { action ->
             when (action) {
-                DashboardGalleryScreenAction.SwipeRefresh -> {
-                    viewModel.updateCourses()
-                }
-
-                DashboardGalleryScreenAction.ViewAll -> {
-                    // Navigation handled by parent composable
-                }
-
-                DashboardGalleryScreenAction.Reload -> {
-                    viewModel.getCourses()
-                }
-
+                DashboardGalleryScreenAction.SwipeRefresh -> viewModel.updateCourses()
+                DashboardGalleryScreenAction.ViewAll -> onViewAll()
+                DashboardGalleryScreenAction.Reload -> viewModel.getCourses()
                 DashboardGalleryScreenAction.NavigateToDiscovery -> {
                     viewModel.navigateToDiscovery()
+                    onNavigateToDiscovery()
                 }
-
-                is DashboardGalleryScreenAction.OpenCourse -> {
-                    // Navigation handled by parent composable
-                }
-
-                is DashboardGalleryScreenAction.NavigateToDates -> {
-                    // Navigation handled by parent composable
-                }
-
-                is DashboardGalleryScreenAction.OpenBlock -> {
-                    // Navigation handled by parent composable
-                }
+                is DashboardGalleryScreenAction.OpenCourse -> onOpenCourse(action.enrolledCourse)
+                is DashboardGalleryScreenAction.NavigateToDates -> onNavigateToDates(action.enrolledCourse)
+                is DashboardGalleryScreenAction.OpenBlock -> onOpenBlock(action.enrolledCourse, action.blockId)
             }
         }
     )

@@ -91,7 +91,11 @@ import org.openedx.foundation.presentation.windowSizeValue
 import kotlinx.datetime.Clock
 
 @Composable
-fun AllEnrolledCoursesView() {
+fun AllEnrolledCoursesView(
+    onBack: () -> Unit = {},
+    onOpenCourse: (EnrolledCourse) -> Unit = {},
+    onSearch: () -> Unit = {},
+) {
     val viewModel: AllEnrolledCoursesViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState(null)
@@ -103,32 +107,13 @@ fun AllEnrolledCoursesView() {
         hasInternetConnection = viewModel.hasInternetConnection,
         onAction = { action ->
             when (action) {
-                AllEnrolledCoursesAction.Reload -> {
-                    viewModel.getCourses()
-                }
-
-                AllEnrolledCoursesAction.SwipeRefresh -> {
-                    viewModel.updateCourses()
-                }
-
-                AllEnrolledCoursesAction.EndOfPage -> {
-                    viewModel.fetchMore()
-                }
-
-                AllEnrolledCoursesAction.Back -> {
-                }
-
-                AllEnrolledCoursesAction.Search -> {
-                    // Navigation handled by parent composable
-                }
-
-                is AllEnrolledCoursesAction.OpenCourse -> {
-                    // Navigation handled by parent composable
-                }
-
-                is AllEnrolledCoursesAction.FilterChange -> {
-                    viewModel.getCourses(action.courseStatusFilter)
-                }
+                AllEnrolledCoursesAction.Reload -> viewModel.getCourses()
+                AllEnrolledCoursesAction.SwipeRefresh -> viewModel.updateCourses()
+                AllEnrolledCoursesAction.EndOfPage -> viewModel.fetchMore()
+                AllEnrolledCoursesAction.Back -> onBack()
+                AllEnrolledCoursesAction.Search -> onSearch()
+                is AllEnrolledCoursesAction.OpenCourse -> onOpenCourse(action.enrolledCourse)
+                is AllEnrolledCoursesAction.FilterChange -> viewModel.getCourses(action.courseStatusFilter)
             }
         }
     )

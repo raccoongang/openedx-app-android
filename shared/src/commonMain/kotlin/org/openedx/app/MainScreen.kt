@@ -1,5 +1,6 @@
 package org.openedx.app
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,21 +16,30 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import org.koin.compose.viewmodel.koinViewModel
+import org.openedx.app.navigation.AppNavRoutes
 import org.openedx.core.ui.theme.appColors
-
-/**
- * Main screen with bottom navigation.
- * This is the Compose replacement for MainFragment's ViewPager2 + BottomNavigationView.
- *
- * Currently a placeholder that will gradually replace MainFragment
- * as child Fragments are converted to composables.
- */
+import org.openedx.courses.presentation.DashboardGalleryScreenAction
+import org.openedx.courses.presentation.DashboardGalleryView
+import org.openedx.dates.presentation.dates.DatesScreen
+import org.openedx.dates.presentation.dates.DatesViewActions
+import org.openedx.dates.presentation.dates.DatesViewModel
+import org.openedx.discovery.presentation.NativeDiscoveryView
+import org.openedx.downloads.presentation.download.DownloadsScreen
+import org.openedx.downloads.presentation.download.DownloadsViewActions
+import org.openedx.downloads.presentation.download.DownloadsViewModel
+import org.openedx.foundation.presentation.rememberWindowSize
+import org.openedx.profile.presentation.profile.ProfileViewModel
+import org.openedx.profile.presentation.profile.compose.ProfileView
+import org.openedx.profile.presentation.profile.compose.ProfileViewAction
 
 data class BottomNavItem(
     val title: String,
@@ -39,9 +49,9 @@ data class BottomNavItem(
 
 @Composable
 fun MainScreen(
-    isDownloadsEnabled: Boolean = false,
-    isDatesEnabled: Boolean = false,
-    onTabSelected: (String) -> Unit = {},
+    navController: NavHostController,
+    isDownloadsEnabled: Boolean = true,
+    isDatesEnabled: Boolean = true,
 ) {
     val tabs = buildList {
         add(BottomNavItem("Learn", Icons.Default.School, "learn"))
@@ -69,55 +79,147 @@ fun MainScreen(
                         selected = selectedIndex == index,
                         onClick = {
                             selectedIndex = index
-                            onTabSelected(item.route)
                         },
                     )
                 }
             }
         },
     ) { paddingValues ->
-        // Tab content will be rendered here
-        // Each tab hosts its own screen composable
-        androidx.compose.foundation.layout.Box(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
             when (tabs.getOrNull(selectedIndex)?.route) {
-                "learn" -> {
-                    // TODO: Host LearnScreen composable
-                    PlaceholderScreen("Learn")
+                "learn" -> LearnTab(navController) {
+                    selectedIndex = tabs.indexOfFirst { it.route == "discover" }
                 }
-                "discover" -> {
-                    // TODO: Host DiscoveryScreen composable
-                    PlaceholderScreen("Discover")
-                }
-                "downloads" -> {
-                    // TODO: Host DownloadsScreen composable
-                    PlaceholderScreen("Downloads")
-                }
-                "dates" -> {
-                    // TODO: Host DatesScreen composable
-                    PlaceholderScreen("Dates")
-                }
-                "profile" -> {
-                    // TODO: Host ProfileView composable
-                    PlaceholderScreen("Profile")
-                }
+                "discover" -> DiscoverTab(navController)
+                "downloads" -> DownloadsTab(navController)
+                "dates" -> DatesTab(navController)
+                "profile" -> ProfileTab(navController)
             }
         }
     }
 }
 
 @Composable
-private fun PlaceholderScreen(name: String) {
-    androidx.compose.foundation.layout.Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
-    ) {
-        Text(
-            text = name,
-            style = MaterialTheme.typography.headlineMedium,
-        )
-    }
+private fun LearnTab(
+    navController: NavHostController,
+    onNavigateToDiscovery: () -> Unit,
+) {
+    DashboardGalleryView(
+        onViewAll = { navController.navigate(AppNavRoutes.AllEnrolledCourses) },
+        onOpenCourse = { enrolled ->
+            navController.navigate(
+                AppNavRoutes.CourseContainer(
+                    courseId = enrolled.course.id,
+                    courseTitle = enrolled.course.name,
+                )
+            )
+        },
+        onNavigateToDiscovery = onNavigateToDiscovery,
+        onNavigateToDates = { enrolled ->
+            navController.navigate(
+                AppNavRoutes.CourseContainer(
+                    courseId = enrolled.course.id,
+                    courseTitle = enrolled.course.name,
+                    openTab = "DATES",
+                )
+            )
+        },
+        onOpenBlock = { enrolled, blockId ->
+            navController.navigate(
+                AppNavRoutes.CourseContainer(
+                    courseId = enrolled.course.id,
+                    courseTitle = enrolled.course.name,
+                    resumeBlockId = blockId,
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun DiscoverTab(navController: NavHostController) {
+    NativeDiscoveryView(
+        onCourseClick = { courseId, _ ->
+            navController.navigate(AppNavRoutes.CourseDetails(courseId))
+        },
+        onSearchClick = {
+            navController.navigate(AppNavRoutes.CourseSearch())
+        },
+    )
+}
+
+@Composable
+private fun DownloadsTab(navController: NavHostController) {
+    val viewModel: DownloadsViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+    DownloadsScreen(
+        uiState = uiState,
+        uiMessage = uiMessage,
+        apiHostUrl = "",
+        hasInternetConnection = viewModel.hasInternetConnection,
+        onAction = { action ->
+            when (action) {
+                DownloadsViewActions.OpenSettings ->
+                    navController.navigate(AppNavRoutes.VideoSettings)
+                DownloadsViewActions.SwipeRefresh -> {}
+                is DownloadsViewActions.OpenCourse ->
+                    navController.navigate(
+                        AppNavRoutes.CourseContainer(courseId = action.courseId, courseTitle = "")
+                    )
+                is DownloadsViewActions.DownloadCourse -> {}
+                is DownloadsViewActions.CancelDownloading -> {}
+                is DownloadsViewActions.RemoveDownloads -> {}
+            }
+        },
+    )
+}
+
+@Composable
+private fun DatesTab(navController: NavHostController) {
+    val viewModel: DatesViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+    DatesScreen(
+        uiState = uiState,
+        uiMessage = uiMessage,
+        hasInternetConnection = viewModel.hasInternetConnection,
+        useRelativeDates = false,
+        onAction = { action ->
+            when (action) {
+                DatesViewActions.OpenSettings ->
+                    navController.navigate(AppNavRoutes.CalendarSettings)
+                DatesViewActions.SwipeRefresh -> viewModel.refreshData()
+                DatesViewActions.ShiftDueDate -> {}
+                DatesViewActions.LoadMore -> {}
+                is DatesViewActions.OpenEvent -> {}
+            }
+        },
+    )
+}
+
+@Composable
+private fun ProfileTab(navController: NavHostController) {
+    val viewModel: ProfileViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+    val refreshing by viewModel.isUpdating.collectAsState()
+    ProfileView(
+        windowSize = rememberWindowSize(),
+        uiState = uiState,
+        uiMessage = uiMessage,
+        refreshing = refreshing,
+        onAction = { action ->
+            when (action) {
+                ProfileViewAction.EditAccountClick ->
+                    navController.navigate(AppNavRoutes.EditProfile(accountJson = ""))
+                ProfileViewAction.SwipeRefresh -> viewModel.updateAccount()
+            }
+        },
+        onSettingsClick = { navController.navigate(AppNavRoutes.Settings) },
+    )
 }

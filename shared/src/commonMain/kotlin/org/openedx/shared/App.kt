@@ -1,45 +1,47 @@
 package org.openedx.shared
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import org.koin.compose.koinInject
+import org.openedx.app.navigation.AppNavHost
+import org.openedx.app.navigation.AppNavRoutes
+import org.openedx.core.config.Config
+import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.presentation.global.WhatsNewGlobalManager
 
 /**
  * Root Composable for the OpenEdX Compose Multiplatform app.
- * This will eventually host the full navigation graph.
  *
- * Currently serves as proof-of-concept that Compose UI
- * compiles and runs on both Android and iOS.
+ * Mirrors the startDestination logic Android has in `AppActivity.AppContent()`:
+ *   no user  + logistration enabled → Logistration
+ *   no user  + logistration off     → SignIn
+ *   has user + WhatsNew pending     → WhatsNew
+ *   has user + no WhatsNew          → Main
+ *
+ * Android wires AppNavHost directly in `AppActivity` (splash / insets / Branch /
+ * push handling), so this composable is iOS-only entry point today.
  */
 @Composable
 fun App() {
-    MaterialTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = "OpenEdX",
-                    style = MaterialTheme.typography.headlineLarge,
-                )
-                Text(
-                    text = OpenEdXShared.greeting(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
+    val navController = rememberNavController()
+    val config: Config = koinInject()
+    val prefs: CorePreferences = koinInject()
+    val whatsNew: WhatsNewGlobalManager = koinInject()
+
+    val startDestination: Any = when {
+        prefs.user == null -> {
+            if (config.isPreLoginExperienceEnabled()) {
+                AppNavRoutes.Logistration()
+            } else {
+                AppNavRoutes.SignIn()
             }
         }
+        whatsNew.shouldShowWhatsNew() -> AppNavRoutes.WhatsNew()
+        else -> AppNavRoutes.Main()
     }
+
+    AppNavHost(
+        navController = navController,
+        startDestination = startDestination,
+    )
 }

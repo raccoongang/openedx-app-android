@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -72,11 +73,11 @@ fun AppNavHost(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = modifier,
+            modifier = modifier.statusBarsPadding(),
         ) {
             // =================== MAIN ===================
             composable<AppNavRoutes.Main> {
-                MainScreen()
+                MainScreen(navController = navController)
             }
 
             // =================== AUTH ===================
@@ -88,6 +89,15 @@ fun AppNavHost(
                 val windowSize = rememberWindowSize()
                 val state by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+
+                androidx.compose.runtime.LaunchedEffect(state.loginSuccess) {
+                    if (state.loginSuccess) {
+                        navController.navigate(AppNavRoutes.Main()) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
+
                 LoginScreen(
                     windowSize = windowSize, state = state, uiMessage = uiMessage,
                     onEvent = { event ->
@@ -95,7 +105,7 @@ fun AppNavHost(
                             is AuthEvent.SignIn -> viewModel.login(event.login, event.password)
                             AuthEvent.ForgotPasswordClick -> navController.navigate(AppNavRoutes.RestorePassword)
                             AuthEvent.RegisterClick -> navController.navigate(AppNavRoutes.SignUp(route.courseId, route.infoType))
-                            AuthEvent.BackClick -> navController.popBackStack()
+                            AuthEvent.BackClick -> navController.navigateUp()
                             else -> {}
                         }
                     },
@@ -109,7 +119,7 @@ fun AppNavHost(
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 RestorePasswordScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onRestoreButtonClick = { viewModel.passwordReset(it) },
                 )
             }
@@ -137,7 +147,7 @@ fun AppNavHost(
 
                 SignUpView(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onFieldUpdated = { key, value -> viewModel.updateField(key, value) },
                     onRegisterClick = { viewModel.register() },
                     onHyperLinkClick = { links, link -> viewModel.openLink(links, link) },
@@ -201,8 +211,33 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.collectAsState()
                 org.openedx.profile.presentation.settings.SettingsScreen(
                     windowSize = windowSize, uiState = uiState,
-                    onBackClick = { navController.popBackStack() },
-                    onAction = {},
+                    onBackClick = { navController.navigateUp() },
+                    onAction = { action ->
+                        when (action) {
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.VideoSettingsClick ->
+                                navController.navigate(AppNavRoutes.VideoSettings)
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.ManageAccountClick ->
+                                navController.navigate(AppNavRoutes.ManageAccount)
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.CalendarSettingsClick ->
+                                navController.navigate(AppNavRoutes.CalendarSettings)
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.LogoutClick ->
+                                viewModel.logout()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.SupportClick ->
+                                viewModel.emailSupportClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.PrivacyPolicyClick ->
+                                viewModel.privacyPolicyClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.CookiePolicyClick ->
+                                viewModel.cookiePolicyClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.DataSellClick ->
+                                viewModel.dataSellClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.TermsClick ->
+                                viewModel.termsOfUseClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.FaqClick ->
+                                viewModel.faqClicked()
+                            org.openedx.profile.presentation.settings.SettingsScreenAction.AppVersionClick ->
+                                viewModel.appVersionClickedEvent()
+                        }
+                    },
                 )
             }
 
@@ -225,7 +260,7 @@ fun AppNavHost(
                 org.openedx.profile.presentation.delete.DeleteProfileScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onDeleteClick = { viewModel.deleteProfile(it) },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -239,7 +274,7 @@ fun AppNavHost(
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.anothersaccount.AnothersProfileScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -252,7 +287,7 @@ fun AppNavHost(
                     wifiDownloadChanged = { viewModel.setWifiDownloadOnly(it) },
                     videoStreamingQualityClick = { navController.navigate(AppNavRoutes.VideoQuality(org.openedx.core.presentation.settings.video.VideoQualityType.Streaming.name)) },
                     videoDownloadQualityClick = { navController.navigate(AppNavRoutes.VideoQuality(org.openedx.core.presentation.settings.video.VideoQualityType.Download.name)) },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 ) }
             }
 
@@ -261,7 +296,7 @@ fun AppNavHost(
                 org.openedx.core.ui.WebContentScreen(
                     windowSize = rememberWindowSize(), apiHostUrl = "",
                     title = route.title, contentUrl = route.url,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -275,7 +310,7 @@ fun AppNavHost(
                     onRelativeDateSwitchClick = { vm.setRelativeDateEnabled(it) },
                     onChangeSyncOptionClick = {},
                     onCourseToSyncClick = { navController.navigate(AppNavRoutes.CoursesToSync) },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
             composable<AppNavRoutes.CoursesToSync> {
@@ -285,7 +320,7 @@ fun AppNavHost(
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.calendar.CoursesToSyncView(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onHideInactiveCoursesSwitchClick = { viewModel.setHideInactiveCoursesEnabled(it) },
                     onCourseSyncCheckChange = { enabled, courseId -> viewModel.setCourseSyncEnabled(enabled, courseId) },
                 )
@@ -303,7 +338,7 @@ fun AppNavHost(
                     windowSize = windowSize, title = title,
                     selectedVideoQuality = quality,
                     onQualityChanged = { viewModel.setVideoQuality(it) },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
             composable<AppNavRoutes.EditProfile> { entry ->
@@ -324,7 +359,7 @@ fun AppNavHost(
                     onKeepEdit = { vm.setShowLeaveDialog(false) },
                     onDataChanged = { vm.profileDataChanged = it },
                     onLimitedProfileChange = {},
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onSaveClick = { vm.updateAccount(it) },
                     onSelectImageClick = {},
                     onDeleteImageClick = { vm.deleteImage() },
@@ -347,7 +382,7 @@ fun AppNavHost(
                     isUserLoggedIn = viewModel.isUserLoggedIn,
                     isRegistrationEnabled = viewModel.isRegistrationEnabled,
                     onReloadClick = { viewModel.getCourseDetail() },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onButtonClick = {},
                     onRegisterClick = { navController.navigate(AppNavRoutes.SignUp()) },
                     onSignInClick = { navController.navigate(AppNavRoutes.SignIn()) },
@@ -367,7 +402,7 @@ fun AppNavHost(
                     apiHostUrl = vm.apiHostUrl, canLoadMore = canLoad, refreshing = updating,
                     querySearch = route.querySearch, isUserLoggedIn = vm.isUserLoggedIn,
                     isRegistrationEnabled = vm.isRegistrationEnabled,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onSearchTextChanged = { vm.search(it) },
                     onSwipeRefresh = {}, paginationCallback = { vm.fetchMore() },
                     onItemClick = { navController.navigate(AppNavRoutes.CourseDetails(it)) },
@@ -392,11 +427,22 @@ fun AppNavHost(
                     onRegisterClick = { navController.navigate(AppNavRoutes.SignUp()) },
                     onSignInClick = { navController.navigate(AppNavRoutes.SignIn()) },
                     onUriClick = { _, _ -> },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
             composable<AppNavRoutes.AllEnrolledCourses> {
-                org.openedx.courses.presentation.AllEnrolledCoursesView()
+                org.openedx.courses.presentation.AllEnrolledCoursesView(
+                    onBack = { navController.navigateUp() },
+                    onOpenCourse = { enrolled ->
+                        navController.navigate(
+                            AppNavRoutes.CourseContainer(
+                                courseId = enrolled.course.id,
+                                courseTitle = enrolled.course.name,
+                            )
+                        )
+                    },
+                    onSearch = { navController.navigate(AppNavRoutes.CourseSearch()) },
+                )
             }
             composable<AppNavRoutes.Program> { entry ->
                 val route = entry.toRoute<AppNavRoutes.Program>()
@@ -416,7 +462,7 @@ fun AppNavHost(
                     onWebViewUIAction = {},
                     onSettingsClick = { navController.navigate(AppNavRoutes.Settings) },
                     onUriClick = { _, _ -> },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -444,7 +490,7 @@ fun AppNavHost(
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.course.presentation.section.CourseSectionScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onItemClick = {},
                 )
             }
@@ -508,7 +554,7 @@ fun AppNavHost(
                 val uiState by viewModel.uiState.collectAsState()
                 org.openedx.course.settings.download.DownloadQueueScreen(
                     windowSize = windowSize, uiState = uiState,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                     onDownloadClick = {},
                 )
             }
@@ -516,7 +562,7 @@ fun AppNavHost(
                 val route = entry.toRoute<AppNavRoutes.NoAccessCourseContainer>()
                 org.openedx.course.presentation.container.NoAccessCourseContainerScreen(
                     windowSize = rememberWindowSize(), title = route.title,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -537,7 +583,7 @@ fun AppNavHost(
                     onSwipeRefresh = {}, updatedOrder = { vm.getThreadByType(it) },
                     updatedFilter = {}, onItemClick = {},
                     onCreatePostClick = {}, paginationCallback = { vm.fetchMore() },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -563,7 +609,7 @@ fun AppNavHost(
                         onSwipeRefresh = { vm.updateThreadComments() },
                         paginationCallBack = { vm.fetchMore() },
                         onItemClick = { _, _, _ -> }, onCommentClick = {},
-                        onAddResponseClick = {}, onBackClick = { navController.popBackStack() },
+                        onAddResponseClick = {}, onBackClick = { navController.navigateUp() },
                         onUserPhotoClick = {},
                     )
                 } else PlaceholderDestination("Comments")
@@ -591,7 +637,7 @@ fun AppNavHost(
                         isClosed = route.isClosed,
                         paginationCallBack = { vm.fetchMore() },
                         addCommentClick = {},
-                        onItemClick = { _, _, _ -> }, onBackClick = { navController.popBackStack() },
+                        onItemClick = { _, _, _ -> }, onBackClick = { navController.navigateUp() },
                         onUserPhotoClick = {},
                     )
                 } else PlaceholderDestination("Responses")
@@ -609,7 +655,7 @@ fun AppNavHost(
                     topics = vm.getHandledTopics(),
                     uiMessage = uiMessage, isLoading = isLoading,
                     onPostDiscussionClick = { type, title, body, topicId, follow -> vm.createThread(title, body, topicId, type, follow) },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
 
@@ -626,7 +672,7 @@ fun AppNavHost(
                     refreshing = updating, canLoadMore = canLoad,
                     onItemClick = {}, onSearchTextChanged = { vm.searchThreads(it) },
                     onSwipeRefresh = {}, paginationCallback = { vm.fetchMore() },
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.navigateUp() },
                 )
             }
         }

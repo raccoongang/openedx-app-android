@@ -1,0 +1,348 @@
+package org.openedx.discovery.presentation
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.openedx.core.ui.AuthButtonsPanel
+import org.openedx.core.ui.BackBtn
+import org.openedx.core.ui.HandleUIMessage
+import org.openedx.core.ui.OfflineModeDialog
+import org.openedx.core.ui.StaticSearchBar
+import org.openedx.core.ui.Toolbar
+import org.openedx.core.ui.displayCutoutForLandscape
+import org.openedx.core.ui.shouldLoadMore
+import org.openedx.core.ui.statusBarsInset
+import org.openedx.core.ui.theme.appColors
+import org.openedx.core.ui.theme.appTypography
+import org.openedx.discovery.Res
+import org.openedx.discovery.discovery_Discovery
+import org.openedx.discovery.discovery_discovery_new
+import org.openedx.discovery.discovery_lets_find
+import org.openedx.discovery.domain.model.Course
+import org.openedx.discovery.presentation.ui.DiscoveryCourseItem
+import org.openedx.foundation.presentation.UIMessage
+import org.openedx.foundation.presentation.WindowSize
+import org.openedx.foundation.presentation.rememberWindowSize
+import org.openedx.foundation.presentation.windowSizeValue
+
+/**
+ * Native discovery screen — list of catalog courses from `/api/.../discovery`.
+ *
+ * Ported to commonMain from the deleted `NativeDiscoveryFragment.kt` (commit
+ * `5f1563b7` removed the Fragment wrapper but the Compose body was dropped with
+ * it). Restored here so the Discover tab in `MainScreen` shows a real screen
+ * on both Android and iOS.
+ */
+
+private const val LOAD_MORE_THRESHOLD = 4
+
+@Composable
+fun NativeDiscoveryView(
+    onCourseClick: (courseId: String, courseName: String) -> Unit = { _, _ -> },
+    onSearchClick: () -> Unit = {},
+    onSignInClick: () -> Unit = {},
+    onRegisterClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+) {
+    val viewModel: NativeDiscoveryViewModel = koinViewModel()
+    val windowSize = rememberWindowSize()
+    val uiState by viewModel.uiState.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+    val canLoadMore by viewModel.canLoadMore.collectAsState(false)
+    val refreshing by viewModel.isUpdating.collectAsState(false)
+
+    DiscoveryScreen(
+        windowSize = windowSize,
+        state = uiState,
+        uiMessage = uiMessage,
+        apiHostUrl = viewModel.apiHostUrl,
+        canLoadMore = canLoadMore,
+        refreshing = refreshing,
+        hasInternetConnection = viewModel.hasInternetConnection,
+        canShowBackButton = viewModel.canShowBackButton,
+        isUserLoggedIn = viewModel.isUserLoggedIn,
+        isRegistrationEnabled = viewModel.isRegistrationEnabled,
+        onSearchClick = {
+            viewModel.discoverySearchBarClickedEvent()
+            onSearchClick()
+        },
+        paginationCallback = { viewModel.fetchMore() },
+        onSwipeRefresh = { viewModel.updateData() },
+        onReloadClick = { viewModel.getCoursesList() },
+        onItemClick = { course ->
+            viewModel.discoveryCourseClicked(course.id, course.name)
+            viewModel.courseDetailClickedEvent(course.id, course.name)
+            onCourseClick(course.id, course.name)
+        },
+        onRegisterClick = onRegisterClick,
+        onSignInClick = onSignInClick,
+        onBackClick = {},
+        onSettingsClick = onSettingsClick,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DiscoveryScreen(
+    windowSize: WindowSize,
+    state: DiscoveryUIState,
+    uiMessage: UIMessage?,
+    apiHostUrl: String,
+    canLoadMore: Boolean,
+    refreshing: Boolean,
+    hasInternetConnection: Boolean,
+    canShowBackButton: Boolean,
+    isUserLoggedIn: Boolean,
+    isRegistrationEnabled: Boolean,
+    onSearchClick: () -> Unit,
+    onSwipeRefresh: () -> Unit,
+    onReloadClick: () -> Unit,
+    paginationCallback: () -> Unit,
+    onItemClick: (Course) -> Unit,
+    onRegisterClick: () -> Unit,
+    onSignInClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+) {
+    val scrollState = rememberLazyListState()
+    val firstVisibleIndex = remember {
+        mutableIntStateOf(scrollState.firstVisibleItemIndex)
+    }
+    val pullToRefreshState = rememberPullToRefreshState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    var isInternetConnectionShown by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.appColors.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) { data -> Snackbar(snackbarData = data) } },
+        bottomBar = {
+            if (!isUserLoggedIn) {
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 32.dp)
+                        .navigationBarsPadding()
+                ) {
+                    AuthButtonsPanel(
+                        onRegisterClick = onRegisterClick,
+                        onSignInClick = onSignInClick,
+                        showRegisterButton = isRegistrationEnabled,
+                    )
+                }
+            }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    ) { paddingValues ->
+        val searchTabWidth by remember(key1 = windowSize) {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier.widthIn(Dp.Unspecified, 420.dp),
+                    compact = Modifier.fillMaxWidth(),
+                )
+            )
+        }
+        val contentWidth by remember(key1 = windowSize) {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier.widthIn(Dp.Unspecified, 560.dp),
+                    compact = Modifier.fillMaxWidth(),
+                )
+            )
+        }
+        val contentPaddings by remember(key1 = windowSize) {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = PaddingValues(top = 32.dp, bottom = 40.dp),
+                    compact = PaddingValues(horizontal = 24.dp, vertical = 20.dp),
+                )
+            )
+        }
+
+        HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
+
+        if (canShowBackButton) {
+            Box(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                BackBtn(
+                    modifier = Modifier.padding(end = 16.dp),
+                    tint = MaterialTheme.appColors.primary,
+                ) { onBackClick() }
+            }
+        }
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .statusBarsInset()
+                .displayCutoutForLandscape(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Toolbar(
+                    label = stringResource(Res.string.discovery_Discovery),
+                    canShowBackBtn = canShowBackButton,
+                    canShowSettingsIcon = !canShowBackButton,
+                    onBackClick = onBackClick,
+                    onSettingsClick = onSettingsClick,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                StaticSearchBar(
+                    modifier = Modifier
+                        .height(48.dp)
+                        .padding(horizontal = 24.dp)
+                        .then(searchTabWidth),
+                    onClick = { onSearchClick() },
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            Surface(color = MaterialTheme.appColors.background) {
+                PullToRefreshBox(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = pullToRefreshState,
+                    isRefreshing = refreshing,
+                    onRefresh = { onSwipeRefresh() },
+                ) {
+                    when (state) {
+                        is DiscoveryUIState.Loading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                            }
+                        }
+
+                        is DiscoveryUIState.Courses -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                LazyColumn(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .then(contentWidth),
+                                    contentPadding = contentPaddings,
+                                    state = scrollState,
+                                ) {
+                                    item {
+                                        Column {
+                                            Text(
+                                                modifier = Modifier.testTag("txt_discovery_new"),
+                                                text = stringResource(Res.string.discovery_discovery_new),
+                                                color = MaterialTheme.appColors.textPrimary,
+                                                style = MaterialTheme.appTypography.displaySmall,
+                                            )
+                                            Text(
+                                                modifier = Modifier
+                                                    .testTag("txt_discovery_lets_find")
+                                                    .padding(top = 4.dp),
+                                                text = stringResource(Res.string.discovery_lets_find),
+                                                color = MaterialTheme.appColors.textPrimary,
+                                                style = MaterialTheme.appTypography.titleSmall,
+                                            )
+                                            Spacer(modifier = Modifier.height(14.dp))
+                                        }
+                                    }
+                                    items(state.courses) { course ->
+                                        DiscoveryCourseItem(
+                                            apiHostUrl = apiHostUrl,
+                                            course = course,
+                                            windowSize = windowSize,
+                                            onClick = { onItemClick(course) },
+                                        )
+                                        HorizontalDivider()
+                                    }
+                                    item {
+                                        if (canLoadMore) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(vertical = 16.dp),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
+                                                CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                                            }
+                                        }
+                                    }
+                                }
+                                if (scrollState.shouldLoadMore(firstVisibleIndex, LOAD_MORE_THRESHOLD)) {
+                                    paginationCallback()
+                                }
+                            }
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
+                    ) {
+                        if (!isInternetConnectionShown && !hasInternetConnection) {
+                            OfflineModeDialog(
+                                Modifier.fillMaxWidth(),
+                                onDismissCLick = { isInternetConnectionShown = true },
+                                onReloadClick = {
+                                    isInternetConnectionShown = true
+                                    onReloadClick()
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
