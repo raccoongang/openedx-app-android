@@ -362,6 +362,10 @@ fun AppNavHost(
                 val vm: org.openedx.profile.presentation.edit.EditProfileViewModel = koinViewModel {
                     parametersOf(cachedAccount)
                 }
+                // Store selected image for save
+                val pendingImageBodyState = androidx.compose.runtime.remember {
+                    androidx.compose.runtime.mutableStateOf<org.openedx.profile.data.repository.ImageBody?>(null)
+                }
                 val windowSize = rememberWindowSize()
                 val uiState by vm.uiState.collectAsState()
                 val uiMessage by vm.uiMessage.collectAsState(initial = null)
@@ -379,9 +383,28 @@ fun AppNavHost(
                     onKeepEdit = { vm.setShowLeaveDialog(false) },
                     onDataChanged = { vm.profileDataChanged = it },
                     onLimitedProfileChange = { vm.isLimitedProfile = it },
-                    onBackClick = { navController.navigateUp() },
-                    onSaveClick = { vm.updateAccount(it) },
-                    onSelectImageClick = {},
+                    onBackClick = { hasChanges ->
+                        if (hasChanges && vm.profileDataChanged) {
+                            vm.setShowLeaveDialog(true)
+                        } else {
+                            navController.navigateUp()
+                        }
+                    },
+                    onSaveClick = { fields ->
+                        val imageBody = pendingImageBodyState.value
+                        if (imageBody != null) {
+                            vm.updateAccountAndImage(fields, imageBody)
+                            pendingImageBodyState.value = null
+                        } else {
+                            vm.updateAccount(fields)
+                        }
+                    },
+                    onSelectImageClick = {
+                        org.openedx.shared.ui.showImagePicker { bytes, ext ->
+                            pendingImageBodyState.value = org.openedx.profile.data.repository.ImageBody(bytes, ext)
+                            vm.setImageUri("selected_image.$ext")
+                        }
+                    },
                     onDeleteImageClick = { vm.deleteImage() },
                 )
             }
