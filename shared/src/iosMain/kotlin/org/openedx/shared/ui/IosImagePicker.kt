@@ -16,6 +16,13 @@ import platform.darwin.NSObject
 import platform.posix.memcpy
 
 /**
+ * Strong reference to the current picker delegate — prevents Kotlin/Native GC
+ * from collecting it while PHPickerViewController is presented. Cleared in
+ * didFinishPicking callback.
+ */
+private var currentDelegate: NSObject? = null
+
+/**
  * Shows iOS PHPickerViewController to select an image from the photo library.
  * Returns the selected image as ByteArray (JPEG) via the callback.
  */
@@ -30,10 +37,12 @@ actual fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit) {
     val delegate = object : NSObject(), PHPickerViewControllerDelegateProtocol {
         override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
             picker.dismissViewControllerAnimated(true, null)
+            currentDelegate = null // Release strong ref
 
-            val result = didFinishPicking.firstOrNull() as? PHPickerResult ?: return
+            val result = didFinishPicking.firstOrNull() as? PHPickerResult
+            if (result == null) return
+
             val provider = result.itemProvider
-
             provider.loadDataRepresentationForTypeIdentifier(
                 typeIdentifier = UTTypeImage.identifier
             ) { data, error ->
@@ -46,10 +55,15 @@ actual fun showImagePicker(onImageSelected: (ByteArray, String) -> Unit) {
         }
     }
 
+    currentDelegate = delegate // Keep strong reference
     picker.delegate = delegate
 
-    val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
-    rootVC?.presentViewController(picker, animated = true, completion = null)
+    // Find the topmost presented VC to present from
+    var topVC = UIApplication.sharedApplication.keyWindow?.rootViewController
+    while (topVC?.presentedViewController != null) {
+        topVC = topVC.presentedViewController
+    }
+    topVC?.presentViewController(picker, animated = true, completion = null)
 }
 
 @OptIn(ExperimentalForeignApi::class)
