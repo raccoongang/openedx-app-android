@@ -130,6 +130,7 @@ actual fun platformModule(): Module = module {
     // ---- Resource manager ----
     single<ResourceManager> { IosResourceManager() }
     single { org.openedx.foundation.utils.FileUtil() }
+    single { org.openedx.core.domain.helper.VideoPreviewHelper() }
 
     // ---- Additional preferences ----
     single<org.openedx.whatsnew.data.storage.WhatsNewPreferences> { org.openedx.shared.stubs.IosWhatsNewPreferences() }
@@ -203,7 +204,8 @@ actual fun platformModule(): Module = module {
     factory { ProfileInteractor(get()) }
     factory { org.openedx.discussion.domain.interactor.DiscussionInteractor(get()) }
     factory { org.openedx.core.domain.interactor.CalendarInteractorImpl(get()) }
-    single<org.openedx.core.domain.interactor.CourseInteractor> { org.openedx.course.domain.interactor.CourseInteractor(get()) }
+    single { org.openedx.course.domain.interactor.CourseInteractor(get()) }
+    single<org.openedx.core.domain.interactor.CourseInteractor> { get<org.openedx.course.domain.interactor.CourseInteractor>() }
     single<org.openedx.course.data.repository.CourseRepository> { org.openedx.course.data.repository.CourseRepositoryImpl(get(), get(), get(), get(), get()) }
 
     // ---- ViewModels ----

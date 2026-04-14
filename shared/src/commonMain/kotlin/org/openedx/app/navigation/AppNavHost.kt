@@ -387,15 +387,30 @@ fun AppNavHost(
                 val windowSize = rememberWindowSize()
                 val uiState by viewModel.uiState.collectAsState(org.openedx.discovery.presentation.detail.CourseDetailsUIState.Loading)
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
+                val bgColor = androidx.compose.material3.MaterialTheme.colorScheme.background.value
+                val textColor = androidx.compose.material3.MaterialTheme.colorScheme.onBackground.value
+                val htmlBody = viewModel.getCourseAboutBody(bgColor, textColor)
                 org.openedx.discovery.presentation.detail.CourseDetailsScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    apiHostUrl = viewModel.apiHostUrl, htmlBody = "",
+                    apiHostUrl = viewModel.apiHostUrl, htmlBody = htmlBody,
                     hasInternetConnection = viewModel.hasInternetConnection,
                     isUserLoggedIn = viewModel.isUserLoggedIn,
                     isRegistrationEnabled = viewModel.isRegistrationEnabled,
                     onReloadClick = { viewModel.getCourseDetail() },
                     onBackClick = { navController.navigateUp() },
-                    onButtonClick = {},
+                    onButtonClick = {
+                        val state = viewModel.uiState.value
+                        if (state is org.openedx.discovery.presentation.detail.CourseDetailsUIState.CourseData && state.course.isEnrolled) {
+                            navController.navigate(
+                                AppNavRoutes.CourseContainer(
+                                    courseId = state.course.courseId,
+                                    courseTitle = state.course.name,
+                                )
+                            )
+                        } else {
+                            viewModel.enrollInACourse(route.courseId, "")
+                        }
+                    },
                     onRegisterClick = { navController.navigate(AppNavRoutes.SignUp()) },
                     onSignInClick = { navController.navigate(AppNavRoutes.SignIn()) },
                 )
