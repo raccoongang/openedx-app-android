@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -248,7 +249,18 @@ fun AppNavHost(
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.manageaccount.compose.ManageAccountView(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
-                    refreshing = false, onAction = {},
+                    refreshing = false, onAction = { action ->
+                        when (action) {
+                            org.openedx.profile.presentation.manageaccount.compose.ManageAccountViewAction.BackClick ->
+                                navController.navigateUp()
+                            org.openedx.profile.presentation.manageaccount.compose.ManageAccountViewAction.EditAccountClick ->
+                                navController.navigate(AppNavRoutes.EditProfile(accountJson = ""))
+                            org.openedx.profile.presentation.manageaccount.compose.ManageAccountViewAction.DeleteAccount ->
+                                navController.navigate(AppNavRoutes.DeleteProfile)
+                            org.openedx.profile.presentation.manageaccount.compose.ManageAccountViewAction.SwipeRefresh ->
+                                viewModel.updateAccount()
+                        }
+                    },
                 )
             }
 
@@ -491,7 +503,15 @@ fun AppNavHost(
                 org.openedx.course.presentation.section.CourseSectionScreen(
                     windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
                     onBackClick = { navController.navigateUp() },
-                    onItemClick = {},
+                    onItemClick = { block ->
+                        navController.navigate(
+                            AppNavRoutes.CourseUnitContainer(
+                                courseId = route.courseId,
+                                unitId = block.id,
+                                mode = "FULL",
+                            )
+                        )
+                    },
                 )
             }
             composable<AppNavRoutes.CourseUnitContainer> { entry ->
@@ -501,15 +521,68 @@ fun AppNavHost(
                 }
                 val blockCount by vm.verticalBlockCounts.collectAsState(0)
                 val index by vm.indexInContainer.collectAsState(0)
-                // CourseUnitContainer displays course blocks in a pager
-                // Full implementation requires block-type switching (video/html/discussion)
-                androidx.compose.foundation.layout.Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-                ) {
-                    androidx.compose.material3.Text("Course Unit ${index + 1}/$blockCount")
-                    androidx.compose.material3.Text("Unit: ${route.unitId}", style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
+                val currentBlock by vm.currentBlock.collectAsState(null)
+                val config: org.openedx.core.config.Config = org.koin.compose.koinInject()
+
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    vm.loadBlocks(route.componentId)
+                }
+
+                androidx.compose.material3.Scaffold(
+                    topBar = {
+                        org.openedx.core.ui.Toolbar(
+                            label = "Unit ${index + 1}/$blockCount",
+                            canShowBackBtn = true,
+                            onBackClick = { navController.navigateUp() },
+                        )
+                    }
+                ) { padding ->
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier.fillMaxSize().padding(padding),
+                    ) {
+                        val block = currentBlock
+                        when {
+                            block == null -> {
+                                androidx.compose.foundation.layout.Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = androidx.compose.ui.Alignment.Center,
+                                ) {
+                                    androidx.compose.material3.CircularProgressIndicator()
+                                }
+                            }
+                            block.type == org.openedx.core.BlockType.HTML ||
+                            block.type == org.openedx.core.BlockType.PROBLEM ||
+                            block.type == org.openedx.core.BlockType.DRAG_AND_DROP_V2 ||
+                            block.type == org.openedx.core.BlockType.OPENASSESSMENT ||
+                            block.type == org.openedx.core.BlockType.WORD_CLOUD -> {
+                                org.openedx.shared.ui.PlatformWebView(
+                                    url = "${config.getApiHostURL()}${block.studentViewUrl}",
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                            block.type == org.openedx.core.BlockType.VIDEO -> {
+                                val videoUrl = block.studentViewData?.encodedVideos?.fallback?.url
+                                    ?: block.studentViewData?.encodedVideos?.hls?.url ?: ""
+                                if (videoUrl.isNotEmpty()) {
+                                    org.openedx.shared.ui.PlatformVideoPlayer(
+                                        url = videoUrl,
+                                        modifier = Modifier.fillMaxSize(),
+                                    )
+                                } else {
+                                    org.openedx.shared.ui.PlatformWebView(
+                                        url = "${config.getApiHostURL()}${block.studentViewUrl}",
+                                        modifier = Modifier.fillMaxSize(),
+                                    )
+                                }
+                            }
+                            else -> {
+                                org.openedx.shared.ui.PlatformWebView(
+                                    url = "${config.getApiHostURL()}${block.studentViewUrl}",
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                        }
+                    }
                 }
             }
             composable<AppNavRoutes.HandoutsWebView> { entry ->
@@ -580,9 +653,15 @@ fun AppNavHost(
                     uiState = uiState ?: return@composable, uiMessage = uiMessage, canLoadMore = canLoad,
                     viewType = org.openedx.core.FragmentViewType.valueOf(route.viewType),
                     refreshing = updating,
-                    onSwipeRefresh = {}, updatedOrder = { vm.getThreadByType(it) },
-                    updatedFilter = {}, onItemClick = {},
-                    onCreatePostClick = {}, paginationCallback = { vm.fetchMore() },
+                    onSwipeRefresh = { vm.updateThread("") }, updatedOrder = { vm.getThreadByType(it) },
+                    updatedFilter = {}, onItemClick = { thread ->
+                        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; encodeDefaults = true }
+                            .encodeToString(org.openedx.discussion.domain.model.Thread.serializer(), thread)
+                        navController.navigate(AppNavRoutes.DiscussionComments(threadJson = json))
+                    },
+                    onCreatePostClick = {
+                        navController.navigate(AppNavRoutes.DiscussionAddThread(courseId = route.courseId, topicId = route.topicId))
+                    }, paginationCallback = { vm.fetchMore() },
                     onBackClick = { navController.navigateUp() },
                 )
             }
