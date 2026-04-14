@@ -14,6 +14,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.parameters
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import org.openedx.core.ApiConstants
 import org.openedx.profile.data.model.Account
 
@@ -36,10 +39,21 @@ class ProfileApi(private val client: HttpClient) {
     }
 
     suspend fun updateAccount(username: String, fields: Map<String, Any?>): Account {
+        val jsonBody = buildJsonObject {
+            for ((key, value) in fields) {
+                when (value) {
+                    null -> put(key, JsonNull)
+                    is String -> put(key, JsonPrimitive(value))
+                    is Number -> put(key, JsonPrimitive(value))
+                    is Boolean -> put(key, JsonPrimitive(value))
+                    else -> put(key, JsonPrimitive(value.toString()))
+                }
+            }
+        }
         return client.patch("/api/user/v1/accounts/$username") {
             header("Cache-Control", "no-cache")
             contentType(ContentType("application", "merge-patch+json"))
-            setBody(fields)
+            setBody(jsonBody)
         }.body()
     }
 
