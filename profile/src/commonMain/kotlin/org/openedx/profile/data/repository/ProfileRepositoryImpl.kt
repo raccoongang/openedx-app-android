@@ -32,7 +32,9 @@ class ProfileRepositoryImpl(
     }
 
     override suspend fun updateAccount(fields: Map<String, Any?>): Account {
-        return api.updateAccount(corePreferences.user?.username!!, fields).mapToDomain()
+        val dataAccount = api.updateAccount(corePreferences.user?.username!!, fields)
+        profilePreferences.profile = dataAccount
+        return dataAccount.mapToDomain()
     }
 
     override suspend fun setProfileImage(imageBody: ImageBody) {

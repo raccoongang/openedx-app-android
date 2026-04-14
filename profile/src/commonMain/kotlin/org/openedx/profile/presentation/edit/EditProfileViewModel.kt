@@ -67,6 +67,7 @@ class EditProfileViewModel(
     val showLeaveDialog: StateFlow<Boolean> = _showLeaveDialog.asStateFlow()
 
     init {
+        _uiState.value = EditProfileUIState(account, isUpdating = false, isLimited = isLimitedProfile)
         logProfileScreenEvent(ProfileAnalyticsEvent.EDIT_PROFILE)
     }
 

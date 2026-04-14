@@ -378,7 +378,7 @@ fun AppNavHost(
                     leaveDialog = leaveDialog,
                     onKeepEdit = { vm.setShowLeaveDialog(false) },
                     onDataChanged = { vm.profileDataChanged = it },
-                    onLimitedProfileChange = {},
+                    onLimitedProfileChange = { vm.isLimitedProfile = it },
                     onBackClick = { navController.navigateUp() },
                     onSaveClick = { vm.updateAccount(it) },
                     onSelectImageClick = {},

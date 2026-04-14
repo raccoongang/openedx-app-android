@@ -102,6 +102,7 @@ import org.openedx.shared.download.StubDownloadHelper
 import org.openedx.shared.download.StubDownloadModelsSource
 import org.openedx.shared.network.NetworkConnection
 import org.openedx.shared.network.commonNetworkingModule
+import org.openedx.shared.network.installTokenRefresh
 import org.openedx.shared.sso.IosSocialAuthProvider
 import org.openedx.shared.storage.SecureStorage
 import org.openedx.shared.worker.IosCalendarSyncScheduler
@@ -336,6 +337,8 @@ actual fun platformModule(): Module = module {
 
     single {
         val config = get<Config>()
+        val prefs = get<CorePreferences>()
+        val notifier = get<AppNotifier>()
         HttpClient(Darwin) {
             install(ContentNegotiation) {
                 json(get())
@@ -350,7 +353,6 @@ actual fun platformModule(): Module = module {
             defaultRequest {
                 url(config.getApiHostURL())
                 headers.append("Accept", "application/json")
-                val prefs = get<CorePreferences>()
                 val token = prefs.accessToken
                 if (token.isNotEmpty()) {
                     headers.append("Authorization", "${config.getAccessTokenType()} $token")
@@ -360,6 +362,6 @@ actual fun platformModule(): Module = module {
             install(Logging) {
                 level = LogLevel.HEADERS
             }
-        }
+        }.also { it.installTokenRefresh(config, prefs, notifier) }
     }
 }
