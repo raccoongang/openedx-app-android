@@ -31,7 +31,6 @@ import org.openedx.core.data.storage.CourseDao
 import org.openedx.core.data.storage.IosCalendarPreferences
 import org.openedx.core.data.storage.IosCorePreferences
 import org.openedx.core.domain.interactor.CalendarInteractor
-import org.openedx.core.domain.interactor.StubCalendarInteractor
 import org.openedx.core.module.DownloadWorkerController
 import org.openedx.core.module.db.CalendarDao
 import org.openedx.core.module.db.DownloadDao
@@ -89,14 +88,10 @@ import org.openedx.shared.analytics.IosDatesAnalytics
 import org.openedx.shared.analytics.IosDiscoveryAnalytics
 import org.openedx.shared.analytics.IosDownloadsAnalytics
 import org.openedx.shared.analytics.IosProfileAnalytics
+import org.openedx.app.room.AppDatabase
+import org.openedx.app.room.DATABASE_NAME
+import org.openedx.app.room.DatabaseManager as AppDatabaseManager
 import org.openedx.shared.calendar.IosCalendarManager
-import org.openedx.shared.db.StubCalendarDao
-import org.openedx.shared.db.StubCourseDao
-import org.openedx.shared.db.StubDashboardDao
-import org.openedx.shared.db.StubDatabaseManager
-import org.openedx.shared.db.StubDatesDao
-import org.openedx.shared.db.StubDiscoveryDao
-import org.openedx.shared.db.StubDownloadDao
 import org.openedx.shared.download.StubDownloadDialogManager
 import org.openedx.shared.download.StubDownloadHelper
 import org.openedx.shared.download.StubDownloadModelsSource
@@ -175,15 +170,29 @@ actual fun platformModule(): Module = module {
     single { org.openedx.core.system.notifier.VideoNotifier() }
     single { org.openedx.core.system.notifier.calendar.CalendarNotifier() }
 
-    // ---- Room DAOs (no-op stubs until Room KMP wired) ----
-    single<CourseDao> { StubCourseDao() }
-    single<DashboardDao> { StubDashboardDao() }
-    single<DiscoveryDao> { StubDiscoveryDao() }
-    single<DatesDao> { StubDatesDao() }
-    single<DownloadDao> { StubDownloadDao() }
-    single<CalendarDao> { StubCalendarDao() }
-    single<DatabaseManager> { StubDatabaseManager() }
-    single<CalendarInteractor> { StubCalendarInteractor() }
+    // ---- Room (KMP) ----
+    single<AppDatabase> {
+        val dbDir = platform.Foundation.NSSearchPathForDirectoriesInDomains(
+            platform.Foundation.NSDocumentDirectory,
+            platform.Foundation.NSUserDomainMask,
+            true
+        ).first() as String
+        val dbPath = "$dbDir/$DATABASE_NAME"
+        androidx.room.Room.databaseBuilder<AppDatabase>(name = dbPath)
+            .setDriver(androidx.sqlite.driver.bundled.BundledSQLiteDriver())
+            .setQueryCoroutineContext(kotlinx.coroutines.Dispatchers.Default)
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+    }
+    single<CourseDao> { get<AppDatabase>().courseDao() }
+    single<DashboardDao> { get<AppDatabase>().dashboardDao() }
+    single<DiscoveryDao> { get<AppDatabase>().discoveryDao() }
+    single<DatesDao> { get<AppDatabase>().datesDao() }
+    single<DownloadDao> { get<AppDatabase>().downloadDao() }
+    single<CalendarDao> { get<AppDatabase>().calendarDao() }
+    single { AppDatabaseManager(get(), get(), get(), get()) }
+    single<DatabaseManager> { get<AppDatabaseManager>() }
+    single<CalendarInteractor> { org.openedx.core.domain.interactor.CalendarInteractorImpl(get()) }
 
     // ---- Download helpers (stubs) ----
     single<DownloadDialogManager> { StubDownloadDialogManager() }
@@ -215,7 +224,6 @@ actual fun platformModule(): Module = module {
     factory { DownloadInteractor(get()) }
     factory { ProfileInteractor(get()) }
     factory { org.openedx.discussion.domain.interactor.DiscussionInteractor(get()) }
-    factory { org.openedx.core.domain.interactor.CalendarInteractorImpl(get()) }
     single { org.openedx.course.domain.interactor.CourseInteractor(get()) }
     single<org.openedx.core.domain.interactor.CourseInteractor> { get<org.openedx.course.domain.interactor.CourseInteractor>() }
     single<org.openedx.course.data.repository.CourseRepository> { org.openedx.course.data.repository.CourseRepositoryImpl(get(), get(), get(), get(), get()) }

@@ -16,7 +16,7 @@ import org.openedx.app.data.storage.PreferencesManager
 import org.openedx.app.deeplink.DeepLinkRouter
 import org.openedx.app.room.AppDatabase
 import org.openedx.app.room.DATABASE_NAME
-import org.openedx.app.room.DatabaseManager
+import org.openedx.app.room.DatabaseManager as AppDatabaseManager
 import org.openedx.app.PlatformActionsImpl
 import org.openedx.auth.presentation.AgreementProvider
 import org.openedx.auth.presentation.AuthAnalytics
@@ -111,8 +111,8 @@ val appModule = module {
     single<CalendarManager> { CalendarManagerImpl(get(), get()) }
     single<StorageManager> { StorageManagerImpl() }
     single<DownloadDialogManager> { DownloadDialogManagerImpl(get(), get(), get(), get(), get()) }
-    single { DatabaseManager(get(), get(), get(), get()) }
-    single<IDatabaseManager> { get<DatabaseManager>() }
+    single { AppDatabaseManager(get(), get(), get(), get()) }
+    single<IDatabaseManager> { get<AppDatabaseManager>() }
 
     single<ImageProcessor> { ImageProcessorImpl(get()) }
 

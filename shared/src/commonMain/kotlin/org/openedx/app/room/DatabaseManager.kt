@@ -16,7 +16,7 @@ class DatabaseManager(
     private val discoveryDao: DiscoveryDao
 ) : DatabaseManager {
     override fun clearTables() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Default).launch {
             courseDao.clearCachedData()
             dashboardDao.clearCachedData()
             downloadDao.clearOfflineProgress()

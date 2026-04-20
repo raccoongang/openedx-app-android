@@ -193,6 +193,3 @@ fun setupFirebaseConfigFields(buildType: com.android.build.api.dsl.ProductFlavor
     buildType.manifestPlaceholders["fcmEnabled"] = fbEnabled && cloudMessagingEnabled
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}

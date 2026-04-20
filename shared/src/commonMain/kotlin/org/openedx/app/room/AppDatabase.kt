@@ -1,8 +1,10 @@
 package org.openedx.app.room
 
 import androidx.room.AutoMigration
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import org.openedx.core.data.model.room.CourseCalendarEventEntity
 import org.openedx.core.data.model.room.CourseCalendarStateEntity
@@ -54,6 +56,7 @@ const val DATABASE_NAME = "OpenEdX_db"
     ],
     version = DATABASE_VERSION
 )
+@ConstructedBy(AppDatabaseConstructor::class)
 @TypeConverters(DiscoveryConverter::class, CourseConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun discoveryDao(): DiscoveryDao
@@ -62,4 +65,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun downloadDao(): DownloadDao
     abstract fun datesDao(): DatesDao
     abstract fun calendarDao(): CalendarDao
+}
+
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
 }

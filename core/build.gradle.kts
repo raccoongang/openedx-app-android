@@ -17,6 +17,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.androidx.room)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 val configHelper: ConfigHelper by rootProject.extra
@@ -143,6 +148,9 @@ android {
 
 dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 
     // These don't work in KMP sourceSets DSL
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))

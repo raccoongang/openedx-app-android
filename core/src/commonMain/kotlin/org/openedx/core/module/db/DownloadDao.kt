@@ -55,5 +55,5 @@ interface DownloadDao {
     suspend fun insertDownloadCoursePreview(downloadCoursePreview: List<DownloadCoursePreview>)
 
     @Query("SELECT * FROM download_course_preview_table")
-    fun getDownloadCoursesPreview(): List<DownloadCoursePreview>
+    suspend fun getDownloadCoursesPreview(): List<DownloadCoursePreview>
 }
