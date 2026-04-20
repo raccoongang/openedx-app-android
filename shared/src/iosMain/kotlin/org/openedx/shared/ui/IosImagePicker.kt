@@ -2,6 +2,8 @@ package org.openedx.shared.ui
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.refTo
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGRectMake
 import platform.Foundation.NSData
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSUUID
@@ -12,8 +14,12 @@ import platform.PhotosUI.PHPickerResult
 import platform.PhotosUI.PHPickerViewController
 import platform.PhotosUI.PHPickerViewControllerDelegateProtocol
 import platform.UIKit.UIApplication
+import platform.UIKit.UIGraphicsBeginImageContextWithOptions
+import platform.UIKit.UIGraphicsEndImageContext
+import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
+import platform.CoreGraphics.CGSizeMake
 import platform.UniformTypeIdentifiers.UTTypeImage
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
@@ -21,6 +27,23 @@ import platform.darwin.dispatch_get_main_queue
 import platform.posix.memcpy
 
 private var currentDelegate: NSObject? = null
+
+private const val MAX_IMAGE_WIDTH = 500.0
+private const val JPEG_QUALITY = 0.9
+
+@OptIn(ExperimentalForeignApi::class)
+private fun UIImage.downscaleIfNeeded(maxWidth: Double): UIImage {
+    val (width, height) = size.useContents { width to height }
+    if (width <= maxWidth) return this
+    val ratio = maxWidth / width
+    val newWidth = maxWidth
+    val newHeight = height * ratio
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), false, 1.0)
+    drawInRect(CGRectMake(0.0, 0.0, newWidth, newHeight))
+    val resized = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return resized ?: this
+}
 
 actual fun showImagePicker(onImageSelected: (ByteArray, String, String) -> Unit) {
     val config = PHPickerConfiguration().apply {
@@ -46,8 +69,9 @@ actual fun showImagePicker(onImageSelected: (ByteArray, String, String) -> Unit)
             ) { data, error ->
                 currentDelegate = null
                 if (error != null || data == null) return@loadDataRepresentationForTypeIdentifier
-                val image = UIImage.imageWithData(data) ?: return@loadDataRepresentationForTypeIdentifier
-                val jpegData = UIImageJPEGRepresentation(image, 0.85) ?: return@loadDataRepresentationForTypeIdentifier
+                val originalImage = UIImage.imageWithData(data) ?: return@loadDataRepresentationForTypeIdentifier
+                val image = originalImage.downscaleIfNeeded(MAX_IMAGE_WIDTH)
+                val jpegData = UIImageJPEGRepresentation(image, JPEG_QUALITY) ?: return@loadDataRepresentationForTypeIdentifier
                 val bytes = jpegData.toByteArray()
 
                 // Save to temp file for preview display

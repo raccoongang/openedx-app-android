@@ -84,10 +84,7 @@ fun CourseContentVideoScreen(
             viewModel.logVideoClick(videoBlock.id)
         },
         onDownloadClick = { blocksIds ->
-            viewModel.downloadBlocks(
-                blocksIds = blocksIds,
-                fragmentManager = null,
-            )
+            viewModel.downloadBlocks(blocksIds = blocksIds)
         },
         onCompletedSectionVisibilityChange = {
             viewModel.onCompletedSectionVisibilityChange()

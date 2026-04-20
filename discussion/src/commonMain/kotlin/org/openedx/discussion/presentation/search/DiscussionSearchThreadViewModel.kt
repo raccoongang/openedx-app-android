@@ -1,6 +1,5 @@
 package org.openedx.discussion.presentation.search
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -57,8 +56,8 @@ class DiscussionSearchThreadViewModel(
 
     private val queryChannel = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 0)
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
+        observeQuery()
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is DiscussionThreadDataChanged) {
@@ -75,10 +74,6 @@ class DiscussionSearchThreadViewModel(
                 }
             }
         }
-    }
-
-    init {
-        observeQuery()
     }
 
     @OptIn(FlowPreview::class)

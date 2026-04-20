@@ -78,7 +78,6 @@ class DownloadDialogManagerImpl(
         courseId: String,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: (blockId: String) -> Unit,
         onDismissClick: () -> Unit,
@@ -87,7 +86,6 @@ class DownloadDialogManagerImpl(
         createDownloadItems(
             subSectionsBlocks = subSectionsBlocks,
             courseId = courseId,
-            fragmentManager = fragmentManager,
             isBlocksDownloaded = isBlocksDownloaded,
             onlyVideoBlocks = onlyVideoBlocks,
             removeDownloadModels = removeDownloadModels,
@@ -100,7 +98,6 @@ class DownloadDialogManagerImpl(
     override fun showPopup(
         coursePreview: DownloadCoursePreview,
         isBlocksDownloaded: Boolean,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,
         onDismissClick: () -> Unit,
@@ -108,7 +105,6 @@ class DownloadDialogManagerImpl(
     ) {
         createCourseDownloadItems(
             coursePreview = coursePreview,
-            fragmentManager = fragmentManager,
             isBlocksDownloaded = isBlocksDownloaded,
             removeDownloadModels = removeDownloadModels,
             saveDownloadModels = saveDownloadModels,
@@ -119,7 +115,6 @@ class DownloadDialogManagerImpl(
 
     override fun showRemoveDownloadModelPopup(
         downloadDialogItem: DownloadDialogItem,
-        fragmentManager: Any?,
         removeDownloadModels: () -> Unit,
     ) {
         coroutineScope.launch {
@@ -129,7 +124,6 @@ class DownloadDialogManagerImpl(
                     isAllBlocksDownloaded = true,
                     isDownloadFailed = false,
                     sizeSum = downloadDialogItem.size,
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = removeDownloadModels,
                     saveDownloadModels = {}
                 )
@@ -139,17 +133,14 @@ class DownloadDialogManagerImpl(
 
     override fun showDownloadFailedPopup(
         downloadModel: List<DownloadModel>,
-        fragmentManager: Any?,
     ) {
         createDownloadItems(
             downloadModels = downloadModel,
-            fragmentManager = fragmentManager,
         )
     }
 
     private fun createDownloadItems(
         downloadModels: List<DownloadModel>,
-        fragmentManager: Any?,
     ) {
         coroutineScope.launch {
             val courseIds = downloadModels.map { it.courseId }.distinct()
@@ -186,7 +177,6 @@ class DownloadDialogManagerImpl(
                     isAllBlocksDownloaded = false,
                     isDownloadFailed = true,
                     sizeSum = allDownloadDialogItems.sumOf { it.size },
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = {},
                     saveDownloadModels = {
                         coroutineScope.launch {
@@ -201,7 +191,6 @@ class DownloadDialogManagerImpl(
     private fun createDownloadItems(
         subSectionsBlocks: List<Block>,
         courseId: String,
-        fragmentManager: Any?,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
@@ -240,7 +229,6 @@ class DownloadDialogManagerImpl(
                     isAllBlocksDownloaded = isBlocksDownloaded,
                     isDownloadFailed = false,
                     sizeSum = downloadDialogItems.sumOf { it.size },
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = {
                         subSectionsBlocks.forEach {
                             removeDownloadModels(it.id, courseId)
@@ -256,7 +244,6 @@ class DownloadDialogManagerImpl(
 
     private fun createCourseDownloadItems(
         coursePreview: DownloadCoursePreview,
-        fragmentManager: Any?,
         isBlocksDownloaded: Boolean,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,
@@ -278,7 +265,6 @@ class DownloadDialogManagerImpl(
                     isAllBlocksDownloaded = isBlocksDownloaded,
                     isDownloadFailed = false,
                     sizeSum = downloadDialogItems.sumOf { it.size },
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = {
                         coroutineScope.launch {
                             val downloadModels = interactor.getAllDownloadModels().filter {

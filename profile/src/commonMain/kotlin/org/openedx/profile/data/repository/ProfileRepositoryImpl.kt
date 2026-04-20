@@ -39,10 +39,11 @@ class ProfileRepositoryImpl(
 
     override suspend fun setProfileImage(imageBody: ImageBody) {
         api.setProfileImage(
-            corePreferences.user?.username!!,
-            "attachment;filename=filename.${imageBody.extension}",
-            true,
-            imageBody.bytes
+            username = corePreferences.user?.username!!,
+            contentDisposition = "attachment;filename=filename.${imageBody.extension}",
+            contentType = imageBody.mimeType,
+            mobile = true,
+            fileBytes = imageBody.bytes,
         )
     }
 

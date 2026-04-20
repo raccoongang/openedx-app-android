@@ -9,47 +9,47 @@ import org.openedx.discovery.domain.model.Course
 @Serializable
 data class CourseDetails(
     @SerialName("blocks_url")
-    val blocksUrl: String?,
+    val blocksUrl: String? = null,
     @SerialName("course_id")
-    val courseId: String?,
+    val courseId: String? = null,
     @SerialName("effort")
-    val effort: String?,
+    val effort: String? = null,
     @SerialName("end")
-    val end: String?,
+    val end: String? = null,
     @SerialName("enrollment_end")
-    val enrollmentEnd: String?,
+    val enrollmentEnd: String? = null,
     @SerialName("enrollment_start")
-    val enrollmentStart: String?,
+    val enrollmentStart: String? = null,
     @SerialName("hidden")
-    val hidden: Boolean?,
+    val hidden: Boolean? = null,
     @SerialName("id")
-    val id: String?,
+    val id: String? = null,
     @SerialName("invitation_only")
-    val invitationOnly: Boolean?,
+    val invitationOnly: Boolean? = null,
     @SerialName("media")
-    val media: Media?,
+    val media: Media? = null,
     @SerialName("mobile_available")
-    val mobileAvailable: Boolean?,
+    val mobileAvailable: Boolean? = null,
     @SerialName("name")
-    val name: String?,
+    val name: String? = null,
     @SerialName("number")
-    val number: String?,
+    val number: String? = null,
     @SerialName("org")
-    val organization: String?,
+    val organization: String? = null,
     @SerialName("pacing")
-    val pacing: String?,
+    val pacing: String? = null,
     @SerialName("short_description")
-    val shortDescription: String?,
+    val shortDescription: String? = null,
     @SerialName("start")
-    val start: String?,
+    val start: String? = null,
     @SerialName("start_display")
-    val startDisplay: String?,
+    val startDisplay: String? = null,
     @SerialName("start_type")
-    val startType: String?,
+    val startType: String? = null,
     @SerialName("overview")
-    val overview: String?,
+    val overview: String? = null,
     @SerialName("is_enrolled")
-    val isEnrolled: Boolean?,
+    val isEnrolled: Boolean? = null,
 ) {
 
     fun mapToDomain(): Course {

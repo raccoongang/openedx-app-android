@@ -53,6 +53,9 @@ fun ContentTabScreen(
     pagerState: PagerState,
     onTabSelected: (CourseContentTab) -> Unit = {},
     onNavigateToHome: () -> Unit = {},
+    onNavigateToCourseContainer: (courseId: String, unitId: String, componentId: String, mode: org.openedx.course.presentation.unit.container.CourseViewMode) -> Unit = { _, _, _, _ -> },
+    onNavigateToCourseSubsections: (courseId: String, subSectionId: String, unitId: String, componentId: String, mode: org.openedx.course.presentation.unit.container.CourseViewMode) -> Unit = { _, _, _, _, _ -> },
+    onNavigateToDownloadQueue: (List<String>) -> Unit = {},
 ) {
     val tabsWidth by remember(key1 = windowSize) {
         mutableStateOf(
@@ -153,29 +156,29 @@ fun ContentTabScreen(
                     CourseContentTab.ALL -> CourseContentAllScreen(
                         windowSize = windowSize,
                         viewModel = koinViewModel(parameters = {
-                            parametersOf(
-                                courseId,
-                                courseName
-                            )
+                            parametersOf(courseId, courseName)
                         }),
-                        onNavigateToHome = onNavigateToHome
+                        onNavigateToHome = onNavigateToHome,
+                        onNavigateToCourseContainer = onNavigateToCourseContainer,
+                        onNavigateToCourseSubsections = onNavigateToCourseSubsections,
+                        onNavigateToDownloadQueue = onNavigateToDownloadQueue,
                     )
 
                     CourseContentTab.VIDEOS -> CourseContentVideoScreen(
                         windowSize = windowSize,
                         viewModel = koinViewModel(parameters = {
-                            parametersOf(
-                                courseId,
-                                courseName
-                            )
+                            parametersOf(courseId, courseName)
                         }),
-                        onNavigateToHome = onNavigateToHome
+                        onNavigateToHome = onNavigateToHome,
+                        onNavigateToCourseContainer = onNavigateToCourseContainer,
+                        onNavigateToDownloadQueue = onNavigateToDownloadQueue,
                     )
 
                     CourseContentTab.ASSIGNMENTS -> CourseContentAssignmentScreen(
                         windowSize = windowSize,
                         viewModel = koinViewModel(parameters = { parametersOf(courseId) }),
-                        onNavigateToHome = onNavigateToHome
+                        onNavigateToHome = onNavigateToHome,
+                        onNavigateToCourseSubsections = onNavigateToCourseSubsections,
                     )
                 }
             }

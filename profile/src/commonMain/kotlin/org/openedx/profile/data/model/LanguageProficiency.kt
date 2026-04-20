@@ -7,7 +7,7 @@ import org.openedx.core.domain.model.LanguageProficiency
 @Serializable
 data class LanguageProficiency(
     @SerialName("code")
-    val code: String?
+    val code: String? = null
 ) {
     fun mapToDomain(): LanguageProficiency {
         return LanguageProficiency(

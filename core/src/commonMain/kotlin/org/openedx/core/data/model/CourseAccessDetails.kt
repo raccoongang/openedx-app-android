@@ -14,9 +14,9 @@ data class CourseAccessDetails(
     @SerialName("is_staff")
     val isStaff: Boolean,
     @SerialName("audit_access_expires")
-    val auditAccessExpires: String?,
+    val auditAccessExpires: String? = null,
     @SerialName("courseware_access")
-    var coursewareAccess: CoursewareAccess?,
+    var coursewareAccess: CoursewareAccess? = null,
 ) {
     fun mapToDomain() = DomainCourseAccessDetails(
         hasUnmetPrerequisites = hasUnmetPrerequisites,

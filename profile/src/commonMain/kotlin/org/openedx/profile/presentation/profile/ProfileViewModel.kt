@@ -36,10 +36,6 @@ class ProfileViewModel(
 
     init {
         getAccount()
-    }
-
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is AccountUpdated) {
@@ -47,6 +43,10 @@ class ProfileViewModel(
                 }
             }
         }
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
     }
 
     private fun getAccount() {

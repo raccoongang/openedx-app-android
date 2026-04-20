@@ -16,4 +16,5 @@ expect fun CatalogPlatformWebView(
     onWebPageUpdated: (String) -> Unit = {},
     onUriClick: (String, WebViewLink.Authority) -> Unit = { _, _ -> },
     onWebPageLoadError: () -> Unit = {},
+    backControl: WebViewBackControl? = null,
 )

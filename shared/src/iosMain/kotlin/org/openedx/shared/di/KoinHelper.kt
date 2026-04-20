@@ -1,6 +1,7 @@
 package org.openedx.shared.di
 
 import org.koin.core.context.startKoin
+import org.openedx.app.di.commonScreenModule
 
 /**
  * Initializes Koin DI for iOS.
@@ -8,6 +9,6 @@ import org.koin.core.context.startKoin
  */
 fun initKoin() {
     startKoin {
-        modules(sharedModule, platformModule())
+        modules(sharedModule, platformModule(), commonScreenModule)
     }
 }

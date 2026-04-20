@@ -1,6 +1,5 @@
 package org.openedx.discussion.presentation.comments
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,15 +55,16 @@ class DiscussionCommentsViewModel(
     private var page = 1
     private var isLoading = false
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
+        this.thread = thread
+        getThreadComments()
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is DiscussionCommentAdded) {
                     if (page == -1) {
                         comments.add(it.comment)
                         _uiState.value = DiscussionCommentsUIState.Success(
-                            thread,
+                            this@DiscussionCommentsViewModel.thread,
                             comments.toList(),
                             commentCount
                         )
@@ -75,7 +75,9 @@ class DiscussionCommentsViewModel(
                             )
                         )
                     }
-                    thread = thread.copy(commentCount = thread.commentCount + 1)
+                    this@DiscussionCommentsViewModel.thread = this@DiscussionCommentsViewModel.thread.copy(
+                        commentCount = this@DiscussionCommentsViewModel.thread.commentCount + 1
+                    )
                     sendThreadUpdated()
                 } else if (it is DiscussionCommentDataChanged) {
                     val index = comments.indexOfFirst { innerComment ->
@@ -84,7 +86,7 @@ class DiscussionCommentsViewModel(
                     if (index >= 0) {
                         comments[index] = it.discussionComment
                         _uiState.value = DiscussionCommentsUIState.Success(
-                            thread,
+                            this@DiscussionCommentsViewModel.thread,
                             comments.toList(),
                             commentCount
                         )
@@ -92,11 +94,6 @@ class DiscussionCommentsViewModel(
                 }
             }
         }
-    }
-
-    init {
-        this.thread = thread
-        getThreadComments()
     }
 
     private fun sendThreadUpdated() {

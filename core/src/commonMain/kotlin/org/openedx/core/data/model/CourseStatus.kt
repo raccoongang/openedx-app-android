@@ -7,13 +7,13 @@ import org.openedx.core.domain.model.CourseStatus
 @Serializable
 data class CourseStatus(
     @SerialName("last_visited_module_id")
-    val lastVisitedModuleId: String?,
+    val lastVisitedModuleId: String? = null,
     @SerialName("last_visited_module_path")
-    val lastVisitedModulePath: List<String>?,
+    val lastVisitedModulePath: List<String>? = null,
     @SerialName("last_visited_block_id")
-    val lastVisitedBlockId: String?,
+    val lastVisitedBlockId: String? = null,
     @SerialName("last_visited_unit_display_name")
-    val lastVisitedUnitDisplayName: String?,
+    val lastVisitedUnitDisplayName: String? = null,
 ) {
     fun mapToDomain() = CourseStatus(
         lastVisitedModuleId = lastVisitedModuleId ?: "",

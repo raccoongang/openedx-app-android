@@ -12,35 +12,35 @@ data class CourseStructureModel(
     @SerialName("blocks")
     val blockData: Map<String, Block>,
     @SerialName("id")
-    var id: String?,
+    var id: String? = null,
     @SerialName("name")
-    var name: String?,
+    var name: String? = null,
     @SerialName("number")
-    var number: String?,
+    var number: String? = null,
     @SerialName("org")
-    var org: String?,
+    var org: String? = null,
     @SerialName("start")
-    var start: String?,
+    var start: String? = null,
     @SerialName("start_display")
-    var startDisplay: String?,
+    var startDisplay: String? = null,
     @SerialName("start_type")
-    var startType: String?,
+    var startType: String? = null,
     @SerialName("end")
-    var end: String?,
+    var end: String? = null,
     @SerialName("courseware_access")
-    var coursewareAccess: CoursewareAccess?,
+    var coursewareAccess: CoursewareAccess? = null,
     @SerialName("media")
-    var media: Media?,
+    var media: Media? = null,
     @SerialName("course_access_details")
     val courseAccessDetails: CourseAccessDetails,
     @SerialName("certificate")
-    val certificate: Certificate?,
+    val certificate: Certificate? = null,
     @SerialName("enrollment_details")
     val enrollmentDetails: EnrollmentDetails,
     @SerialName("is_self_paced")
-    var isSelfPaced: Boolean?,
+    var isSelfPaced: Boolean? = null,
     @SerialName("course_progress")
-    val progress: Progress?,
+    val progress: Progress? = null,
 ) {
     fun mapToDomain(): CourseStructure {
         return CourseStructure(

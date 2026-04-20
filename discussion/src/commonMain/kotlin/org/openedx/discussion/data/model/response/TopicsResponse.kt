@@ -7,21 +7,21 @@ import org.openedx.discussion.domain.model.TopicsData
 @Serializable
 data class TopicsResponse(
     @SerialName("courseware_topics")
-    val coursewareTopics: List<Topic>?,
+    val coursewareTopics: List<Topic>? = null,
     @SerialName("non_courseware_topics")
-    val nonCoursewareTopics: List<Topic>?
+    val nonCoursewareTopics: List<Topic>? = null
 ) {
 
     @Serializable
     data class Topic(
         @SerialName("id")
-        val id: String?,
+        val id: String? = null,
         @SerialName("name")
-        val name: String?,
+        val name: String? = null,
         @SerialName("thread_list_url")
-        val threadListUrl: String?,
+        val threadListUrl: String? = null,
         @SerialName("children")
-        val children: List<Topic>?
+        val children: List<Topic>? = null
     ) {
         fun mapToDomain(): org.openedx.discussion.domain.model.Topic {
             return org.openedx.discussion.domain.model.Topic(

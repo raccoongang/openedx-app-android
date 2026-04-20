@@ -7,13 +7,13 @@ import org.openedx.core.domain.model.Pagination as domainPagination
 @Serializable
 data class Pagination(
     @SerialName("count")
-    val count: Int?,
+    val count: Int? = null,
     @SerialName("next")
-    val next: String?,
+    val next: String? = null,
     @SerialName("num_pages")
-    val numPages: Int?,
+    val numPages: Int? = null,
     @SerialName("previous")
-    val previous: String?,
+    val previous: String? = null,
 ) {
     fun mapToDomain() = domainPagination(
         count = count ?: 0,

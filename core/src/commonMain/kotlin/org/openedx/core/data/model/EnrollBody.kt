@@ -13,6 +13,6 @@ data class EnrollBody(
         @SerialName("course_id")
         val courseId: String,
         @SerialName("email_opt_in")
-        val emailOptIn: String?,
+        val emailOptIn: String? = null,
     )
 }

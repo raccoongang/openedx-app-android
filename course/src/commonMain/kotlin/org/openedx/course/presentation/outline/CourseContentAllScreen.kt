@@ -130,10 +130,7 @@ fun CourseContentAllScreen(
             viewModel.openBlock(componentId)
         },
         onDownloadClick = { blocksIds ->
-            viewModel.downloadBlocks(
-                blocksIds = blocksIds,
-                fragmentManager = null,
-            )
+            viewModel.downloadBlocks(blocksIds = blocksIds)
         },
         onCertificateClick = {
             viewModel.viewCertificateTappedEvent()

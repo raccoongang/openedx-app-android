@@ -70,7 +70,7 @@ fun CourseCompletionHomePagerCardContent(
                 Text(
                     text = stringResource(
                         Res.string.course_completion_progress_description,
-                        courseProgressPercent
+                        "$courseProgressPercent%"
                     ),
                     style = MaterialTheme.appTypography.bodyMedium,
                     color = MaterialTheme.appColors.textDark

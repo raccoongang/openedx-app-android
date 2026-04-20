@@ -388,7 +388,7 @@ class CourseContentAllViewModel(
         }
     }
 
-    fun downloadBlocks(blocksIds: List<String>, fragmentManager: Any?) {
+    fun downloadBlocks(blocksIds: List<String>) {
         viewModelScope.launch {
             val courseData = _uiState.value as? CourseContentAllUIState.CourseData ?: return@launch
 
@@ -443,7 +443,6 @@ class CourseContentAllViewModel(
                     subSectionsBlocks = requiredSubSections,
                     courseId = courseId,
                     isBlocksDownloaded = isAllBlocksDownloaded,
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = ::removeDownloadModels,
                     saveDownloadModels = { blockId ->
                         saveDownloadModels(fileUtil.getExternalAppDirPath(), courseId, blockId)

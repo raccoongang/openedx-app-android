@@ -2,7 +2,8 @@ package org.openedx.shared.stubs
 
 import org.openedx.app.AppAnalytics
 import org.openedx.core.data.storage.InAppReviewPreferences
-import org.openedx.core.system.AppCookieManager
+import org.openedx.core.module.TranscriptProvider
+import org.openedx.core.module.TranscriptResult
 import org.openedx.course.data.storage.CoursePreferences
 import org.openedx.core.system.PlatformActions
 import org.openedx.whatsnew.WhatsNewManager
@@ -20,12 +21,6 @@ class IosAppAnalytics : AppAnalytics {
     override fun setUserIdForSession(userId: Long) = Unit
     override fun logEvent(event: String, params: Map<String, Any?>) = Unit
     override fun logScreenEvent(screenName: String, params: Map<String, Any?>) = Unit
-}
-
-class IosAppCookieManager : AppCookieManager {
-    override suspend fun tryToRefreshSessionCookie() = Unit
-    override fun clearWebViewCookie() = Unit
-    override fun isSessionCookieMissingOrExpired(): Boolean = true
 }
 
 class IosPlatformActions : PlatformActions {
@@ -63,6 +58,11 @@ class IosCoursePreferences : CoursePreferences {
     override fun isCalendarSyncEventsDialogShown(courseName: String): Boolean {
         return defaults.boolForKey("calendar_sync_dialog_$courseName")
     }
+}
+
+class IosTranscriptProvider : TranscriptProvider {
+    override suspend fun downloadTranscripts(url: String): TranscriptResult? = null
+    override suspend fun cancelDownloading() = Unit
 }
 
 class IosInAppReviewPreferences : InAppReviewPreferences {

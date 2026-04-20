@@ -51,14 +51,20 @@ class ImageProcessorImpl(private val context: Context) : ImageProcessor {
         onComplete: (result: Drawable) -> Unit
     ) {
         val loader = ImageLoader.Builder(context).build()
-        val defaultImg = ContextCompat.getDrawable(context, defaultImage)?.asImage()
+        val defaultImg = if (defaultImage != 0) {
+            ContextCompat.getDrawable(context, defaultImage)?.asImage()
+        } else null
         val request = ImageRequest.Builder(context)
             .data(imageUrl)
             .target { image ->
                 onComplete(image.asDrawable(context.resources))
             }
-            .error(defaultImg)
-            .placeholder(defaultImg)
+            .apply {
+                if (defaultImg != null) {
+                    error(defaultImg)
+                    placeholder(defaultImg)
+                }
+            }
             .build()
         loader.enqueue(request)
     }

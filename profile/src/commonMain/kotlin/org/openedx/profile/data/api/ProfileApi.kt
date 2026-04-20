@@ -12,13 +12,20 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import io.ktor.http.content.ByteArrayContent
+import io.ktor.http.isSuccess
 import io.ktor.http.parameters
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import org.openedx.core.ApiConstants
+import org.openedx.core.domain.model.LanguageProficiency
 import org.openedx.profile.data.model.Account
+import org.openedx.profile.domain.model.Account as DomainAccount
 
 class ProfileApi(private val client: HttpClient) {
 
@@ -41,13 +48,7 @@ class ProfileApi(private val client: HttpClient) {
     suspend fun updateAccount(username: String, fields: Map<String, Any?>): Account {
         val jsonBody = buildJsonObject {
             for ((key, value) in fields) {
-                when (value) {
-                    null -> put(key, JsonNull)
-                    is String -> put(key, JsonPrimitive(value))
-                    is Number -> put(key, JsonPrimitive(value))
-                    is Boolean -> put(key, JsonPrimitive(value))
-                    else -> put(key, JsonPrimitive(value.toString()))
-                }
+                put(key, value.toJsonElement())
             }
         }
         return client.patch("/api/user/v1/accounts/$username") {
@@ -57,27 +58,56 @@ class ProfileApi(private val client: HttpClient) {
         }.body()
     }
 
+    private fun Any?.toJsonElement(): JsonElement = when (this) {
+        null -> JsonNull
+        is JsonElement -> this
+        is String -> JsonPrimitive(this)
+        is Number -> JsonPrimitive(this)
+        is Boolean -> JsonPrimitive(this)
+        is DomainAccount.Privacy -> JsonPrimitive(name.lowercase())
+        is Enum<*> -> JsonPrimitive(name.lowercase())
+        is LanguageProficiency -> buildJsonObject {
+            put("code", JsonPrimitive(code))
+        }
+        is List<*> -> JsonArray(map { it.toJsonElement() })
+        is Map<*, *> -> buildJsonObject {
+            this@toJsonElement.forEach { (k, v) ->
+                put(k.toString(), v.toJsonElement())
+            }
+        }
+        else -> JsonPrimitive(toString())
+    }
+
     suspend fun setProfileImage(
         username: String?,
         contentDisposition: String?,
+        contentType: String,
         mobile: Boolean = true,
         fileBytes: ByteArray?,
     ): HttpResponse {
-        return client.post("/api/user/v1/accounts/$username/image") {
+        val parsedType = ContentType.parse(contentType)
+        val response = client.post("/api/user/v1/accounts/$username/image") {
             header("Cache-Control", "no-cache")
-            contentDisposition?.let { header("Content-Disposition", it) }
+            contentDisposition?.let { header(HttpHeaders.ContentDisposition, it) }
             parameter("mobile", mobile)
-            fileBytes?.let {
-                contentType(ContentType.Application.OctetStream)
-                setBody(it)
+            if (fileBytes != null) {
+                setBody(ByteArrayContent(fileBytes, parsedType))
             }
         }
+        if (!response.status.isSuccess()) {
+            throw io.ktor.client.plugins.ResponseException(response, "Profile image upload failed: ${response.status}")
+        }
+        return response
     }
 
     suspend fun deleteProfileImage(username: String?): HttpResponse {
-        return client.delete("/api/user/v1/accounts/$username/image") {
+        val response = client.delete("/api/user/v1/accounts/$username/image") {
             header("Cache-Control", "no-cache")
         }
+        if (!response.status.isSuccess()) {
+            throw io.ktor.client.plugins.ResponseException(response, "Profile image delete failed: ${response.status}")
+        }
+        return response
     }
 
     suspend fun deactivateAccount(password: String): HttpResponse {

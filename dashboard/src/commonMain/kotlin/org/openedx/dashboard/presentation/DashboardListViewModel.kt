@@ -1,6 +1,5 @@
 package org.openedx.dashboard.presentation
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,8 +47,8 @@ class DashboardListViewModel(
     private val _canLoadMore = MutableStateFlow(false)
     val canLoadMore: StateFlow<Boolean> = _canLoadMore.asStateFlow()
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
+        getCourses()
         viewModelScope.launch {
             discoveryNotifier.notifier.collect {
                 if (it is CourseDashboardUpdate) {
@@ -57,10 +56,6 @@ class DashboardListViewModel(
                 }
             }
         }
-    }
-
-    init {
-        getCourses()
     }
 
     fun getCourses() {

@@ -17,9 +17,9 @@ data class CourseDates(
     @SerialName("course_date_blocks")
     val courseDateBlocks: List<CourseDateBlock>,
     @SerialName("dates_banner_info")
-    val datesBannerInfo: DatesBannerInfo?,
+    val datesBannerInfo: DatesBannerInfo? = null,
     @SerialName("has_ended")
-    val hasEnded: Boolean?,
+    val hasEnded: Boolean? = null,
 ) {
     fun getCourseDatesResult(): CourseDatesResult {
         return CourseDatesResult(

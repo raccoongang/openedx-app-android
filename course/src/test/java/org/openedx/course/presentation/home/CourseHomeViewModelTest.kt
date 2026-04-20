@@ -114,7 +114,6 @@ class CourseHomeViewModelTest {
                 any(),
                 any(),
                 any(),
-                any(),
                 any()
             )
         } returns Unit

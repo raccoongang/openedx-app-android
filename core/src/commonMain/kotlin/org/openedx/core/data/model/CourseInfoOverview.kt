@@ -14,17 +14,17 @@ data class CourseInfoOverview(
     @SerialName("org")
     val org: String,
     @SerialName("start")
-    val start: String?,
+    val start: String? = null,
     @SerialName("start_display")
     val startDisplay: String,
     @SerialName("start_type")
     val startType: String,
     @SerialName("end")
-    val end: String?,
+    val end: String? = null,
     @SerialName("is_self_paced")
     val isSelfPaced: Boolean,
     @SerialName("media")
-    var media: Media?,
+    var media: Media? = null,
     @SerialName("course_sharing_utm_parameters")
     val courseSharingUtmParameters: CourseSharingUtmParameters,
     @SerialName("course_about")

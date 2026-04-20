@@ -1,6 +1,5 @@
 package org.openedx.profile.presentation.manageaccount
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,10 +36,6 @@ class ManageAccountViewModel(
 
     init {
         getAccount()
-    }
-
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is AccountUpdated) {

@@ -92,7 +92,7 @@ class CourseOutlineViewModelTest {
             resourceManager.getString(courseRes.string.course_can_download_only_with_wifi)
         } returns cantDownload
         every { config.getApiHostURL() } returns "http://localhost:8000"
-        every { downloadDialogManager.showDownloadFailedPopup(any(), any()) } returns Unit
+        every { downloadDialogManager.showDownloadFailedPopup(any()) } returns Unit
         every { preferencesManager.isRelativeDatesEnabled } returns true
 
         coEvery { interactor.getCourseDates(any(), any()) } returns CoreMocks.mockCourseDatesResult
@@ -119,7 +119,6 @@ class CourseOutlineViewModelTest {
             every { downloadModelsSource.getDownloadModelsFlow() } returns flow { emit(emptyList()) }
             every {
                 downloadDialogManager.showPopup(
-                    any(),
                     any(),
                     any(),
                     any(),

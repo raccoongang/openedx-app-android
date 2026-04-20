@@ -83,6 +83,22 @@ object AppNavRoutes {
     )
 
     @Serializable
+    data class CourseContentAll(
+        val courseId: String,
+        val courseTitle: String,
+        val initialTab: String = "ALL",
+    )
+
+    @Serializable
+    data class CourseProgress(val courseId: String)
+
+    @Serializable
+    data class CourseDates(val courseId: String, val enrollmentMode: String = "")
+
+    @Serializable
+    data class DiscussionTopics(val courseId: String, val courseTitle: String)
+
+    @Serializable
     data class CourseUnitContainer(
         val courseId: String,
         val unitId: String,

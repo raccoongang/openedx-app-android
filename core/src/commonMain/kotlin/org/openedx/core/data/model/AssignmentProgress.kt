@@ -9,13 +9,13 @@ private const val DEFAULT_LABEL_LENGTH = 5
 @Serializable
 data class AssignmentProgress(
     @SerialName("assignment_type")
-    val assignmentType: String?,
+    val assignmentType: String? = null,
     @SerialName("num_points_earned")
-    val numPointsEarned: Float?,
+    val numPointsEarned: Float? = null,
     @SerialName("num_points_possible")
-    val numPointsPossible: Float?,
+    val numPointsPossible: Float? = null,
     @SerialName("short_label")
-    val shortLabel: String?
+    val shortLabel: String? = null
 ) {
     fun mapToDomain(displayName: String) = AssignmentProgress(
         assignmentType = assignmentType,

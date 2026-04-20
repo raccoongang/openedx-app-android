@@ -7,9 +7,9 @@ import org.openedx.core.domain.model.CourseSharingUtmParameters
 @Serializable
 data class CourseSharingUtmParameters(
     @SerialName("facebook")
-    val facebook: String?,
+    val facebook: String? = null,
     @SerialName("twitter")
-    val twitter: String?
+    val twitter: String? = null
 ) {
     fun mapToDomain(): CourseSharingUtmParameters {
         return CourseSharingUtmParameters(

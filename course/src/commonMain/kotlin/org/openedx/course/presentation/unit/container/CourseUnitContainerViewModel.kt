@@ -51,7 +51,8 @@ class CourseUnitContainerViewModel(
 
     private var currentIndex = 0
     private var currentVerticalIndex = 0
-    private var currentSectionIndex = -1
+    var currentSectionIndex = -1
+        private set
 
     val isFirstIndexInContainer: Boolean
         get() {

@@ -9,5 +9,5 @@ data class CourseList(
     @SerialName("pagination")
     val pagination: Pagination,
     @SerialName("results")
-    val results: List<CourseDetails>?,
+    val results: List<CourseDetails>? = null,
 )

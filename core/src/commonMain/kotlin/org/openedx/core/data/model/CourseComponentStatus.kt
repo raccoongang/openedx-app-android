@@ -7,7 +7,7 @@ import org.openedx.core.domain.model.CourseComponentStatus
 @Serializable
 data class CourseComponentStatus(
     @SerialName("last_visited_block_id")
-    var lastVisitedBlockId: String?,
+    var lastVisitedBlockId: String? = null,
 ) {
 
     fun mapToDomain(): CourseComponentStatus {

@@ -8,7 +8,7 @@ import org.openedx.core.domain.model.RegistrationFieldType
 @Serializable
 data class RegistrationFields(
     @SerialName("fields")
-    val fields: List<Field>?,
+    val fields: List<Field>? = null,
 ) {
 
     @Serializable

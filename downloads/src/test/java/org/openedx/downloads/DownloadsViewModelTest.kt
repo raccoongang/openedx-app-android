@@ -127,8 +127,7 @@ class DownloadsViewModelTest {
             downloadHelper
         )
         advanceUntilIdle()
-        val fragmentManager = mockk<Any>(relaxed = true)
-        viewModel.downloadCourse(fragmentManager, "course1")
+        viewModel.downloadCourse("course1")
         advanceUntilIdle()
 
         verify(exactly = 1) { analytics.logEvent(any(), any()) }
@@ -137,7 +136,6 @@ class DownloadsViewModelTest {
             downloadDialogManager.showPopup(
                 coursePreview = any(),
                 isBlocksDownloaded = any(),
-                fragmentManager = any(),
                 removeDownloadModels = any(),
                 saveDownloadModels = any(),
                 onDismissClick = any(),
@@ -168,8 +166,7 @@ class DownloadsViewModelTest {
             )
             advanceUntilIdle()
 
-            val fragmentManager = mockk<Any>(relaxed = true)
-            viewModel.downloadCourse(fragmentManager, "course1")
+            viewModel.downloadCourse("course1")
             advanceUntilIdle()
 
             viewModel.cancelDownloading("course1")
@@ -201,13 +198,11 @@ class DownloadsViewModelTest {
         )
         advanceUntilIdle()
 
-        val fragmentManager = mockk<Any>(relaxed = true)
-        viewModel.removeDownloads(fragmentManager, "course1")
+        viewModel.removeDownloads("course1")
         advanceUntilIdle()
 
         coVerify {
             downloadDialogManager.showRemoveDownloadModelPopup(
-                any(),
                 any(),
                 any()
             )

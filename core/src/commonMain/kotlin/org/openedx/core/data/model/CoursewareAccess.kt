@@ -7,17 +7,17 @@ import org.openedx.core.domain.model.CoursewareAccess
 @Serializable
 data class CoursewareAccess(
     @SerialName("has_access")
-    val hasAccess: Boolean?,
+    val hasAccess: Boolean? = null,
     @SerialName("error_code")
-    val errorCode: String?,
+    val errorCode: String? = null,
     @SerialName("developer_message")
-    val developerMessage: String?,
+    val developerMessage: String? = null,
     @SerialName("user_message")
-    val userMessage: String?,
+    val userMessage: String? = null,
     @SerialName("additional_context_user_message")
-    val additionalContextUserMessage: String?,
+    val additionalContextUserMessage: String? = null,
     @SerialName("user_fragment")
-    val userFragment: String?
+    val userFragment: String? = null
 ) {
 
     fun mapToDomain(): CoursewareAccess {

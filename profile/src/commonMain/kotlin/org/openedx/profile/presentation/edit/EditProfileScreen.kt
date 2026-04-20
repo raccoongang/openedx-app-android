@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -306,9 +307,26 @@ fun EditProfileScreen(
                     verticalAlignment = Alignment.Top
                 ) {
                     BackBtn(modifier = Modifier.padding(end = 16.dp)) {
-                        onBackClick(saveButtonEnabled)
+                        if (!uiState.isUpdating) {
+                            onBackClick(saveButtonEnabled)
+                        }
                     }
-                    if (saveButtonEnabled) {
+                    if (uiState.isUpdating) {
+                        Box(
+                            modifier = Modifier
+                                .height(48.dp)
+                                .padding(end = 24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .testTag("progress_edit_profile_saving")
+                                    .size(24.dp),
+                                color = MaterialTheme.appColors.primary,
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    } else if (saveButtonEnabled) {
                         IconText(
                             modifier = Modifier
                                 .height(48.dp)

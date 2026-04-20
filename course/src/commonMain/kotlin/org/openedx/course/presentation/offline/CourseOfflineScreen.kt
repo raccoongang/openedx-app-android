@@ -88,19 +88,16 @@ fun CourseOfflineScreen(
         uiState = uiState,
         hasInternetConnection = viewModel.hasInternetConnection,
         onDownloadAllClick = {
-            viewModel.downloadAllBlocks(null)
+            viewModel.downloadAllBlocks()
         },
         onCancelDownloadClick = {
             viewModel.removeDownloadModel()
         },
         onDeleteClick = { downloadModel ->
-            viewModel.removeDownloadModel(
-                downloadModel,
-                null
-            )
+            viewModel.removeDownloadModel(downloadModel)
         },
         onDeleteAllClick = {
-            viewModel.deleteAll(null)
+            viewModel.deleteAll()
         },
     )
 }

@@ -7,9 +7,9 @@ import org.openedx.core.domain.model.DashboardCourseList
 @Serializable
 data class DashboardCourseList(
     @SerialName("next")
-    val next: String?,
+    val next: String? = null,
     @SerialName("previous")
-    val previous: String?,
+    val previous: String? = null,
     @SerialName("count")
     val count: Int,
     @SerialName("num_pages")

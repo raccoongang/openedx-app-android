@@ -13,7 +13,7 @@ data class ThreadsResponse(
     @SerialName("results")
     val results: List<Thread>,
     @SerialName("text_search_rewrite")
-    val textSearchRewrite: String?,
+    val textSearchRewrite: String? = null,
     @SerialName("pagination")
     val pagination: Pagination
 ) {
@@ -22,9 +22,9 @@ data class ThreadsResponse(
         @SerialName("id")
         val id: String,
         @SerialName("author")
-        val author: String?,
+        val author: String? = null,
         @SerialName("author_label")
-        val authorLabel: String?,
+        val authorLabel: String? = null,
         @SerialName("created_at")
         val createdAt: String,
         @SerialName("updated_at")
@@ -52,15 +52,15 @@ data class ThreadsResponse(
         @SerialName("topic_id")
         val topicId: String,
         @SerialName("group_id")
-        val groupId: String?,
+        val groupId: String? = null,
         @SerialName("group_name")
-        val groupName: String?,
+        val groupName: String? = null,
         @SerialName("type")
         val type: String,
         @SerialName("preview_body")
         val previewBody: String,
         @SerialName("abuse_flagged_count")
-        @Contextual val abuseFlaggedCount: Any?,
+        @Contextual val abuseFlaggedCount: Any? = null,
         @SerialName("title")
         val title: String,
         @SerialName("pinned")
@@ -80,7 +80,7 @@ data class ThreadsResponse(
         @SerialName("response_count")
         val responseCount: Int,
         @SerialName("users")
-        val users: Map<String, DiscussionProfile>?
+        val users: Map<String, DiscussionProfile>? = null
     ) {
     @Serializable
         data class DiscussionProfile(

@@ -132,14 +132,24 @@ actual fun platformModule(): Module = module {
     single<ResourceManager> { IosResourceManager() }
     single { org.openedx.foundation.utils.FileUtil() }
     single { org.openedx.core.domain.helper.VideoPreviewHelper() }
+    single<org.openedx.course.utils.ImageProcessor> { org.openedx.course.utils.IosImageProcessor() }
 
     // ---- Additional preferences ----
     single<org.openedx.whatsnew.data.storage.WhatsNewPreferences> { org.openedx.shared.stubs.IosWhatsNewPreferences() }
     single<org.openedx.course.data.storage.CoursePreferences> { org.openedx.shared.stubs.IosCoursePreferences() }
     single<org.openedx.core.data.storage.InAppReviewPreferences> { org.openedx.shared.stubs.IosInAppReviewPreferences() }
+    single<org.openedx.core.presentation.dialog.appreview.AppReviewManager> {
+        org.openedx.core.presentation.dialog.appreview.AppReviewManagerImpl(get(), get(), get(), get())
+    }
+    single<org.openedx.core.module.TranscriptProvider> { org.openedx.shared.stubs.IosTranscriptProvider() }
 
     // ---- Additional stubs ----
-    single<org.openedx.core.system.AppCookieManager> { org.openedx.shared.stubs.IosAppCookieManager() }
+    single<org.openedx.core.system.AppCookieManager> {
+        org.openedx.shared.stubs.IosAppCookieManager(
+            config = get(),
+            client = get(),
+        )
+    }
     single<org.openedx.core.system.PlatformActions> { org.openedx.shared.stubs.IosPlatformActions() }
     single<org.openedx.whatsnew.WhatsNewManager> { org.openedx.shared.stubs.IosWhatsNewManager() }
     single { org.openedx.core.presentation.global.AppData("OpenEdX", "org.openedx.app.ios", "1.0.0") }
@@ -179,6 +189,7 @@ actual fun platformModule(): Module = module {
     single<DownloadDialogManager> { StubDownloadDialogManager() }
     single<DownloadModelsSource> { StubDownloadModelsSource() }
     single<DownloadHelper> { StubDownloadHelper() }
+    single<org.openedx.core.system.StorageManager> { org.openedx.core.system.StorageManagerImpl() }
 
     // ---- Repositories ----
     factory { Validator() }
@@ -286,6 +297,16 @@ actual fun platformModule(): Module = module {
     viewModel { org.openedx.discovery.presentation.program.ProgramViewModel(get(), get(), get(), get(), get(), get(), get()) }
 
     // ---- Course screens ----
+    viewModel { (courseId: String, courseTitle: String, resumeBlockId: String) ->
+        org.openedx.course.presentation.container.CourseContainerViewModel(
+            courseId = courseId,
+            courseName = courseTitle,
+            resumeBlockId = resumeBlockId,
+            config = get(), interactor = get(), resourceManager = get(),
+            courseNotifier = get(), networkConnection = get(), corePreferences = get(),
+            courseAnalytics = get(), imageProcessor = get(), calendarSyncScheduler = get(),
+        )
+    }
     viewModel { (courseId: String, courseTitle: String) ->
         org.openedx.course.presentation.home.CourseHomeViewModel(courseId, courseTitle, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
@@ -300,6 +321,55 @@ actual fun platformModule(): Module = module {
     }
     viewModel { (descendants: List<String>) ->
         org.openedx.course.settings.download.DownloadQueueViewModel(descendants, get(), get(), get(), get(), get(), get(), get())
+    }
+    viewModel { (courseId: String, courseTitle: String) ->
+        org.openedx.course.presentation.outline.CourseContentAllViewModel(
+            courseId, courseTitle,
+            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        )
+    }
+    viewModel { (courseId: String, courseTitle: String) ->
+        org.openedx.course.presentation.contenttab.ContentTabViewModel(
+            courseId = courseId, courseTitle = courseTitle,
+            analytics = get(), resourceManager = get(),
+        )
+    }
+    viewModel { (courseId: String) ->
+        org.openedx.course.presentation.videos.CourseVideoViewModel(
+            courseId = courseId, config = get(), interactor = get(), resourceManager = get(),
+            networkConnection = get(), preferencesManager = get(), courseNotifier = get(),
+            downloadDialogManager = get(), fileUtil = get(), analytics = get(),
+            videoPreviewHelper = get(), coreAnalytics = get(), downloadModelsSource = get(),
+            workerController = get(), downloadHelper = get(),
+        )
+    }
+    viewModel { (courseId: String) ->
+        org.openedx.course.presentation.assignments.CourseAssignmentViewModel(
+            courseId = courseId, interactor = get(), courseNotifier = get(), analytics = get(),
+        )
+    }
+    viewModel { (courseId: String) ->
+        org.openedx.course.presentation.progress.CourseProgressViewModel(courseId, get(), get(), get())
+    }
+    viewModel { (courseId: String, courseTitle: String) ->
+        org.openedx.course.presentation.offline.CourseOfflineViewModel(
+            courseId, courseTitle,
+            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        )
+    }
+    viewModel { (courseId: String, enrollmentMode: String) ->
+        org.openedx.course.presentation.dates.CourseDatesViewModel(
+            courseId = courseId, enrollmentMode = enrollmentMode,
+            courseNotifier = get(), interactor = get(), courseAnalytics = get(),
+            config = get(), calendarInteractor = get(), calendarNotifier = get(),
+            corePreferences = get(), resourceManager = get(),
+        )
+    }
+    viewModel { (courseId: String, courseTitle: String) ->
+        org.openedx.discussion.presentation.topics.DiscussionTopicsViewModel(
+            courseId = courseId, courseTitle = courseTitle,
+            interactor = get(), resourceManager = get(), analytics = get(), courseNotifier = get(),
+        )
     }
 
     // ---- Discussion screens ----

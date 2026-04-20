@@ -14,29 +14,29 @@ import org.openedx.core.domain.model.CourseProgress
 
 @Serializable
 data class CourseProgressResponse(
-    @SerialName("verified_mode") val verifiedMode: String?,
-    @SerialName("access_expiration") val accessExpiration: String?,
-    @SerialName("certificate_data") val certificateData: CertificateData?,
-    @SerialName("completion_summary") val completionSummary: CompletionSummary?,
-    @SerialName("course_grade") val courseGrade: CourseGrade?,
-    @SerialName("credit_course_requirements") val creditCourseRequirements: String?,
-    @SerialName("end") val end: String?,
-    @SerialName("enrollment_mode") val enrollmentMode: String?,
-    @SerialName("grading_policy") val gradingPolicy: GradingPolicy?,
-    @SerialName("has_scheduled_content") val hasScheduledContent: Boolean?,
-    @SerialName("section_scores") val sectionScores: List<SectionScore>?,
-    @SerialName("studio_url") val studioUrl: String?,
-    @SerialName("username") val username: String?,
-    @SerialName("user_has_passing_grade") val userHasPassingGrade: Boolean?,
-    @SerialName("verification_data") val verificationData: VerificationData?,
-    @SerialName("disable_progress_graph") val disableProgressGraph: Boolean?,
+    @SerialName("verified_mode") val verifiedMode: String? = null,
+    @SerialName("access_expiration") val accessExpiration: String? = null,
+    @SerialName("certificate_data") val certificateData: CertificateData? = null,
+    @SerialName("completion_summary") val completionSummary: CompletionSummary? = null,
+    @SerialName("course_grade") val courseGrade: CourseGrade? = null,
+    @SerialName("credit_course_requirements") val creditCourseRequirements: String? = null,
+    @SerialName("end") val end: String? = null,
+    @SerialName("enrollment_mode") val enrollmentMode: String? = null,
+    @SerialName("grading_policy") val gradingPolicy: GradingPolicy? = null,
+    @SerialName("has_scheduled_content") val hasScheduledContent: Boolean? = null,
+    @SerialName("section_scores") val sectionScores: List<SectionScore>? = null,
+    @SerialName("studio_url") val studioUrl: String? = null,
+    @SerialName("username") val username: String? = null,
+    @SerialName("user_has_passing_grade") val userHasPassingGrade: Boolean? = null,
+    @SerialName("verification_data") val verificationData: VerificationData? = null,
+    @SerialName("disable_progress_graph") val disableProgressGraph: Boolean? = null,
 ) {
     @Serializable
     data class CertificateData(
-        @SerialName("cert_status") val certStatus: String?,
-        @SerialName("cert_web_view_url") val certWebViewUrl: String?,
-        @SerialName("download_url") val downloadUrl: String?,
-        @SerialName("certificate_available_date") val certificateAvailableDate: String?
+        @SerialName("cert_status") val certStatus: String? = null,
+        @SerialName("cert_web_view_url") val certWebViewUrl: String? = null,
+        @SerialName("download_url") val downloadUrl: String? = null,
+        @SerialName("certificate_available_date") val certificateAvailableDate: String? = null
     ) {
         fun mapToRoomEntity() = CertificateDataDb(
             certStatus = certStatus.orEmpty(),
@@ -55,9 +55,9 @@ data class CourseProgressResponse(
 
     @Serializable
     data class CompletionSummary(
-        @SerialName("complete_count") val completeCount: Int?,
-        @SerialName("incomplete_count") val incompleteCount: Int?,
-        @SerialName("locked_count") val lockedCount: Int?
+        @SerialName("complete_count") val completeCount: Int? = null,
+        @SerialName("incomplete_count") val incompleteCount: Int? = null,
+        @SerialName("locked_count") val lockedCount: Int? = null
     ) {
         fun mapToRoomEntity() = CompletionSummaryDb(
             completeCount = completeCount ?: 0,
@@ -74,9 +74,9 @@ data class CourseProgressResponse(
 
     @Serializable
     data class CourseGrade(
-        @SerialName("letter_grade") val letterGrade: String?,
-        @SerialName("percent") val percent: Double?,
-        @SerialName("is_passing") val isPassing: Boolean?
+        @SerialName("letter_grade") val letterGrade: String? = null,
+        @SerialName("percent") val percent: Double? = null,
+        @SerialName("is_passing") val isPassing: Boolean? = null
     ) {
         fun mapToRoomEntity() = CourseGradeDb(
             letterGrade = letterGrade.orEmpty(),
@@ -93,9 +93,9 @@ data class CourseProgressResponse(
 
     @Serializable
     data class GradingPolicy(
-        @SerialName("assignment_policies") val assignmentPolicies: List<AssignmentPolicy>?,
-        @SerialName("grade_range") val gradeRange: Map<String, Float>?,
-        @SerialName("assignment_colors") val assignmentColors: List<String>?
+        @SerialName("assignment_policies") val assignmentPolicies: List<AssignmentPolicy>? = null,
+        @SerialName("grade_range") val gradeRange: Map<String, Float>? = null,
+        @SerialName("assignment_colors") val assignmentColors: List<String>? = null
     ) {
         // TODO Temporary solution. Backend will returns color list later
         companion object {
@@ -128,23 +128,23 @@ data class CourseProgressResponse(
 
         @Serializable
         data class AssignmentPolicy(
-            @SerialName("num_droppable") val numDroppable: Int?,
-            @SerialName("num_total") val numTotal: Int?,
-            @SerialName("short_label") val shortLabel: String?,
-            @SerialName("type") val type: String?,
-            @SerialName("weight") val weight: Double?
+            @SerialName("num_droppable") val numDroppable: Double? = null,
+            @SerialName("num_total") val numTotal: Double? = null,
+            @SerialName("short_label") val shortLabel: String? = null,
+            @SerialName("type") val type: String? = null,
+            @SerialName("weight") val weight: Double? = null
         ) {
             fun mapToRoomEntity() = GradingPolicyDb.AssignmentPolicyDb(
-                numDroppable = numDroppable ?: 0,
-                numTotal = numTotal ?: 0,
+                numDroppable = numDroppable?.toInt() ?: 0,
+                numTotal = numTotal?.toInt() ?: 0,
                 shortLabel = shortLabel.orEmpty(),
                 type = type.orEmpty(),
                 weight = weight ?: 0.0
             )
 
             fun mapToDomain() = CourseProgress.GradingPolicy.AssignmentPolicy(
-                numDroppable = numDroppable ?: 0,
-                numTotal = numTotal ?: 0,
+                numDroppable = numDroppable?.toInt() ?: 0,
+                numTotal = numTotal?.toInt() ?: 0,
                 shortLabel = shortLabel ?: "",
                 type = type ?: "",
                 weight = weight ?: 0.0
@@ -154,8 +154,8 @@ data class CourseProgressResponse(
 
     @Serializable
     data class SectionScore(
-        @SerialName("display_name") val displayName: String?,
-        @SerialName("subsections") val subsections: List<Subsection>?
+        @SerialName("display_name") val displayName: String? = null,
+        @SerialName("subsections") val subsections: List<Subsection>? = null
     ) {
         fun mapToRoomEntity() = SectionScoreDb(
             displayName = displayName.orEmpty(),
@@ -169,19 +169,19 @@ data class CourseProgressResponse(
 
         @Serializable
         data class Subsection(
-            @SerialName("assignment_type") val assignmentType: String?,
-            @SerialName("block_key") val blockKey: String?,
-            @SerialName("display_name") val displayName: String?,
-            @SerialName("has_graded_assignment") val hasGradedAssignment: Boolean?,
-            @SerialName("override") val override: String?,
-            @SerialName("learner_has_access") val learnerHasAccess: Boolean?,
-            @SerialName("num_points_earned") val numPointsEarned: Float?,
-            @SerialName("num_points_possible") val numPointsPossible: Float?,
-            @SerialName("percent_graded") val percentGraded: Double?,
-            @SerialName("problem_scores") val problemScores: List<ProblemScore>?,
-            @SerialName("show_correctness") val showCorrectness: String?,
-            @SerialName("show_grades") val showGrades: Boolean?,
-            @SerialName("url") val url: String?
+            @SerialName("assignment_type") val assignmentType: String? = null,
+            @SerialName("block_key") val blockKey: String? = null,
+            @SerialName("display_name") val displayName: String? = null,
+            @SerialName("has_graded_assignment") val hasGradedAssignment: Boolean? = null,
+            @SerialName("override") val override: String? = null,
+            @SerialName("learner_has_access") val learnerHasAccess: Boolean? = null,
+            @SerialName("num_points_earned") val numPointsEarned: Float? = null,
+            @SerialName("num_points_possible") val numPointsPossible: Float? = null,
+            @SerialName("percent_graded") val percentGraded: Double? = null,
+            @SerialName("problem_scores") val problemScores: List<ProblemScore>? = null,
+            @SerialName("show_correctness") val showCorrectness: String? = null,
+            @SerialName("show_grades") val showGrades: Boolean? = null,
+            @SerialName("url") val url: String? = null
         ) {
             fun mapToRoomEntity() = SectionScoreDb.SubsectionDb(
                 assignmentType = assignmentType.orEmpty(),
@@ -217,8 +217,8 @@ data class CourseProgressResponse(
 
             @Serializable
             data class ProblemScore(
-                @SerialName("earned") val earned: Double?,
-                @SerialName("possible") val possible: Double?
+                @SerialName("earned") val earned: Double? = null,
+                @SerialName("possible") val possible: Double? = null
             ) {
                 fun mapToRoomEntity() = SectionScoreDb.SubsectionDb.ProblemScoreDb(
                     earned = earned ?: 0.0,
@@ -235,9 +235,9 @@ data class CourseProgressResponse(
 
     @Serializable
     data class VerificationData(
-        @SerialName("link") val link: String?,
-        @SerialName("status") val status: String?,
-        @SerialName("status_date") val statusDate: String?
+        @SerialName("link") val link: String? = null,
+        @SerialName("status") val status: String? = null,
+        @SerialName("status_date") val statusDate: String? = null
     ) {
         fun mapToRoomEntity() = VerificationDataDb(
             link = link.orEmpty(),

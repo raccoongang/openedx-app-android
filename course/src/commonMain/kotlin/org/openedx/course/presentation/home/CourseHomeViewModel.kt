@@ -407,7 +407,7 @@ class CourseHomeViewModel(
         }
     }
 
-    fun downloadBlocks(blocksIds: List<String>, fragmentManager: Any?) {
+    fun downloadBlocks(blocksIds: List<String>) {
         viewModelScope.launch {
             val courseData = _uiState.value as? CourseHomeUIState.CourseData ?: return@launch
 
@@ -462,7 +462,6 @@ class CourseHomeViewModel(
                     subSectionsBlocks = requiredSubSections,
                     courseId = courseId,
                     isBlocksDownloaded = isAllBlocksDownloaded,
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = ::removeDownloadModels,
                     saveDownloadModels = { blockId ->
                         saveDownloadModels(fileUtil.getExternalAppDirPath(), courseId, blockId)

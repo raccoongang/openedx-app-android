@@ -82,7 +82,7 @@ class CalendarViewModelTest {
 
     @Test
     fun `setCalendarSyncEnabled enables sync and triggers sync when isEnabled is true`() = runTest(dispatcher) {
-        viewModel.setCalendarSyncEnabled(isEnabled = true, fragmentManager = fragmentManager)
+        viewModel.setCalendarSyncEnabled(isEnabled = true)
 
         coVerify {
             calendarPreferences.isCalendarSyncEnabled = true

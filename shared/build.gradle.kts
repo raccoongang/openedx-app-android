@@ -20,7 +20,12 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            isStatic = true
+            // Dynamic framework — incremental Xcode builds reliably pick up Kotlin changes
+            // (with a static framework, the .a archive produced by `linkDebugFrameworkIosSimulatorArm64`
+            // is copied into the app bundle but its symbols are already linked into iosApp.debug.dylib
+            // at build time; Xcode's Frameworks link phase can miss reinvocation, leading to
+            // NoDefinitionFoundException at runtime for newly-registered Koin bindings).
+            isStatic = false
         }
     }
 
@@ -66,7 +71,10 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation("androidx.security:security-crypto:1.1.0-alpha06")
             implementation(libs.media3.exoplayer)
+            implementation(libs.media3.exoplayer.hls)
             implementation(libs.media3.ui)
+            implementation(libs.youtubePlayer.core)
+            implementation(libs.youtubePlayer.customUi)
         }
 
         iosMain.dependencies {

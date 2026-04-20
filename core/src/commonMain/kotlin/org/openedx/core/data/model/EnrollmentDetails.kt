@@ -8,15 +8,15 @@ import org.openedx.core.domain.model.EnrollmentDetails as DomainEnrollmentDetail
 @Serializable
 data class EnrollmentDetails(
     @SerialName("created")
-    var created: String?,
+    var created: String? = null,
     @SerialName("date")
-    val date: String?,
+    val date: String? = null,
     @SerialName("mode")
-    val mode: String?,
+    val mode: String? = null,
     @SerialName("is_active")
     val isActive: Boolean = false,
     @SerialName("upgrade_deadline")
-    val upgradeDeadline: String?,
+    val upgradeDeadline: String? = null,
 ) {
     fun mapToDomain() = DomainEnrollmentDetails(
         created = InstantUtils.iso8601ToInstant(date ?: ""),

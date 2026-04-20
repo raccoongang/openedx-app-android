@@ -13,5 +13,10 @@ expect fun PlatformVideoPlayer(
     url: String,
     modifier: Modifier = Modifier,
     isPlaying: Boolean = true,
+    startPositionMs: Long = 0L,
+    maxVideoHeight: Int = 0,
     onProgressChanged: ((Long) -> Unit)? = null,
+    onEnded: (() -> Unit)? = null,
+    onPlayPauseChanged: ((isPlaying: Boolean) -> Unit)? = null,
+    onSpeedChanged: ((speed: Float) -> Unit)? = null,
 )

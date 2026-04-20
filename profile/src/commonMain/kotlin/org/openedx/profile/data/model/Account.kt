@@ -10,37 +10,37 @@ import org.openedx.profile.domain.model.Account as DomainAccount
 @Serializable
 data class Account(
     @SerialName("username")
-    val username: String?,
+    val username: String? = null,
     @SerialName("bio")
-    val bio: String?,
+    val bio: String? = null,
     @SerialName("requires_parental_consent")
-    val requiresParentalConsent: Boolean?,
+    val requiresParentalConsent: Boolean? = null,
     @SerialName("name")
-    val name: String?,
+    val name: String? = null,
     @SerialName("country")
-    val country: String?,
+    val country: String? = null,
     @SerialName("is_active")
-    val isActive: Boolean?,
+    val isActive: Boolean? = null,
     @SerialName("profile_image")
-    val profileImage: ProfileImage?,
+    val profileImage: ProfileImage? = null,
     @SerialName("year_of_birth")
-    val yearOfBirth: Int?,
+    val yearOfBirth: Int? = null,
     @SerialName("level_of_education")
-    val levelOfEducation: String?,
+    val levelOfEducation: String? = null,
     @SerialName("goals")
-    val goals: String?,
+    val goals: String? = null,
     @SerialName("language_proficiencies")
-    val languageProficiencies: List<LanguageProficiency>?,
+    val languageProficiencies: List<LanguageProficiency>? = null,
     @SerialName("gender")
-    val gender: String?,
+    val gender: String? = null,
     @SerialName("mailing_address")
-    val mailingAddress: String?,
+    val mailingAddress: String? = null,
     @SerialName("email")
-    val email: String?,
+    val email: String? = null,
     @SerialName("date_joined")
-    val dateJoined: String?,
+    val dateJoined: String? = null,
     @SerialName("account_privacy")
-    val accountPrivacy: Privacy?
+    val accountPrivacy: Privacy? = null
 ) {
 
     enum class Privacy {

@@ -95,7 +95,6 @@ class CourseVideoViewModelTest {
                 any(),
                 any(),
                 any(),
-                any(),
             )
         } returns Unit
 

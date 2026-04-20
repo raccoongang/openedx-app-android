@@ -41,6 +41,40 @@ class LogistrationViewModel(
         }
     }
 
+    fun logSignInClicked() {
+        logEvent(AuthAnalyticsEvent.SIGN_IN_CLICKED)
+    }
+
+    fun logRegisterClicked() {
+        logEvent(AuthAnalyticsEvent.REGISTER_CLICKED)
+    }
+
+    fun logDiscoverySearch(query: String) {
+        if (query.isNotEmpty()) {
+            logEvent(
+                event = AuthAnalyticsEvent.DISCOVERY_COURSES_SEARCH,
+                params = buildMap {
+                    put(AuthAnalyticsKey.SEARCH_QUERY.key, query)
+                },
+            )
+        } else {
+            logEvent(AuthAnalyticsEvent.EXPLORE_ALL_COURSES)
+        }
+    }
+
+    private fun logEvent(
+        event: AuthAnalyticsEvent,
+        params: Map<String, Any?> = emptyMap(),
+    ) {
+        analytics.logEvent(
+            event = event.eventName,
+            params = buildMap {
+                put(AuthAnalyticsKey.NAME.key, event.biValue)
+                putAll(params)
+            },
+        )
+    }
+
     private fun logLogistrationScreenEvent() {
         val event = AuthAnalyticsEvent.Logistration
         analytics.logScreenEvent(

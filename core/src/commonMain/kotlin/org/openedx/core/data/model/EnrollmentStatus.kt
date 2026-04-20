@@ -7,11 +7,11 @@ import org.openedx.core.domain.model.EnrollmentStatus
 @Serializable
 data class EnrollmentStatus(
     @SerialName("course_id")
-    val courseId: String?,
+    val courseId: String? = null,
     @SerialName("course_name")
-    val courseName: String?,
+    val courseName: String? = null,
     @SerialName("recently_active")
-    val recentlyActive: Boolean?
+    val recentlyActive: Boolean? = null
 ) {
     fun mapToDomain() = EnrollmentStatus(
         courseId = courseId ?: "",

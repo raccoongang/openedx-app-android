@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -59,14 +60,21 @@ import androidx.compose.ui.unit.dp
 import org.openedx.core.NoContentScreenType
 import org.openedx.core.Res
 import org.openedx.core.Res as coreRes
+import org.openedx.core.config.Config
 import org.openedx.core.core_date_items_hidden
 import org.openedx.core.core_ic_lock
+import org.openedx.core.core_leaving_the_app
+import org.openedx.core.core_leaving_the_app_message
 import org.openedx.core.data.model.drawableResId
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.DatesSection
 import org.openedx.core.domain.model.stringRes
-
+import org.openedx.core.presentation.CoreAnalytics
+import org.openedx.core.presentation.CoreAnalyticsScreen
+import org.openedx.core.presentation.logExternalLinkAlert
+import org.openedx.core.presentation.logExternalLinkAlertAction
 import org.openedx.core.presentation.dates.CourseDateBlockSection
+import org.openedx.core.presentation.dialog.alert.ActionDialog
 
 import org.openedx.core.presentation.settings.calendarsync.CalendarSyncState
 import org.openedx.core.ui.CircularProgress
@@ -98,6 +106,10 @@ fun CourseDatesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState(CourseDatesUIState.Loading)
     val uiMessage by viewModel.uiMessage.collectAsState(null)
+    val uriHandler = LocalUriHandler.current
+    val config: Config = koinInject()
+    val coreAnalytics: CoreAnalytics = koinInject()
+    var externalLinkPending by remember { mutableStateOf<String?>(null) }
 
     CourseDatesUI(
         windowSize = windowSize,
@@ -129,8 +141,15 @@ fun CourseDatesScreen(
                                     )
                                 }
                         }
-                    } ?: {
+                    } ?: run {
                     viewModel.logCourseComponentTapped(false, block)
+                    if (block.link.isNotEmpty()) {
+                        externalLinkPending = block.link
+                        coreAnalytics.logExternalLinkAlert(
+                            block.link,
+                            CoreAnalyticsScreen.COURSE_DATES.screenName,
+                        )
+                    }
                 }
             }
         },
@@ -150,6 +169,30 @@ fun CourseDatesScreen(
             onNavigateToCalendarSettings()
         }
     )
+
+    externalLinkPending?.let { url ->
+        ActionDialog(
+            title = stringResource(Res.string.core_leaving_the_app),
+            message = stringResource(Res.string.core_leaving_the_app_message, config.getPlatformName()),
+            onCancelClick = {
+                coreAnalytics.logExternalLinkAlertAction(
+                    url,
+                    CoreAnalyticsScreen.COURSE_DATES.screenName,
+                    cancelled = true,
+                )
+                externalLinkPending = null
+            },
+            onContinueClick = {
+                coreAnalytics.logExternalLinkAlertAction(
+                    url,
+                    CoreAnalyticsScreen.COURSE_DATES.screenName,
+                    cancelled = false,
+                )
+                uriHandler.openUri(url)
+                externalLinkPending = null
+            },
+        )
+    }
 }
 
 @Composable

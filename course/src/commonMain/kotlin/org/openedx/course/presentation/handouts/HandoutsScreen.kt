@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +32,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import org.openedx.core.NoContentScreenType
+import org.openedx.core.ui.CircularProgress
+import org.openedx.core.ui.NoContentScreen
+import org.openedx.core.ui.Toolbar
+import org.openedx.core.ui.WebContentScreen
 import org.openedx.core.ui.displayCutoutForLandscape
+import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.course.presentation.ui.CardArrow
@@ -141,4 +149,101 @@ private fun HandoutsItem(
         CardArrow(degrees = 0f)
     }
     HorizontalDivider()
+}
+
+@Composable
+fun HandoutsWebViewScreen(
+    windowSize: WindowSize,
+    viewModel: HandoutsViewModel,
+    onBackClick: () -> Unit,
+) {
+    val handoutsType = HandoutsType.valueOf(viewModel.handoutsType)
+    val title = stringResource(
+        if (handoutsType == HandoutsType.Handouts) Res.string.course_handouts
+        else Res.string.course_announcements
+    )
+    val uiState by viewModel.uiState.collectAsState()
+    val bgColor = MaterialTheme.colorScheme.background.value
+    val textColor = MaterialTheme.colorScheme.onBackground.value
+    when (val state = uiState) {
+        is HandoutsUIState.Loading -> {
+            CircularProgress()
+        }
+        is HandoutsUIState.HTMLContent -> {
+            WebContentScreen(
+                windowSize = windowSize,
+                apiHostUrl = viewModel.apiHostUrl,
+                title = title,
+                htmlBody = viewModel.injectDarkMode(state.htmlContent, bgColor, textColor),
+                onBackClick = onBackClick,
+            )
+        }
+        HandoutsUIState.Error -> {
+            HandoutsEmptyScreen(
+                windowSize = windowSize,
+                handoutType = handoutsType,
+                title = title,
+                onBackClick = onBackClick,
+            )
+        }
+    }
+}
+
+@Composable
+fun HandoutsEmptyScreen(
+    windowSize: WindowSize,
+    handoutType: HandoutsType,
+    title: String,
+    onBackClick: () -> Unit,
+) {
+    val screenType = if (handoutType == HandoutsType.Handouts) {
+        NoContentScreenType.COURSE_HANDOUTS
+    } else {
+        NoContentScreenType.COURSE_ANNOUNCEMENTS
+    }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 24.dp),
+        containerColor = MaterialTheme.appColors.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    ) {
+        val screenWidth by remember(key1 = windowSize) {
+            mutableStateOf(
+                windowSize.windowSizeValue(
+                    expanded = Modifier.widthIn(Dp.Unspecified, 560.dp),
+                    compact = Modifier.fillMaxWidth(),
+                )
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(it)
+                .statusBarsInset()
+                .displayCutoutForLandscape(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            Column(screenWidth) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .zIndex(1f),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    Toolbar(
+                        label = title,
+                        canShowBackBtn = true,
+                        onBackClick = onBackClick,
+                    )
+                }
+                Surface(
+                    Modifier.fillMaxSize(),
+                    color = MaterialTheme.appColors.background,
+                ) {
+                    NoContentScreen(noContentScreenType = screenType)
+                }
+            }
+        }
+    }
 }

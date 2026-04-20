@@ -3,6 +3,7 @@ package org.openedx.discovery.presentation.catalog
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
@@ -23,8 +24,10 @@ actual fun CatalogPlatformWebView(
     onWebPageUpdated: (String) -> Unit,
     onUriClick: (String, WebViewLink.Authority) -> Unit,
     onWebPageLoadError: () -> Unit,
+    backControl: WebViewBackControl?,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val webViewRef = remember { arrayOfNulls<android.webkit.WebView>(1) }
     val webView = CatalogWebViewScreen(
         url = url,
         uriScheme = uriScheme,
@@ -38,10 +41,19 @@ actual fun CatalogPlatformWebView(
                 }
             }
         },
-        onWebPageUpdated = onWebPageUpdated,
+        onWebPageUpdated = { updatedUrl ->
+            onWebPageUpdated(updatedUrl)
+            backControl?.canGoBackState = webViewRef[0]?.canGoBack() == true
+        },
         onUriClick = onUriClick,
         onWebPageLoadError = onWebPageLoadError,
     )
+    webViewRef[0] = webView
+    if (backControl != null) {
+        backControl.goBackImpl = {
+            if (webView.canGoBack()) webView.goBack()
+        }
+    }
 
     AndroidView(
         modifier = modifier.background(MaterialTheme.appColors.background),

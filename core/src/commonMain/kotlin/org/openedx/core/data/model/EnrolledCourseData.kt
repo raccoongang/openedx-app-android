@@ -8,45 +8,45 @@ import org.openedx.core.utils.InstantUtils
 @Serializable
 data class EnrolledCourseData(
     @SerialName("id")
-    var id: String?,
+    var id: String? = null,
     @SerialName("name")
-    var name: String?,
+    var name: String? = null,
     @SerialName("number")
-    var number: String?,
+    var number: String? = null,
     @SerialName("org")
-    var org: String?,
+    var org: String? = null,
     @SerialName("start")
-    var start: String?,
+    var start: String? = null,
     @SerialName("start_display")
-    var startDisplay: String?,
+    var startDisplay: String? = null,
     @SerialName("start_type")
-    var startType: String?,
+    var startType: String? = null,
     @SerialName("end")
-    var end: String?,
+    var end: String? = null,
     @SerialName("dynamic_upgrade_deadline")
-    var dynamicUpgradeDeadline: String?,
+    var dynamicUpgradeDeadline: String? = null,
     @SerialName("subscription_id")
-    var subscriptionId: String?,
+    var subscriptionId: String? = null,
     @SerialName("courseware_access")
-    var coursewareAccess: CoursewareAccess?,
+    var coursewareAccess: CoursewareAccess? = null,
     @SerialName("media")
-    var media: Media?,
+    var media: Media? = null,
     @SerialName("course_image")
-    var courseImage: String?,
+    var courseImage: String? = null,
     @SerialName("course_about")
-    var courseAbout: String?,
+    var courseAbout: String? = null,
     @SerialName("course_sharing_utm_parameters")
-    var courseSharingUtmParameters: CourseSharingUtmParameters?,
+    var courseSharingUtmParameters: CourseSharingUtmParameters? = null,
     @SerialName("course_updates")
-    var courseUpdates: String?,
+    var courseUpdates: String? = null,
     @SerialName("course_handouts")
-    var courseHandouts: String?,
+    var courseHandouts: String? = null,
     @SerialName("discussion_url")
-    var discussionUrl: String?,
+    var discussionUrl: String? = null,
     @SerialName("video_outline")
-    var videoOutline: String?,
+    var videoOutline: String? = null,
     @SerialName("is_self_paced")
-    var isSelfPaced: Boolean?
+    var isSelfPaced: Boolean? = null
 ) {
 
     fun mapToDomain(): EnrolledCourseData {

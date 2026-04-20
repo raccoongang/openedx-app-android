@@ -7,11 +7,11 @@ import org.openedx.core.domain.model.OfflineDownload
 @Serializable
 data class OfflineDownload(
     @SerialName("file_url")
-    var fileUrl: String?,
+    var fileUrl: String? = null,
     @SerialName("last_modified")
-    var lastModified: String?,
+    var lastModified: String? = null,
     @SerialName("file_size")
-    var fileSize: Long?,
+    var fileSize: Long? = null,
 ) {
     fun mapToDomain() = OfflineDownload(
         fileUrl = fileUrl ?: "",

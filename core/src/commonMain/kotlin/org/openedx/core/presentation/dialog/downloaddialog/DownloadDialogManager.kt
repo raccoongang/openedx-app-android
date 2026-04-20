@@ -18,7 +18,6 @@ interface DownloadDialogManager {
         courseId: String,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean = false,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: (blockId: String) -> Unit,
         onDismissClick: () -> Unit = {},
@@ -27,7 +26,6 @@ interface DownloadDialogManager {
     fun showPopup(
         coursePreview: DownloadCoursePreview,
         isBlocksDownloaded: Boolean,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,
         onDismissClick: () -> Unit = {},
@@ -35,11 +33,9 @@ interface DownloadDialogManager {
     )
     fun showRemoveDownloadModelPopup(
         downloadDialogItem: DownloadDialogItem,
-        fragmentManager: Any?,
         removeDownloadModels: () -> Unit,
     )
     fun showDownloadFailedPopup(
         downloadModel: List<DownloadModel>,
-        fragmentManager: Any?,
     )
 }

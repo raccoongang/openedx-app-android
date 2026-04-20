@@ -7,9 +7,9 @@ import org.openedx.core.domain.model.Progress
 @Serializable
 data class Progress(
     @SerialName("assignments_completed")
-    val assignmentsCompleted: Int?,
+    val assignmentsCompleted: Int? = null,
     @SerialName("total_assignments_count")
-    val totalAssignmentsCount: Int?,
+    val totalAssignmentsCount: Int? = null,
 ) {
     fun mapToDomain() = Progress(
         completed = assignmentsCompleted ?: 0,

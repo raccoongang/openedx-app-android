@@ -1,7 +1,9 @@
 package org.openedx.foundation.extension
 
 fun <T> List<T>.indexOfFirstFromIndex(startIndex: Int, predicate: (T) -> Boolean): Int {
-    for (index in startIndex until this.size) {
+    // Note: startIndex is EXCLUSIVE — matches the Android foundation library's bytecode
+    // which uses `if (index > startIndex)` before checking predicate.
+    for (index in (startIndex + 1) until this.size) {
         if (predicate(this[index])) return index
     }
     return -1

@@ -9,11 +9,11 @@ data class DownloadCoursePreview(
     @SerialName("course_id")
     val id: String,
     @SerialName("course_name")
-    val name: String?,
+    val name: String? = null,
     @SerialName("course_image")
-    val image: String?,
+    val image: String? = null,
     @SerialName("total_size")
-    val totalSize: Long?,
+    val totalSize: Long? = null,
 ) {
     fun mapToDomain(): DomainDownloadCoursePreview {
         return DomainDownloadCoursePreview(

@@ -7,7 +7,7 @@ import org.openedx.core.domain.model.Certificate
 @Serializable
 data class Certificate(
     @SerialName("url")
-    val certificateURL: String?
+    val certificateURL: String? = null
 ) {
     fun mapToDomain(): Certificate {
         return Certificate(

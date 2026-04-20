@@ -9,15 +9,15 @@ data class CourseEnrollmentDetails(
     @SerialName("id")
     val id: String,
     @SerialName("course_updates")
-    val courseUpdates: String?,
+    val courseUpdates: String? = null,
     @SerialName("course_handouts")
-    val courseHandouts: String?,
+    val courseHandouts: String? = null,
     @SerialName("discussion_url")
-    val discussionUrl: String?,
+    val discussionUrl: String? = null,
     @SerialName("course_access_details")
     val courseAccessDetails: CourseAccessDetails,
     @SerialName("certificate")
-    val certificate: Certificate?,
+    val certificate: Certificate? = null,
     @SerialName("enrollment_details")
     val enrollmentDetails: EnrollmentDetails,
     @SerialName("course_info_overview")

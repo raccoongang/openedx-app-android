@@ -56,3 +56,35 @@ enum class CoreAnalyticsKey(val key: String) {
 enum class CoreAnalyticsScreen(val screenName: String) {
     COURSE_DATES("Course Dates"),
 }
+
+fun CoreAnalytics.logExternalLinkAlert(url: String, screenName: String) {
+    val event = CoreAnalyticsEvent.EXTERNAL_LINK_OPENING_ALERT
+    logEvent(
+        event.eventName,
+        buildMap {
+            put(CoreAnalyticsKey.NAME.key, event.biValue)
+            put(CoreAnalyticsKey.CATEGORY.key, CoreAnalyticsKey.DISCOVERY.key)
+            put(CoreAnalyticsKey.URL.key, url)
+            put(CoreAnalyticsKey.SCREEN_NAME.key, screenName)
+        },
+    )
+}
+
+fun CoreAnalytics.logExternalLinkAlertAction(
+    url: String,
+    screenName: String,
+    cancelled: Boolean,
+) {
+    val event = CoreAnalyticsEvent.EXTERNAL_LINK_OPENING_ALERT_ACTION
+    val actionKey = if (cancelled) CoreAnalyticsKey.CANCEL.key else CoreAnalyticsKey.CONTINUE.key
+    logEvent(
+        event.eventName,
+        buildMap {
+            put(CoreAnalyticsKey.NAME.key, event.biValue)
+            put(CoreAnalyticsKey.CATEGORY.key, CoreAnalyticsKey.DISCOVERY.key)
+            put(CoreAnalyticsKey.URL.key, url)
+            put(CoreAnalyticsKey.SCREEN_NAME.key, screenName)
+            put(CoreAnalyticsKey.ACTION.key, actionKey)
+        },
+    )
+}

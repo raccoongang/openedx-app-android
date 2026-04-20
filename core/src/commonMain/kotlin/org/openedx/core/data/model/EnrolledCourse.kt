@@ -9,23 +9,23 @@ import org.openedx.core.domain.model.Progress as ProgressDomain
 @Serializable
 data class EnrolledCourse(
     @SerialName("audit_access_expires")
-    val auditAccessExpires: String?,
+    val auditAccessExpires: String? = null,
     @SerialName("created")
-    val created: String?,
+    val created: String? = null,
     @SerialName("mode")
-    val mode: String?,
+    val mode: String? = null,
     @SerialName("is_active")
-    val isActive: Boolean?,
+    val isActive: Boolean? = null,
     @SerialName("course")
-    val course: EnrolledCourseData?,
+    val course: EnrolledCourseData? = null,
     @SerialName("certificate")
-    val certificate: Certificate?,
+    val certificate: Certificate? = null,
     @SerialName("course_progress")
-    val progress: Progress?,
+    val progress: Progress? = null,
     @SerialName("course_status")
-    val courseStatus: CourseStatus?,
+    val courseStatus: CourseStatus? = null,
     @SerialName("course_assignments")
-    val courseAssignments: CourseAssignments?
+    val courseAssignments: CourseAssignments? = null
 ) {
     fun mapToDomain(): EnrolledCourse {
         return EnrolledCourse(

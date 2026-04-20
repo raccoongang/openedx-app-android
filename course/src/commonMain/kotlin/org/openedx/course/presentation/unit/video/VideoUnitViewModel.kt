@@ -34,6 +34,12 @@ open class VideoUnitViewModel(
     var transcriptLanguage = "en"
         private set
 
+    fun setTranscriptLanguage(lang: String) {
+        if (lang == transcriptLanguage) return
+        transcriptLanguage = lang
+        downloadSubtitles()
+    }
+
     var isDownloaded = false
 
     private val _currentVideoTime = MutableStateFlow(0L)
@@ -59,10 +65,6 @@ open class VideoUnitViewModel(
 
     init {
         initVideoProgress()
-    }
-
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is CourseVideoPositionChanged && videoUrl == it.videoUrl) {

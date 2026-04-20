@@ -10,5 +10,5 @@ data class CommentBody(
     @SerialName("raw_body")
     val rawBody: String,
     @SerialName("parent_id")
-    val parentId: String?
+    val parentId: String? = null
 )

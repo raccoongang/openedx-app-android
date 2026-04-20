@@ -205,10 +205,10 @@ class DownloadsViewModel(
         fetchDownloads(refresh = true)
     }
 
-    fun downloadCourse(fragmentManager: Any?, courseId: String) {
+    fun downloadCourse(courseId: String) {
         logEvent(DownloadsAnalyticsEvent.DOWNLOAD_COURSE_CLICKED)
         try {
-            showDownloadPopup(fragmentManager, courseId)
+            showDownloadPopup(courseId)
         } catch (e: Exception) {
             logEvent(DownloadsAnalyticsEvent.DOWNLOAD_ERROR)
             updateCourseState(courseId, DownloadedState.NOT_DOWNLOADED)
@@ -226,7 +226,7 @@ class DownloadsViewModel(
         }
     }
 
-    fun removeDownloads(fragmentManager: Any?, courseId: String) {
+    fun removeDownloads(courseId: String) {
         logEvent(DownloadsAnalyticsEvent.REMOVE_DOWNLOAD_CLICKED)
         viewModelScope.launch {
             val downloadModels = interactor.getDownloadModelsByCourseIds(courseId)
@@ -242,7 +242,6 @@ class DownloadsViewModel(
             )
             downloadDialogManager.showRemoveDownloadModelPopup(
                 downloadDialogItem = downloadDialogItem,
-                fragmentManager = fragmentManager,
                 removeDownloadModels = {
                     downloadModels.forEach { super.removeBlockDownloadModel(it.id) }
                     logEvent(DownloadsAnalyticsEvent.DOWNLOAD_REMOVED)
@@ -265,7 +264,7 @@ class DownloadsViewModel(
         return courseStructure
     }
 
-    private fun showDownloadPopup(fragmentManager: Any?, courseId: String) {
+    private fun showDownloadPopup(courseId: String) {
         viewModelScope.launch {
             val coursePreview = getCoursePreview(courseId) ?: return@launch
             val downloadModels = interactor.getDownloadModelsByCourseIds(courseId)
@@ -275,7 +274,6 @@ class DownloadsViewModel(
             downloadDialogManager.showPopup(
                 coursePreview = coursePreview.copy(totalSize = coursePreview.totalSize - downloadedModelsSize),
                 isBlocksDownloaded = false,
-                fragmentManager = fragmentManager,
                 removeDownloadModels = ::removeDownloadModels,
                 saveDownloadModels = {
                     initiateSaveDownloadModels(courseId)

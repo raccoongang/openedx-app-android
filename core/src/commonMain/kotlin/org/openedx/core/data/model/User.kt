@@ -9,11 +9,11 @@ data class User(
     @SerialName("id")
     val id: Long,
     @SerialName("username")
-    val username: String?,
+    val username: String? = null,
     @SerialName("email")
-    val email: String?,
+    val email: String? = null,
     @SerialName("name")
-    val name: String?
+    val name: String? = null
 ) {
     fun mapToDomain(): User {
         return User(

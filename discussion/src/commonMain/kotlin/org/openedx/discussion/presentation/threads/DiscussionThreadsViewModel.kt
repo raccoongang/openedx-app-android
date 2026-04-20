@@ -1,6 +1,5 @@
 package org.openedx.discussion.presentation.threads
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,8 +45,8 @@ class DiscussionThreadsViewModel(
 
     private var isBlockAlreadyCompleted = false
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
+        getThreadByType(SortType.LAST_ACTIVITY_AT.queryParam)
         viewModelScope.launch {
             notifier.notifier.collect {
                 if (it is DiscussionThreadAdded) {
@@ -65,10 +64,6 @@ class DiscussionThreadsViewModel(
                 }
             }
         }
-    }
-
-    init {
-        getThreadByType(SortType.LAST_ACTIVITY_AT.queryParam)
     }
 
     fun getThreadByType(orderBy: String) {

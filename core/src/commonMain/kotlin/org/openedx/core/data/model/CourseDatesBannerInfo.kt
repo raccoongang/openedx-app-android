@@ -7,9 +7,9 @@ import org.openedx.core.domain.model.CourseDatesBannerInfo
 @Serializable
 data class CourseDatesBannerInfo(
     @SerialName("dates_banner_info")
-    val datesBannerInfo: DatesBannerInfo?,
+    val datesBannerInfo: DatesBannerInfo? = null,
     @SerialName("has_ended")
-    val hasEnded: Boolean?,
+    val hasEnded: Boolean? = null,
 ) {
     fun mapToDomain(): CourseDatesBannerInfo {
         return CourseDatesBannerInfo(

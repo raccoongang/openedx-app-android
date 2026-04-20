@@ -247,7 +247,7 @@ class CourseVideoViewModel(
         subSectionsDownloadsCount[sequentialBlock.id] = sequentialBlock.getDownloadsCount(blocks)
     }
 
-    fun downloadBlocks(blocksIds: List<String>, fragmentManager: Any?) {
+    fun downloadBlocks(blocksIds: List<String>) {
         viewModelScope.launch {
             val subSectionsBlocks =
                 courseSubSections.values.flatten().filter { it.id in blocksIds }
@@ -297,7 +297,6 @@ class CourseVideoViewModel(
                     courseId = courseId,
                     isBlocksDownloaded = isAllBlocksDownloaded,
                     onlyVideoBlocks = true,
-                    fragmentManager = fragmentManager,
                     removeDownloadModels = ::removeDownloadModels,
                     saveDownloadModels = { blockId ->
                         saveDownloadModels(fileUtil.getExternalAppDirPath(), courseId, blockId)

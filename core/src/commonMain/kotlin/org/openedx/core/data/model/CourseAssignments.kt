@@ -7,9 +7,9 @@ import org.openedx.core.domain.model.CourseAssignments
 @Serializable
 data class CourseAssignments(
     @SerialName("future_assignments")
-    val futureAssignments: List<CourseDateBlock>?,
+    val futureAssignments: List<CourseDateBlock>? = null,
     @SerialName("past_assignments")
-    val pastAssignments: List<CourseDateBlock>?,
+    val pastAssignments: List<CourseDateBlock>? = null,
 ) {
     fun mapToDomain() = CourseAssignments(
         futureAssignments = futureAssignments?.mapNotNull {

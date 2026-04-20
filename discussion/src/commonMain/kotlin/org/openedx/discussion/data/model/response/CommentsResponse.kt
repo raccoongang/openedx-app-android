@@ -29,7 +29,7 @@ data class CommentResult(
     @SerialName("author")
     val author: String,
     @SerialName("author_label")
-    val authorLabel: String?,
+    val authorLabel: String? = null,
     @SerialName("created_at")
     val createdAt: String,
     @SerialName("updated_at")
@@ -51,25 +51,25 @@ data class CommentResult(
     @SerialName("thread_id")
     val threadId: String,
     @SerialName("parent_id")
-    val parentId: String?,
+    val parentId: String? = null,
     @SerialName("endorsed")
     val endorsed: Boolean,
     @SerialName("endorsed_by")
-    val endorsedBy: String?,
+    val endorsedBy: String? = null,
     @SerialName("endorsed_by_label")
-    val endorsedByLabel: String?,
+    val endorsedByLabel: String? = null,
     @SerialName("endorsed_at")
-    val endorsedAt: String?,
+    val endorsedAt: String? = null,
     @SerialName("child_count")
     val childCount: Int,
     @SerialName("children")
     val children: List<String>,
     @SerialName("abuse_flagged_any_user")
-    val abuseFlaggedAnyUser: String?,
+    val abuseFlaggedAnyUser: String? = null,
     @SerialName("profile_image")
-    val profileImage: ProfileImage?,
+    val profileImage: ProfileImage? = null,
     @SerialName("users")
-    val users: Map<String, ThreadsResponse.Thread.DiscussionProfile>?
+    val users: Map<String, ThreadsResponse.Thread.DiscussionProfile>? = null
 ) {
     fun mapToDomain(): DiscussionComment {
         return DiscussionComment(

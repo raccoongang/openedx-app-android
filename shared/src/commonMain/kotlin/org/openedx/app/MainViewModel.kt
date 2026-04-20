@@ -1,6 +1,5 @@
 package org.openedx.app
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,8 +42,7 @@ class MainViewModel(
     val isDatesFragmentEnabled get() = config.getDatesConfig().isEnabled
     val isDownloadsFragmentEnabled get() = config.getDownloadsConfig().isEnabled
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
         collectDiscoveryEvents()
         collectAppUpgradeEvent()
     }

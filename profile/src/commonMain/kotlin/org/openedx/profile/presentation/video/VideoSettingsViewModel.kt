@@ -1,6 +1,5 @@
 package org.openedx.profile.presentation.video
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,10 +31,6 @@ class VideoSettingsViewModel(
 
     init {
         _videoSettings.value = preferencesManager.videoSettings
-    }
-
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
         viewModelScope.launch {
             notifier.notifier.collectLatest {
                 if (it is VideoQualityChanged) {

@@ -96,14 +96,10 @@ class CalendarViewModel(
         calendarManager.requestPermissions(permissionLauncher)
     }
 
-    fun setCalendarSyncEnabled(isEnabled: Boolean, fragmentManager: Any?) {
-        if (!isEnabled) {
-            // TODO: Show Compose dialog for disable calendar sync confirmation
-            calendarPreferences.isCalendarSyncEnabled = false
-            _uiState.update { it.copy(isCalendarSyncEnabled = false) }
-        } else {
-            calendarPreferences.isCalendarSyncEnabled = true
-            _uiState.update { it.copy(isCalendarSyncEnabled = true) }
+    fun setCalendarSyncEnabled(isEnabled: Boolean) {
+        calendarPreferences.isCalendarSyncEnabled = isEnabled
+        _uiState.update { it.copy(isCalendarSyncEnabled = isEnabled) }
+        if (isEnabled) {
             calendarSyncScheduler.requestImmediateSync()
         }
     }

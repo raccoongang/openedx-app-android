@@ -1,6 +1,5 @@
 package org.openedx.course.presentation.section
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,8 +36,7 @@ class CourseSectionViewModel(
 
     var mode = CourseViewMode.FULL
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
+    init {
         viewModelScope.launch {
             notifier.notifier.collect { event ->
                 if (event is CourseSectionChanged) {

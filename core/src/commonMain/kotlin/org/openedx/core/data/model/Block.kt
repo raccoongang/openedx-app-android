@@ -2,7 +2,9 @@ package org.openedx.core.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Contextual
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import org.openedx.core.BlockType
 import org.openedx.core.utils.InstantUtils
 import org.openedx.core.domain.model.Block as DomainBlock
@@ -14,39 +16,39 @@ import org.openedx.core.domain.model.VideoInfo as DomainVideoInfo
 @Serializable
 data class Block(
     @SerialName("id")
-    val id: String?,
+    val id: String? = null,
     @SerialName("block_id")
-    val blockId: String?,
+    val blockId: String? = null,
     @SerialName("lms_web_url")
-    val lmsWebUrl: String?,
+    val lmsWebUrl: String? = null,
     @SerialName("legacy_web_url")
-    val legacyWebUrl: String?,
+    val legacyWebUrl: String? = null,
     @SerialName("student_view_url")
-    val studentViewUrl: String?,
+    val studentViewUrl: String? = null,
     @SerialName("type")
-    val type: String?,
+    val type: String? = null,
     @SerialName("display_name")
-    val displayName: String?,
+    val displayName: String? = null,
     @SerialName("graded")
-    val graded: Boolean?,
+    val graded: Boolean? = null,
     @SerialName("descendants")
-    val descendants: List<String>?,
+    val descendants: List<String>? = null,
     @SerialName("student_view_data")
-    val studentViewData: StudentViewData?,
+    val studentViewData: StudentViewData? = null,
     @SerialName("student_view_multi_device")
-    val studentViewMultiDevice: Boolean?,
+    val studentViewMultiDevice: Boolean? = null,
     @SerialName("block_counts")
-    val blockCounts: BlockCounts?,
+    val blockCounts: BlockCounts? = null,
     @SerialName("completion")
-    val completion: Double?,
+    val completion: Double? = null,
     @SerialName("contains_gated_content")
-    val containsGatedContent: Boolean?,
+    val containsGatedContent: Boolean? = null,
     @SerialName("assignment_progress")
-    val assignmentProgress: AssignmentProgress?,
+    val assignmentProgress: AssignmentProgress? = null,
     @SerialName("due")
-    val due: String?,
+    val due: String? = null,
     @SerialName("offline_download")
-    val offlineDownload: OfflineDownload?,
+    val offlineDownload: OfflineDownload? = null,
 ) {
     fun mapToDomain(blockData: Map<String, Block>): DomainBlock {
         val blockType = BlockType.getBlockType(type.orEmpty())
@@ -88,21 +90,23 @@ data class Block(
 @Serializable
 data class StudentViewData(
     @SerialName("only_on_web")
-    var onlyOnWeb: Boolean?,
+    var onlyOnWeb: Boolean? = null,
     @SerialName("duration")
-    @Contextual var duration: Any?,
+    var duration: JsonElement? = null,
     @SerialName("transcripts")
-    var transcripts: HashMap<String, String>?,
+    var transcripts: HashMap<String, String>? = null,
     @SerialName("encoded_videos")
-    var encodedVideos: EncodedVideos?,
+    var encodedVideos: EncodedVideos? = null,
     @SerialName("all_sources")
-    var allSources: List<@Contextual Any?>?,
+    var allSources: List<JsonElement>? = null,
     @SerialName("topic_id")
-    val topicId: String?
+    val topicId: String? = null
 ) {
     fun mapToDomain() = DomainStudentViewData(
         onlyOnWeb = onlyOnWeb ?: false,
-        duration = duration ?: "",
+        duration = duration?.let {
+            (it as? JsonPrimitive)?.contentOrNull ?: it.toString()
+        } ?: "",
         transcripts = transcripts,
         encodedVideos = encodedVideos?.mapToDomain(),
         topicId = topicId.orEmpty()
@@ -112,17 +116,17 @@ data class StudentViewData(
 @Serializable
 data class EncodedVideos(
     @SerialName("youtube")
-    var videoInfo: VideoInfo?,
+    var videoInfo: VideoInfo? = null,
     @SerialName("hls")
-    var hls: VideoInfo?,
+    var hls: VideoInfo? = null,
     @SerialName("fallback")
-    var fallback: VideoInfo?,
+    var fallback: VideoInfo? = null,
     @SerialName("desktop_mp4")
-    var desktopMp4: VideoInfo?,
+    var desktopMp4: VideoInfo? = null,
     @SerialName("mobile_high")
-    var mobileHigh: VideoInfo?,
+    var mobileHigh: VideoInfo? = null,
     @SerialName("mobile_low")
-    var mobileLow: VideoInfo?
+    var mobileLow: VideoInfo? = null
 ) {
     fun mapToDomain() = DomainEncodedVideos(
         youtube = videoInfo?.mapToDomain(),
@@ -137,9 +141,9 @@ data class EncodedVideos(
 @Serializable
 data class VideoInfo(
     @SerialName("url")
-    var url: String?,
+    var url: String? = null,
     @SerialName("file_size")
-    var fileSize: Long?
+    var fileSize: Long? = null
 ) {
     fun mapToDomain() = DomainVideoInfo(
         url = url
@@ -152,7 +156,7 @@ data class VideoInfo(
 @Serializable
 data class BlockCounts(
     @SerialName("video")
-    var video: Int?
+    var video: Int? = null
 ) {
     fun mapToDomain() = DomainBlockCounts(
         video = video ?: 0

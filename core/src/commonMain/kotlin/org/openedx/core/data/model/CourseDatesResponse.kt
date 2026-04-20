@@ -11,17 +11,17 @@ data class CourseDate(
     @SerialName("course_id")
     val courseId: String,
     @SerialName("first_component_block_id")
-    val firstComponentBlockId: String?,
+    val firstComponentBlockId: String? = null,
     @SerialName("due_date")
-    val dueDate: String?,
+    val dueDate: String? = null,
     @SerialName("assignment_title")
-    val assignmentTitle: String?,
+    val assignmentTitle: String? = null,
     @SerialName("learner_has_access")
-    val learnerHasAccess: Boolean?,
+    val learnerHasAccess: Boolean? = null,
     @SerialName("relative")
-    val relative: Boolean?,
+    val relative: Boolean? = null,
     @SerialName("course_name")
-    val courseName: String?
+    val courseName: String? = null
 ) {
     fun mapToDomain(): DomainCourseDate? {
         val dueDate = InstantUtils.iso8601ToInstant(dueDate ?: "")
@@ -42,9 +42,9 @@ data class CourseDatesResponse(
     @SerialName("count")
     val count: Int,
     @SerialName("next")
-    val next: String?,
+    val next: String? = null,
     @SerialName("previous")
-    val previous: String?,
+    val previous: String? = null,
     @SerialName("results")
     val results: List<CourseDate>
 ) {

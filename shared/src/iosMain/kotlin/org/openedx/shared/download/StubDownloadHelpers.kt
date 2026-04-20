@@ -27,7 +27,6 @@ class StubDownloadDialogManager : DownloadDialogManager {
         courseId: String,
         isBlocksDownloaded: Boolean,
         onlyVideoBlocks: Boolean,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: (blockId: String) -> Unit,
         onDismissClick: () -> Unit,
@@ -37,7 +36,6 @@ class StubDownloadDialogManager : DownloadDialogManager {
     override fun showPopup(
         coursePreview: DownloadCoursePreview,
         isBlocksDownloaded: Boolean,
-        fragmentManager: Any?,
         removeDownloadModels: (blockId: String, courseId: String) -> Unit,
         saveDownloadModels: () -> Unit,
         onDismissClick: () -> Unit,
@@ -46,13 +44,11 @@ class StubDownloadDialogManager : DownloadDialogManager {
 
     override fun showRemoveDownloadModelPopup(
         downloadDialogItem: DownloadDialogItem,
-        fragmentManager: Any?,
         removeDownloadModels: () -> Unit,
     ) = Unit
 
     override fun showDownloadFailedPopup(
         downloadModel: List<DownloadModel>,
-        fragmentManager: Any?,
     ) = Unit
 }
 

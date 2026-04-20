@@ -19,7 +19,7 @@ import org.openedx.core.domain.model.CourseEnrollments as DomainCourseEnrollment
 data class CourseEnrollments(
     val enrollments: DashboardCourseList,
     val configs: AppConfig,
-    val primary: EnrolledCourse?,
+    val primary: EnrolledCourse? = null,
 ) {
     fun mapToDomain() = DomainCourseEnrollments(
         enrollments = enrollments.mapToDomain(),
