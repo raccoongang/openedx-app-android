@@ -18,5 +18,11 @@
     <dict/>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+    <key>NSCalendarsUsageDescription</key>
+    <string>OpenEdX needs access to your calendar to sync upcoming assignments and course milestones.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>OpenEdX needs access to your calendar to sync upcoming assignments and course milestones.</string>
+    <key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+    <string>OpenEdX needs access to add assignments and course milestones to your calendar.</string>
 </dict>
 </plist>

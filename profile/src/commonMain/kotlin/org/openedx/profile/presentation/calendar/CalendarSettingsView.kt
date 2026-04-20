@@ -139,12 +139,10 @@ fun CalendarSettingsView(
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                        if (uiState.coursesSynced != null) {
-                            CoursesToSyncSection(
-                                coursesSynced = uiState.coursesSynced,
-                                onCourseToSyncClick = onCourseToSyncClick
-                            )
-                        }
+                        CoursesToSyncSection(
+                            coursesSynced = uiState.coursesSynced ?: 0,
+                            onCourseToSyncClick = onCourseToSyncClick
+                        )
                         Spacer(modifier = Modifier.height(32.dp))
                         OptionsSection(
                             isRelativeDatesEnabled = uiState.isRelativeDateEnabled,

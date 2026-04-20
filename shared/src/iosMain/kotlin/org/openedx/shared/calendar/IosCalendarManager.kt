@@ -1,8 +1,13 @@
 package org.openedx.shared.calendar
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
 import kotlinx.cinterop.useContents
+import kotlinx.cinterop.value
 import org.openedx.core.domain.model.CalendarData
+import platform.CoreGraphics.CGFloatVar
 import org.openedx.core.domain.model.CalendarType
 import org.openedx.core.domain.model.CourseDateBlock
 import org.openedx.core.domain.model.UserCalendar
@@ -130,7 +135,24 @@ class IosCalendarManager : CalendarManager {
     override fun getCalendarData(calendarId: Long): CalendarData? {
         val stringId = resolveCalendarStringId(calendarId) ?: return null
         val calendar = store.calendarWithIdentifier(stringId) ?: return null
-        return CalendarData(title = calendar.title, color = 0)
+        return CalendarData(title = calendar.title, color = argbFromCGColor(calendar.CGColor))
+    }
+
+    private fun argbFromCGColor(cgColor: platform.CoreGraphics.CGColorRef?): Int {
+        if (cgColor == null) return 0xFF000000.toInt()
+        val uiColor = UIColor.colorWithCGColor(cgColor)
+        return memScoped {
+            val r = alloc<CGFloatVar>()
+            val g = alloc<CGFloatVar>()
+            val b = alloc<CGFloatVar>()
+            val a = alloc<CGFloatVar>()
+            uiColor.getRed(r.ptr, green = g.ptr, blue = b.ptr, alpha = a.ptr)
+            val ri = (r.value * 255).toInt().coerceIn(0, 255)
+            val gi = (g.value * 255).toInt().coerceIn(0, 255)
+            val bi = (b.value * 255).toInt().coerceIn(0, 255)
+            val ai = (a.value * 255).toInt().coerceIn(0, 255)
+            (ai shl 24) or (ri shl 16) or (gi shl 8) or bi
+        }
     }
 
     override fun deleteEvent(eventId: Long) {

@@ -1017,37 +1017,63 @@ fun AppNavHost(
                 var showDisableDialog by remember { mutableStateOf(false) }
                 var showNewCalendarDialog by remember { mutableStateOf<org.openedx.profile.presentation.calendar.NewCalendarDialogType?>(null) }
 
-                org.openedx.profile.presentation.calendar.CalendarSettingsView(
-                    windowSize = windowSize, uiState = uiState,
-                    onCalendarSyncSwitchClick = { isEnabled ->
-                        if (isEnabled) {
-                            if (!calendarManager.hasPermissions()) {
-                                showAccessDialog = true
-                            } else if (uiState.calendarData == null) {
+                val permissionLauncher = org.openedx.shared.calendar.rememberCalendarPermissionLauncher { granted ->
+                    if (granted) {
+                        showNewCalendarDialog =
+                            org.openedx.profile.presentation.calendar.NewCalendarDialogType.CREATE_NEW
+                    } else {
+                        showAccessDialog = true
+                    }
+                }
+
+                if (!uiState.isCalendarExist) {
+                    org.openedx.profile.presentation.calendar.CalendarSetUpView(
+                        windowSize = windowSize,
+                        useRelativeDates = uiState.isRelativeDateEnabled,
+                        setUpCalendarSync = {
+                            if (calendarManager.hasPermissions()) {
                                 showNewCalendarDialog =
                                     org.openedx.profile.presentation.calendar.NewCalendarDialogType.CREATE_NEW
                             } else {
-                                vm.setCalendarSyncEnabled(true)
+                                permissionLauncher()
                             }
-                        } else {
-                            showDisableDialog = true
-                        }
-                    },
-                    onRelativeDateSwitchClick = { vm.setRelativeDateEnabled(it) },
-                    onChangeSyncOptionClick = {
-                        showNewCalendarDialog =
-                            org.openedx.profile.presentation.calendar.NewCalendarDialogType.UPDATE
-                    },
-                    onCourseToSyncClick = { navController.navigate(AppNavRoutes.CoursesToSync) },
-                    onBackClick = { navController.navigateUp() },
-                )
+                        },
+                        onRelativeDateSwitchClick = { vm.setRelativeDateEnabled(it) },
+                        onBackClick = { navController.navigateUp() },
+                    )
+                } else {
+                    org.openedx.profile.presentation.calendar.CalendarSettingsView(
+                        windowSize = windowSize, uiState = uiState,
+                        onCalendarSyncSwitchClick = { isEnabled ->
+                            if (isEnabled) {
+                                if (!calendarManager.hasPermissions()) {
+                                    showAccessDialog = true
+                                } else if (uiState.calendarData == null) {
+                                    showNewCalendarDialog =
+                                        org.openedx.profile.presentation.calendar.NewCalendarDialogType.CREATE_NEW
+                                } else {
+                                    vm.setCalendarSyncEnabled(true)
+                                }
+                            } else {
+                                showDisableDialog = true
+                            }
+                        },
+                        onRelativeDateSwitchClick = { vm.setRelativeDateEnabled(it) },
+                        onChangeSyncOptionClick = {
+                            showNewCalendarDialog =
+                                org.openedx.profile.presentation.calendar.NewCalendarDialogType.UPDATE
+                        },
+                        onCourseToSyncClick = { navController.navigate(AppNavRoutes.CoursesToSync) },
+                        onBackClick = { navController.navigateUp() },
+                    )
+                }
 
                 if (showAccessDialog) {
                     org.openedx.profile.presentation.calendar.CalendarAccessDialog(
                         onCancelClick = { showAccessDialog = false },
                         onGrantCalendarAccessClick = {
                             showAccessDialog = false
-                            vm.setUpCalendarSync(Any())
+                            permissionLauncher()
                         },
                     )
                 }

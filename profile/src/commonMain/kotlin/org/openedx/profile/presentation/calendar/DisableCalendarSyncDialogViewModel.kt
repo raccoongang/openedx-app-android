@@ -35,7 +35,6 @@ class DisableCalendarSyncDialogViewModel(
                     val allEvents = calendarInteractor.getAllCourseCalendarEventsFromCache()
                     val eventIds = allEvents.map { it.eventId }
                     calendarManager.deleteEvents(eventIds)
-                    _deletionState.value = DeletionState.DELETED
                     calendarInteractor.clearCalendarCachedData()
                     val calendarId = calendarPreferences.calendarId
                     if (calendarPreferences.calendarType == CalendarType.LOCAL) {
@@ -43,10 +42,10 @@ class DisableCalendarSyncDialogViewModel(
                     }
                     calendarPreferences.clearCalendarPreferences()
                     calendarNotifier.send(CalendarSyncDisabled)
+                    _deletionState.value = DeletionState.DELETED
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-            } finally {
                 _deletionState.value = null
             }
         }
