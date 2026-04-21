@@ -69,13 +69,14 @@ private const val BLUR_PADDING_FACTOR = 3
 /**
  * Collapsing header + body layout shared by the course container screens.
  * Mirrors the Android `CollapsingLayout` 1:1 — portrait / landscape / tablet branches
- * match the original. `courseImage` here is a URL (commonMain) rendered via Coil's
- * AsyncImage, where Android used a preloaded Bitmap.
+ * match the original. `courseImage` is typed as `Any?` because Coil3's `AsyncImage(model=...)`
+ * accepts a URL string (iOS, via `IosImageProcessor`) or a preprocessed `Bitmap`
+ * (Android, via `ImageProcessorImpl` RenderScript blur pipeline).
  */
 @Composable
 fun CollapsingLayout(
     modifier: Modifier = Modifier,
-    courseImage: String,
+    courseImage: Any?,
     imageHeight: Int,
     isEnabled: Boolean,
     expandedTop: @Composable BoxScope.() -> Unit,
@@ -240,7 +241,7 @@ private fun CollapsingLayoutTablet(
     blurImagePaddingPx: Float,
     blurImagePadding: Dp,
     backBtnStartPadding: Dp,
-    courseImage: String,
+    courseImage: Any?,
     imageHeight: Int,
     isEnabled: Boolean,
     onBackClick: () -> Unit,
@@ -365,7 +366,7 @@ private fun CollapsingLayoutMobile(
     blurImageAlignment: Float,
     blurImagePadding: Dp,
     backBtnStartPadding: Dp,
-    courseImage: String,
+    courseImage: Any?,
     imageHeight: Int,
     toolbarBackgroundOffset: Int,
     isEnabled: Boolean,

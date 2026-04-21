@@ -52,6 +52,7 @@ import org.openedx.core.core_leaving_the_app
 import org.openedx.core.core_leaving_the_app_message
 import org.openedx.core.core_video_download_quality
 import org.openedx.core.core_video_streaming_quality
+import org.openedx.core.core_video_subtitle_language
 import org.openedx.core.presentation.logExternalLinkAlert
 import org.openedx.core.presentation.logExternalLinkAlertAction
 import org.openedx.core.ui.theme.OpenEdXTheme
@@ -376,7 +377,9 @@ private fun VideoUnitContent(
                 modifier = Modifier.padding(16.dp),
             ) {
                 androidx.compose.material3.Text(
-                    text = "Subtitle language",
+                    text = org.jetbrains.compose.resources.stringResource(
+                        org.openedx.core.Res.string.core_video_subtitle_language
+                    ),
                     style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 12.dp),
                 )
@@ -621,8 +624,14 @@ fun AppNavHost(
                                 is AuthEvent.SocialSignIn -> viewModel.socialAuth(Unit, event.authType)
                                 is AuthEvent.OpenLink -> viewModel.openLink(event.links, event.link)
                                 AuthEvent.SignInBrowser -> viewModel.signInBrowser(Unit)
-                                AuthEvent.ForgotPasswordClick -> navController.navigate(AppNavRoutes.RestorePassword)
-                                AuthEvent.RegisterClick -> navController.navigate(AppNavRoutes.SignUp(route.courseId, route.infoType))
+                                AuthEvent.ForgotPasswordClick -> {
+                                    viewModel.logForgotPasswordClickedEvent()
+                                    navController.navigate(AppNavRoutes.RestorePassword)
+                                }
+                                AuthEvent.RegisterClick -> {
+                                    viewModel.logRegisterClickedEvent()
+                                    navController.navigate(AppNavRoutes.SignUp(route.courseId, route.infoType))
+                                }
                                 AuthEvent.BackClick -> navController.navigateUp()
                             }
                         },
@@ -960,10 +969,10 @@ fun AppNavHost(
             composable<AppNavRoutes.DeleteProfile> {
                 val viewModel: DeleteProfileViewModel = koinViewModel()
                 val windowSize = rememberWindowSize()
-                val uiState by viewModel.uiState.collectAsState(org.openedx.profile.presentation.delete.DeleteProfileFragmentUIState.Initial)
+                val uiState by viewModel.uiState.collectAsState()
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 org.openedx.profile.presentation.delete.DeleteProfileScreen(
-                    windowSize = windowSize, uiState = uiState ?: return@composable, uiMessage = uiMessage,
+                    windowSize = windowSize, uiState = uiState, uiMessage = uiMessage,
                     onDeleteClick = { viewModel.deleteProfile(it) },
                     onBackClick = { navController.navigateUp() },
                 )

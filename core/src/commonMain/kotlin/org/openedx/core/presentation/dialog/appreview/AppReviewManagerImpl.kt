@@ -13,6 +13,7 @@ class AppReviewManagerImpl(
     private val appData: AppData,
     private val config: Config,
     private val platformActions: PlatformActions,
+    private val analytics: AppReviewAnalytics,
 ) : AppReviewManager {
     override var isDialogShowed = false
 
@@ -31,6 +32,7 @@ class AppReviewManagerImpl(
         if (!reviewPreferences.wasPositiveRated && (minorVersionPassed || majorVersionPassed)) {
             isDialogShowed = true
             _visibleDialog.value = AppReviewStage.Rate
+            logRatingDialogShowed()
         }
     }
 
@@ -46,6 +48,7 @@ class AppReviewManagerImpl(
     }
 
     override fun submitFeedback(feedback: String) {
+        logDialogAction(AppReviewAnalyticsKey.SHARE_FEEDBACK.key)
         if (feedback.isNotBlank()) {
             val subject = "${appData.appName} $RATING_FEEDBACK_SUBJECT_SUFFIX"
             val body = "$FEEDBACK_RATING_PREFIX $pendingRating\n\n$feedback"
@@ -56,6 +59,31 @@ class AppReviewManagerImpl(
             )
         }
         _visibleDialog.value = AppReviewStage.ThankYou(positive = false)
+    }
+
+    private fun logRatingDialogShowed() {
+        analytics.logEvent(
+            event = AppReviewAnalyticsEvent.RATING_DIALOG.eventName,
+            params = buildMap {
+                put(AppReviewAnalyticsKey.NAME.key, AppReviewAnalyticsEvent.RATING_DIALOG.biValue)
+                put(AppReviewAnalyticsKey.CATEGORY.key, AppReviewAnalyticsKey.APP_REVIEWS.key)
+            }
+        )
+    }
+
+    private fun logDialogAction(action: String, rating: Int = 0) {
+        analytics.logEvent(
+            event = AppReviewAnalyticsEvent.RATING_DIALOG_ACTION.eventName,
+            params = buildMap {
+                put(
+                    AppReviewAnalyticsKey.NAME.key,
+                    AppReviewAnalyticsEvent.RATING_DIALOG_ACTION.biValue
+                )
+                put(AppReviewAnalyticsKey.CATEGORY.key, AppReviewAnalyticsKey.APP_REVIEWS.key)
+                put(AppReviewAnalyticsKey.ACTION.key, action)
+                if (rating != 0) put(AppReviewAnalyticsKey.RATING.key, rating)
+            }
+        )
     }
 
     override fun openMarketAndDismiss() {

@@ -2,6 +2,7 @@ package org.openedx.shared.analytics
 
 import org.openedx.core.presentation.CoreAnalytics
 import org.openedx.core.presentation.DownloadsAnalytics
+import org.openedx.core.presentation.dialog.appreview.AppReviewAnalytics
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.dashboard.presentation.DashboardAnalytics
 import org.openedx.dates.presentation.DatesAnalytics
@@ -17,6 +18,10 @@ import org.openedx.whatsnew.presentation.WhatsNewAnalytics
  * replace these with real impls (mirroring Android's AnalyticsManager dispatch).
  */
 class IosCoreAnalytics : CoreAnalytics {
+    override fun logEvent(event: String, params: Map<String, Any?>) = Unit
+}
+
+class IosAppReviewAnalytics : AppReviewAnalytics {
     override fun logEvent(event: String, params: Map<String, Any?>) = Unit
 }
 

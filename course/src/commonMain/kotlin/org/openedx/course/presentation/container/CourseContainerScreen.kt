@@ -86,7 +86,7 @@ fun CourseContainerScreen(
 
     CollapsingLayout(
         modifier = Modifier.fillMaxSize(),
-        courseImage = (courseImage as? String).orEmpty(),
+        courseImage = courseImage,
         imageHeight = 200,
         isEnabled = isLayoutEnabled,
         onBackClick = onBackClick,

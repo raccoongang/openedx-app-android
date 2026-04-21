@@ -112,6 +112,6 @@
     <string name="course_view_progress">View Progress</string>
 
     <!-- Caught Up Messages -->
-    <string name="course_videos_caught_up">You\'re all caught up on videos!</string>
-    <string name="course_assignments_caught_up">You\'re all caught up on assignments!</string>
+    <string name="course_videos_caught_up">You’re all caught up on videos!</string>
+    <string name="course_assignments_caught_up">You’re all caught up on assignments!</string>
 </resources>

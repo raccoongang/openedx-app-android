@@ -62,7 +62,7 @@
     <string name="core_rate_dialog_title">Enjoying %1$s?</string>
     <string name="core_rate_dialog_description">Your feedback matters to us. Would you take a moment to rate the app by tapping a star below? Thanks for your support!</string>
     <string name="core_feedback_dialog_title">Leave Us Feedback</string>
-    <string name="core_feedback_dialog_description">We\'re sorry to hear your learning experience has had some issues. We appreciate all feedback.</string>
+    <string name="core_feedback_dialog_description">We’re sorry to hear your learning experience has had some issues. We appreciate all feedback.</string>
     <string name="core_feedback_dialog_textfield_hint">What could have been better?</string>
     <string name="core_share_feedback">Share Feedback</string>
     <string name="core_thank_you">Thank You</string>
@@ -95,8 +95,8 @@
     <!--  Course Dates Banner  -->
     <string name="core_dates_reset_dates_banner_button">Shift due dates</string>
     <string name="core_dates_reset_dates_banner_header">Missed some deadlines?</string>
-    <string name="core_dates_reset_dates_banner_body">Don\'t worry - shift our suggested schedule to complete past due assignments without losing any progress.</string>
-    <string name="core_dates_info_banner_body">We built a suggested schedule to help you stay on track. But don\'t worry - it\'s flexible so you can learn at your own pace. If you happen to fall behind, you\'ll be able to adjust the dates to keep yourself on track.</string>
+    <string name="core_dates_reset_dates_banner_body">Don’t worry - shift our suggested schedule to complete past due assignments without losing any progress.</string>
+    <string name="core_dates_info_banner_body">We built a suggested schedule to help you stay on track. But don’t worry - it’s flexible so you can learn at your own pace. If you happen to fall behind, you’ll be able to adjust the dates to keep yourself on track.</string>
     <string name="core_dates_upgrade_to_graded_banner_body">To complete graded assignments as part of this course, you can upgrade today.</string>
     <string name="core_dates_upgrade_to_reset_banner_body">You are auditing this course, which means that you are unable to participate in graded assignments. It looks like you missed some important deadlines based on our suggested schedule. To complete graded assignments as part of this course and shift the past due assignments into the future, you can upgrade today.</string>
     <string name="core_dates_shift_dates_successfully_title">Due Dates Shifted</string>
@@ -121,6 +121,7 @@
     <string name="core_video_downloaded_subtitle">Videos %1$d, %2$s Total</string>
     <string name="core_video_streaming_quality">Video streaming quality</string>
     <string name="core_video_download_quality">Video download quality</string>
+    <string name="core_video_subtitle_language">Subtitle language</string>
     <string name="core_manage_account">Manage Account</string>
 
     <string name="core_title_syncing_calendar">Syncing calendar…</string>
@@ -130,12 +131,12 @@
 
     <string name="core_title_request_calendar_permission">\"%s\" Would Like to Access Your Calendar</string>
     <string name="core_message_request_calendar_permission">%1$s would like to use your calendar list to subscribe to your personalized %2$s calendar for this course.</string>
-    <string name="core_label_do_not_allow">Don\'t allow</string>
+    <string name="core_label_do_not_allow">Don’t allow</string>
 
     <string name="core_title_add_course_calendar">Add Course Dates to Calendar</string>
     <string name="core_message_add_course_calendar">Would you like to add \"%s\" dates to your calendar? \n\nYou can edit or remove your course dates at any time from your calendar or settings.</string>
 
-    <string name="core_message_course_calendar_added">\"%s\" has been added to your phone\'s calendar.</string>
+    <string name="core_message_course_calendar_added">“%s” has been added to your phone’s calendar.</string>
     <string name="core_label_view_events">View Events</string>
     <string name="core_label_done">Done</string>
 
@@ -174,7 +175,7 @@
     <string name="core_download_queue_title">Downloads</string>
     <string name="core_download_untitled">(Untitled)</string>
     <string name="core_download_big_files_confirmation_title">Download</string>
-    <string name="core_download_big_files_confirmation_text">The videos you\'ve selected are larger than 1 GB. Do you want to download these videos?</string>
+    <string name="core_download_big_files_confirmation_text">The videos you’ve selected are larger than 1 GB. Do you want to download these videos?</string>
     <string name="core_delete_in_process_confirmation">Turning off the switch will stop downloading and delete all downloaded videos for \"%s\"?</string>
     <string name="core_delete_confirmation">Are you sure you want to delete all video(s) for \"%s\"?</string>
     <string name="core_delete_download_confirmation_text">Are you sure you want to delete video(s) for \"%s\"?</string>
@@ -195,7 +196,7 @@
     <string name="core_used_free_storage">%1$s used, %2$s free</string>
     <string name="core_0mb">0MB</string>
     <string name="core_available_to_download">Available to download</string>
-    <string name="core_no_available_to_download_offline">None of this course\'s content is currently available to download offline.</string>
+    <string name="core_no_available_to_download_offline">None of this course’s content is currently available to download offline.</string>
     <string name="core_download_all">Download all</string>
     <string name="core_downloaded">Downloaded</string>
     <string name="core_ready_to_download">Ready to Download</string>
@@ -212,7 +213,7 @@
     <string name="core_authorization_request">Please enter the system to continue with course enrollment.</string>
 
     <plurals name="core_date_items_hidden">
-        <item quantity="one">%d Item Hidden</item>
-        <item quantity="other">%d Items Hidden</item>
+        <item quantity="one">%1$d Item Hidden</item>
+        <item quantity="other">%1$d Items Hidden</item>
     </plurals>
 </resources>

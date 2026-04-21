@@ -270,6 +270,14 @@ class SignInViewModel(
         }
     }
 
+    fun logRegisterClickedEvent() {
+        logEvent(AuthAnalyticsEvent.REGISTER_CLICKED)
+    }
+
+    fun logForgotPasswordClickedEvent() {
+        logEvent(AuthAnalyticsEvent.FORGOT_PASSWORD_CLICKED)
+    }
+
     private fun logEvent(
         event: AuthAnalyticsEvent,
         params: Map<String, Any?> = emptyMap(),

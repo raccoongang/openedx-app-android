@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pre_auth_title">Courses and programs from the world\'s best universities in your pocket.</string>
+    <string name="pre_auth_title">Courses and programs from the world’s best universities in your pocket.</string>
     <string name="pre_auth_search_title">What do you want to learn?</string>
     <string name="pre_auth_search_hint">Search our 3000+ courses</string>
     <string name="pre_auth_explore_all_courses">Explore all courses</string>
@@ -33,7 +33,7 @@
     <string name="auth_continue_google">Continue with Google</string>
     <string name="auth_continue_facebook">Continue with Facebook</string>
     <string name="auth_continue_microsoft">Continue with Microsoft</string>
-    <string name="auth_social_signed_title">You\'ve successfully signed in with %s.</string>
+    <string name="auth_social_signed_title">You’ve successfully signed in with %s.</string>
     <string name="auth_social_signed_desc">We just need a little more information before you start learning with %s.</string>
     <string name="auth_agreement_eula">End User Licence Agreement</string>
     <string name="auth_agreement_tos">Terms of Service and Honor Code</string>

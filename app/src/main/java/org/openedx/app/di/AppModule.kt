@@ -196,7 +196,7 @@ val appModule = module {
             applicationId = BuildConfig.APPLICATION_ID,
         )
     }
-    single<AppReviewManager> { AppReviewManagerImpl(get(), get(), get(), get()) }
+    single<AppReviewManager> { AppReviewManagerImpl(get(), get(), get(), get(), get()) }
 
     single<TranscriptProvider> { TranscriptManager(get(), get()) }
     single { WhatsNewManagerImpl(get(), get(), get()) }

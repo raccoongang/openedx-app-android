@@ -37,8 +37,8 @@ class DeleteProfileViewModel(
     defaultErrorMessage = resourceManager.getString(foundationRes.string.foundation_error_unknown_error),
 ) {
 
-    private val _uiState = MutableStateFlow<DeleteProfileFragmentUIState?>(null)
-    val uiState: StateFlow<DeleteProfileFragmentUIState?> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<DeleteProfileFragmentUIState>(DeleteProfileFragmentUIState.Initial)
+    val uiState: StateFlow<DeleteProfileFragmentUIState> = _uiState.asStateFlow()
 
     fun deleteProfile(password: String) {
         logDeleteProfileClickedEvent()

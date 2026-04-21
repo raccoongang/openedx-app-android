@@ -134,7 +134,10 @@ actual fun platformModule(): Module = module {
     single<org.openedx.course.data.storage.CoursePreferences> { org.openedx.shared.stubs.IosCoursePreferences() }
     single<org.openedx.core.data.storage.InAppReviewPreferences> { org.openedx.shared.stubs.IosInAppReviewPreferences() }
     single<org.openedx.core.presentation.dialog.appreview.AppReviewManager> {
-        org.openedx.core.presentation.dialog.appreview.AppReviewManagerImpl(get(), get(), get(), get())
+        org.openedx.core.presentation.dialog.appreview.AppReviewManagerImpl(get(), get(), get(), get(), get())
+    }
+    single<org.openedx.core.presentation.dialog.appreview.AppReviewAnalytics> {
+        org.openedx.shared.analytics.IosAppReviewAnalytics()
     }
     single<org.openedx.core.module.TranscriptProvider> { org.openedx.shared.stubs.IosTranscriptProvider() }
 
