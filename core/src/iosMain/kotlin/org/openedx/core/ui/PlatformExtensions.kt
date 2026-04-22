@@ -11,5 +11,3 @@ import androidx.compose.ui.composed
 actual fun Modifier.statusBarsInset(): Modifier = composed {
     this.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
 }
-
-actual fun Modifier.displayCutoutForLandscape(): Modifier = this

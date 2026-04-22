@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -56,7 +54,6 @@ import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.openedx.auth.*
@@ -79,8 +76,6 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
-import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.core.Res as coreRes
 import org.openedx.core.core_top_header
 import org.openedx.core.core_register
@@ -171,41 +166,13 @@ fun SignUpView(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) {
-        val topBarPadding by remember {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier
-                        .width(560.dp)
-                        .padding(bottom = 24.dp),
-                    compact = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp)
-                )
-            )
-        }
-        val contentPaddings by remember {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier
-                        .widthIn(Dp.Unspecified, 420.dp)
-                        .padding(
-                            top = 32.dp,
-                            bottom = 40.dp
-                        ),
-                    compact = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 28.dp)
-                )
-            )
-        }
-        val buttonWidth by remember(key1 = windowSize) {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier.widthIn(232.dp, Dp.Unspecified),
-                    compact = Modifier.fillMaxWidth()
-                )
-            )
-        }
+        val topBarPadding = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 6.dp)
+        val contentPaddings = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 28.dp)
+        val buttonWidth = Modifier.fillMaxWidth()
 
         if (showBottomSheet) {
             ModalBottomSheet(

@@ -46,8 +46,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         get() = _insetTop
     override val bottomInset: Int
         get() = _insetBottom
-    override val cutoutInset: Int
-        get() = _insetCutout
 
     override val windowSize: WindowSize
         get() = _windowSize
@@ -61,7 +59,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
     private var _insetTop = 0
     private var _insetBottom = 0
-    private var _insetCutout = 0
 
     private var _windowSize = WindowSize(WindowType.Compact, WindowType.Compact)
 
@@ -97,7 +94,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(TOP_INSET, topInset)
         outState.putInt(BOTTOM_INSET, bottomInset)
-        outState.putInt(CUTOUT_INSET, cutoutInset)
         super.onSaveInstanceState(outState)
     }
 
@@ -155,7 +151,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         savedInstanceState?.let {
             _insetTop = it.getInt(TOP_INSET, 0)
             _insetBottom = it.getInt(BOTTOM_INSET, 0)
-            _insetCutout = it.getInt(CUTOUT_INSET, 0)
         }
 
         rootView.setOnApplyWindowInsetsListener { _, insets ->
@@ -164,14 +159,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
 
             _insetTop = insetsCompat.top
             _insetBottom = insetsCompat.bottom
-
-            val displayCutout = WindowInsetsCompat.toWindowInsetsCompat(insets).displayCutout
-            if (displayCutout != null) {
-                val top = displayCutout.safeInsetTop
-                val left = displayCutout.safeInsetLeft
-                val right = displayCutout.safeInsetRight
-                _insetCutout = maxOf(top, left, right)
-            }
 
             insets
         }
@@ -284,7 +271,6 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
     companion object {
         const val TOP_INSET = "topInset"
         const val BOTTOM_INSET = "bottomInset"
-        const val CUTOUT_INSET = "cutoutInset"
         const val BRANCH_TAG = "Branch"
         const val BRANCH_FORCE_NEW_SESSION = "branch_force_new_session"
 

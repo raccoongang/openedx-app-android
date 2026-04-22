@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +40,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.openedx.auth.presentation.restore.RestorePasswordUIState
 import org.openedx.auth.presentation.ui.LoginTextField
@@ -58,8 +56,6 @@ import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
-import org.openedx.foundation.presentation.WindowType
-import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.auth.*
 import org.openedx.auth.Res as authRes
 
@@ -86,44 +82,15 @@ fun RestorePasswordScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
 
-        val contentPaddings by remember {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier
-                        .widthIn(Dp.Unspecified, 420.dp)
-                        .padding(
-                            top = 32.dp,
-                            bottom = 40.dp
-                        ),
-                    compact = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 28.dp)
-                )
-            )
-        }
+        val contentPaddings = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 28.dp)
 
-        val topBarWidth by remember {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier
-                        .widthIn(Dp.Unspecified, 560.dp)
-                        .padding(bottom = 24.dp),
-                    compact = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp)
-                )
-            )
-        }
+        val topBarWidth = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 6.dp)
 
-        val buttonWidth by remember(key1 = windowSize) {
-            mutableStateOf(
-                windowSize.windowSizeValue(
-                    expanded = Modifier
-                        .widthIn(232.dp, Dp.Unspecified),
-                    compact = Modifier.fillMaxWidth()
-                )
-            )
-        }
+        val buttonWidth = Modifier.fillMaxWidth()
 
         Image(
             modifier = Modifier
