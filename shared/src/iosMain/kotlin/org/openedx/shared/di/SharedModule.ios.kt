@@ -99,7 +99,6 @@ import org.openedx.shared.network.NetworkConnection
 import org.openedx.shared.network.commonNetworkingModule
 import org.openedx.shared.network.installTokenRefresh
 import org.openedx.shared.sso.IosSocialAuthProvider
-import org.openedx.shared.storage.SecureStorage
 import org.openedx.shared.worker.IosCalendarSyncScheduler
 import org.openedx.shared.worker.IosDownloadWorkerController
 import org.openedx.shared.worker.IosOfflineProgressSyncScheduler
@@ -110,7 +109,6 @@ actual fun platformModule(): Module = module {
     // ---- Platform infrastructure ----
     single { NetworkConnection() }
     single<org.openedx.core.system.connection.NetworkConnection> { IosNetworkConnection() }
-    single { SecureStorage() }
     single<DownloadWorkerController> { IosDownloadWorkerController() }
     single<CalendarSyncScheduler> { IosCalendarSyncScheduler() }
     single<OfflineProgressSyncScheduler> { IosOfflineProgressSyncScheduler() }

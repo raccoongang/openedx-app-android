@@ -9,14 +9,20 @@ import org.openedx.core.domain.model.VideoSettings
 import platform.Foundation.NSUserDefaults
 
 /**
- * iOS implementation of CorePreferences backed by NSUserDefaults.
+ * iOS implementation of CorePreferences.
  *
- * TODO iOS: tokens are stored in plaintext in NSUserDefaults. Migrate to Keychain
- * before any production use. The Android impl uses encrypted DataStore + Keystore.
+ * Auth tokens (access/refresh/push) live in the Keychain via [KeychainStore].
+ * Non-sensitive values (user profile JSON, video settings, flags, token
+ * expiry timestamp) stay in NSUserDefaults — matching the native iOS app's
+ * AppStorage split (see openedx-app-ios/OpenEdX/Data/AppStorage.swift).
+ *
+ * On first access after upgrading, plaintext tokens previously stored in
+ * NSUserDefaults are migrated into the Keychain so existing sessions survive.
  */
 class IosCorePreferences : CorePreferences {
 
     private val defaults = NSUserDefaults.standardUserDefaults
+    private val keychain = KeychainStore()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -39,20 +45,41 @@ class IosCorePreferences : CorePreferences {
         const val VIDEO_DOWNLOAD_QUALITY = "video_settings_download_quality"
     }
 
+    init {
+        migratePlaintextTokenIfNeeded(Keys.ACCESS_TOKEN)
+        migratePlaintextTokenIfNeeded(Keys.REFRESH_TOKEN)
+        migratePlaintextTokenIfNeeded(Keys.PUSH_TOKEN)
+    }
+
     private fun string(key: String, default: String = ""): String =
         defaults.stringForKey(key) ?: default
 
+    private fun migratePlaintextTokenIfNeeded(key: String) {
+        val legacy = defaults.stringForKey(key).orEmpty()
+        if (legacy.isEmpty()) return
+        if (keychain.get(key).isNullOrEmpty()) {
+            keychain.set(key, legacy)
+        }
+        defaults.removeObjectForKey(key)
+    }
+
     override var accessToken: String
-        get() = string(Keys.ACCESS_TOKEN)
-        set(value) = defaults.setObject(value, Keys.ACCESS_TOKEN)
+        get() = keychain.get(Keys.ACCESS_TOKEN).orEmpty()
+        set(value) {
+            if (value.isEmpty()) keychain.remove(Keys.ACCESS_TOKEN) else keychain.set(Keys.ACCESS_TOKEN, value)
+        }
 
     override var refreshToken: String
-        get() = string(Keys.REFRESH_TOKEN)
-        set(value) = defaults.setObject(value, Keys.REFRESH_TOKEN)
+        get() = keychain.get(Keys.REFRESH_TOKEN).orEmpty()
+        set(value) {
+            if (value.isEmpty()) keychain.remove(Keys.REFRESH_TOKEN) else keychain.set(Keys.REFRESH_TOKEN, value)
+        }
 
     override var pushToken: String
-        get() = string(Keys.PUSH_TOKEN)
-        set(value) = defaults.setObject(value, Keys.PUSH_TOKEN)
+        get() = keychain.get(Keys.PUSH_TOKEN).orEmpty()
+        set(value) {
+            if (value.isEmpty()) keychain.remove(Keys.PUSH_TOKEN) else keychain.set(Keys.PUSH_TOKEN, value)
+        }
 
     override var accessTokenExpiresAt: Long
         get() = defaults.integerForKey(Keys.EXPIRES_IN)
@@ -116,9 +143,9 @@ class IosCorePreferences : CorePreferences {
         set(value) = defaults.setBool(value, Keys.IS_RELATIVE_DATES_ENABLED)
 
     override suspend fun clearCorePreferences() {
-        defaults.removeObjectForKey(Keys.ACCESS_TOKEN)
-        defaults.removeObjectForKey(Keys.REFRESH_TOKEN)
-        defaults.removeObjectForKey(Keys.PUSH_TOKEN)
+        keychain.remove(Keys.ACCESS_TOKEN)
+        keychain.remove(Keys.REFRESH_TOKEN)
+        keychain.remove(Keys.PUSH_TOKEN)
         defaults.removeObjectForKey(Keys.EXPIRES_IN)
         defaults.removeObjectForKey(Keys.USER)
     }
