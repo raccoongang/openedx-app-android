@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -348,7 +353,11 @@ private fun CollapsingLayoutTablet(
         Modifier
             .padding(top = with(localDensity) { if (bodyPadding < 0) 0.toDp() else bodyPadding.toDp() })
     }
-    Box(modifier = bodyModifier, content = bodyContent)
+    Box(
+        modifier = bodyModifier
+            .consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
+        content = bodyContent,
+    )
 }
 
 @Composable
@@ -458,7 +467,8 @@ private fun CollapsingLayoutMobile(
                         y = (collapsedTopHeight.value + navigationHeight.value).roundToInt()
                     )
                 }
-                .padding(bottom = with(localDensity) { (collapsedTopHeight.value + navigationHeight.value).toDp() }),
+                .padding(bottom = with(localDensity) { (collapsedTopHeight.value + navigationHeight.value).toDp() })
+                .consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
             content = bodyContent,
         )
     } else {
@@ -593,7 +603,11 @@ private fun CollapsingLayoutMobile(
                 .fillMaxSize()
                 .padding(top = with(localDensity) { if (bodyPadding < 0) 0.toDp() else bodyPadding.toDp() })
         }
-        Box(modifier = bodyModifier, content = bodyContent)
+        Box(
+            modifier = bodyModifier
+                .consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
+            content = bodyContent,
+        )
     }
 }
 

@@ -2,6 +2,7 @@ package org.openedx.app
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -202,7 +203,8 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues),
         ) {
             when (tabs.getOrNull(selectedIndex)?.route) {
                 ROUTE_LEARN -> LearnTab(navController) {

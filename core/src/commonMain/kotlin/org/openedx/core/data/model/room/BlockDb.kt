@@ -22,39 +22,39 @@ import org.openedx.core.domain.model.VideoInfo as DomainVideoInfo
 @Serializable
 data class BlockDb(
     @ColumnInfo("id")
-    val id: String,
+    val id: String = "",
     @ColumnInfo("blockId")
-    val blockId: String,
+    val blockId: String = "",
     @ColumnInfo("lmsWebUrl")
-    val lmsWebUrl: String,
+    val lmsWebUrl: String = "",
     @ColumnInfo("legacyWebUrl")
-    val legacyWebUrl: String,
+    val legacyWebUrl: String = "",
     @ColumnInfo("studentViewUrl")
-    val studentViewUrl: String,
+    val studentViewUrl: String = "",
     @ColumnInfo("type")
-    val type: String,
+    val type: String = "",
     @ColumnInfo("displayName")
-    val displayName: String,
+    val displayName: String = "",
     @ColumnInfo("graded")
-    val graded: Boolean,
+    val graded: Boolean = false,
     @Embedded
-    val studentViewData: StudentViewDataDb?,
+    val studentViewData: StudentViewDataDb? = null,
     @ColumnInfo("studentViewMultiDevice")
-    val studentViewMultiDevice: Boolean,
+    val studentViewMultiDevice: Boolean = false,
     @Embedded
-    val blockCounts: BlockCountsDb,
+    val blockCounts: BlockCountsDb = BlockCountsDb(),
     @ColumnInfo("descendants")
-    val descendants: List<String>,
+    val descendants: List<String> = emptyList(),
     @ColumnInfo("completion")
-    val completion: Double,
+    val completion: Double = 0.0,
     @ColumnInfo("contains_gated_content")
-    val containsGatedContent: Boolean,
+    val containsGatedContent: Boolean = false,
     @Embedded
-    val assignmentProgress: AssignmentProgressDb?,
+    val assignmentProgress: AssignmentProgressDb? = null,
     @ColumnInfo("due")
-    val due: String?,
+    val due: String? = null,
     @Embedded
-    val offlineDownload: OfflineDownloadDb?,
+    val offlineDownload: OfflineDownloadDb? = null,
 ) {
     fun mapToDomain(blocks: List<BlockDb>): DomainBlock {
         val blockType = BlockType.getBlockType(type)
@@ -123,15 +123,15 @@ data class BlockDb(
 @Serializable
 data class StudentViewDataDb(
     @ColumnInfo("onlyOnWeb")
-    val onlyOnWeb: Boolean,
+    val onlyOnWeb: Boolean = false,
     @ColumnInfo("duration")
-    val duration: String,
+    val duration: String = "",
     @ColumnInfo("topicId")
-    val topicId: String,
+    val topicId: String = "",
     @Embedded
-    val transcripts: HashMap<String, String>?,
+    val transcripts: HashMap<String, String>? = null,
     @Embedded
-    val encodedVideos: EncodedVideosDb?
+    val encodedVideos: EncodedVideosDb? = null
 ) {
     fun mapToDomain(): DomainStudentViewData {
         return DomainStudentViewData(
@@ -160,17 +160,17 @@ data class StudentViewDataDb(
 @Serializable
 data class EncodedVideosDb(
     @ColumnInfo("youtube")
-    val youtube: VideoInfoDb?,
+    val youtube: VideoInfoDb? = null,
     @ColumnInfo("hls")
-    var hls: VideoInfoDb?,
+    var hls: VideoInfoDb? = null,
     @ColumnInfo("fallback")
-    var fallback: VideoInfoDb?,
+    var fallback: VideoInfoDb? = null,
     @ColumnInfo("desktopMp4")
-    var desktopMp4: VideoInfoDb?,
+    var desktopMp4: VideoInfoDb? = null,
     @ColumnInfo("mobileHigh")
-    var mobileHigh: VideoInfoDb?,
+    var mobileHigh: VideoInfoDb? = null,
     @ColumnInfo("mobileLow")
-    var mobileLow: VideoInfoDb?
+    var mobileLow: VideoInfoDb? = null
 ) {
     fun mapToDomain(): DomainEncodedVideos {
         return DomainEncodedVideos(
@@ -200,9 +200,9 @@ data class EncodedVideosDb(
 @Serializable
 data class VideoInfoDb(
     @ColumnInfo("url")
-    val url: String,
+    val url: String = "",
     @ColumnInfo("fileSize")
-    val fileSize: Long
+    val fileSize: Long = 0
 ) {
     fun mapToDomain() = DomainVideoInfo(url, fileSize)
 
@@ -222,7 +222,7 @@ data class VideoInfoDb(
 @Serializable
 data class BlockCountsDb(
     @ColumnInfo("video")
-    val video: Int
+    val video: Int = 0
 ) {
     fun mapToDomain() = DomainBlockCounts(video)
 
@@ -236,12 +236,12 @@ data class BlockCountsDb(
 @Serializable
 data class AssignmentProgressDb(
     @ColumnInfo("assignment_type")
-    val assignmentType: String?,
+    val assignmentType: String? = null,
     @ColumnInfo("num_points_earned")
-    val numPointsEarned: Float?,
+    val numPointsEarned: Float? = null,
     @ColumnInfo("num_points_possible")
-    val numPointsPossible: Float?,
-    val shortLabel: String?
+    val numPointsPossible: Float? = null,
+    val shortLabel: String? = null
 ) {
     fun mapToDomain() = DomainAssignmentProgress(
         assignmentType = assignmentType,
@@ -254,11 +254,11 @@ data class AssignmentProgressDb(
 @Serializable
 data class OfflineDownloadDb(
     @ColumnInfo("file_url")
-    var fileUrl: String?,
+    var fileUrl: String? = null,
     @ColumnInfo("last_modified")
-    var lastModified: String?,
+    var lastModified: String? = null,
     @ColumnInfo("file_size")
-    var fileSize: Long?,
+    var fileSize: Long? = null,
 ) {
     fun mapToDomain(): org.openedx.core.domain.model.OfflineDownload {
         return org.openedx.core.domain.model.OfflineDownload(

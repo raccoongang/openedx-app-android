@@ -129,10 +129,12 @@ private fun CourseContentAssignmentScreen(
         }
 
         is CourseAssignmentUIState.Empty -> {
-            CourseContentAssignmentEmptyState(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                onReturnToCourseClick = onNavigateToHome
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                CourseContentAssignmentEmptyState(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    onReturnToCourseClick = onNavigateToHome
+                )
+            }
         }
 
         is CourseAssignmentUIState.CourseData -> {
