@@ -2,23 +2,18 @@ package org.openedx.shared.download
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import org.openedx.core.domain.model.Block
 import org.openedx.core.domain.model.DownloadCoursePreview
 import org.openedx.core.module.db.DownloadModel
-import org.openedx.core.module.download.DownloadHelper
-import org.openedx.core.module.download.DownloadModelsSource
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogItem
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
 import org.openedx.core.presentation.dialog.downloaddialog.PendingDownloadDialog
 
 /**
- * iOS no-op implementations for the Download helper trio.
- *
- * TODO iOS: when downloads are actually wired (Phase 7 stub `IosDownloadWorkerController`
- * is no-op too), implement these against URLSession + Files in NSCachesDirectory.
+ * Temporary no-op for the download-dialog UI. The manager orchestrates Compose
+ * popups and ties into DownloadWorkerController; wiring the full commonMain
+ * DownloadDialogManagerImpl on iOS is a follow-up task.
  */
-
 class StubDownloadDialogManager : DownloadDialogManager {
     override val pendingDialog: StateFlow<PendingDownloadDialog?> = MutableStateFlow(null)
     override fun dismissDialog() = Unit
@@ -50,13 +45,4 @@ class StubDownloadDialogManager : DownloadDialogManager {
     override fun showDownloadFailedPopup(
         downloadModel: List<DownloadModel>,
     ) = Unit
-}
-
-class StubDownloadModelsSource : DownloadModelsSource {
-    override fun getDownloadModelsFlow() = flowOf(emptyList<DownloadModel>())
-}
-
-class StubDownloadHelper : DownloadHelper {
-    override fun generateDownloadModelFromBlock(folder: String, block: Block, courseId: String): DownloadModel? = null
-    override suspend fun updateDownloadStatus(downloadModel: DownloadModel): DownloadModel? = null
 }

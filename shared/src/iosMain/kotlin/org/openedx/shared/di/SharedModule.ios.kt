@@ -92,9 +92,8 @@ import org.openedx.app.room.AppDatabase
 import org.openedx.app.room.DATABASE_NAME
 import org.openedx.app.room.DatabaseManager as AppDatabaseManager
 import org.openedx.shared.calendar.IosCalendarManager
+import org.openedx.shared.download.IosFileDownloader
 import org.openedx.shared.download.StubDownloadDialogManager
-import org.openedx.shared.download.StubDownloadHelper
-import org.openedx.shared.download.StubDownloadModelsSource
 import org.openedx.shared.network.NetworkConnection
 import org.openedx.shared.network.commonNetworkingModule
 import org.openedx.shared.network.installTokenRefresh
@@ -109,7 +108,8 @@ actual fun platformModule(): Module = module {
     // ---- Platform infrastructure ----
     single { NetworkConnection() }
     single<org.openedx.core.system.connection.NetworkConnection> { IosNetworkConnection() }
-    single<DownloadWorkerController> { IosDownloadWorkerController() }
+    single { IosFileDownloader() }
+    single<DownloadWorkerController> { IosDownloadWorkerController(get(), get(), get(), get()) }
     single<CalendarSyncScheduler> { IosCalendarSyncScheduler() }
     single<OfflineProgressSyncScheduler> { IosOfflineProgressSyncScheduler() }
     factory<SocialAuthProvider> { IosSocialAuthProvider() }
@@ -170,6 +170,7 @@ actual fun platformModule(): Module = module {
     single { ProfileNotifier() }
     single { org.openedx.core.system.notifier.VideoNotifier() }
     single { org.openedx.core.system.notifier.calendar.CalendarNotifier() }
+    single { org.openedx.core.system.notifier.DownloadNotifier() }
 
     // ---- Room (KMP) ----
     single<AppDatabase> {
@@ -195,10 +196,10 @@ actual fun platformModule(): Module = module {
     single<DatabaseManager> { get<AppDatabaseManager>() }
     single<CalendarInteractor> { org.openedx.core.domain.interactor.CalendarInteractorImpl(get()) }
 
-    // ---- Download helpers (stubs) ----
+    // ---- Download helpers ----
     single<DownloadDialogManager> { StubDownloadDialogManager() }
-    single<DownloadModelsSource> { StubDownloadModelsSource() }
-    single<DownloadHelper> { StubDownloadHelper() }
+    single<DownloadModelsSource> { org.openedx.core.module.download.DownloadModelsSourceImpl(get()) }
+    single<DownloadHelper> { org.openedx.core.module.download.DownloadHelperImpl(get(), get()) }
     single<org.openedx.core.system.StorageManager> { org.openedx.core.system.StorageManagerImpl() }
 
     // ---- Repositories ----
