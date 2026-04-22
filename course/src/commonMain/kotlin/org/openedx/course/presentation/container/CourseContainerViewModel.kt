@@ -92,6 +92,8 @@ class CourseContainerViewModel(
     val courseDetails: CourseEnrollmentDetails?
         get() = _courseDetails
 
+    private var resumeBlockEmitted = false
+
     private val _calendarSyncUIState = MutableStateFlow(
         CalendarSyncUIState(
             isCalendarSyncEnabled = isCalendarSyncEnabled(),
@@ -206,7 +208,8 @@ class CourseContainerViewModel(
             _calendarSyncUIState.update { state ->
                 state.copy(isCalendarSyncEnabled = isCalendarSyncEnabled())
             }
-            if (resumeBlockId.isNotEmpty()) {
+            if (resumeBlockId.isNotEmpty() && !resumeBlockEmitted) {
+                resumeBlockEmitted = true
                 // Small delay before sending block open event
                 viewModelScope.launch {
                     delay(500L)
@@ -227,7 +230,8 @@ class CourseContainerViewModel(
         _calendarSyncUIState.update { state ->
             state.copy(isCalendarSyncEnabled = isCalendarSyncEnabled())
         }
-        if (resumeBlockId.isNotEmpty()) {
+        if (resumeBlockId.isNotEmpty() && !resumeBlockEmitted) {
+            resumeBlockEmitted = true
             viewModelScope.launch {
                 delay(500L)
                 courseNotifier.send(CourseOpenBlock(resumeBlockId))

@@ -2,7 +2,9 @@ package org.openedx.course.presentation.unit.video
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +15,7 @@ import org.openedx.core.system.notifier.CourseCompletionSet
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseSubtitleLanguageChanged
 import org.openedx.core.system.notifier.CourseVideoPositionChanged
+import org.openedx.core.system.notifier.VideoProgressUpdated
 import org.openedx.course.data.repository.CourseRepository
 import org.openedx.course.presentation.CourseAnalytics
 import org.openedx.foundation.system.ResourceManager
@@ -44,6 +47,11 @@ open class VideoUnitViewModel(
 
     private val _currentVideoTime = MutableStateFlow(0L)
     val currentVideoTime: StateFlow<Long> = _currentVideoTime.asStateFlow()
+
+    // Emits the start position once loaded from DB (null until then). Compose can
+    // wait on this before creating native players that take startPositionMs only once.
+    private val _initialStartPositionMs = MutableStateFlow<Long?>(null)
+    val initialStartPositionMs: StateFlow<Long?> = _initialStartPositionMs.asStateFlow()
 
     var duration = 0L
 
@@ -87,14 +95,19 @@ open class VideoUnitViewModel(
         super.onPause(owner)
     }
 
-    private fun saveVideoProgress() {
-        viewModelScope.launch {
-            courseRepository.saveVideoProgress(
-                blockId,
-                videoUrl,
-                _currentVideoTime.value,
-                duration
-            )
+    @OptIn(DelicateCoroutinesApi::class)
+    fun saveVideoProgress() {
+        // Use GlobalScope so the DB write survives even if the ViewModel is cleared
+        // immediately after this call (happens on Compose Navigation pop when the
+        // NavBackStackEntry is destroyed before viewModelScope work completes).
+        val snapshotTime = _currentVideoTime.value
+        val snapshotDuration = duration
+        val url = videoUrl
+        val id = blockId
+        val notifierRef = notifier
+        GlobalScope.launch(Dispatchers.Default) {
+            courseRepository.saveVideoProgress(id, url, snapshotTime, snapshotDuration)
+            notifierRef.send(VideoProgressUpdated())
         }
     }
 
@@ -157,9 +170,12 @@ open class VideoUnitViewModel(
         viewModelScope.launch {
             try {
                 val videoProgress = courseRepository.getVideoProgress(blockId)
-                _currentVideoTime.value = videoProgress.videoTime ?: 0L
+                val saved = videoProgress.videoTime ?: 0L
+                _currentVideoTime.value = saved
+                _initialStartPositionMs.value = saved
             } catch (e: Exception) {
                 e.printStackTrace()
+                _initialStartPositionMs.value = 0L
             }
         }
     }

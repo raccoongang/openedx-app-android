@@ -133,7 +133,7 @@ private fun AllEnrolledCoursesView(
     val layoutDirection = LocalLayoutDirection.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberLazyGridState()
-    val columns = if (windowSize.isTablet) 3 else 1
+    val columns = if (windowSize.isTablet) 3 else 2
     val pullToRefreshState = rememberPullToRefreshState()
     val tabPagerState = rememberPagerState(pageCount = {
         CourseStatusFilter.entries.size

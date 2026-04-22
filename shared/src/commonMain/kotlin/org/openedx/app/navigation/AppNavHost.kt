@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,9 +16,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import org.openedx.core.ui.theme.appColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
@@ -123,6 +128,10 @@ private fun UnitBlockContent(
     config: org.openedx.core.config.Config,
     courseId: String = "",
     onNavigateToFullScreen: (videoUrl: String, isYoutube: Boolean, videoTime: Long, isPlaying: Boolean) -> Unit = { _, _, _, _ -> },
+    videoList: List<org.openedx.core.domain.model.Block> = emptyList(),
+    videoProgress: Map<String, Float> = emptyMap(),
+    videoPreview: Map<String, org.openedx.core.utils.VideoPreview?> = emptyMap(),
+    onVideoNavigationClick: (org.openedx.core.domain.model.Block) -> Unit = {},
 ) {
     fun resolveUrl(url: String): String =
         if (url.startsWith("http://") || url.startsWith("https://")) url
@@ -148,6 +157,10 @@ private fun UnitBlockContent(
                 config = config,
                 courseId = courseId,
                 onNavigateToFullScreen = onNavigateToFullScreen,
+                videoList = videoList,
+                videoProgress = videoProgress,
+                videoPreview = videoPreview,
+                onVideoNavigationClick = onVideoNavigationClick,
             )
         }
         block.type == org.openedx.core.BlockType.DISCUSSION -> {
@@ -187,6 +200,10 @@ private fun VideoUnitContent(
     config: org.openedx.core.config.Config,
     courseId: String = "",
     onNavigateToFullScreen: (videoUrl: String, isYoutube: Boolean, videoTime: Long, isPlaying: Boolean) -> Unit = { _, _, _, _ -> },
+    videoList: List<org.openedx.core.domain.model.Block> = emptyList(),
+    videoProgress: Map<String, Float> = emptyMap(),
+    videoPreview: Map<String, org.openedx.core.utils.VideoPreview?> = emptyMap(),
+    onVideoNavigationClick: (org.openedx.core.domain.model.Block) -> Unit = {},
 ) {
     fun resolveUrl(url: String): String =
         if (url.startsWith("http://") || url.startsWith("https://")) url
@@ -199,11 +216,13 @@ private fun VideoUnitContent(
     val isYoutube = videoUrl.isEmpty() && youtubeUrl.isNotEmpty()
     val medium = if (isYoutube) "youtube" else "native"
 
-    // Create VideoUnitViewModel (same as original fragment — params: courseId, videoUrl, blockId)
+    // Create VideoUnitViewModel (same as original fragment — params: courseId, videoUrl, blockId).
+    // Use full block.id (e.g. "block-v1:...+block@HASH") to match native CourseUnitContainerAdapter
+    // which passes block.id as the blockId. video_progress_table is keyed by this full id.
     val viewModel: org.openedx.course.presentation.unit.video.VideoUnitViewModel = koinViewModel(
-        key = block.blockId,
+        key = block.id,
     ) {
-        parametersOf(courseId, effectiveVideoUrl, block.blockId)
+        parametersOf(courseId, effectiveVideoUrl, block.id)
     }
     val appReviewManager: org.openedx.core.presentation.dialog.appreview.AppReviewManager =
         org.koin.compose.koinInject()
@@ -216,9 +235,10 @@ private fun VideoUnitContent(
         }
     }
 
-    // Save progress when leaving
+    // Save progress when leaving the unit — CMP has no Fragment lifecycle, so we save
+    // explicitly on Composable dispose to match native behaviour.
     androidx.compose.runtime.DisposableEffect(block.blockId) {
-        onDispose { /* VM onPause saves progress via lifecycle observer */ }
+        onDispose { viewModel.saveVideoProgress() }
     }
 
     val currentVideoTime by viewModel.currentVideoTime.collectAsState()
@@ -241,11 +261,19 @@ private fun VideoUnitContent(
                 videoUrl.isNotEmpty() -> {
                     val corePrefs: org.openedx.core.data.storage.CorePreferences =
                         org.koin.compose.koinInject()
-                    org.openedx.shared.ui.PlatformVideoPlayer(
+                    // Wait for the saved position to load from DB before creating the native
+                    // player — its `startPositionMs` is read only once at construction.
+                    val initialStartMs by viewModel.initialStartPositionMs.collectAsState()
+                    if (initialStartMs == null) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+                        )
+                    } else org.openedx.shared.ui.PlatformVideoPlayer(
                         url = videoUrl,
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(16f / 9f),
+                        startPositionMs = initialStartMs ?: 0L,
                         maxVideoHeight = corePrefs.videoSettings.videoStreamingQuality.height,
                         onProgressChanged = { positionMs ->
                             viewModel.setCurrentVideoTime(positionMs)
@@ -253,7 +281,7 @@ private fun VideoUnitContent(
                                 val pct = positionMs.toDouble() / viewModel.duration.toDouble()
                                 if (pct >= 0.8 && !isCompletionCalled) {
                                     isCompletionCalled = true
-                                    viewModel.markBlockCompleted(block.blockId, medium)
+                                    viewModel.markBlockCompleted(block.id, medium)
                                 }
                                 if (pct >= 0.99 && !appReviewManager.isDialogShowed) {
                                     appReviewManager.tryToOpenRateDialog()
@@ -263,7 +291,7 @@ private fun VideoUnitContent(
                         onEnded = {
                             if (!isCompletionCalled) {
                                 isCompletionCalled = true
-                                viewModel.markBlockCompleted(block.blockId, medium)
+                                viewModel.markBlockCompleted(block.id, medium)
                             }
                             if (!appReviewManager.isDialogShowed) {
                                 appReviewManager.tryToOpenRateDialog()
@@ -286,16 +314,26 @@ private fun VideoUnitContent(
                                 medium,
                             )
                         },
+                        onVideoDuration = { durationMs ->
+                            viewModel.duration = durationMs
+                        },
                     )
                 }
                 youtubeUrl.isNotEmpty() -> {
                     val videoId = extractYouTubeVideoId(youtubeUrl)
-                    org.openedx.shared.ui.PlatformYouTubePlayer(
+                    // Wait for the saved position to load from DB before creating the YouTube
+                    // player — its startSeconds is captured in onReady closure at first composition.
+                    val initialStartMs by viewModel.initialStartPositionMs.collectAsState()
+                    if (initialStartMs == null) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+                        )
+                    } else org.openedx.shared.ui.PlatformYouTubePlayer(
                         videoId = videoId,
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(16f / 9f),
-                        startSeconds = startSeconds,
+                        startSeconds = (initialStartMs ?: 0L) / 1000f,
                         onReady = {
                             viewModel.logLoadedCompletedEvent(effectiveVideoUrl, true, currentVideoTime, medium)
                         },
@@ -309,7 +347,7 @@ private fun VideoUnitContent(
                                 val pct = second / (viewModel.duration / 1000f)
                                 if (pct >= 0.8f && !isCompletionCalled) {
                                     isCompletionCalled = true
-                                    viewModel.markBlockCompleted(block.blockId, medium)
+                                    viewModel.markBlockCompleted(block.id, medium)
                                 }
                                 if (pct >= 0.99f && !appReviewManager.isDialogShowed) {
                                     appReviewManager.tryToOpenRateDialog()
@@ -440,34 +478,112 @@ private fun VideoUnitContent(
         } else {
             // Portrait — original stacked layout.
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxSize(),
             ) {
-                Text(
-                    text = block.displayName,
-                    modifier = Modifier.padding(top = 8.dp),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-                Spacer(modifier = Modifier.padding(top = 16.dp))
-
-                if (!viewModel.hasInternetConnection) {
-                    org.openedx.core.ui.ConnectionErrorView(
-                        onReloadClick = { /* retry */ }
+                if (videoList.isNotEmpty()) {
+                    VideoNavigationBar(
+                        videos = videoList,
+                        currentBlockId = block.id,
+                        progressByBlockId = videoProgress,
+                        previewByBlockId = videoPreview,
+                        onClick = onVideoNavigationClick,
                     )
                 }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                ) {
+                    Text(
+                        text = block.displayName,
+                        modifier = Modifier.padding(top = 8.dp),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
 
-                playerContent(Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.padding(top = 16.dp))
 
-                Spacer(modifier = Modifier.padding(top = 28.dp))
+                    if (!viewModel.hasInternetConnection) {
+                        org.openedx.core.ui.ConnectionErrorView(
+                            onReloadClick = { /* retry */ }
+                        )
+                    }
 
-                subtitlesContent(Modifier.fillMaxWidth())
+                    playerContent(Modifier.fillMaxWidth())
+
+                    Spacer(modifier = Modifier.padding(top = 28.dp))
+
+                    subtitlesContent(Modifier.fillMaxWidth())
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun VideoNavigationBar(
+    videos: List<org.openedx.core.domain.model.Block>,
+    currentBlockId: String,
+    progressByBlockId: Map<String, Float>,
+    previewByBlockId: Map<String, org.openedx.core.utils.VideoPreview?>,
+    onClick: (org.openedx.core.domain.model.Block) -> Unit,
+) {
+    val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+    androidx.compose.runtime.LaunchedEffect(currentBlockId, videos) {
+        val idx = videos.indexOfFirst { it.id == currentBlockId }
+        if (idx >= 0) listState.scrollToItem(idx)
+    }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Thumbnails scroller — matches Android native CourseUnitContainerFragment.VideoList:
+        //  - thumbnails 112×63dp
+        //  - spacedBy 8dp, contentPadding horizontal 16dp / vertical 8dp
+        //  - selected video: primary 3dp border, NO play button, NO progress bar
+        //  - unselected: transparent 1dp border, play button 14dp, actual progress
+        androidx.compose.foundation.lazy.LazyRow(
+            state = listState,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                horizontal = 16.dp, vertical = 8.dp,
+            ),
+        ) {
+            items(
+                items = videos,
+                key = { it.id },
+            ) { videoBlock ->
+                val isSelected = videoBlock.id == currentBlockId
+                val playButtonSize = if (isSelected) 0.dp else 14.dp
+                val borderColor =
+                    if (isSelected) MaterialTheme.appColors.primary else null
+                val borderWidth = if (isSelected) 3.dp else 1.dp
+                val progress = if (isSelected) {
+                    0f
+                } else {
+                    progressByBlockId[videoBlock.id]
+                        ?: if (videoBlock.isCompleted()) 1f else 0f
+                }
+                org.openedx.course.presentation.ui.CourseVideoItem(
+                    modifier = Modifier
+                        .width(112.dp)
+                        .height(63.dp),
+                    videoBlock = videoBlock,
+                    preview = previewByBlockId[videoBlock.id],
+                    progress = progress,
+                    onClick = { onClick(videoBlock) },
+                    titleStyle = MaterialTheme.typography.labelSmall,
+                    playButtonSize = playButtonSize,
+                    borderColor = borderColor,
+                    borderWidth = borderWidth,
+                )
+            }
+        }
+        // Divider under the nav bar — matches Android setupVideoList (Column { VideoList();
+        // Spacer(8dp); HorizontalDivider(); Spacer(16dp); ... }).
+        Spacer(modifier = Modifier.height(8.dp))
+        androidx.compose.material3.HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -553,7 +669,11 @@ fun AppNavHost(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = modifier.statusBarsPadding(),
+            modifier = modifier,
+            enterTransition = navEnterTransition,
+            exitTransition = navExitTransition,
+            popEnterTransition = navPopEnterTransition,
+            popExitTransition = navPopExitTransition,
         ) {
             // =================== MAIN ===================
             composable<AppNavRoutes.Main> { entry ->
@@ -1618,7 +1738,7 @@ fun AppNavHost(
                                 navController.navigate(
                                     AppNavRoutes.DiscussionThreads(
                                         action = action, courseId = cId,
-                                        topicId = topicId, title = title, viewType = "TOPIC",
+                                        topicId = topicId, title = title, viewType = "FULL_CONTENT",
                                     )
                                 )
                             },
@@ -1762,7 +1882,7 @@ fun AppNavHost(
                                 navController.navigate(
                                     AppNavRoutes.DiscussionThreads(
                                         action = action, courseId = courseId,
-                                        topicId = topicId, title = title, viewType = "TOPIC",
+                                        topicId = topicId, title = title, viewType = "FULL_CONTENT",
                                     )
                                 )
                             },
@@ -1799,7 +1919,9 @@ fun AppNavHost(
                                 componentId = route.componentId,
                                 mode = mode.name,
                             )
-                        )
+                        ) {
+                            popUpTo<AppNavRoutes.CourseSection> { inclusive = true }
+                        }
                     }
                 }
                 org.openedx.course.presentation.section.CourseSectionScreen(
@@ -1874,6 +1996,9 @@ fun AppNavHost(
                         val noNetwork = !vm.hasNetworkConnection
                         val downloadModel = remember(block.blockId, noNetwork) { vm.getDownloadModelById(block.blockId) }
                         val isOfflineDownloaded = downloadModel != null
+                        val videoList by vm.videoList.collectAsState()
+                        val videoProgress by vm.videoProgress.collectAsState()
+                        val videoPreview by vm.videoPreview.collectAsState()
                         when {
                             noNetwork && block.isDownloadable && !isOfflineDownloaded -> {
                                 org.openedx.course.presentation.unit.NotAvailableUnitScreen(
@@ -1891,6 +2016,24 @@ fun AppNavHost(
                             block = block,
                             config = config,
                             courseId = route.courseId,
+                            videoList = videoList,
+                            videoProgress = videoProgress,
+                            videoPreview = videoPreview,
+                            onVideoNavigationClick = { targetVideo ->
+                                val parent = vm.getBlockParent(targetVideo.id)
+                                if (parent != null && parent.id != route.unitId) {
+                                    navController.navigate(
+                                        AppNavRoutes.CourseUnitContainer(
+                                            courseId = route.courseId,
+                                            unitId = parent.id,
+                                            componentId = targetVideo.blockId,
+                                            mode = route.mode,
+                                        )
+                                    ) {
+                                        popUpTo<AppNavRoutes.CourseUnitContainer> { inclusive = true }
+                                    }
+                                }
+                            },
                             onNavigateToFullScreen = { videoUrl, isYoutube, videoTime, isPlaying ->
                                 if (isYoutube) {
                                     navController.navigate(

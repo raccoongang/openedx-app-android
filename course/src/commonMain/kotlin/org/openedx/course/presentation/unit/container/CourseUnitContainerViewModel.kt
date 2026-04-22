@@ -20,6 +20,7 @@ import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseSectionChanged
 import org.openedx.core.system.notifier.CourseStructureUpdated
+import org.openedx.core.system.notifier.VideoProgressUpdated
 import org.openedx.core.utils.VideoPreview
 import org.openedx.course.domain.interactor.CourseInteractor
 import org.openedx.course.presentation.CourseAnalytics
@@ -132,12 +133,18 @@ class CourseUnitContainerViewModel(
 
         viewModelScope.launch {
             notifier.notifier.collect { event ->
-                if (event is CourseStructureUpdated) {
-                    if (event.courseId != courseId) return@collect
-                    loadBlocks(currentComponentId)
-                    val blockId = blocks[currentVerticalIndex].id
-                    _subSectionUnitBlocks.value =
-                        getSubSectionUnitBlocks(blocks, getSubSectionId(blockId))
+                when (event) {
+                    is CourseStructureUpdated -> {
+                        if (event.courseId != courseId) return@collect
+                        loadBlocks(currentComponentId)
+                        val blockId = blocks[currentVerticalIndex].id
+                        _subSectionUnitBlocks.value =
+                            getSubSectionUnitBlocks(blocks, getSubSectionId(blockId))
+                    }
+                    is VideoProgressUpdated -> {
+                        if (mode == CourseViewMode.VIDEOS) loadVideoProgress()
+                    }
+                    else -> { /* ignore */ }
                 }
             }
         }
@@ -291,6 +298,10 @@ class CourseUnitContainerViewModel(
 
     fun getSubSectionBlock(unitId: String): Block {
         return blocks.first { it.descendants.contains(unitId) }
+    }
+
+    fun getBlockParent(blockId: String): Block? {
+        return blocks.find { blockId in it.descendants }
     }
 
     fun courseUnitContainerShowedEvent() {

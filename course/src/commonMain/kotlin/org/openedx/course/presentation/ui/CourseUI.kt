@@ -794,7 +794,10 @@ fun CourseVideoItem(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Progress bar (bottom)
+            // Progress bar (bottom) — matches Android native CourseUI.kt:796-830 exactly:
+            //  - bar only when progress > 0
+            //  - bar color green if isCompleted() && progress > 0.95f, else blue (info)
+            //  - checkmark only when isCompleted() (completion == 1.0)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

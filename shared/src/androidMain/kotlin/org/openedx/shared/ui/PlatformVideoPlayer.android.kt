@@ -45,6 +45,7 @@ actual fun PlatformVideoPlayer(
     onEnded: (() -> Unit)?,
     onPlayPauseChanged: ((isPlaying: Boolean) -> Unit)?,
     onSpeedChanged: ((speed: Float) -> Unit)?,
+    onVideoDuration: ((durationMs: Long) -> Unit)?,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -52,6 +53,7 @@ actual fun PlatformVideoPlayer(
     val currentEnded by rememberUpdatedState(onEnded)
     val currentPlayPause by rememberUpdatedState(onPlayPauseChanged)
     val currentSpeed by rememberUpdatedState(onSpeedChanged)
+    val currentDuration by rememberUpdatedState(onVideoDuration)
 
     val exoPlayer = remember(url, maxVideoHeight) {
         val selector = DefaultTrackSelector(context).apply {
@@ -87,6 +89,10 @@ actual fun PlatformVideoPlayer(
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_READY) {
+                    val dur = exoPlayer.duration
+                    if (dur > 0) currentDuration?.invoke(dur)
+                }
                 if (playbackState == Player.STATE_ENDED) {
                     currentEnded?.invoke()
                 }

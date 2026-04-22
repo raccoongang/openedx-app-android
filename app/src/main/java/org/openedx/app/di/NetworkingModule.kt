@@ -43,7 +43,7 @@ val networkingModule = module {
                 }
                 addInterceptor(HeadersInterceptor(get(), get(), get()))
                 if (BuildConfig.DEBUG) {
-                    addInterceptor(okhttp3.logging.HttpLoggingInterceptor().setLevel(
+                    addNetworkInterceptor(okhttp3.logging.HttpLoggingInterceptor().setLevel(
                         okhttp3.logging.HttpLoggingInterceptor.Level.BODY
                     ))
                 }

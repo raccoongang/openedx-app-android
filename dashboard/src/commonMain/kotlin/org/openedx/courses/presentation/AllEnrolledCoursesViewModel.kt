@@ -67,7 +67,7 @@ class AllEnrolledCoursesViewModel(
 
     fun getCourses(courseStatusFilter: CourseStatusFilter? = null, showLoadingProgress: Boolean = true) {
         if (showLoadingProgress) {
-            _uiState.update { it.copy(showProgress = true) }
+            _uiState.update { it.copy(showProgress = true, courses = null) }
         }
         coursesList.clear()
         internalLoadingCourses(courseStatusFilter ?: currentFilter.value)

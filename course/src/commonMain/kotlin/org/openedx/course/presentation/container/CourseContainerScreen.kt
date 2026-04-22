@@ -155,7 +155,7 @@ private fun CourseContainerPager(
     HorizontalPager(
         modifier = Modifier.fillMaxSize(),
         state = pagerState,
-        userScrollEnabled = isNavigationEnabled,
+        userScrollEnabled = false,
         beyondViewportPageCount = 1,
     ) { page ->
         when (CourseContainerTab.entries[page]) {

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -252,7 +253,14 @@ private fun DiscussionTopicsUI(
                                     }
                                 }
 
-                                DiscussionTopicsUIState.Loading -> {}
+                                DiscussionTopicsUIState.Loading -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(color = MaterialTheme.appColors.primary)
+                                    }
+                                }
                                 else -> {
                                     NoContentScreen(noContentScreenType = NoContentScreenType.COURSE_DISCUSSIONS)
                                 }

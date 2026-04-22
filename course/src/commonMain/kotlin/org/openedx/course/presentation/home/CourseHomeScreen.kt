@@ -1,10 +1,12 @@
 package org.openedx.course.presentation.home
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +20,13 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -34,6 +39,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -48,6 +55,7 @@ import org.openedx.core.domain.model.Block
 import org.openedx.core.ui.CircularProgress
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.NoContentScreen
+import org.openedx.core.ui.PageIndicator
 import org.openedx.core.ui.displayCutoutForLandscape
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
@@ -63,6 +71,8 @@ import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.WindowSize
 import org.openedx.foundation.presentation.windowSizeValue
 import org.openedx.core.core_ic_check
+import org.openedx.core.core_next
+import org.openedx.core.core_previous
 import org.openedx.core.Res as coreRes
 
 @Composable
@@ -328,6 +338,7 @@ private fun CourseHomeUI(
                                     }
                                 }
                             }
+                            HomeNavigationRow(homePagerState = homePagerState)
                         }
                     }
 
@@ -362,6 +373,69 @@ fun <T> CourseHomePager(
         verticalAlignment = Alignment.Top
     ) { page ->
         pageContent(pages[page])
+    }
+}
+
+@Composable
+private fun HomeNavigationRow(homePagerState: PagerState) {
+    val homeCoroutineScope = rememberCoroutineScope()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.appColors.background),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val isPreviousPageEnabled = homePagerState.currentPage > 0
+        IconButton(
+            modifier = Modifier.size(60.dp),
+            enabled = isPreviousPageEnabled,
+            onClick = {
+                homeCoroutineScope.launch {
+                    homePagerState.animateScrollToPage(homePagerState.currentPage - 1)
+                }
+            }
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = stringResource(coreRes.string.core_previous),
+                tint = if (isPreviousPageEnabled) {
+                    MaterialTheme.appColors.textDark
+                } else {
+                    MaterialTheme.appColors.textFieldHint
+                }
+            )
+        }
+        PageIndicator(
+            modifier = Modifier.padding(vertical = 16.dp),
+            numberOfPages = CourseHomePagerTab.entries.size,
+            selectedPage = homePagerState.currentPage,
+            defaultRadius = 8.dp,
+            space = 8.dp,
+            selectedLength = 24.dp,
+        )
+        val isNextPageEnabled = homePagerState.currentPage < CourseHomePagerTab.entries.size - 1
+        IconButton(
+            modifier = Modifier.size(60.dp),
+            enabled = isNextPageEnabled,
+            onClick = {
+                homeCoroutineScope.launch {
+                    homePagerState.animateScrollToPage(homePagerState.currentPage + 1)
+                }
+            }
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(coreRes.string.core_next),
+                tint = if (isNextPageEnabled) {
+                    MaterialTheme.appColors.textDark
+                } else {
+                    MaterialTheme.appColors.textFieldHint
+                }
+            )
+        }
     }
 }
 

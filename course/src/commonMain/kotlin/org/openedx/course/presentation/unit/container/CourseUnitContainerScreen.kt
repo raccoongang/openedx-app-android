@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -218,16 +219,21 @@ fun CourseUnitContainerScreen(
                     renderBlock(descendantsBlocks[page])
                 }
 
-                // Vertical dots indicator (when horizontal progress is disabled)
+                // Vertical dots indicator (when horizontal progress is disabled) —
+                // matches Android native CourseUnitContainerFragment (cv_count at
+                // constraintEnd_toEndOf=parent, width=24dp, defaultRadius=3dp,
+                // selectedLength=5dp).
                 if (!viewModel.isCourseUnitProgressEnabled) {
                     VerticalPageIndicator(
                         modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(start = 2.dp),
+                            .align(Alignment.CenterEnd)
+                            .width(24.dp),
                         numberOfPages = descendantsBlocks.size,
                         selectedPage = pagerState.currentPage,
                         selectedColor = MaterialTheme.appColors.primary,
                         defaultColor = MaterialTheme.appColors.bottomSheetToggle,
+                        defaultRadius = 3.dp,
+                        selectedLength = 5.dp,
                     )
                 }
             }

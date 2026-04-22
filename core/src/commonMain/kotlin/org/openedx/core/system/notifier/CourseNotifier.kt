@@ -24,4 +24,5 @@ class CourseNotifier {
     suspend fun send(event: RefreshDiscussions) = channel.emit(event)
     suspend fun send(event: RefreshProgress) = channel.emit(event)
     suspend fun send(event: CourseProgressLoaded) = channel.emit(event)
+    suspend fun send(event: VideoProgressUpdated) = channel.emit(event)
 }

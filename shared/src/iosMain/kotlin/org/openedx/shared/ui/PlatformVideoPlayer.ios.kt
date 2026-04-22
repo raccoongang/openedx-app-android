@@ -17,6 +17,8 @@ import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
 import platform.AVFoundation.addPeriodicTimeObserverForInterval
+import platform.AVFoundation.currentItem
+import platform.AVFoundation.duration
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
 import platform.AVFoundation.preferredMaximumResolution
@@ -44,6 +46,7 @@ actual fun PlatformVideoPlayer(
     onEnded: (() -> Unit)?,
     onPlayPauseChanged: ((isPlaying: Boolean) -> Unit)?,
     onSpeedChanged: ((speed: Float) -> Unit)?,
+    onVideoDuration: ((durationMs: Long) -> Unit)?,
 ) {
     val player = remember(url, maxVideoHeight) {
         val item = AVPlayerItem(uRL = NSURL(string = url))
@@ -56,6 +59,7 @@ actual fun PlatformVideoPlayer(
     val currentEnded by rememberUpdatedState(onEnded)
     val currentPlayPause by rememberUpdatedState(onPlayPauseChanged)
     val currentSpeed by rememberUpdatedState(onSpeedChanged)
+    val currentDuration by rememberUpdatedState(onVideoDuration)
 
     DisposableEffect(url, startPositionMs) {
         if (startPositionMs > 0) {
@@ -73,6 +77,7 @@ actual fun PlatformVideoPlayer(
         val interval = CMTimeMakeWithSeconds(0.5, 600)
         var lastIsPlaying: Boolean? = null
         var lastNonZeroRate: Float = 1f
+        var durationReported = false
         val token = player.addPeriodicTimeObserverForInterval(
             interval = interval,
             queue = null,
@@ -80,6 +85,16 @@ actual fun PlatformVideoPlayer(
                 val seconds = CMTimeGetSeconds(time)
                 if (!seconds.isNaN() && seconds >= 0) {
                     currentProgress?.invoke((seconds * 1000).toLong())
+                }
+                if (!durationReported) {
+                    val item = player.currentItem
+                    if (item != null) {
+                        val durSec = CMTimeGetSeconds(item.duration)
+                        if (!durSec.isNaN() && durSec > 0) {
+                            durationReported = true
+                            currentDuration?.invoke((durSec * 1000).toLong())
+                        }
+                    }
                 }
                 val rate = player.rate
                 val playingNow = rate > 0f

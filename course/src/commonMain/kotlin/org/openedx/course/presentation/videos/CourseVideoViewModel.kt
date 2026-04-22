@@ -25,6 +25,7 @@ import org.openedx.core.system.connection.NetworkConnection
 import org.openedx.core.system.notifier.CourseLoading
 import org.openedx.core.system.notifier.CourseNotifier
 import org.openedx.core.system.notifier.CourseStructureUpdated
+import org.openedx.core.system.notifier.VideoProgressUpdated
 import org.openedx.course.Res
 import org.openedx.course.course_can_download_only_with_wifi
 import org.openedx.course.domain.interactor.CourseInteractor
@@ -82,6 +83,10 @@ class CourseVideoViewModel(
                             getVideos()
                         }
                     }
+
+                    is VideoProgressUpdated -> {
+                        refreshVideoProgress()
+                    }
                 }
             }
         }
@@ -130,6 +135,22 @@ class CourseVideoViewModel(
         }
 
         super.saveAllDownloadModels(folder, courseId)
+    }
+
+    private fun refreshVideoProgress() {
+        viewModelScope.launch {
+            val currentState = _uiState.value as? CourseVideoUIState.CourseData ?: return@launch
+            val videoProgress = courseVideos.values.flatten().associate { block ->
+                val entity = interactor.getVideoProgress(block.id)
+                val time = entity.videoTime?.toFloat()
+                val dur = entity.duration?.toFloat()
+                val progress = if (time != null && dur != null) {
+                    time.safeDivBy(dur)
+                } else null
+                block.id to progress
+            }
+            _uiState.value = currentState.copy(videoProgress = videoProgress)
+        }
     }
 
     fun getVideos() {

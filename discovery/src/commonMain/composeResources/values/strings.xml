@@ -16,8 +16,8 @@
     <string name="discovery_programs">Programs</string>
 
     <plurals name="discovery_found_courses">
-        <item quantity="one">Found %s course on your request</item>
-        <item quantity="other">Found %s courses on your request</item>
+        <item quantity="one">Found %1$d course on your request</item>
+        <item quantity="other">Found %1$d courses on your request</item>
     </plurals>
 
     <!-- Accessibility -->

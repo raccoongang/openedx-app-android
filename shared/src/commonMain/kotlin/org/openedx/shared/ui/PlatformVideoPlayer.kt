@@ -19,4 +19,5 @@ expect fun PlatformVideoPlayer(
     onEnded: (() -> Unit)? = null,
     onPlayPauseChanged: ((isPlaying: Boolean) -> Unit)? = null,
     onSpeedChanged: ((speed: Float) -> Unit)? = null,
+    onVideoDuration: ((durationMs: Long) -> Unit)? = null,
 )
