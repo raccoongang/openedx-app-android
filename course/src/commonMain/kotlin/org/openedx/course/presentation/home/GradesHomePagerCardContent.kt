@@ -49,7 +49,7 @@ fun GradesHomePagerCardContent(
     val assignmentPolicies = courseProgress?.getNotEmptyGradingPolicies()
     val requiredGradeString = stringResource(
         Res.string.course_progress_required_grade_percent,
-        courseProgress?.requiredGradePercent.toString()
+        "${courseProgress?.requiredGradePercent}%"
     )
 
     if (courseProgress == null || gradingPolicy == null || assignmentPolicies.isNullOrEmpty()) {

@@ -315,7 +315,7 @@ private fun OverallGradeView(
                 Text(
                     text = stringResource(
                         Res.string.course_progress_required_grade_percent,
-                        progress.requiredGradePercent.toString()
+                        "${progress.requiredGradePercent}%"
                     ),
                     style = MaterialTheme.appTypography.labelLarge,
                     color = MaterialTheme.appColors.textDark,
@@ -419,7 +419,7 @@ private fun AssignmentTypeRow(
                 stringResource(
                     Res.string.course_progress_current_and_max_weighted_graded_percent,
                     uiState.progress.getAssignmentWeightedGradedPercent(policy).toInt(),
-                    (policy.weight * 100).toInt()
+                    "${(policy.weight * 100).toInt()}%"
                 ),
                 style = MaterialTheme.appTypography.bodyLarge,
                 fontWeight = FontWeight.W700,

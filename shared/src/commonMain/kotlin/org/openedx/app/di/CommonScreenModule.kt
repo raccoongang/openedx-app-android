@@ -32,6 +32,8 @@ import org.openedx.course.presentation.section.CourseSectionViewModel
 import org.openedx.course.presentation.unit.container.CourseUnitContainerViewModel
 import org.openedx.course.presentation.unit.container.CourseViewMode
 import org.openedx.course.presentation.unit.html.HtmlUnitViewModel
+import org.openedx.course.presentation.unit.html.JsInjectionProvider
+import org.openedx.course.presentation.unit.html.JsInjectionProviderImpl
 import org.openedx.course.presentation.unit.video.BaseVideoViewModel
 import org.openedx.course.presentation.unit.video.VideoUnitViewModel
 import org.openedx.course.presentation.unit.video.VideoViewModel
@@ -237,6 +239,8 @@ val commonScreenModule = module {
     viewModel { (descendants: List<String>) ->
         DownloadQueueViewModel(descendants, get(), get(), get(), get(), get(), get(), get())
     }
+    factory<JsInjectionProvider> { JsInjectionProviderImpl() }
+
     viewModel { (blockId: String, courseId: String) ->
         HtmlUnitViewModel(blockId, courseId, get(), get(), get(), get(), get(), get(), get(), get())
     }

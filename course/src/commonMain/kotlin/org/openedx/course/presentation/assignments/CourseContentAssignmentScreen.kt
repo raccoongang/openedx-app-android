@@ -243,7 +243,7 @@ private fun AssignmentGroupSection(
             ) {
                 Text(
                     modifier = Modifier.padding(4.dp),
-                    text = stringResource(Res.string.course_of_grade, percentOfGrade),
+                    text = stringResource(Res.string.course_of_grade, "$percentOfGrade%"),
                     color = MaterialTheme.appColors.textDark,
                     style = MaterialTheme.appTypography.labelSmall,
                     maxLines = 1

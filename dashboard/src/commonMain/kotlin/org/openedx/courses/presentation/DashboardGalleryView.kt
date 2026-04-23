@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,9 +57,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.pluralStringResource
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -66,35 +64,48 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
+import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.openedx.Lock
+import org.openedx.core.core_date_format_assignment_due
+import org.openedx.core.core_ic_book
+import org.openedx.core.core_ic_chapter_icon
+import org.openedx.core.core_no_image_course
 import org.openedx.core.domain.model.CourseEnrollments
 import org.openedx.core.domain.model.EnrolledCourse
 import org.openedx.core.ui.HandleUIMessage
 import org.openedx.core.ui.OfflineModeDialog
-import org.openedx.core.ui.Toolbar
 import org.openedx.core.ui.OpenEdXButton
 import org.openedx.core.ui.TextIcon
+import org.openedx.core.ui.Toolbar
 import org.openedx.core.ui.displayCutoutForLandscape
+import org.openedx.core.ui.statusBarsInset
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
 import org.openedx.core.utils.TimeUtils
-import org.openedx.foundation.system.ResourceManager
-import org.koin.compose.koinInject
-import org.openedx.core.Res as coreRes
-import org.openedx.core.core_date_format_assignment_due
-import org.openedx.core.core_ic_book
-import org.openedx.core.core_ic_chapter_icon
-import org.openedx.dashboard.*
+import org.openedx.dashboard.Res
+import org.openedx.dashboard.dashboard_all_courses_empty_description
+import org.openedx.dashboard.dashboard_all_courses_empty_title
+import org.openedx.dashboard.dashboard_assignment_due
+import org.openedx.dashboard.dashboard_find_a_course
+import org.openedx.dashboard.dashboard_learn
+import org.openedx.dashboard.dashboard_past_due_assignment
+import org.openedx.dashboard.dashboard_resume_course
+import org.openedx.dashboard.dashboard_start_course
+import org.openedx.dashboard.dashboard_view_all
+import org.openedx.dashboard.dashboard_view_all_with_count
 import org.openedx.foundation.extension.toImageLink
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.foundation.presentation.windowSizeValue
-import kotlinx.datetime.Clock
-import org.openedx.core.core_no_image_course
+import org.openedx.foundation.system.ResourceManager
+import org.openedx.core.Res as coreRes
 
 @Composable
 fun DashboardGalleryView(
@@ -181,35 +192,39 @@ private fun DashboardGalleryView(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.appColors.background,
-        topBar = {
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    ) { paddingValues ->
+
+        HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .statusBarsInset()
+                .displayCutoutForLandscape(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Toolbar(
                 label = org.jetbrains.compose.resources.stringResource(org.openedx.dashboard.Res.string.dashboard_learn),
                 canShowSettingsIcon = true,
                 onSettingsClick = onSettingsClick,
             )
-        }
-    ) { paddingValues ->
-
-        HandleUIMessage(uiMessage = uiMessage, snackbarHostState = snackbarHostState)
-
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .displayCutoutForLandscape()
-                .padding(paddingValues),
-            color = MaterialTheme.appColors.background
-        ) {
-            PullToRefreshBox(
-                isRefreshing = updating,
-                onRefresh = { onAction(DashboardGalleryScreenAction.SwipeRefresh) },
-                state = pullToRefreshState,
+            Surface(
                 modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.appColors.background
             ) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
+                PullToRefreshBox(
+                    isRefreshing = updating,
+                    onRefresh = { onAction(DashboardGalleryScreenAction.SwipeRefresh) },
+                    state = pullToRefreshState,
+                    modifier = Modifier.fillMaxSize(),
                 ) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                    ) {
                     when (uiState) {
                         is DashboardGalleryUIState.Loading -> {
                             CircularProgressIndicator(
@@ -277,6 +292,7 @@ private fun DashboardGalleryView(
                                 onAction(DashboardGalleryScreenAction.SwipeRefresh)
                             }
                         )
+                    }
                     }
                 }
             }

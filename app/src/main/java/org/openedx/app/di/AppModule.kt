@@ -71,8 +71,6 @@ import org.openedx.core.worker.CalendarSyncScheduler
 import org.openedx.core.worker.CalendarSyncSchedulerImpl
 import org.openedx.course.data.storage.CoursePreferences
 import org.openedx.course.presentation.CourseAnalytics
-import org.openedx.course.presentation.unit.html.JsInjectionProvider
-import org.openedx.course.presentation.unit.html.JsInjectionProviderImpl
 import org.openedx.course.utils.ImageProcessor
 import org.openedx.course.utils.ImageProcessorImpl
 import org.openedx.course.worker.OfflineProgressSyncScheduler
@@ -229,7 +227,6 @@ val appModule = module {
     single<DownloadHelper> { DownloadHelperImpl(get(), get()) }
 
     factory<OfflineProgressSyncScheduler> { OfflineProgressSyncSchedulerImpl(get()) }
-    factory<JsInjectionProvider> { JsInjectionProviderImpl() }
     single<PlatformActions> { PlatformActionsImpl(get()) }
 
     single<CalendarSyncScheduler> { CalendarSyncSchedulerImpl(get()) }

@@ -9,15 +9,16 @@ data class WindowSize(
     val screenHeightDp: Int = 0,
 ) {
     val isTablet: Boolean
-        get() = width != WindowType.Compact
+        get() = height != WindowType.Compact && width != WindowType.Compact
     val isLandscape: Boolean
         get() = screenWidthDp > screenHeightDp
 }
 
 fun <T> WindowSize.windowSizeValue(expanded: T, compact: T): T {
-    return when (width) {
-        WindowType.Compact -> compact
-        else -> expanded
+    return if (height != WindowType.Compact && width != WindowType.Compact) {
+        expanded
+    } else {
+        compact
     }
 }
 
