@@ -1,6 +1,6 @@
 API_HOST_URL: 'http://localhost:8000'
-APPLICATION_ID: 'org.openedx.app'
-ENVIRONMENT_DISPLAY_NAME: 'Localhost'
+APPLICATION_ID: 'org.sandbox.app.stage'
+ENVIRONMENT_DISPLAY_NAME: "Sandbox Stage"
 URI_SCHEME: ''
 FEEDBACK_EMAIL_ADDRESS: 'support@example.com'
 FAQ_URL: ''
@@ -71,8 +71,8 @@ EXPERIMENTAL_FEATURES:
     ENABLED: false
 
 #Platform names
-PLATFORM_NAME: "OpenEdX"
-PLATFORM_FULL_NAME: "OpenEdX"
+PLATFORM_NAME: "Sandbox Stage"
+PLATFORM_FULL_NAME: "Sandbox Stage"
 #App sourceSets dir
 THEME_DIRECTORY: "openedx"
 #tokenType enum accepts JWT and BEARER only

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#FF19212F</color>
-    <color name="primary">#5478F9</color>
+    <color name="primary">#3C68FF</color>
     <color name="splash">#19212F</color>
     <color name="checked_tab_item">#879FF5</color>
     <color name="unchecked_tab_item">#8E9BAE</color>

@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.openedx.core.R
 import org.openedx.core.ui.theme.OpenEdXTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.dimensionResource
 
 @Composable
 fun SignInLogoView() {
@@ -25,7 +27,12 @@ fun SignInLogoView() {
         Image(
             painter = painterResource(id = R.drawable.core_ic_logo),
             contentDescription = null,
-            modifier = Modifier.padding(top = 20.dp)
+            modifier = Modifier
+            .padding(top = 20.dp)
+            .size(
+                width = dimensionResource(id = R.dimen.core_login_logo_width),
+                height = dimensionResource(id = R.dimen.core_login_logo_height)
+            )
         )
     }
 }

@@ -26,6 +26,7 @@ import org.openedx.app.databinding.ActivityAppBinding
 import org.openedx.app.deeplink.DeepLink
 import org.openedx.auth.presentation.logistration.LogistrationFragment
 import org.openedx.auth.presentation.signin.SignInFragment
+import org.openedx.auth.presentation.startup.SandboxSplashFragment
 import org.openedx.core.ApiConstants
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.presentation.dialog.downloaddialog.DownloadDialogManager
@@ -173,10 +174,12 @@ class AppActivity : AppCompatActivity(), InsetHolder, WindowSizeHolder {
         if (savedInstanceState == null) {
             when {
                 corePreferencesManager.user == null -> {
-                    val fragment = if (viewModel.isLogistrationEnabled && authCode == null) {
-                        LogistrationFragment()
-                    } else {
-                        SignInFragment.newInstance(null, null, authCode = authCode)
+                    val fragment = when {
+                        authCode != null ->
+                            SignInFragment.newInstance(null, null, authCode = authCode)
+
+                        viewModel.isLogistrationEnabled -> LogistrationFragment()
+                        else -> SandboxSplashFragment()
                     }
                     addFragment(fragment)
                 }

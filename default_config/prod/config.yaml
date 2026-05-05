@@ -1,10 +1,10 @@
-API_HOST_URL: 'http://localhost:8000'
-APPLICATION_ID: 'org.openedx.app'
-ENVIRONMENT_DISPLAY_NAME: 'Localhost'
+API_HOST_URL: 'https://sandbox.openedx.org'
+APPLICATION_ID: 'org.sandbox.app'
+ENVIRONMENT_DISPLAY_NAME: "Sandbox"
 URI_SCHEME: ''
 FEEDBACK_EMAIL_ADDRESS: 'support@example.com'
 FAQ_URL: ''
-OAUTH_CLIENT_ID: 'OAUTH_CLIENT_ID'
+OAUTH_CLIENT_ID: 'android'
 
 # Keep empty to hide setting
 AGREEMENT_URLS:
@@ -32,12 +32,12 @@ DASHBOARD:
   TYPE: 'gallery'
 
 FIREBASE:
-  ENABLED: false
+  ENABLED: true
   CLOUD_MESSAGING_ENABLED: false
-  PROJECT_NUMBER: ''
-  PROJECT_ID: ''
-  APPLICATION_ID: '' #App ID field from the Firebase console or mobilesdk_app_id from the google-services.json file.
-  API_KEY: ''
+  PROJECT_NUMBER: '156114692773'
+  PROJECT_ID: 'openedxmobile-stage'
+  APPLICATION_ID: '1:156114692773:android:8058bca851a8bc7c187b4c' #App ID field from the Firebase console or mobilesdk_app_id from the google-services.json file.
+  API_KEY: 'AIzaSyCKAIXDLM7pnX43P_viTsfgbxrLBOaJwGo'
 
 BRAZE:
   ENABLED: false
@@ -71,8 +71,8 @@ EXPERIMENTAL_FEATURES:
     ENABLED: false
 
 #Platform names
-PLATFORM_NAME: "OpenEdX"
-PLATFORM_FULL_NAME: "OpenEdX"
+PLATFORM_NAME: "Sandbox"
+PLATFORM_FULL_NAME: "Sandbox"
 #App sourceSets dir
 THEME_DIRECTORY: "openedx"
 #tokenType enum accepts JWT and BEARER only

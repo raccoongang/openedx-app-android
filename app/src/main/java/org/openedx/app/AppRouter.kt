@@ -9,6 +9,7 @@ import org.openedx.auth.presentation.logistration.LogistrationFragment
 import org.openedx.auth.presentation.restore.RestorePasswordFragment
 import org.openedx.auth.presentation.signin.SignInFragment
 import org.openedx.auth.presentation.signup.SignUpFragment
+import org.openedx.auth.presentation.startup.SandboxSplashFragment
 import org.openedx.core.CalendarRouter
 import org.openedx.core.FragmentViewType
 import org.openedx.core.presentation.global.appupgrade.AppUpgradeRouter
@@ -408,7 +409,7 @@ class AppRouter :
             if (isLogistrationEnabled) {
                 replaceFragment(fm, LogistrationFragment())
             } else {
-                replaceFragment(fm, SignInFragment.newInstance(null, null))
+                replaceFragment(fm, SandboxSplashFragment())
             }
         }
     }

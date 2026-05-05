@@ -43,4 +43,8 @@
     <string name="auth_cdata_template" translatable="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
     <string name="auth_accessibility_show_password">Show password</string>
     <string name="auth_accessibility_hide_password">Hide password</string>
+
+    <string name="auth_sandbox_splash_title" translatable="false">Welcome to the Open edX® Mobile App</string>
+    <string name="auth_sandbox_splash_subtitle" translatable="false">This app was built for you to explore the Open edX® Mobile App. Courses are for demonstration purposes only.</string>
+    <string name="auth_sandbox_splash_start" translatable="false">Start Exploring</string>
 </resources>
