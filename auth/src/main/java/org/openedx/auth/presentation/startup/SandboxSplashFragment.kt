@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -49,7 +50,6 @@ import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.core.ui.theme.appColors
 import org.openedx.core.ui.theme.appShapes
 import org.openedx.core.ui.theme.appTypography
-import org.openedx.core.ui.theme.compose.SignInLogoView
 import org.openedx.core.R as coreR
 
 class SandboxSplashFragment : Fragment() {
@@ -96,7 +96,20 @@ private fun SandboxSplashScreen(onStartExploringClick: () -> Unit) {
                 .statusBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SignInLogoView()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(fraction = 0.2f),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(id = coreR.drawable.core_ic_logo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(width = 263.dp, height = 76.dp),
+                )
+            }
             Surface(
                 color = MaterialTheme.appColors.background,
                 shape = MaterialTheme.appShapes.screenBackgroundShape,
