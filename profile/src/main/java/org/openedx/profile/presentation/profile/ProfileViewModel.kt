@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.openedx.core.config.Config
+import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.lmsdirectory.LmsDirectoryState
 import org.openedx.foundation.presentation.BaseViewModel
 import org.openedx.foundation.system.ResourceManager
 import org.openedx.profile.domain.interactor.ProfileInteractor
@@ -26,6 +28,7 @@ class ProfileViewModel(
     private val notifier: ProfileNotifier,
     private val analytics: ProfileAnalytics,
     private val config: Config,
+    private val corePreferences: CorePreferences,
     val profileRouter: ProfileRouter
 ) : BaseViewModel(resourceManager) {
 
@@ -34,9 +37,15 @@ class ProfileViewModel(
 
     /**
      * Reporting belongs to the universal app. A build reading its list from a
-     * document has no service to post to, so the entry point stays hidden.
+     * document has no service to post to, and a curated catalog vouches for its
+     * own platforms, so in both cases the entry point stays hidden.
+     *
+     * Derived from the configured source every time it is read: the remembered
+     * "curated" answer only counts while it still belongs to the directory this
+     * build actually reads.
      */
-    val canReportLms: Boolean get() = config.getLMSDirectoryConfig().supportsReporting
+    val canReportLms: Boolean
+        get() = LmsDirectoryState.canReport(config.getLMSDirectoryConfig(), corePreferences)
 
     private val _uiState: MutableStateFlow<ProfileUIState> = MutableStateFlow(ProfileUIState.Loading)
     internal val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()

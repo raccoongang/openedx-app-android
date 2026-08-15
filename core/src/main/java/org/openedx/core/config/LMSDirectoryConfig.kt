@@ -36,8 +36,10 @@ data class LMSDirectoryConfig(
     sealed interface Source {
         /** A JSON document in the app's assets. */
         data class BundledDocument(val fileName: String) : Source
+
         /** A JSON document to fetch once. */
         data class Document(val url: String) : Source
+
         /** A live catalog answering /api/v1/directory. */
         data class Service(val url: String) : Source
     }
@@ -86,4 +88,31 @@ data class LMSDirectoryConfig(
      * by the mode itself.
      */
     val supportsReporting: Boolean get() = source is Source.Service
+
+    /**
+     * A stable identifier for the configured source.
+     *
+     * Anything remembered *about* a source — the last mode the server reported,
+     * for instance — is only meaningful while the source is the same one. Storing
+     * this beside such a value is what lets a reader notice the build has been
+     * pointed somewhere else and ignore what it remembers.
+     */
+    val sourceKey: String
+        get() = when (val current = source) {
+            is Source.Service -> "service:${current.url}"
+            is Source.Document -> "document:${current.url}"
+            is Source.BundledDocument -> "file:${current.fileName}"
+            null -> ""
+        }
+
+    /**
+     * Whether this build lists a fixed set of platforms, as far as the config
+     * alone can say. A document always does; a service can be forced with
+     * DIRECTORY_MODE, but otherwise only the server knows.
+     */
+    val isCuratedByConfiguration: Boolean
+        get() = when (source) {
+            is Source.Document, is Source.BundledDocument -> true
+            else -> directoryMode.trim().equals("curated", ignoreCase = true)
+        }
 }

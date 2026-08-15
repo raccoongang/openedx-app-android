@@ -21,6 +21,7 @@ import org.openedx.core.config.Config
 import org.openedx.core.config.LMSDirectoryConfig
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.lmsdirectory.LmsDirectoryRepository
+import org.openedx.core.lmsdirectory.LmsDirectoryState
 import org.openedx.core.lmsdirectory.LmsHistoryEntry
 import org.openedx.core.lmsdirectory.LmsSummary
 import org.openedx.core.lmsdirectory.LmsThemeController
@@ -77,7 +78,7 @@ class SiteSelectionViewModel(
         val isDocument = source is LMSDirectoryConfig.Source.Document ||
             source is LMSDirectoryConfig.Source.BundledDocument
         if (isDocument || config.getLMSDirectoryConfig().directoryMode.equals("curated", ignoreCase = true)) {
-            corePreferences.lmsDirectoryCurated = true
+            LmsDirectoryState.rememberCurated(true, config.getLMSDirectoryConfig(), corePreferences)
             _uiState.update { it.copy(isCurated = true) }
         }
     }
@@ -87,8 +88,10 @@ class SiteSelectionViewModel(
             val remote = directoryRepository.fetchConfig()
             val configuredMode = config.getLMSDirectoryConfig().directoryMode
             val curated = remote.isCurated || configuredMode.equals("curated", ignoreCase = true)
-            // Share the mode so the Profile tab can hide "Report this LMS" in curated mode.
-            corePreferences.lmsDirectoryCurated = curated
+            // Share the mode so the Profile tab can hide "Report this LMS" in curated
+            // mode. Stamped with the source, so it is ignored if the build is later
+            // pointed at a different directory.
+            LmsDirectoryState.rememberCurated(curated, config.getLMSDirectoryConfig(), corePreferences)
             _uiState.update {
                 it.copy(isCurated = curated, providerName = remote.providerName)
             }

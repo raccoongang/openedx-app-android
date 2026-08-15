@@ -49,8 +49,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.openedx.auth.R
 import org.openedx.core.lmsdirectory.LmsHistoryEntry
-import org.openedx.core.lmsdirectory.LmsSummary
 import org.openedx.core.lmsdirectory.LmsImageSource
+import org.openedx.core.lmsdirectory.LmsSummary
 import org.openedx.core.lmsdirectory.LmsThemeController
 import org.openedx.core.ui.BackBtn
 import org.openedx.core.ui.theme.appColors

@@ -15,6 +15,7 @@ import org.openedx.app.di.networkingModule
 import org.openedx.app.di.screenModule
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.lmsdirectory.LmsDirectoryState
 import org.openedx.core.lmsdirectory.LmsThemeController
 import org.openedx.core.lmsdirectory.lmsDirectoryModule
 import org.openedx.firebase.OEXFirebaseAnalytics
@@ -39,8 +40,13 @@ class OpenEdXApp : Application() {
         // LMS Directory: re-apply the selected platform's brand color on cold start so
         // the whole app is themed before the first screen composes. No-op when off.
         if (config.getLMSDirectoryConfig().isReachable) {
+            // Anything remembered about a directory this build no longer reads is
+            // dropped here, before a screen can act on it.
+            LmsDirectoryState.reconcile(config.getLMSDirectoryConfig(), corePreferences)
             LmsThemeController.apply(corePreferences.selectedLmsAccentColor)
             LmsThemeController.applyBackground(corePreferences.selectedLmsLoginBackgroundUrl)
+        } else {
+            LmsDirectoryState.clear(corePreferences)
         }
         if (config.getFirebaseConfig().enabled) {
             FirebaseApp.initializeApp(this)

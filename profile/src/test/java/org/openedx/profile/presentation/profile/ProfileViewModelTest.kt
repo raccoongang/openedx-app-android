@@ -24,6 +24,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.openedx.core.config.Config
+import org.openedx.core.config.LMSDirectoryConfig
+import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.AgreementUrls
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.captureUiMessage
@@ -46,6 +48,7 @@ class ProfileViewModelTest {
     private val dispatcher = StandardTestDispatcher()
 
     private val config = mockk<Config>()
+    private val corePreferences = mockk<CorePreferences>(relaxed = true)
     private val resourceManager = mockk<ResourceManager>()
     private val interactor = mockk<ProfileInteractor>()
     private val notifier = mockk<ProfileNotifier>()
@@ -83,6 +86,7 @@ class ProfileViewModelTest {
             notifier,
             analytics,
             config,
+            corePreferences,
             router
         )
         coEvery { interactor.getCachedAccount() } returns null
@@ -104,6 +108,7 @@ class ProfileViewModelTest {
             notifier,
             analytics,
             config,
+            corePreferences,
             router
         )
         coEvery { interactor.getCachedAccount() } returns ProfileMocks.account.copy(
@@ -127,6 +132,7 @@ class ProfileViewModelTest {
             notifier,
             analytics,
             config,
+            corePreferences,
             router
         )
         coEvery { interactor.getCachedAccount() } returns null
@@ -148,6 +154,7 @@ class ProfileViewModelTest {
             notifier,
             analytics,
             config,
+            corePreferences,
             router
         )
         coEvery { interactor.getCachedAccount() } returns null
@@ -171,6 +178,7 @@ class ProfileViewModelTest {
             notifier,
             analytics,
             config,
+            corePreferences,
             router
         )
         coEvery { interactor.getCachedAccount() } returns null
@@ -183,5 +191,75 @@ class ProfileViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 2) { interactor.getAccount() }
+    }
+
+    /**
+     * What the Profile tab actually asks before drawing "Report this LMS". The
+     * flag it used to read was written by the platform picker and never cleared,
+     * so these pin the answer to the configured source instead.
+     */
+    private fun reportingOffered(
+        directory: LMSDirectoryConfig,
+        remembered: Boolean = false,
+        rememberedFor: String = ""
+    ): Boolean {
+        every { config.getLMSDirectoryConfig() } returns directory
+        every { corePreferences.lmsDirectoryCurated } returns remembered
+        every { corePreferences.lmsDirectorySourceKey } returns rememberedFor
+        coEvery { interactor.getCachedAccount() } returns null
+        return ProfileViewModel(
+            interactor,
+            resourceManager,
+            notifier,
+            analytics,
+            config,
+            corePreferences,
+            router
+        ).canReportLms
+    }
+
+    @Test
+    fun `an open catalog offers reporting`() {
+        val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
+        assertEquals(true, reportingOffered(service))
+    }
+
+    @Test
+    fun `a document build never offers reporting`() {
+        assertEquals(
+            false,
+            reportingOffered(
+                LMSDirectoryConfig(enabled = true, directoryUrl = "https://cdn.example.com/directory.json")
+            )
+        )
+        assertEquals(
+            false,
+            reportingOffered(LMSDirectoryConfig(enabled = true, directoryFile = "lms_directory.json"))
+        )
+    }
+
+    @Test
+    fun `a curated catalog does not offer reporting`() {
+        val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
+        assertEquals(
+            false,
+            reportingOffered(service, remembered = true, rememberedFor = service.sourceKey)
+        )
+    }
+
+    @Test
+    fun `a curated answer left by a different directory is ignored`() {
+        // The regression: the picker is skipped once a platform is selected, so a
+        // build repointed at an open catalog kept hiding the entry point.
+        val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
+        assertEquals(
+            true,
+            reportingOffered(service, remembered = true, rememberedFor = "service:https://old-registry.example.com")
+        )
+    }
+
+    @Test
+    fun `a disabled directory offers nothing`() {
+        assertEquals(false, reportingOffered(LMSDirectoryConfig(enabled = false)))
     }
 }

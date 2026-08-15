@@ -12,9 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.ui.theme.OpenEdXTheme
 import org.openedx.foundation.presentation.rememberWindowSize
 import org.openedx.profile.presentation.profile.compose.ProfileView
@@ -26,7 +24,6 @@ class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModel()
     private val reportViewModel: ReportLmsViewModel by viewModel()
-    private val corePreferences: CorePreferences by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +50,7 @@ class ProfileFragment : Fragment() {
                     uiMessage = uiMessage,
                     refreshing = refreshing,
                     // Curated/institution registries have no learner reporting.
-                    showReportLms = viewModel.canReportLms && !corePreferences.lmsDirectoryCurated,
+                    showReportLms = viewModel.canReportLms,
                     onSettingsClick = {
                         viewModel.profileRouter.navigateToSettings(requireActivity().supportFragmentManager)
                     },

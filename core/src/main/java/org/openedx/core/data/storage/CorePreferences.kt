@@ -49,6 +49,13 @@ interface CorePreferences {
     var lmsDirectoryCurated: Boolean
 
     /**
+     * Which directory source [lmsDirectoryCurated] was recorded against. A
+     * remembered answer means nothing once the build points somewhere else, and
+     * this is what lets a reader tell.
+     */
+    var lmsDirectorySourceKey: String
+
+    /**
      * Recently selected LMS platforms, most-recent-first (capped). Shown as the
      * directory "History" section. Persists across logout (matches iOS): logging out
      * clears the pinned selection but keeps the history so the picker can offer it.

@@ -105,7 +105,7 @@ class DocumentLmsDirectorySource(
         cached?.let { return it }
         val raw = loader.load()
         val parsed = gson.fromJson(raw, DirectoryDocumentDto::class.java)
-            ?: throw IllegalStateException("Directory document is empty")
+        checkNotNull(parsed) { "Directory document is empty" }
         if (parsed.platforms.isEmpty()) {
             Log.w(TAG, "Directory document parsed but lists no platforms")
         }
@@ -132,11 +132,12 @@ class DocumentLmsDirectorySource(
                 loader = {
                     withContext(Dispatchers.IO) {
                         client.newCall(Request.Builder().url(url).build()).execute().use { response ->
-                            if (!response.isSuccessful) {
-                                throw IllegalStateException("Directory document returned ${response.code}")
+                            check(response.isSuccessful) {
+                                "Directory document returned ${response.code}"
                             }
-                            response.body?.string()
-                                ?: throw IllegalStateException("Directory document had no body")
+                            checkNotNull(response.body?.string()) {
+                                "Directory document had no body"
+                            }
                         }
                     }
                 }

@@ -218,6 +218,7 @@ val screenModule = module {
             notifier = get(),
             analytics = get(),
             config = get(),
+            corePreferences = get(),
             profileRouter = get(),
         )
     }

@@ -98,6 +98,7 @@ class PreferencesManager(
             stringPreferencesKey("selected_lms_login_background")
         val SELECTED_LMS_TITLE = stringPreferencesKey("selected_lms_title")
         val LMS_DIRECTORY_CURATED = booleanPreferencesKey("lms_directory_curated")
+        val LMS_DIRECTORY_SOURCE_KEY = stringPreferencesKey("lms_directory_source_key")
         val LMS_HISTORY = stringPreferencesKey("lms_history")
 
         fun calendarSyncDialogShown(courseName: String) =
@@ -256,6 +257,10 @@ class PreferencesManager(
     override var lmsDirectoryCurated: Boolean
         get() = getValue(Keys.LMS_DIRECTORY_CURATED, false)
         set(value) = setValue(Keys.LMS_DIRECTORY_CURATED, value)
+
+    override var lmsDirectorySourceKey: String
+        get() = getValue(Keys.LMS_DIRECTORY_SOURCE_KEY, "")
+        set(value) = setValue(Keys.LMS_DIRECTORY_SOURCE_KEY, value)
 
     override var lmsHistory: List<LmsHistoryEntry>
         get() {
