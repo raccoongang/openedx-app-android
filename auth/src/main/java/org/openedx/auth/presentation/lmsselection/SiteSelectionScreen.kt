@@ -33,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +50,7 @@ import coil.request.ImageRequest
 import org.openedx.auth.R
 import org.openedx.core.lmsdirectory.LmsHistoryEntry
 import org.openedx.core.lmsdirectory.LmsSummary
+import org.openedx.core.lmsdirectory.LmsImageSource
 import org.openedx.core.lmsdirectory.LmsThemeController
 import org.openedx.core.ui.BackBtn
 import org.openedx.core.ui.theme.appColors
@@ -108,6 +110,13 @@ internal fun SiteSelectionScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            val context = LocalContext.current
+            LaunchedEffect(state.imageReferences) {
+                // Decoding these now is the whole reason the branded sign-in appears
+                // whole instead of assembling itself after the platform is tapped.
+                LmsImageSource.prefetch(context, state.imageReferences)
+            }
+
             if (!state.isCurated) {
                 SearchField(state, callbacks)
             }
@@ -332,10 +341,11 @@ private fun LmsRowLogo(logoUrl: String?, title: String, accentColor: String?) {
     val logoModifier = Modifier
         .size(48.dp)
         .clip(RoundedCornerShape(10.dp))
-    if (!logoUrl.isNullOrBlank()) {
+    val logoModel = LmsImageSource.model(logoUrl)
+    if (logoModel != null) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(logoUrl)
+                .data(logoModel)
                 .crossfade(true)
                 .build(),
             contentDescription = null,

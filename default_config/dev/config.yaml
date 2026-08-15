@@ -96,7 +96,16 @@ UI_COMPONENTS:
   COURSE_DOWNLOAD_QUEUE_SCREEN: false
 # LMS Directory (multi-tenant): browse the Open edX platforms published by a site
 # registry, re-theme to the chosen one, and sign in against it. Off by default.
+# Where the app gets its list of Open edX platforms.
+# Set exactly one source. A bundled file wins if both are set.
+#   DIRECTORY_URL   a JSON document (…/directory.json), or the base URL of a
+#                   service that answers /api/v1/directory
+#   DIRECTORY_FILE  a JSON document in app/src/main/assets, for a build that
+#                   ships its list and never asks the network for it
+# Image fields in the document are either web addresses or the names of files in
+# assets; anything that is not http(s) is read from the app.
 LMS_DIRECTORY:
   ENABLED: true
   DIRECTORY_URL: "https://openedx-lms.stepanok.com"
+  DIRECTORY_FILE: ""
   DIRECTORY_MODE: "search"

@@ -17,6 +17,14 @@ data class SiteSelectionUIState(
 
     // Recently selected platforms, shown when the search field is empty.
     val history: List<LmsHistoryEntry> = emptyList(),
+
+    /**
+     * Every image the directory will ask for. Populated only when the list came
+     * from a document, which is the only source that knows them before a platform
+     * is picked. The screen warms them so the branded sign-in does not assemble
+     * itself in front of the learner.
+     */
+    val imageReferences: List<String> = emptyList(),
 )
 
 sealed interface CatalogState {

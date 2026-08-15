@@ -16,9 +16,50 @@ data class LMSDirectoryConfig(
     @SerializedName("DIRECTORY_URL")
     val directoryUrl: String = "",
 
+    /**
+     * A JSON document added to the app's assets, e.g. "lms_directory.json". Set it
+     * and the app reads its platform list from there and never asks the network.
+     */
+    @SerializedName("DIRECTORY_FILE")
+    val directoryFile: String = "",
+
     @SerializedName("DIRECTORY_MODE")
     val directoryMode: String = "",
 ) {
+
+    /**
+     * How to read the directory.
+     *
+     * A bundled file wins over a URL: a build that ships its own copy has opted out
+     * of the network, and quietly preferring a remote list would undo that.
+     */
+    sealed interface Source {
+        /** A JSON document in the app's assets. */
+        data class BundledDocument(val fileName: String) : Source
+        /** A JSON document to fetch once. */
+        data class Document(val url: String) : Source
+        /** A live catalog answering /api/v1/directory. */
+        data class Service(val url: String) : Source
+    }
+
+    val source: Source?
+        get() {
+            if (!enabled) return null
+            val file = directoryFile.trim()
+            if (file.isNotEmpty()) return Source.BundledDocument(file)
+            val url = directoryUrl.trim()
+            if (url.isEmpty()) return null
+            // A ".json" address is a document; anything else is a service to query.
+            // The difference is visible in the config file, which is where whoever
+            // set it will look when the app does not do what they expected.
+            val path = url.substringBefore('?').substringBefore('#')
+            return if (path.endsWith(".json", ignoreCase = true)) {
+                Source.Document(url)
+            } else {
+                Source.Service(url)
+            }
+        }
+
     /**
      * The single gate for activating any LMS Directory behaviour: the feature only
      * works with a registry to talk to, so an ENABLED:true build with a blank
@@ -30,5 +71,6 @@ data class LMSDirectoryConfig(
      * ever present when the feature is on) and safer, because it also refuses to activate
      * on the ENABLED:true + empty-URL misconfiguration.
      */
-    val isReachable: Boolean get() = enabled && directoryUrl.isNotBlank()
+    val isReachable: Boolean
+        get() = enabled && (directoryFile.isNotBlank() || directoryUrl.isNotBlank())
 }

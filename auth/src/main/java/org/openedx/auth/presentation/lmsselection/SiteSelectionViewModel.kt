@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.openedx.auth.R
 import org.openedx.core.config.Config
+import org.openedx.core.config.LMSDirectoryConfig
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.lmsdirectory.LmsDirectoryRepository
 import org.openedx.core.lmsdirectory.LmsHistoryEntry
@@ -60,10 +61,26 @@ class SiteSelectionViewModel(
     private var searchJob: Job? = null
 
     init {
+        seedCuratedFromConfig()
         loadCatalogConfig()
     }
 
     // region Catalog
+
+    /**
+     * A document is a fixed list, so a build reading one is curated before any
+     * work happens. Seeding it here means the generic landing never flashes on a
+     * cold start while the config round trip is still in flight.
+     */
+    private fun seedCuratedFromConfig() {
+        val source = config.getLMSDirectoryConfig().source
+        val isDocument = source is LMSDirectoryConfig.Source.Document ||
+            source is LMSDirectoryConfig.Source.BundledDocument
+        if (isDocument || config.getLMSDirectoryConfig().directoryMode.equals("curated", ignoreCase = true)) {
+            corePreferences.lmsDirectoryCurated = true
+            _uiState.update { it.copy(isCurated = true) }
+        }
+    }
 
     private fun loadCatalogConfig() {
         viewModelScope.launch {
@@ -77,6 +94,10 @@ class SiteSelectionViewModel(
             }
             if (curated) {
                 loadFeatured()
+            }
+            // Only a document can answer this before a platform is picked.
+            directoryRepository.imageReferences().takeIf { it.isNotEmpty() }?.let { refs ->
+                _uiState.update { it.copy(imageReferences = refs) }
             }
         }
     }

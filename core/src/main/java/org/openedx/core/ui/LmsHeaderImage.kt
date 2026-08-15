@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.openedx.core.R
+import org.openedx.core.lmsdirectory.LmsImageSource
 import org.openedx.core.lmsdirectory.LmsThemeController
 
 /**
@@ -19,14 +20,18 @@ import org.openedx.core.lmsdirectory.LmsThemeController
  */
 @Composable
 fun LmsHeaderImage(modifier: Modifier = Modifier) {
-    val backgroundUrl = LmsThemeController.loginBackgroundUrl
-    if (!backgroundUrl.isNullOrBlank()) {
+    val background = LmsImageSource.model(LmsThemeController.loginBackgroundUrl)
+    if (background != null) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(backgroundUrl)
+                .data(background)
                 .placeholder(R.drawable.core_top_header)
                 .error(R.drawable.core_top_header)
-                .crossfade(true)
+                // No crossfade: the image is prefetched while the learner is still
+                // choosing a platform, so it is already decoded by the time this is
+                // built. Fading it in would put back the appearing-image effect that
+                // prefetching exists to remove.
+                .crossfade(false)
                 .build(),
             modifier = modifier,
             contentScale = ContentScale.FillBounds,
