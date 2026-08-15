@@ -1,6 +1,7 @@
 package org.openedx.core.config
 
 import com.google.gson.annotations.SerializedName
+import org.openedx.core.lmsdirectory.LmsDirectoryMode
 
 /**
  * Feature flag for the multi-tenant LMS Directory.
@@ -106,13 +107,20 @@ data class LMSDirectoryConfig(
         }
 
     /**
-     * Whether this build lists a fixed set of platforms, as far as the config
-     * alone can say. A document always does; a service can be forced with
-     * DIRECTORY_MODE, but otherwise only the server knows.
+     * What kind of list this is, as far as the config file alone can settle it.
+     *
+     * A document is a fixed list by construction. For a service, DIRECTORY_MODE
+     * settles it either way when set. Null means the config does not know and the
+     * server has to be asked.
      */
-    val isCuratedByConfiguration: Boolean
+    val configuredMode: LmsDirectoryMode?
         get() = when (source) {
-            is Source.Document, is Source.BundledDocument -> true
-            else -> directoryMode.trim().equals("curated", ignoreCase = true)
+            is Source.Document, is Source.BundledDocument -> LmsDirectoryMode.CURATED
+            null -> LmsDirectoryMode.CURATED
+            else -> when (directoryMode.trim().lowercase()) {
+                "curated" -> LmsDirectoryMode.CURATED
+                "search" -> LmsDirectoryMode.SEARCH
+                else -> null
+            }
         }
 }

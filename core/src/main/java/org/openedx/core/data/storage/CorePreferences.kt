@@ -42,16 +42,18 @@ interface CorePreferences {
     var selectedLmsTitle: String?
 
     /**
-     * True when the LMS registry runs in curated/institution mode. In that mode the
-     * catalog is the org's own platforms, so there is no learner "Report this LMS".
-     * Set when the directory config is fetched; read by the Profile tab to hide reports.
+     * What the directory last said it was — the name of an
+     * [org.openedx.core.lmsdirectory.LmsDirectoryMode], or empty for "not yet
+     * known". Read through
+     * [org.openedx.core.lmsdirectory.LmsDirectoryState], never directly: on its
+     * own it says nothing about which directory it describes.
      */
-    var lmsDirectoryCurated: Boolean
+    var lmsDirectoryMode: String
 
     /**
-     * Which directory source [lmsDirectoryCurated] was recorded against. A
-     * remembered answer means nothing once the build points somewhere else, and
-     * this is what lets a reader tell.
+     * Which directory source [lmsDirectoryMode] was recorded against. A remembered
+     * answer means nothing once the build points somewhere else, and this is what
+     * lets a reader tell.
      */
     var lmsDirectorySourceKey: String
 

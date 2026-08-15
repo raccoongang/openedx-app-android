@@ -43,14 +43,16 @@ class ProfileFragment : Fragment() {
                 val uiMessage by viewModel.uiMessage.collectAsState(initial = null)
                 val refreshing by viewModel.isUpdating.observeAsState(false)
                 var showReportSheet by remember { mutableStateOf(false) }
+                val canReportLms by viewModel.canReportLms.collectAsState()
 
                 ProfileView(
                     windowSize = windowSize,
                     uiState = uiState,
                     uiMessage = uiMessage,
                     refreshing = refreshing,
-                    // Curated/institution registries have no learner reporting.
-                    showReportLms = viewModel.canReportLms,
+                    // Curated/institution registries have no learner reporting, and
+                    // neither does a catalog that has not said which it is yet.
+                    showReportLms = canReportLms,
                     onSettingsClick = {
                         viewModel.profileRouter.navigateToSettings(requireActivity().supportFragmentManager)
                     },

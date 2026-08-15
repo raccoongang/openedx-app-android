@@ -27,6 +27,7 @@ import org.openedx.core.config.Config
 import org.openedx.core.config.LMSDirectoryConfig
 import org.openedx.core.data.storage.CorePreferences
 import org.openedx.core.domain.model.AgreementUrls
+import org.openedx.core.lmsdirectory.LmsDirectoryMode
 import org.openedx.foundation.presentation.UIMessage
 import org.openedx.foundation.presentation.captureUiMessage
 import org.openedx.foundation.system.ResourceManager
@@ -71,6 +72,11 @@ class ProfileViewModelTest {
         every { config.getFeedbackEmailAddress() } returns ""
         every { config.getAgreement(Locale.current.language) } returns AgreementUrls()
         every { config.getFaqUrl() } returns ""
+        // The Profile screen asks what kind of directory this build reads as soon
+        // as it is built, so every case needs an answer, not only the ones about it.
+        every { config.getLMSDirectoryConfig() } returns LMSDirectoryConfig()
+        every { corePreferences.lmsDirectoryMode } returns ""
+        every { corePreferences.lmsDirectorySourceKey } returns ""
     }
 
     @After
@@ -200,11 +206,11 @@ class ProfileViewModelTest {
      */
     private fun reportingOffered(
         directory: LMSDirectoryConfig,
-        remembered: Boolean = false,
+        remembered: LmsDirectoryMode? = null,
         rememberedFor: String = ""
     ): Boolean {
         every { config.getLMSDirectoryConfig() } returns directory
-        every { corePreferences.lmsDirectoryCurated } returns remembered
+        every { corePreferences.lmsDirectoryMode } returns remembered?.name.orEmpty()
         every { corePreferences.lmsDirectorySourceKey } returns rememberedFor
         coEvery { interactor.getCachedAccount() } returns null
         return ProfileViewModel(
@@ -215,13 +221,22 @@ class ProfileViewModelTest {
             config,
             corePreferences,
             router
-        ).canReportLms
+        ).canReportLms.value
     }
 
     @Test
-    fun `an open catalog offers reporting`() {
+    fun `an open catalog offers reporting once it has said so`() {
         val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
-        assertEquals(true, reportingOffered(service))
+        assertEquals(
+            true,
+            reportingOffered(service, remembered = LmsDirectoryMode.SEARCH, rememberedFor = service.sourceKey)
+        )
+    }
+
+    @Test
+    fun `a catalog that has not answered yet offers nothing`() {
+        val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
+        assertEquals(false, reportingOffered(service))
     }
 
     @Test
@@ -243,18 +258,22 @@ class ProfileViewModelTest {
         val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
         assertEquals(
             false,
-            reportingOffered(service, remembered = true, rememberedFor = service.sourceKey)
+            reportingOffered(service, remembered = LmsDirectoryMode.CURATED, rememberedFor = service.sourceKey)
         )
     }
 
     @Test
-    fun `a curated answer left by a different directory is ignored`() {
-        // The regression: the picker is skipped once a platform is selected, so a
-        // build repointed at an open catalog kept hiding the entry point.
+    fun `an answer left by a different directory is ignored`() {
+        // The regression: the picker is skipped once a platform is selected, so
+        // nothing would ever overwrite what an older registry said.
         val service = LMSDirectoryConfig(enabled = true, directoryUrl = "https://registry.example.com")
         assertEquals(
-            true,
-            reportingOffered(service, remembered = true, rememberedFor = "service:https://old-registry.example.com")
+            false,
+            reportingOffered(
+                service,
+                remembered = LmsDirectoryMode.SEARCH,
+                rememberedFor = "service:https://old-registry.example.com"
+            )
         )
     }
 

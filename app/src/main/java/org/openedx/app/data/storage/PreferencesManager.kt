@@ -97,7 +97,7 @@ class PreferencesManager(
         val SELECTED_LMS_LOGIN_BACKGROUND =
             stringPreferencesKey("selected_lms_login_background")
         val SELECTED_LMS_TITLE = stringPreferencesKey("selected_lms_title")
-        val LMS_DIRECTORY_CURATED = booleanPreferencesKey("lms_directory_curated")
+        val LMS_DIRECTORY_MODE = stringPreferencesKey("lms_directory_mode")
         val LMS_DIRECTORY_SOURCE_KEY = stringPreferencesKey("lms_directory_source_key")
         val LMS_HISTORY = stringPreferencesKey("lms_history")
 
@@ -254,9 +254,9 @@ class PreferencesManager(
         get() = getValue(Keys.SELECTED_LMS_TITLE, "").ifEmpty { null }
         set(value) = setValue(Keys.SELECTED_LMS_TITLE, value.orEmpty())
 
-    override var lmsDirectoryCurated: Boolean
-        get() = getValue(Keys.LMS_DIRECTORY_CURATED, false)
-        set(value) = setValue(Keys.LMS_DIRECTORY_CURATED, value)
+    override var lmsDirectoryMode: String
+        get() = getValue(Keys.LMS_DIRECTORY_MODE, "")
+        set(value) = setValue(Keys.LMS_DIRECTORY_MODE, value)
 
     override var lmsDirectorySourceKey: String
         get() = getValue(Keys.LMS_DIRECTORY_SOURCE_KEY, "")

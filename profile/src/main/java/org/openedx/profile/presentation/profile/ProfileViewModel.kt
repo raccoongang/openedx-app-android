@@ -6,8 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.openedx.core.config.Config
 import org.openedx.core.data.storage.CorePreferences
@@ -36,16 +39,29 @@ class ProfileViewModel(
     val isLmsDirectoryEnabled: Boolean get() = config.getLMSDirectoryConfig().isReachable
 
     /**
-     * Reporting belongs to the universal app. A build reading its list from a
-     * document has no service to post to, and a curated catalog vouches for its
-     * own platforms, so in both cases the entry point stays hidden.
+     * Whether to offer "Report this LMS".
      *
-     * Derived from the configured source every time it is read: the remembered
-     * "curated" answer only counts while it still belongs to the directory this
-     * build actually reads.
+     * Reporting belongs to the universal app: a build reading its list from a
+     * document has no service to post to, a curated catalog vouches for its own
+     * platforms, and a live catalog that has not answered yet is not known to be
+     * either — so all three keep the entry point hidden.
+     *
+     * A flow rather than a value, because the answer can arrive after this screen
+     * is already on top: the launch-time refresh is what tells a build whose
+     * platform picker never runs again that its registry has changed.
      */
-    val canReportLms: Boolean
-        get() = LmsDirectoryState.canReport(config.getLMSDirectoryConfig(), corePreferences)
+    val canReportLms: StateFlow<Boolean> = LmsDirectoryState.revision
+        .map { LmsDirectoryState.canReport(config.getLMSDirectoryConfig(), corePreferences) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+            LmsDirectoryState.canReport(config.getLMSDirectoryConfig(), corePreferences)
+        )
+
+    private companion object {
+        /** Keeps the flow alive across a configuration change. */
+        const val STOP_TIMEOUT_MILLIS = 5_000L
+    }
 
     private val _uiState: MutableStateFlow<ProfileUIState> = MutableStateFlow(ProfileUIState.Loading)
     internal val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()

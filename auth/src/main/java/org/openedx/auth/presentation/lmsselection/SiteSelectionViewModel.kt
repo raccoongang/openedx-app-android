@@ -18,8 +18,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.openedx.auth.R
 import org.openedx.core.config.Config
-import org.openedx.core.config.LMSDirectoryConfig
 import org.openedx.core.data.storage.CorePreferences
+import org.openedx.core.lmsdirectory.LmsDirectoryMode
 import org.openedx.core.lmsdirectory.LmsDirectoryRepository
 import org.openedx.core.lmsdirectory.LmsDirectoryState
 import org.openedx.core.lmsdirectory.LmsHistoryEntry
@@ -74,26 +74,27 @@ class SiteSelectionViewModel(
      * cold start while the config round trip is still in flight.
      */
     private fun seedCuratedFromConfig() {
-        val source = config.getLMSDirectoryConfig().source
-        val isDocument = source is LMSDirectoryConfig.Source.Document ||
-            source is LMSDirectoryConfig.Source.BundledDocument
-        if (isDocument || config.getLMSDirectoryConfig().directoryMode.equals("curated", ignoreCase = true)) {
-            LmsDirectoryState.rememberCurated(true, config.getLMSDirectoryConfig(), corePreferences)
+        val directory = config.getLMSDirectoryConfig()
+        if (directory.configuredMode == LmsDirectoryMode.CURATED) {
+            LmsDirectoryState.remember(LmsDirectoryMode.CURATED, directory, corePreferences)
             _uiState.update { it.copy(isCurated = true) }
         }
     }
 
     private fun loadCatalogConfig() {
         viewModelScope.launch {
-            val remote = directoryRepository.fetchConfig()
-            val configuredMode = config.getLMSDirectoryConfig().directoryMode
-            val curated = remote.isCurated || configuredMode.equals("curated", ignoreCase = true)
-            // Share the mode so the Profile tab can hide "Report this LMS" in curated
-            // mode. Stamped with the source, so it is ignored if the build is later
-            // pointed at a different directory.
-            LmsDirectoryState.rememberCurated(curated, config.getLMSDirectoryConfig(), corePreferences)
+            val directory = config.getLMSDirectoryConfig()
+            val answer = directoryRepository.fetchConfigOrNull()
+            // What the screen shows and what the app records are different
+            // questions. Unreachable, the picker still has to draw something and
+            // a search box is the safe choice; but nothing is recorded, because a
+            // network error says nothing about what kind of catalog this is.
+            val mode = directory.configuredMode
+                ?: answer?.let { if (it.isCurated) LmsDirectoryMode.CURATED else LmsDirectoryMode.SEARCH }
+            mode?.let { LmsDirectoryState.remember(it, directory, corePreferences) }
+            val curated = mode == LmsDirectoryMode.CURATED
             _uiState.update {
-                it.copy(isCurated = curated, providerName = remote.providerName)
+                it.copy(isCurated = curated, providerName = answer?.providerName.orEmpty())
             }
             if (curated) {
                 loadFeatured()

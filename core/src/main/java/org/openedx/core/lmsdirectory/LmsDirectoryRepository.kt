@@ -31,6 +31,18 @@ class LmsDirectoryRepository(
         }
     }
 
+    /**
+     * The registry's own answer, or null when it could not be reached.
+     *
+     * Unlike [fetchConfig] this does not fall back to search: a network error is
+     * not evidence that a catalog is open to anyone, and whoever records the mode
+     * has to be able to tell those two apart.
+     */
+    suspend fun fetchConfigOrNull(): DirectoryConfig? =
+        runCatching { source.config() }
+            .onFailure { Log.w(TAG, "Config fetch failed: ${it.message}") }
+            .getOrNull()
+
     suspend fun search(query: String): Result<List<LmsSummary>> = runCatching {
         source.search(query)
     }.onFailure { Log.w(TAG, "Search failed: ${it.message}") }
