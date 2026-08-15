@@ -60,6 +60,23 @@ class LMSDirectoryConfigTest {
     }
 
     @Test
+    fun `only a live service can be reported to`() {
+        // Reporting belongs to the universal app. A document has no service behind
+        // it, so there is nowhere to post and the entry point must stay hidden.
+        assertTrue(
+            LMSDirectoryConfig(enabled = true, directoryUrl = "https://example.com").supportsReporting
+        )
+        assertFalse(
+            LMSDirectoryConfig(enabled = true, directoryUrl = "https://example.com/d.json").supportsReporting
+        )
+        assertFalse(
+            LMSDirectoryConfig(enabled = true, directoryFile = "lms_directory.json").supportsReporting
+        )
+        assertFalse(LMSDirectoryConfig(enabled = false, directoryUrl = "https://example.com").supportsReporting)
+        assertFalse(LMSDirectoryConfig(enabled = true).supportsReporting)
+    }
+
+    @Test
     fun `a bundled file alone is enough to be reachable`() {
         assertTrue(LMSDirectoryConfig(enabled = true, directoryFile = "lms_directory.json").isReachable)
     }

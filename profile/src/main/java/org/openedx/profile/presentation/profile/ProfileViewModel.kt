@@ -32,6 +32,12 @@ class ProfileViewModel(
     /** LMS Directory: show the "Report this LMS" entry only when the feature is on. */
     val isLmsDirectoryEnabled: Boolean get() = config.getLMSDirectoryConfig().isReachable
 
+    /**
+     * Reporting belongs to the universal app. A build reading its list from a
+     * document has no service to post to, so the entry point stays hidden.
+     */
+    val canReportLms: Boolean get() = config.getLMSDirectoryConfig().supportsReporting
+
     private val _uiState: MutableStateFlow<ProfileUIState> = MutableStateFlow(ProfileUIState.Loading)
     internal val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
 

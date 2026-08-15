@@ -73,4 +73,17 @@ data class LMSDirectoryConfig(
      */
     val isReachable: Boolean
         get() = enabled && (directoryFile.isNotBlank() || directoryUrl.isNotBlank())
+
+    /**
+     * Whether this build can report a platform to anyone.
+     *
+     * Reporting exists because the open catalog lets a stranger list anything; it
+     * belongs to the universal app, not to a provider's own list. A directory read
+     * from a document has no service behind it, so there is nothing to post to and
+     * the entry point must not appear.
+     *
+     * A live service in curated mode also refuses reports, and is hidden separately
+     * by the mode itself.
+     */
+    val supportsReporting: Boolean get() = source is Source.Service
 }

@@ -53,7 +53,7 @@ class ProfileFragment : Fragment() {
                     uiMessage = uiMessage,
                     refreshing = refreshing,
                     // Curated/institution registries have no learner reporting.
-                    showReportLms = viewModel.isLmsDirectoryEnabled && !corePreferences.lmsDirectoryCurated,
+                    showReportLms = viewModel.canReportLms && !corePreferences.lmsDirectoryCurated,
                     onSettingsClick = {
                         viewModel.profileRouter.navigateToSettings(requireActivity().supportFragmentManager)
                     },
