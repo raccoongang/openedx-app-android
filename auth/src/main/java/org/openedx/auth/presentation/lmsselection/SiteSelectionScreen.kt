@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,6 +63,7 @@ internal fun SiteSelectionScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .statusBarsPadding()
                         .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -92,7 +94,7 @@ internal fun SiteSelectionScreen(
                 Text(
                     text = stringResource(id = R.string.auth_lms_provider_subtitle, state.providerName),
                     style = MaterialTheme.appTypography.labelLarge,
-                    color = MaterialTheme.appColors.textFieldHint,
+                    color = MaterialTheme.appColors.textPrimaryVariant,
                 )
             }
 
@@ -125,7 +127,7 @@ private fun Message(text: String) {
     Text(
         text = text,
         style = MaterialTheme.appTypography.bodyMedium,
-        color = MaterialTheme.appColors.textFieldHint,
+        color = MaterialTheme.appColors.textPrimaryVariant,
     )
 }
 
@@ -169,7 +171,7 @@ private fun CatalogRow(
         border = BorderStroke(1.dp, MaterialTheme.appColors.textFieldBorder.copy(alpha = 0.5f)),
     ) {
         Row(
-            modifier = Modifier.padding(start = 12.dp, top = 10.dp, bottom = 10.dp, end = 4.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             LmsRowLogo(logoUrl = logoUrl, title = title, accentColor = accentColor)
@@ -178,7 +180,7 @@ private fun CatalogRow(
                 Text(
                     text = title,
                     maxLines = 1,
-                    style = MaterialTheme.appTypography.titleSmall,
+                    style = MaterialTheme.appTypography.bodyLarge,
                     color = MaterialTheme.appColors.textPrimary,
                 )
                 if (shortDescription.isNotBlank()) {
@@ -186,20 +188,20 @@ private fun CatalogRow(
                         text = shortDescription,
                         maxLines = 1,
                         style = MaterialTheme.appTypography.bodyMedium,
-                        color = MaterialTheme.appColors.textSecondary,
+                        color = MaterialTheme.appColors.textPrimaryVariant,
                     )
                 }
                 Text(
                     text = hostOf(baseUrl),
                     maxLines = 1,
                     style = MaterialTheme.appTypography.labelMedium,
-                    color = MaterialTheme.appColors.textSecondary,
+                    color = MaterialTheme.appColors.textPrimaryVariant,
                 )
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = MaterialTheme.appColors.primary,
+                tint = MaterialTheme.appColors.textPrimaryVariant,
             )
         }
     }
