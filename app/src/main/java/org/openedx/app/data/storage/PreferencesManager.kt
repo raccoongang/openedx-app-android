@@ -85,6 +85,14 @@ class PreferencesManager(
         val LAST_WHATS_NEW_VERSION = stringPreferencesKey("last_whats_new_version")
         val LAST_REVIEW_VERSION = stringPreferencesKey("last_review_version")
         val WAS_POSITIVE_RATED = booleanPreferencesKey("app_was_positive_rated")
+        val SELECTED_BASE_URL = stringPreferencesKey("selected_base_url")
+        val SELECTED_LMS_ACCENT_COLOR = stringPreferencesKey("selected_lms_accent_color")
+        val SELECTED_OAUTH_CLIENT_ID = stringPreferencesKey("selected_oauth_client_id")
+        val SELECTED_FEEDBACK_EMAIL = stringPreferencesKey("selected_feedback_email")
+        val SELECTED_LMS_LOGO_URL = stringPreferencesKey("selected_lms_logo_url")
+        val SELECTED_LMS_LOGIN_BACKGROUND =
+            stringPreferencesKey("selected_lms_login_background")
+        val SELECTED_LMS_TITLE = stringPreferencesKey("selected_lms_title")
 
         fun calendarSyncDialogShown(courseName: String) =
             booleanPreferencesKey("calendar_sync_dialog_${courseName.replaceSpace("_")}")
@@ -128,6 +136,16 @@ class PreferencesManager(
             prefs.remove(Keys.EXPIRES_IN)
             prefs.remove(Keys.USER)
             prefs.remove(Keys.ACCOUNT)
+            // LMS Directory: drop the selected platform on logout so the app returns to
+            // the platform picker (matches iOS) instead of silently reusing the previous
+            // LMS's host/branding for the next user. No-op for single-tenant builds.
+            prefs.remove(Keys.SELECTED_BASE_URL)
+            prefs.remove(Keys.SELECTED_LMS_ACCENT_COLOR)
+            prefs.remove(Keys.SELECTED_OAUTH_CLIENT_ID)
+            prefs.remove(Keys.SELECTED_FEEDBACK_EMAIL)
+            prefs.remove(Keys.SELECTED_LMS_LOGO_URL)
+            prefs.remove(Keys.SELECTED_LMS_LOGIN_BACKGROUND)
+            prefs.remove(Keys.SELECTED_LMS_TITLE)
         }
     }
 
@@ -200,6 +218,34 @@ class PreferencesManager(
     override var isRelativeDatesEnabled: Boolean
         get() = getValue(Keys.IS_RELATIVE_DATES_ENABLED, true)
         set(value) = setValue(Keys.IS_RELATIVE_DATES_ENABLED, value)
+
+    override var selectedBaseUrl: String?
+        get() = getValue(Keys.SELECTED_BASE_URL, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_BASE_URL, value.orEmpty())
+
+    override var selectedLmsAccentColor: String?
+        get() = getValue(Keys.SELECTED_LMS_ACCENT_COLOR, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_LMS_ACCENT_COLOR, value.orEmpty())
+
+    override var selectedOAuthClientId: String?
+        get() = getValue(Keys.SELECTED_OAUTH_CLIENT_ID, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_OAUTH_CLIENT_ID, value.orEmpty())
+
+    override var selectedFeedbackEmail: String?
+        get() = getValue(Keys.SELECTED_FEEDBACK_EMAIL, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_FEEDBACK_EMAIL, value.orEmpty())
+
+    override var selectedLmsLogoUrl: String?
+        get() = getValue(Keys.SELECTED_LMS_LOGO_URL, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_LMS_LOGO_URL, value.orEmpty())
+
+    override var selectedLmsLoginBackgroundUrl: String?
+        get() = getValue(Keys.SELECTED_LMS_LOGIN_BACKGROUND, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_LMS_LOGIN_BACKGROUND, value.orEmpty())
+
+    override var selectedLmsTitle: String?
+        get() = getValue(Keys.SELECTED_LMS_TITLE, "").ifEmpty { null }
+        set(value) = setValue(Keys.SELECTED_LMS_TITLE, value.orEmpty())
 
     override var profile: Account?
         get() {
