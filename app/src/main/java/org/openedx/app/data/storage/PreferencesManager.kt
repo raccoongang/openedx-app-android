@@ -98,6 +98,9 @@ class PreferencesManager(
             stringPreferencesKey("selected_lms_login_background")
         val SELECTED_LMS_TITLE = stringPreferencesKey("selected_lms_title")
         val LMS_DIRECTORY_MODE = stringPreferencesKey("lms_directory_mode")
+
+        /** Written by builds before LMS_DIRECTORY_MODE. Only ever removed. */
+        val legacyLmsDirectoryCurated = booleanPreferencesKey("lms_directory_curated")
         val LMS_DIRECTORY_SOURCE_KEY = stringPreferencesKey("lms_directory_source_key")
         val LMS_HISTORY = stringPreferencesKey("lms_history")
 
@@ -256,7 +259,13 @@ class PreferencesManager(
 
     override var lmsDirectoryMode: String
         get() = getValue(Keys.LMS_DIRECTORY_MODE, "")
-        set(value) = setValue(Keys.LMS_DIRECTORY_MODE, value)
+        set(value) {
+            setValue(Keys.LMS_DIRECTORY_MODE, value)
+            // This replaced a boolean that named no source. Drop it the first
+            // time an upgraded install records a real answer, so nothing is left
+            // behind that a later reader could mistake for one.
+            runBlocking(Dispatchers.IO) { dataStore.edit { it.remove(Keys.legacyLmsDirectoryCurated) } }
+        }
 
     override var lmsDirectorySourceKey: String
         get() = getValue(Keys.LMS_DIRECTORY_SOURCE_KEY, "")

@@ -114,6 +114,37 @@ class DocumentLmsDirectorySourceTest {
     }
 
     @Test
+    fun `a minimal hand-written document is accepted`() = runTest {
+        // The smallest document a person could reasonably write. The same file
+        // has to work on iOS, so anything omitted here must have a default on
+        // both platforms — not just on this one, where Gson is forgiving.
+        val minimal = """
+            {
+              "version": 1,
+              "platforms": [
+                {
+                  "id": "1",
+                  "title": "Alpha",
+                  "description": "Alpha campus",
+                  "short_description": "Alpha",
+                  "base_url": "https://alpha.example.edu",
+                  "api": {
+                    "host_url": "https://alpha.example.edu",
+                    "oauth_client_id": "alpha-client",
+                    "feedback_email": "support@example.edu"
+                  }
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val detail = source(payload = minimal).detail("1")
+
+        assertEquals("Alpha", detail.title)
+        assertEquals("alpha-client", detail.oauthClientId)
+    }
+
+    @Test
     fun `a document that cannot be parsed fails instead of looking empty`() = runTest {
         try {
             source(payload = "not json at all").featured()
