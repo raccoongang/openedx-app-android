@@ -54,15 +54,15 @@ class DocumentLmsDirectorySource(
 
     override suspend fun providerName(): String = document().provider?.name.orEmpty()
 
-    override suspend fun platforms(): List<LmsSummary> = document().platforms.map { it.toSummary() }
+    override suspend fun platforms(): List<LmsSummary> = document().include.map { it.toSummary() }
 
     override suspend fun detail(id: String): LmsDetail =
-        document().platforms.firstOrNull { it.id == id }?.toDomain()
+        document().include.firstOrNull { (it.id ?: it.url) == id }?.toDomain()
             ?: throw NoSuchElementException("No platform with id $id in the directory document")
 
     override suspend fun imageReferences(): List<String> =
-        document().platforms.flatMap {
-            listOfNotNull(it.logoUrl, it.theme?.loginBackgroundUrl)
+        document().include.flatMap {
+            listOfNotNull(it.logo, it.theme?.loginBackground)
         }.filter { it.isNotBlank() }
 
     private suspend fun document(): DirectoryDocumentDto {
@@ -70,7 +70,7 @@ class DocumentLmsDirectorySource(
         val raw = loader.load()
         val parsed = gson.fromJson(raw, DirectoryDocumentDto::class.java)
         checkNotNull(parsed) { "Directory document is empty" }
-        if (parsed.platforms.isEmpty()) {
+        if (parsed.include.isEmpty()) {
             Log.w(TAG, "Directory document parsed but lists no platforms")
         }
         cached = parsed
@@ -112,27 +112,26 @@ class DocumentLmsDirectorySource(
 /**
  * Wire format of the directory document.
  *
- * `platforms` entries are the same objects `/api/v1/directory/{id}` returns, so
- * [LmsDetailDto] is reused rather than duplicated — a document and a live service
- * describe a platform identically, and keeping one parser is what guarantees it.
+ * The key names are the ones the Open edX mobile working group settled on, so a
+ * file written by hand and a file exported from a registry are the same shape.
  */
 data class DirectoryDocumentDto(
-    @SerializedName("version") val version: Int = 1,
+    @SerializedName("format") val format: String? = null,
     @SerializedName("provider") val provider: ProviderDto? = null,
-    @SerializedName("platforms") val platforms: List<LmsDetailDto> = emptyList(),
+    @SerializedName("include") val include: List<LmsDetailDto> = emptyList(),
 ) {
     data class ProviderDto(
         @SerializedName("name") val name: String? = null,
         @SerializedName("tagline") val tagline: String? = null,
-        @SerializedName("logo_url") val logoUrl: String? = null,
+        @SerializedName("logo") val logo: String? = null,
     )
 }
 
 private fun LmsDetailDto.toSummary(): LmsSummary = LmsSummary(
-    id = id,
-    title = title,
-    shortDescription = shortDescription.orEmpty(),
-    baseUrl = api?.hostUrl?.ifBlank { null } ?: baseUrl,
-    logoUrl = logoUrl,
+    id = id ?: url,
+    title = name,
+    shortDescription = description.orEmpty(),
+    baseUrl = api?.hostUrl?.ifBlank { null } ?: url,
+    logoUrl = logo,
     accentColor = accentColor,
 )

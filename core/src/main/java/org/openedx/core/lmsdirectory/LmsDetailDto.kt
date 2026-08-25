@@ -5,11 +5,12 @@ import com.google.gson.annotations.SerializedName
 /** Wire format of one platform inside the directory document. */
 
 data class LmsDetailDto(
-    @SerializedName("id") val id: String,
-    @SerializedName("title") val title: String,
-    @SerializedName("short_description") val shortDescription: String? = null,
-    @SerializedName("base_url") val baseUrl: String,
-    @SerializedName("logo_url") val logoUrl: String? = null,
+    /** Optional: a file that names no id is identified by its address. */
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("name") val name: String,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("url") val url: String,
+    @SerializedName("logo") val logo: String? = null,
     @SerializedName("accent_color") val accentColor: String? = null,
     @SerializedName("api") val api: ApiDto? = null,
     @SerializedName("theme") val theme: ThemeDto? = null,
@@ -22,7 +23,7 @@ data class LmsDetailDto(
     )
 
     data class ThemeDto(
-        @SerializedName("login_background_url") val loginBackgroundUrl: String? = null,
+        @SerializedName("login_background") val loginBackground: String? = null,
     )
 
     data class FeatureFlagsDto(
@@ -30,15 +31,15 @@ data class LmsDetailDto(
     )
 
     fun toDomain() = LmsDetail(
-        id = id,
-        title = title,
-        shortDescription = shortDescription.orEmpty(),
-        baseUrl = api?.hostUrl?.ifBlank { null } ?: baseUrl,
-        logoUrl = logoUrl,
+        id = id ?: url,
+        title = name,
+        shortDescription = description.orEmpty(),
+        baseUrl = api?.hostUrl?.ifBlank { null } ?: url,
+        logoUrl = logo,
         accentColor = accentColor,
         oauthClientId = api?.oauthClientId?.ifBlank { null },
         feedbackEmail = api?.feedbackEmail?.ifBlank { null },
-        loginBackgroundUrl = theme?.loginBackgroundUrl?.ifBlank { null },
+        loginBackgroundUrl = theme?.loginBackground?.ifBlank { null },
         preLoginDiscovery = featureFlags?.preLoginDiscovery ?: false,
     )
 }

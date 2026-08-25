@@ -215,8 +215,8 @@ private fun CatalogRow(
 @Composable
 private fun LmsRowLogo(logoUrl: String?, title: String, accentColor: String?) {
     val logoModifier = Modifier
-        .size(48.dp)
-        .clip(RoundedCornerShape(10.dp))
+        .size(44.dp)
+        .clip(RoundedCornerShape(8.dp))
     val logoModel = LmsImageSource.model(logoUrl)
     if (logoModel != null) {
         AsyncImage(
@@ -229,15 +229,22 @@ private fun LmsRowLogo(logoUrl: String?, title: String, accentColor: String?) {
             modifier = logoModifier,
         )
     } else {
+        // A platform with no logo gets its initials on its own colour, drawn the
+        // same way iOS draws them: filled badge, white letters, up to two.
         val accent = LmsThemeController.parseHexColor(accentColor) ?: MaterialTheme.appColors.primary
+        val initials = title.trim().split(" ")
+            .take(2)
+            .mapNotNull { it.firstOrNull()?.uppercase() }
+            .joinToString("")
+            .ifEmpty { title.take(1).uppercase() }
         Box(
-            modifier = logoModifier.background(accent.copy(alpha = 0.15f)),
+            modifier = logoModifier.background(accent),
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = title.trim().take(1).uppercase(),
-                style = MaterialTheme.appTypography.titleMedium,
-                color = accent,
+                text = initials,
+                style = MaterialTheme.appTypography.titleSmall,
+                color = MaterialTheme.appColors.background,
             )
         }
     }

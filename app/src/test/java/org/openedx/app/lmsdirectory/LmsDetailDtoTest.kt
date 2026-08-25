@@ -15,9 +15,9 @@ class LmsDetailDtoTest {
     fun `maps api fields to domain`() {
         val detail = LmsDetailDto(
             id = "4",
-            title = "Sandbox Env",
-            baseUrl = "https://sandbox.openedx.org",
-            logoUrl = "https://cdn.example.com/logo.png",
+            name = "Sandbox Env",
+            url = "https://sandbox.openedx.org",
+            logo = "https://cdn.example.com/logo.png",
             accentColor = "#6a2e7b",
             api = LmsDetailDto.ApiDto(
                 hostUrl = "https://sandbox.openedx.org",
@@ -37,8 +37,8 @@ class LmsDetailDtoTest {
     fun `blank api values fall back to null and base_url`() {
         val detail = LmsDetailDto(
             id = "1",
-            title = "Fallback",
-            baseUrl = "https://fallback.example.com",
+            name = "Fallback",
+            url = "https://fallback.example.com",
             api = LmsDetailDto.ApiDto(hostUrl = "", oauthClientId = "", feedbackEmail = null),
         ).toDomain()
 
@@ -52,8 +52,8 @@ class LmsDetailDtoTest {
     fun `null api yields base_url and null credentials`() {
         val detail = LmsDetailDto(
             id = "2",
-            title = "No API block",
-            baseUrl = "https://noapi.example.com",
+            name = "No API block",
+            url = "https://noapi.example.com",
             api = null,
         ).toDomain()
 

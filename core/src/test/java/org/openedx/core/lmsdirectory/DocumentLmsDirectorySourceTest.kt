@@ -15,15 +15,15 @@ class DocumentLmsDirectorySourceTest {
 
     private val document = """
         {
-          "version": 1,
+          "format": "v1",
           "provider": { "name": "Northwind", "tagline": "Five campuses, one app" },
-          "platforms": [
+          "include": [
             {
               "id": "1",
-              "title": "Alpha",
-              "short_description": "Alpha",
-              "base_url": "https://alpha.example.edu",
-              "logo_url": "https://cdn.example.com/alpha.png",
+              "name": "Alpha",
+              "description": "Alpha",
+              "url": "https://alpha.example.edu",
+              "logo": "https://cdn.example.com/alpha.png",
               "accent_color": "#112233",
               "api": {
                 "host_url": "https://alpha.example.edu",
@@ -31,14 +31,14 @@ class DocumentLmsDirectorySourceTest {
                 "feedback_email": "support@example.edu"
               },
               "feature_flags": { "pre_login_discovery": true },
-              "theme": { "login_background_url": "alpha-bg.png" }
+              "theme": { "login_background": "alpha-bg.png" }
             },
             {
               "id": "2",
-              "title": "Beta",
-              "short_description": "Beta",
-              "base_url": "https://beta.example.edu",
-              "logo_url": "beta-logo.png",
+              "name": "Beta",
+              "description": "Beta",
+              "url": "https://beta.example.edu",
+              "logo": "beta-logo.png",
               "api": {
                 "host_url": "https://beta.example.edu",
                 "oauth_client_id": "beta-client",
@@ -108,14 +108,13 @@ class DocumentLmsDirectorySourceTest {
         // both platforms — not just on this one, where Gson is forgiving.
         val minimal = """
             {
-              "version": 1,
-              "platforms": [
+              "format": "v1",
+              "include": [
                 {
                   "id": "1",
-                  "title": "Alpha",
-                  "description": "Alpha campus",
-                  "short_description": "Alpha",
-                  "base_url": "https://alpha.example.edu"
+                  "name": "Alpha",
+                  "description": "Alpha",
+                  "url": "https://alpha.example.edu"
                 }
               ]
             }
@@ -137,13 +136,13 @@ class DocumentLmsDirectorySourceTest {
         // normal case, and must not stop the file being read.
         val payload = """
             {
-              "version": 1,
-              "platforms": [
+              "format": "v1",
+              "include": [
                 {
                   "id": "1",
-                  "title": "Alpha",
-                  "short_description": "Alpha",
-                  "base_url": "https://alpha.example.edu",
+                  "name": "Alpha",
+                  "description": "Alpha",
+                  "url": "https://alpha.example.edu",
                   "api": { "host_url": "https://api.alpha.example.edu" }
                 }
               ]
