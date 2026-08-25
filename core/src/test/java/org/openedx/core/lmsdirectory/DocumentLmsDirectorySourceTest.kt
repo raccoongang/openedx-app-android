@@ -2,6 +2,7 @@ package org.openedx.core.lmsdirectory
 
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -114,12 +115,7 @@ class DocumentLmsDirectorySourceTest {
                   "title": "Alpha",
                   "description": "Alpha campus",
                   "short_description": "Alpha",
-                  "base_url": "https://alpha.example.edu",
-                  "api": {
-                    "host_url": "https://alpha.example.edu",
-                    "oauth_client_id": "alpha-client",
-                    "feedback_email": "support@example.edu"
-                  }
+                  "base_url": "https://alpha.example.edu"
                 }
               ]
             }
@@ -128,7 +124,37 @@ class DocumentLmsDirectorySourceTest {
         val detail = source(payload = minimal).detail("1")
 
         assertEquals("Alpha", detail.title)
-        assertEquals("alpha-client", detail.oauthClientId)
+        // No "api" block at all: the platform is served from the address the
+        // learner picked, and the app signs in with its own OAuth client.
+        assertEquals("https://alpha.example.edu", detail.baseUrl)
+        assertNull(detail.oauthClientId)
+    }
+
+    @Test
+    fun `a platform need not carry its own oauth client`() = runTest {
+        // A multi-instance app carries one client id of its own, which each
+        // backend registers. A directory that names none per platform is the
+        // normal case, and must not stop the file being read.
+        val payload = """
+            {
+              "version": 1,
+              "platforms": [
+                {
+                  "id": "1",
+                  "title": "Alpha",
+                  "short_description": "Alpha",
+                  "base_url": "https://alpha.example.edu",
+                  "api": { "host_url": "https://api.alpha.example.edu" }
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val detail = source(payload = payload).detail("1")
+
+        assertEquals("https://api.alpha.example.edu", detail.baseUrl)
+        assertNull(detail.oauthClientId)
+        assertNull(detail.feedbackEmail)
     }
 
     @Test
