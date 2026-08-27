@@ -54,11 +54,12 @@ class DocumentLmsDirectorySource(
 
     override suspend fun providerName(): String = document().provider?.name.orEmpty()
 
-    override suspend fun platforms(): List<LmsSummary> = document().include.map { it.toSummary() }
+    override suspend fun platforms(): List<LmsSummary> =
+        document().include.mapIndexed { index, entry -> entry.toSummary(index.toString()) }
 
     override suspend fun detail(id: String): LmsDetail =
-        document().include.firstOrNull { (it.id ?: it.url) == id }?.toDomain()
-            ?: throw NoSuchElementException("No platform with id $id in the directory document")
+        document().include.getOrNull(id.toIntOrNull() ?: -1)?.toDomain(id)
+            ?: throw NoSuchElementException("No platform at position $id in the directory document")
 
     override suspend fun imageReferences(): List<String> =
         document().include.flatMap {
@@ -127,8 +128,8 @@ data class DirectoryDocumentDto(
     )
 }
 
-private fun LmsDetailDto.toSummary(): LmsSummary = LmsSummary(
-    id = id ?: url,
+private fun LmsDetailDto.toSummary(id: String): LmsSummary = LmsSummary(
+    id = id,
     title = name,
     shortDescription = description.orEmpty(),
     baseUrl = api?.hostUrl?.ifBlank { null } ?: url,

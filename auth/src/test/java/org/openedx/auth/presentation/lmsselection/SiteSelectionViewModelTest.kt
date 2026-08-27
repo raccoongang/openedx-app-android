@@ -40,7 +40,7 @@ class SiteSelectionViewModelTest {
     private val repository = mockk<LmsDirectoryRepository>(relaxed = true)
 
     private val summary = LmsSummary(
-        id = "4",
+        id = "https://sandbox.openedx.org",
         title = "Sandbox Env",
         shortDescription = "",
         baseUrl = "https://sandbox.openedx.org",
@@ -49,7 +49,7 @@ class SiteSelectionViewModelTest {
     )
 
     private fun detail(preLoginDiscovery: Boolean = false) = LmsDetail(
-        id = "4",
+        id = "https://sandbox.openedx.org",
         title = "Sandbox Env",
         shortDescription = "",
         baseUrl = "https://sandbox.openedx.org",
@@ -81,7 +81,7 @@ class SiteSelectionViewModelTest {
         advanceUntilIdle()
 
         assertEquals(CatalogState.Loaded, viewModel.uiState.value.catalog)
-        assertEquals(listOf("4"), viewModel.uiState.value.platforms.map { it.id })
+        assertEquals(listOf("https://sandbox.openedx.org"), viewModel.uiState.value.platforms.map { it.id })
         assertEquals("Northwind", viewModel.uiState.value.providerName)
     }
 
@@ -108,7 +108,7 @@ class SiteSelectionViewModelTest {
         val (viewModel, actions) = select(preLoginDiscovery = false)
 
         // The summary carries no OAuth client id, so the full record has to be read.
-        coVerify { repository.detail("4") }
+        coVerify { repository.detail("https://sandbox.openedx.org") }
         verify { corePreferences.selectedBaseUrl = "https://sandbox.openedx.org/" }
         verify { corePreferences.selectedOAuthClientId = "client-id" }
         verify { corePreferences.selectedLmsTitle = "Sandbox Env" }
@@ -128,7 +128,7 @@ class SiteSelectionViewModelTest {
     private fun kotlinx.coroutines.test.TestScope.select(
         preLoginDiscovery: Boolean,
     ): Pair<SiteSelectionViewModel, List<SiteSelectionViewModel.SiteSelectionAction>> {
-        coEvery { repository.detail("4") } returns Result.success(detail(preLoginDiscovery))
+        coEvery { repository.detail("https://sandbox.openedx.org") } returns Result.success(detail(preLoginDiscovery))
         val viewModel = SiteSelectionViewModel(corePreferences, resourceManager, repository)
         val actions = mutableListOf<SiteSelectionViewModel.SiteSelectionAction>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {

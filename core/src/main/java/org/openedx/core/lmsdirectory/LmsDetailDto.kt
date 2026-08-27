@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName
 /** Wire format of one platform inside the directory document. */
 
 data class LmsDetailDto(
-    /** Optional: a file that names no id is identified by its address. */
-    @SerializedName("id") val id: String? = null,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String? = null,
     @SerializedName("url") val url: String,
@@ -30,8 +28,15 @@ data class LmsDetailDto(
         @SerializedName("pre_login_discovery") val preLoginDiscovery: Boolean = false,
     )
 
-    fun toDomain() = LmsDetail(
-        id = id ?: url,
+    /**
+     * The platform, identified by where it sits in the document.
+     *
+     * Position is the only thing guaranteed unique. Two entries may legitimately
+     * share an address — the same LMS listed twice under different branding —
+     * and identifying them by URL silently merges them.
+     */
+    fun toDomain(id: String) = LmsDetail(
+        id = id,
         title = name,
         shortDescription = description.orEmpty(),
         baseUrl = api?.hostUrl?.ifBlank { null } ?: url,

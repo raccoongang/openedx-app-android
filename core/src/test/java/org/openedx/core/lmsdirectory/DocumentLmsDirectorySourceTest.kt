@@ -19,7 +19,6 @@ class DocumentLmsDirectorySourceTest {
           "provider": { "name": "Northwind", "tagline": "Five campuses, one app" },
           "include": [
             {
-              "id": "1",
               "name": "Alpha",
               "description": "Alpha",
               "url": "https://alpha.example.edu",
@@ -34,7 +33,6 @@ class DocumentLmsDirectorySourceTest {
               "theme": { "login_background": "alpha-bg.png" }
             },
             {
-              "id": "2",
               "name": "Beta",
               "description": "Beta",
               "url": "https://beta.example.edu",
@@ -68,7 +66,7 @@ class DocumentLmsDirectorySourceTest {
         var loads = 0
         val source = source(onLoad = { loads++ })
         source.platforms()
-        val detail = source.detail("2")
+        val detail = source.detail("1")
 
         assertEquals("Beta", detail.title)
         assertEquals("beta-client", detail.oauthClientId)
@@ -78,13 +76,39 @@ class DocumentLmsDirectorySourceTest {
     }
 
     @Test
+    fun `two platforms may share an address without merging`() = runTest {
+        // Identifying a platform by its URL merges these two: the list draws one
+        // and opening it gives the other one's settings.
+        val payload = """
+            {
+              "format": "v1",
+              "include": [
+                { "name": "Alpha", "description": "Alpha", "url": "https://shared.example.edu",
+                  "accent_color": "#111111" },
+                { "name": "Beta", "description": "Beta", "url": "https://shared.example.edu",
+                  "accent_color": "#222222" }
+              ]
+            }
+        """.trimIndent()
+        val source = source(payload = payload)
+
+        val items = source.platforms()
+        assertEquals(listOf("Alpha", "Beta"), items.map { it.title })
+        assertEquals(2, items.map { it.id }.toSet().size)
+
+        val second = source.detail(items[1].id)
+        assertEquals("Beta", second.title)
+        assertEquals("#222222", second.accentColor)
+    }
+
+    @Test
     fun `an unknown id is an error rather than a silent empty result`() = runTest {
         val source = source()
         try {
-            source.detail("nope")
+            source.detail("9")
             throw AssertionError("Expected a failure for an unknown id")
         } catch (e: NoSuchElementException) {
-            assertTrue(e.message!!.contains("nope"))
+            assertTrue(e.message!!.contains("9"))
         }
     }
 
@@ -111,7 +135,6 @@ class DocumentLmsDirectorySourceTest {
               "format": "v1",
               "include": [
                 {
-                  "id": "1",
                   "name": "Alpha",
                   "description": "Alpha",
                   "url": "https://alpha.example.edu"
@@ -120,7 +143,7 @@ class DocumentLmsDirectorySourceTest {
             }
         """.trimIndent()
 
-        val detail = source(payload = minimal).detail("1")
+        val detail = source(payload = minimal).detail("0")
 
         assertEquals("Alpha", detail.title)
         // No "api" block at all: the platform is served from the address the
@@ -139,7 +162,6 @@ class DocumentLmsDirectorySourceTest {
               "format": "v1",
               "include": [
                 {
-                  "id": "1",
                   "name": "Alpha",
                   "description": "Alpha",
                   "url": "https://alpha.example.edu",
@@ -149,7 +171,7 @@ class DocumentLmsDirectorySourceTest {
             }
         """.trimIndent()
 
-        val detail = source(payload = payload).detail("1")
+        val detail = source(payload = payload).detail("0")
 
         assertEquals("https://api.alpha.example.edu", detail.baseUrl)
         assertNull(detail.oauthClientId)

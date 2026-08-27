@@ -14,7 +14,6 @@ class LmsDetailDtoTest {
     @Test
     fun `maps api fields to domain`() {
         val detail = LmsDetailDto(
-            id = "4",
             name = "Sandbox Env",
             url = "https://sandbox.openedx.org",
             logo = "https://cdn.example.com/logo.png",
@@ -24,7 +23,7 @@ class LmsDetailDtoTest {
                 oauthClientId = "android",
                 feedbackEmail = "team@example.com",
             ),
-        ).toDomain()
+        ).toDomain("0")
 
         assertEquals("android", detail.oauthClientId)
         assertEquals("team@example.com", detail.feedbackEmail)
@@ -36,11 +35,10 @@ class LmsDetailDtoTest {
     @Test
     fun `blank api values fall back to null and base_url`() {
         val detail = LmsDetailDto(
-            id = "1",
             name = "Fallback",
             url = "https://fallback.example.com",
             api = LmsDetailDto.ApiDto(hostUrl = "", oauthClientId = "", feedbackEmail = null),
-        ).toDomain()
+        ).toDomain("0")
 
         // Blank host_url → the top-level base_url is used.
         assertEquals("https://fallback.example.com", detail.baseUrl)
@@ -51,11 +49,10 @@ class LmsDetailDtoTest {
     @Test
     fun `null api yields base_url and null credentials`() {
         val detail = LmsDetailDto(
-            id = "2",
             name = "No API block",
             url = "https://noapi.example.com",
             api = null,
-        ).toDomain()
+        ).toDomain("0")
 
         assertEquals("https://noapi.example.com", detail.baseUrl)
         assertNull(detail.oauthClientId)
