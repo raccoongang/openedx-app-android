@@ -18,16 +18,18 @@ This branch holds evidence only; it is not meant to be merged.
 
 ## What the screenshots show
 
+Screenshots 01–07 and 09–12 were retaken on 2026-10-20 after the iOS parity pass (`9ed6ed24`); 08 and 13–16 are from the first run.
+
 | # | Check |
 |---|---|
 | 01 | Multi-site build opens on site selection. |
 | 02 | Choosing South opens its sign-in, branded, with the selected site and a Change link. |
 | 03 | South signed in; requests went to `localhost:19001` with client `mi-site-b` (LMS log). |
-| 04–05 | Settings shows the current site card with Log Out; it opens Learning Sites. |
+| 04–05 | Settings shows the current site card with Log Out at the bottom, as on iOS; it opens Learning Sites. |
 | 06 | North signed in; requests to `localhost:19000` with `mi-site-a`. |
 | 07 | Both sites keep their sessions. |
 | 08 | Back to South with no sign-in and no token request. |
-| 09–10 | Logging out of North (not selected) keeps South signed in. |
+| 09–10 | Logging out of South (not selected), through the app's log out dialog, keeps North signed in. |
 | 11 | Logging out of the selected site returns to site selection with the default theme. |
 | 12 | Learning Sites in dark mode. |
 | 13–14 | A single-site build (no `INSTANCES`) looks as before: no picker, no site card. |
