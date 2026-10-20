@@ -36,7 +36,7 @@ android {
         minSdk min_sdk_version
         targetSdk target_sdk_version
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.0-multitenant-demo"
 
         resourceConfigurations += ["en", "uk"]
 
@@ -75,8 +75,25 @@ android {
         }
     }
 
+    signingConfigs {
+        // Multi-tenant demo: the keystore stays outside the repository and is found through the
+        // environment. Without it the release APK is simply left unsigned, never debug-signed.
+        demoRelease {
+            def keystore = System.getenv("DEMO_KEYSTORE_FILE")
+            if (keystore) {
+                storeFile file(keystore)
+                storePassword System.getenv("DEMO_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("DEMO_KEY_ALIAS")
+                keyPassword System.getenv("DEMO_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (System.getenv("DEMO_KEYSTORE_FILE")) {
+                signingConfig signingConfigs.demoRelease
+            }
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 

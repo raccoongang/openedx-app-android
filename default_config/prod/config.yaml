@@ -1,12 +1,15 @@
-API_HOST_URL: 'http://localhost:8000'
-APPLICATION_ID: 'org.openedx.app'
-ENVIRONMENT_DISPLAY_NAME: 'Localhost'
+# Multi-tenant demo build. Every platform comes from INSTANCES_CATALOG_URL; these two app-level
+# values are only the fallback the app needs before a site is selected, and match no listed site,
+# so no site inherits data from another build.
+API_HOST_URL: 'https://multi-tenant.stepanok.com'
+APPLICATION_ID: 'com.raccoongang.openedx.multitenant'
+ENVIRONMENT_DISPLAY_NAME: 'Multi-tenant demo'
 URI_SCHEME: ''
-FEEDBACK_EMAIL_ADDRESS: 'support@example.com'
+FEEDBACK_EMAIL_ADDRESS: ''
 FAQ_URL: ''
-OAUTH_CLIENT_ID: 'OAUTH_CLIENT_ID'
+OAUTH_CLIENT_ID: 'multi-tenant-demo'
 # URL of the remote learning site catalog. Leave empty to use only the bundled INSTANCES list.
-INSTANCES_CATALOG_URL: ''
+INSTANCES_CATALOG_URL: 'https://multi-tenant.stepanok.com/instances.json'
 
 # Keep empty to hide setting
 AGREEMENT_URLS:
@@ -73,8 +76,8 @@ EXPERIMENTAL_FEATURES:
     ENABLED: false
 
 #Platform names
-PLATFORM_NAME: "OpenEdX"
-PLATFORM_FULL_NAME: "OpenEdX"
+PLATFORM_NAME: "Multi-tenant"
+PLATFORM_FULL_NAME: "Open edX Multi-tenant Demo"
 #App sourceSets dir
 THEME_DIRECTORY: "openedx"
 #tokenType enum accepts JWT and BEARER only
